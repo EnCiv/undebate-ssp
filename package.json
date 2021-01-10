@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/EnCiv/civil-server-template#readme",
   "dependencies": {
-    "civil-server": "git+https://github.com/EnCiv/civil-server.git"
+    "civil-server": "git+https://github.com/EnCiv/civil-server.git",
+    "undebate": "git+https://github.com/EnCiv/civil-server.git"
   }
 }

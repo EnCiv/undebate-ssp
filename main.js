@@ -1,7 +1,7 @@
 "use strict";
 
-import civilServer from 'civil-server'
-import path from 'path'
+var civilServer= require('civil-server')
+const path=require('path')
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function start() {
