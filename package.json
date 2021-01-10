@@ -1,0 +1,33 @@
+{
+  "name": "civil-server-template",
+  "version": "0.0.0",
+  "description": "A template to clone, to quicly get started with civil-server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EnCiv/civil-server-template.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "mongo",
+    "socketio",
+    "user",
+    "login",
+    "logout",
+    "forgotpassword",
+    "join"
+  ],
+  "author": "David Fridley",
+  "license": "SEE LICENSE IN license.txt",
+  "bugs": {
+    "url": "https://github.com/EnCiv/civil-server-template/issues"
+  },
+  "homepage": "https://github.com/EnCiv/civil-server-template#readme",
+  "dependencies": {
+    "civil-server": "git+https://github.com/EnCiv/civil-server.git"
+  }
+}
