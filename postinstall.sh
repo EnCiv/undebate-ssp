@@ -11,11 +11,10 @@ echo '*************************************************************************'
 mkdir -p ./node_modules/syn
 # on windows environment make sure /tmp exisits so that stream uploads of pictures will work
 mkdir -p /tmp
-mkdir -p ./assets/js
+mkdir -p ./assets/js/
 pwd
 cp ./node_modules/socket.io-stream/socket.io-stream.js ./assets/js/
-mkdir -p ./assets/webpack
-cp node_modules/civil-server/assets/webpack/main.js assets/webpack
+cp -r node_modules/civil-server/assets/* assets
 
 #echo '*************************************************************************'
 #echo TRANSPILE

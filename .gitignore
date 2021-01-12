@@ -1,3 +1,6 @@
+# Assets should not be put into the repo
+assets*
+
 # Logs
 logs
 *.log
