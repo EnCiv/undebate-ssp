@@ -4,6 +4,9 @@
   "description": "A template to clone, to quicly get started with civil-server",
   "main": "index.js",
   "scripts": {
+    "packbuild": "webpack --config webpack-prod.config.js",
+    "postinstall": "bash postinstall.sh",
+    "transpile": "babel app --ignore **/__tests__ --out-dir dist --source-maps",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,8 +30,23 @@
     "url": "https://github.com/EnCiv/civil-server-template/issues"
   },
   "homepage": "https://github.com/EnCiv/civil-server-template#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10"
+  },
   "dependencies": {
-    "civil-server": "git+https://github.com/EnCiv/civil-server.git",
-    "undebate": "git+https://github.com/EnCiv/civil-server.git"
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
+    "@babel/plugin-transform-react-inline-elements": "^7.12.1",
+    "@babel/plugin-transform-regenerator": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.10",
+    "@babel/runtime": "^7.12.5",
+    "civil-server": "git+https://github.com/EnCiv/civil-server.git#main",
+    "compression-webpack-plugin": "^7.1.2",
+    "webpack": "^5.12.3",
+    "webpack-cli": "^4.3.1",
+    "webpack-dev-server": "^3.11.1"
   }
 }

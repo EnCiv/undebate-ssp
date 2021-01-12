@@ -1,6 +1,6 @@
 "use strict";
 
-var civilServer= require('civil-server')
+var civilServer= require('civil-server').default
 const path=require('path')
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -8,9 +8,9 @@ async function start() {
   try {
     const server = new civilServer()
     await server.earlyStart()
-    await server.addRoutesDirectory(path.resolve(__dirname, './routes'))
-    await server.addSocketAPIsDirectory(path.resolve(__dirname, './socket-api'))
-    server.addEventsDirectory(path.resolve(__dirname, './events')) // don't await this on
+    server.routesDirPaths.push(path.resolve(__dirname, './routes'))
+    server.socketAPIsDirPaths.push(path.resolve(__dirname, './socket-apis'))
+    server.serverEventsDirPaths.push(path.resolve(__dirname, './events'))
     await server.start()
     logger.info("started")
   } catch (error) {
