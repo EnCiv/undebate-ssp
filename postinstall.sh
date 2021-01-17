@@ -8,7 +8,10 @@ echo '*************************************************************************'
 echo Symbolick link
 echo '*************************************************************************'
 
-mkdir -p ./node_modules/syn
+mkdir -p dist/events
+mkdir -p dist/routes
+mkdir -p dist/socket-apis
+mkdir -p dist/web-components
 # on windows environment make sure /tmp exisits so that stream uploads of pictures will work
 mkdir -p ./assets/js/
 pwd
