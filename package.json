@@ -31,22 +31,23 @@
   },
   "homepage": "https://github.com/EnCiv/civil-server-template#readme",
   "devDependencies": {
-    "@babel/cli": "^7.12.10",
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/preset-react": "^7.12.10"
+    "@babel/cli": "^7.12.10"
   },
   "dependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
     "@babel/plugin-transform-react-inline-elements": "^7.12.1",
     "@babel/plugin-transform-regenerator": "^7.12.1",
     "@babel/plugin-transform-runtime": "^7.12.10",
     "@babel/runtime": "^7.12.5",
+    "babel-loader": "^8.0.6",
     "civil-server": "git+https://github.com/EnCiv/civil-server.git#main",
     "compression-webpack-plugin": "^7.1.2",
-    "webpack": "^5.12.3",
-    "webpack-cli": "^4.3.1",
-    "webpack-dev-server": "^3.11.1"
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.7.2"
   }
 }

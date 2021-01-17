@@ -5,7 +5,7 @@ module.exports = {
   mode: 'production',
   context: path.resolve(__dirname, 'dist'), // dist because app failed when building this as a node_module in another component
   entry: {
-    main: './client/main.js',
+    main: './client/main-app.js',
   },
   devtool: 'source-map',
   output: {
@@ -16,10 +16,9 @@ module.exports = {
     rules: [
       {
         test: /\.js|\.jsx$/,
-        exclude: /node_modules/,
+        //exclude: /node_modules/,
         use: 'babel-loader'
-
-      }
+      }                                                                             
     ],
   },
   resolve: {
