@@ -87,3 +87,6 @@ app/svgr
 # Cypress screenshots and recordings
 cypress/videos
 cypress/screenshots
+
+#web-components index is auto generated
+app/web-components/index.js
