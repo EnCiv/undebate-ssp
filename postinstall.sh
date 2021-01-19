@@ -37,10 +37,10 @@ echo "transpile ok"
 #echo WEBPACK
 #echo '*************************************************************************'
 
-#npm run packbuild  || {
-#  echo Could not webpack;
-#  exit 1
-#}
-#echo "webpack ok"
+npm run packbuild  || {
+  echo Could not webpack;
+  exit 1
+}
+echo "webpack ok"
 
 
