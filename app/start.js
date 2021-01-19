@@ -2,7 +2,10 @@
 
 var civilServer= require('civil-server').default
 const path=require('path')
+import {Iota} from "civil-server"
+import iotas from '../iotas.json'
 
+Iota.load(iotas)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function start() {
   try {
