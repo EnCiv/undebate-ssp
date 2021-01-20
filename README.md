@@ -1,6 +1,8 @@
 # Civil Server Template
 This template setups up a featurful Node Server quickly, by extending the Civil Server [repo](https://github.com/EnCiv/civil-server)
 
+![civil-server](https://user-images.githubusercontent.com/3317487/105109776-103ae980-5a72-11eb-8182-d0f8d3cdcc30.png)
+
 **Copyright 2021 EnCiv, Inc.** This work is licensed under the terms described in [LICENSE.txt](https://github.com/EnCiv/undebate/blob/master/LICENSE.txt) which is an MIT license with a Public Good License Condition
 
 # Basics
