@@ -5,7 +5,11 @@ This template setups up a featurful Node Server quickly, by extending the Civil 
 
 **Copyright 2021 EnCiv, Inc.** This work is licensed under the terms described in [LICENSE.txt](https://github.com/EnCiv/undebate/blob/master/LICENSE.txt) which is an MIT license with a Public Good License Condition
 
-# Basics
+# Table of Contents
+1. [Getting Started](#getting-started)
+2. [Building Your Website](#building-your-website)
+
+# Getting Started
 
 You will need to install the following, if you do not already have them.
 
@@ -97,7 +101,7 @@ git commit -m "a descriptive commit message"
 git push heroku
 ```
 # Building Your Website
-The way this server works is that when someone browses to a page, the path (eg `/home`) is looked up in the database, and the corresponding doc is found. The webComponent property ("Home") is used as a key. The web comonents in app/components/web-components are turned into an index where the ReactCase version of the filename is key, and the web component is the value. All the properties in the doc, are passed to the webComponent.
+The way this server works is that when someone browses to a page, the path (eg `/home`) is looked up in the database, and the corresponding doc is found. The webComponent property ("Home") is used as a key. The web comonents in app/components/web-components are turned into an index where the ReactCase version of the filename is key, and the react component is the value. All the properties in the doc, are passed to the webComponent.
 
 ```
 const Components={
@@ -105,7 +109,9 @@ const Components={
     'Join': require('./../../node_modules/civil-server/dist/components/web-components/join')
 }
 ```
-The Home page is composed of two parts, a document in the Mongo database, and a React component.  The React component in app/web-components/home.jsx that looks like this:
+The home component is part of the template, that you can modify or replace as you see fit.  The join component is inherited from the civil-server repo itself.  You can, create a new join component to replace it. 
+
+The Home page is composed of two parts, a document in the Mongo database, and a React component.  The React component in __app/web-components/home.jsx__ that looks like this:
 ```
 'use strict';
 
@@ -122,20 +128,52 @@ export default function Home(props){
     )
 }
 ```
-The subject and description props are taken from the database, and passed to the web component before it is rendered. The object in iotas.json that looks like this:
+The subject and description props are taken from the database, and passed to the web component before it is rendered. The object in __iotas.json__ that looks like this:
 ```
-{
-    "_id": {
-        "$oid": "600610cd63b01a0854ddf1b3"
+[
+    {...},
+    {
+        "_id": {
+            "$oid": "600610cd63b01a0854ddf1b3"
+        },
+        "path": "/home",
+        "subject": "Civil Server Template",
+        "description": "Civil Server Template Home Page",
+        "webComponent": "Home"
     },
-    "path": "/home",
-    "subject": "Civil Server Template",
-    "description": "Civil Server Template Home Page",
-    "webComponent": "Home"
-}
+    {...}
+]
 ```
-
-
+You can add new documents (that's what MongoDB calls them, in JS they're objects) to iotas.json.   Each new iota document should have a unique _id property.  To generate one, do this
+```
+node node_modules/civil-server/dist/tools/mongo-id.js
+```
+And it will give you back a string that you can use as the $oid
+```
+[
+    {...},
+    {
+        "_id": {
+            "$oid": "600610cd63b01a0854ddf1b3"
+        },
+        "path": "/home",
+        "subject": "Civil Server Template",
+        "description": "Civil Server Template Home Page",
+        "webComponent": "Home"
+    },
+        {
+        "_id": {
+            "$oid": "600efa3bfc2b9f362410cf7d"
+        },
+        "path": "/about",
+        "subject": "Civil Server Template -About",
+        "description": "Civil Server Template About Page",
+        "webComponent": "Home"
+    },
+    {...}
+]
+```
+The documents in iotas.json are loaded into the mongo database at startup. In production (NODE_ENV=production) the database is only loaded if it was empty - meaning you are initializing a new database.
 
 
 
