@@ -96,6 +96,46 @@ git add .
 git commit -m "a descriptive commit message"
 git push heroku
 ```
+# Building Your Website
+The way this server works is that when someone browses to a page, the path (eg `/home`) is looked up in the database, and the corresponding doc is found. The webComponent property ("Home") is used as a key. The web comonents in app/components/web-components are turned into an index where the ReactCase version of the filename is key, and the web component is the value. All the properties in the doc, are passed to the webComponent.
+
+```
+const Components={
+    'Home': require('./home'),
+    'Join': require('./../../node_modules/civil-server/dist/components/web-components/join')
+}
+```
+The Home page is composed of two parts, a document in the Mongo database, and a React component.  The React component in app/web-components/home.jsx that looks like this:
+```
+'use strict';
+
+import React from "react"
+
+export default function Home(props){
+    const {subject, description}=props
+    return (
+    <div style={{width: '100vw', height: '100vh'}}>
+        <div style={{textAlign: 'center'}}>{subject}</div>
+        <div style={{textAlign: 'center'}}>{description}</div>
+        <div style={{textAlign: 'center'}}>Welcome!</div>
+    </div>
+    )
+}
+```
+The subject and description props are taken from the database, and passed to the web component before it is rendered. The object in iotas.json that looks like this:
+```
+{
+    "_id": {
+        "$oid": "600610cd63b01a0854ddf1b3"
+    },
+    "path": "/home",
+    "subject": "Civil Server Template",
+    "description": "Civil Server Template Home Page",
+    "webComponent": "Home"
+}
+```
+
+
 
 
 
