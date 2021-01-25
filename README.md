@@ -39,11 +39,63 @@ you should end up with a .bashrc file that looks like this
 export NODE_ENV="development"
 export MONGODB_URI="mongodb+srv://user-name:secret-password@cluster0.vwxyz.mongodb.net/db-name?retryWrites=true&w=majority"
 ```
-Note that it's confsing but user-name and db-name can be anything.  You pick them when you create the database, and you use them in this URI string.  That's all.  
-#### Run it
+Note that it's confusing but user-name and db-name can be anything.  You pick them when you create the database, and you use them in this URI string.  That's all.  
+### Run it
 ```
 source .bashrc
-node dist/start.js
+npm run dev
 ```
 You will now be able to go to http://localhost:3012 and it will take you to the Join page
 You can see more about that you can do with the Civil Server at https://github.com/EnCiv/civil-server
+You can also edit code, and when you save it the running code will automatically be updated.
+
+### Run it in the cloud on heroku
+This assumes you have already created your heroku account at heroku.com and that you have installed the heroku command line interface (CLI) from https://devcenter.heroku.com/articles/heroku-cli
+
+
+
+You will need to think of your own unique application name.  If you get an error from this step, it may be because the name you thought of is not unique.
+```
+heroku create my-unique-app-name
+```
+First, lets do a few things to setup the enviromment
+```
+echo export EDITOR="code --wait" >> .bashrc
+source .bashrc
+heroku config:set MONGODB_URI=""
+heroku config:edit MONGODB_URI
+```
+The last step will open up a new Visual Studio Code window, with nothing in it.
+Paste in the URI again, just the URI like:
+```
+mongodb+srv://any-name-you-want:Znkx8UyAZAV15xRK@cluster0.xtpzi.mongodb.net/anydbname?retryWrites=true&w=majority
+```
+&nbsp;&nbsp;&nbsp;&nbsp;Then do Control-s Control-w to save and exit
+
+Back in the terminal window you will see:
+```
+Fetching config... done
+
+Config Diff:
+- MONGODB_URI=
++ MONGODB_URI='mongodb+srv://any-name-you-want:Znkx8UyAZAV15xRK@cluster0.xtpzi.mongodb.net/anydbname?retryWrites=true&w=majority'
+
+Update config on my-unique-aoo-name with these values?:  
+```
+&nbsp;&nbsp;&nbsp;&nbsp;hit 'y' and \<Enter\>
+
+All of this is configuration stuff you only have to do once.   You can push the code to the heroku server with
+```
+git push heroku
+```
+When that is done, you will be able to go to our new app by browsing to https://my-unique-app-name.herokuapp.com (don't click on this link - you will have to type in your own app-name yourself)
+
+Then whenever you make changes to your code and you want to try it out on heroku you can:
+```
+git add .
+git commit -m "a descriptive commit message"
+git push heroku
+```
+
+
+
