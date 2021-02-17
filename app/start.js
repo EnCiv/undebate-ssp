@@ -4,13 +4,15 @@ var civilServer= require('civil-server').default
 const path=require('path')
 import {Iota} from "civil-server"
 import iotas from '../iotas.json'
+import App from './components/app'
 
-Iota.load(iotas)
+Iota.load(iotas) // set the initial data for the database
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function start() {
   try {
     const server = new civilServer()
-    await server.earlyStart()
+    server.App=App // set the outer React wrapper for this site
+    await server.earlyStart() // connect to the database, and such
     server.routesDirPaths.push(path.resolve(__dirname, './routes'))
     server.socketAPIsDirPaths.push(path.resolve(__dirname, './socket-apis'))
     server.serverEventsDirPaths.push(path.resolve(__dirname, './events'))

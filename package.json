@@ -52,7 +52,12 @@
     "@babel/runtime": "^7.12.5",
     "babel-loader": "^8.2.2",
     "civil-server": "git+https://github.com/EnCiv/civil-server.git#main",
+    "classnames": "^2.2.6",
     "compression-webpack-plugin": "^7.1.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-hot-loader": "^4.12.10",
+    "react-jss": "^10.1.1",
     "webpack": "^4.46.0",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.2"
