@@ -1,8 +1,8 @@
 'use strict'
 
 import React from 'react'
-import injectSheet from 'react-jss'
-const styles = {
+import {createUseStyles} from 'react-jss'
+const useStyles = createUseStyles({
   footer: {
     position: 'absolute',
     width: '100vw',
@@ -17,17 +17,10 @@ const styles = {
       fontSize: '0.8em',
     },
   },
-}
+})
 
-class Footer extends React.Component {
-  constructor(props) {
-    super(props)
-    if (typeof window !== 'undefined') {
-      //window.onresize=()=>{this.forceUpdate()}
-    }
-  }
-  render() {
-    const { classes } = this.props
+export function Footer() {
+    const  classes  = useStyles()
     return (
       <div className={classes['footer']}>
         <a href="https://enciv.org/terms" target="_blank">
@@ -35,7 +28,6 @@ class Footer extends React.Component {
         </a>
       </div>
     )
-  }
 }
 
-export default injectSheet(styles)(Footer)
+export default Footer

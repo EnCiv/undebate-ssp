@@ -90,3 +90,6 @@ cypress/screenshots
 
 #web-components index is auto generated
 app/web-components/index.js
+
+#less history
+.lesshst
