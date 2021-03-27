@@ -100,6 +100,18 @@ git add .
 git commit -m "a descriptive commit message"
 git push heroku
 ```
+
+## Load your environment variables automatically when bash starts
+Create this file in your home directory. Or add this if the file already exists.
+On Windows thats usually C:/Users/Your Name/.bashrc
+on Mac it's /Users/Your user name/.profile
+```
+if [[ `pwd` != $HOME ]] && [[ -f "./.bashrc" ]]; then 
+    echo running `pwd`/.bashrc
+    source ./.bashrc
+fi
+```
+
 # Building Your Website
 The way this server works is that when someone browses to a page, the path (eg `/home`) is looked up in the database, and the corresponding doc is found. The webComponent property ("Home") is used as a key. The web comonents in app/components/web-components are turned into an index where the ReactCase version of the filename is key, and the react component is the value. All the properties in the doc, are passed to the webComponent.
 
