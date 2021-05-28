@@ -93,3 +93,6 @@ app/web-components/index.js
 
 #less history
 .lesshst
+
+#temp directory
+tmp

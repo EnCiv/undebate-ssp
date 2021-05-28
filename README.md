@@ -33,6 +33,7 @@ Then open a git-bash shell - on VSC use Control-\`
     git clone https://github.com/EnCiv/civil-server-template my-app
     cd my-app
     npm install
+    source ./barshrcsetup.sh
 ```
 ### MongoDB
 This app uses MONGODB and you will need a mongodb uri to get started.   Cloud.mongodb.com has free accounts, you can go there and follow these [instructions](https://docs.google.com/presentation/d/10fEk_OdfN-dYh9PlqG6nTFlu4ENvis_owdHbqWYDpBI/present?slide=id.gb4a0dbf10b_0_93)
@@ -49,7 +50,7 @@ Note that it's confusing but user-name and db-name can be anything.  You pick th
 source .bashrc
 npm run dev
 ```
-You will now be able to go to http://localhost:3012 and it will take you to the Join page
+You will now be able to go to http://localhost:3011 and it will take you to the Join page
 You can see more about that you can do with the Civil Server at https://github.com/EnCiv/civil-server
 You can also edit code, and when you save it the running code will automatically be updated.
 
