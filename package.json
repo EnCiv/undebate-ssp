@@ -1,7 +1,7 @@
 {
-  "name": "civil-server-template",
-  "version": "0.0.0",
-  "description": "A template to clone, to quicly get started with civil-server",
+  "name": "undebate-ssp",
+  "version": "v0.0.0",
+  "description": "Undebate Self Service Portal",
   "main": "index.js",
   "scripts": {
     "db-up": "start /b mongod --quiet --dbpath ./tmp/db --port 27017",
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EnCiv/civil-server-template.git"
+    "url": "git+https://github.com/EnCiv/undebate-ssp.git"
   },
   "keywords": [
     "node",
@@ -37,9 +37,9 @@
   "author": "David Fridley",
   "license": "SEE LICENSE IN license.txt",
   "bugs": {
-    "url": "https://github.com/EnCiv/civil-server-template/issues"
+    "url": "https://github.com/EnCiv/undebate-ssp/issues"
   },
-  "homepage": "https://github.com/EnCiv/civil-server-template#readme",
+  "homepage": "https://github.com/EnCiv/undebate-ssp#readme",
   "devDependencies": {
     "@babel/cli": "^7.12.10",
     "@storybook/addon-actions": "^6.1.18",
