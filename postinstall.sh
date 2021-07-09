@@ -22,10 +22,16 @@ cp ./node_modules/socket.io-stream/socket.io-stream.js ./assets/js/
 mkdir -p ./assets/images
 cp -r node_modules/civil-server/assets/images ./assets/images
 
+echo '***'
+echo Svgr
+echo '***'
+npm run svgr
+
 #
 # Update/create web-components/index.js to require all react components in that director, and in the listed child/peer directories
 #
-node node_modules/civil-server/dist/tools/react-directory-indexer.js app/web-components/ node_modules/civil-server/dist/components/web-components/
+node node_modules/civil-server/dist/tools/react-directory-indexer.js app/web-components/ node_modules/civil-server/dist/web-components/
+node node_modules/civil-server/dist/tools/react-directory-indexer.js --data app/data-components/ node_modules/civil-server/dist/data-components/
 
 #echo '*************************************************************************'
 #echo TRANSPILE
