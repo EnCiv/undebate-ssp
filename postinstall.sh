@@ -15,9 +15,6 @@ mkdir -p dist/web-components
 #
 # assets is where static files go
 #
-mkdir -p ./assets/js/
-# socket.io-streams requires a static load of this file, so we put it in assets
-cp ./node_modules/socket.io-stream/socket.io-stream.js ./assets/js/
 # you can start with the favicon images from civil-server - but you may want to replace them with your own some day
 mkdir -p ./assets/images
 cp -r node_modules/civil-server/assets/images ./assets/images
@@ -30,8 +27,8 @@ npm run svgr
 #
 # Update/create web-components/index.js to require all react components in that director, and in the listed child/peer directories
 #
-node node_modules/civil-server/dist/tools/react-directory-indexer.js app/web-components/ node_modules/civil-server/dist/web-components/
-node node_modules/civil-server/dist/tools/react-directory-indexer.js --data app/data-components/ node_modules/civil-server/dist/data-components/
+node node_modules/civil-server/dist/tools/react-directory-indexer.js app/web-components/ node_modules/civil-server/dist/web-components/ node_modules/undebate/dist/web-components/
+node node_modules/civil-server/dist/tools/react-directory-indexer.js --data app/data-components/ node_modules/civil-server/dist/data-components/ node_modules/undebate/dist/data-components/
 
 #echo '*************************************************************************'
 #echo TRANSPILE
@@ -46,11 +43,14 @@ echo "transpile ok"
 #echo '*************************************************************************'
 #echo WEBPACK
 #echo '*************************************************************************'
-
-npm run packbuild  || {
-  echo Could not webpack;
-  exit 1
-}
-echo "webpack ok"
+#
+# packbuild is moved to "prestart" in package.json. packbuild does not work when installing undebate as a package in another repo because the paths aren't right.
+# but the main.js that would be created is not used when this is a package
+#
+# npm run packbuild  || {
+#  echo Could not webpack;
+#  exit 1
+#}
+#echo "webpack ok"
 
 
