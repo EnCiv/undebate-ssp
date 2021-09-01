@@ -20,7 +20,7 @@ We are breaking the UI down into React components, and are creating [issues](htt
 Each component goes into app/components
 For each component we will also build a story in stories/
 
-The [unpoll](github.com/EnCiv/unpoll) repo has examples of app/components and stories - it follows this same structure.
+The [unpoll](github.com/EnCiv/unpoll) repo has examples of [app/components](https://github.com/EnCiv/unpoll/tree/main/app/components) and [stories](https://github.com/EnCiv/unpoll/tree/main/stories) - it follows this same structure.
 
 ## Notes on React component guidelines:
 
@@ -56,7 +56,8 @@ to update what's on github.
 
 When the code is ready to merge, go to github.com/EnCiv/undebate-ssp and create a pull request for it.  When you go there - there will probably a note at the top asking if you want to create a pull request.
 
-
+# Slack
+Use this form to join the [slack workspace](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform)
 
 
 
