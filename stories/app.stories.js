@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { App } from '../app/components/app'
+import  App from '../app/components/app'
 
 export default {
   title: 'App',
