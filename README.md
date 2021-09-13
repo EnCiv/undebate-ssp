@@ -1,6 +1,10 @@
 # Undebate Self Service Portal
 
-This project creates a portal that allows people to create their own [undebates](https://github.com/EnCiv/undebate) for electitons for their organization - for example a University Student Body might want to have undebates by the candidates for student body office like president and vice president and such.
+In 2019 we create [Undebates](https://github.com/EnCiv/undebate) and launched them in the 2020 primary and general elections. In 2020 we were contacted by the UCLA Student Associaltion who wanted this for their student body elections. We realized there are other organizations that need a way to create undebates for their democratically run elections and so this project creates a portal that allows people to create their own  - for example a University Student Body might want to have undebates by the candidates for student body office like president and vice president and such.
+
+## [Example:](https://cc.enciv.org/country:us/organization:ucla-student-accociation/office:usac-president/2021-05-07)
+
+![image](https://user-images.githubusercontent.com/3317487/133139497-b040d82c-cb7c-46b0-8a2b-e6a44b2ffcd3.png)
 
 **Copyright 2021 EnCiv, Inc.** This work is licensed under the terms described in [LICENSE.txt](https://github.com/EnCiv/undebate/blob/master/LICENSE.txt) which is an MIT license with a Public Good License Condition
 
@@ -55,6 +59,31 @@ git push origin
 to update what's on github.
 
 When the code is ready to merge, go to github.com/EnCiv/undebate-ssp and create a pull request for it.  When you go there - there will probably a note at the top asking if you want to create a pull request.
+
+# Icons, Figma and SVG
+You can export svg from figma and plaste it in to a .svg file in assets/svg to create icons. For example assets/svg/trash-can.svg
+
+```
+<svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 6.58661H5H21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 6.58661V4.58661C8 4.05618 8.21071 3.54747 8.58579 3.1724C8.96086 2.79732 9.46957 2.58661 10 2.58661H14C14.5304 2.58661 15.0391 2.79732 15.4142 3.1724C15.7893 3.54747 16 4.05618 16 4.58661V6.58661M19 6.58661V20.5866C19 21.117 18.7893 21.6257 18.4142 22.0008C18.0391 22.3759 17.5304 22.5866 17 22.5866H7C6.46957 22.5866 5.96086 22.3759 5.58579 22.0008C5.21071 21.6257 5 21.117 5 20.5866V6.58661H19Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 11.5866V17.5866" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 11.5866V17.5866" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+```
+This project will automatically convert the files in assets/svg into react .js files in app/svgr on install. After you add a new file you can manually trigger the conversion with
+
+```
+npm run svgr
+```
+Then you can use these svg files as React components in your code like this:
+```
+import SvgTrashCan from '../svgr/trash-can'
+
+function renderSomething(){
+    return <SvgTrashCan />
+}
+```
 
 # Slack
 Use this form to join the [slack workspace](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform)
