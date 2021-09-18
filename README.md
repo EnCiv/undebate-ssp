@@ -10,7 +10,7 @@ In 2019 we create [Undebates](https://github.com/EnCiv/undebate) and launched th
 
 # Getting Started
 ```
-npm clone https://github.com/EnCiv/undebate-ssp.git
+git clone https://github.com/EnCiv/undebate-ssp.git
 cd undebate-ssp
 npm install
 npm run storybook
