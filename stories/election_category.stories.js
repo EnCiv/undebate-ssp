@@ -11,17 +11,15 @@ export default {
 };
 
 const useStyles = createUseStyles({
-  category: { width: "15vw" },
+  category: { width: "15vw", backgroundColor: "#d4d5d6" },
 });
 
 const Template = (args) => (
-  <div className={useStyles().category}>
-    <ElectionCategory
-      backgroundColor="#d4d5d6"
-      categoryName="Testing"
-      {...args}
-    />
-  </div>
+  <ElectionCategory
+    className={useStyles().category}
+    categoryName="Testing"
+    {...args}
+  />
 );
 
 export const Default = Template.bind({});
@@ -56,9 +54,4 @@ WithTable.args = {
 export const Pending = Template.bind({});
 Pending.args = {
   statusObjs: [{ pending: true }],
-};
-
-export const Selected = Template.bind({});
-Selected.args = {
-  selected: true,
 };

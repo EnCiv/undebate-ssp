@@ -46,12 +46,7 @@ function ProgressBar(props) {
 
 export function ElectionCategory(props) {
   const classes = useStyles(props);
-  const {
-    categoryName = "",
-    statusObjs = [],
-    //  backgroundColor // used in styles,
-    //  selected, // used in styles
-  } = props;
+  const { categoryName = "", statusObjs = [], className = "" } = props;
 
   // Converts array of objects into one object
   // Also converts strings into keys of that object
@@ -141,7 +136,7 @@ export function ElectionCategory(props) {
     }, []);
 
   return (
-    <div className={classes.category}>
+    <div className={`${classes.category} ${className}`}>
       <span className={classes.categoryText}>{categoryName}</span>
       {statusTextArray}
       {statusTable}
@@ -176,9 +171,8 @@ const useStyles = createUseStyles({
   },
   progressBar: (props) => {
     const { percentDone } = props;
-    const percentNotDone = 100 - percentDone;
     return {
-      background: `linear-gradient(to right, #7470FF ${percentDone}%, #FFFFFF ${percentNotDone}%)`,
+      background: `linear-gradient(to right, #7470FF ${percentDone}%, #FFFFFF 0%)`,
       width: "100%",
       height: "1em",
       borderRadius: "0.3vw",
