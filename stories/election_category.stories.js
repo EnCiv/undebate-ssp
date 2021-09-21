@@ -24,6 +24,9 @@ const Template = (args) => (
   </div>
 );
 
+export const Default = Template.bind({});
+Default.args = {};
+
 export const InProgress = Template.bind({});
 InProgress.args = {
   // could instead be [{completed: true}, {percentComplete: 90}]
@@ -53,4 +56,9 @@ WithTable.args = {
 export const Pending = Template.bind({});
 Pending.args = {
   statusObjs: [{ pending: true }],
+};
+
+export const Selected = Template.bind({});
+Selected.args = {
+  selected: true,
 };
