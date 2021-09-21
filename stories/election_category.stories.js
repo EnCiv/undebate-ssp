@@ -11,24 +11,46 @@ export default {
 };
 
 const useStyles = createUseStyles({
-  category: { background: "#d4d5d6", width: "12vw" },
+  category: { width: "15vw" },
 });
 
 const Template = (args) => (
-  <ElectionCategory className={useStyles().category} {...args} />
+  <div className={useStyles().category}>
+    <ElectionCategory
+      backgroundColor="#d4d5d6"
+      categoryName="Testing"
+      {...args}
+    />
+  </div>
 );
 
-export const InProgressElectionCategory = Template.bind({});
-InProgressElectionCategory.args = {
-  categoryName: "Test!",
-  status: "in progress",
-  daysLeft: 5,
-  numCandidates: 10,
-  numCandidatesRecorded: 9,
+export const InProgress = Template.bind({});
+InProgress.args = {
+  // could instead be [{completed: true}, {percentComplete: 90}]
+  statusObjs: ["completed", { percentComplete: 90 }],
 };
 
-export const DoneElectionCategory = Template.bind({});
-DoneElectionCategory.args = {
-  categoryName: "Test!",
-  status: "Done",
+export const DaysLeft = Template.bind({});
+DaysLeft.args = {
+  statusObjs: [{ daysLeft: 9 }],
+};
+
+export const TextWithIcon = Template.bind({});
+TextWithIcon.args = {
+  statusObjs: "videoSubmitted",
+};
+
+export const WithTable = Template.bind({});
+WithTable.args = {
+  statusObjs: [
+    { accepted: 29 },
+    { declined: 2 },
+    { reminderSent: 2 },
+    { deadlineMissed: 1 },
+  ],
+};
+
+export const Pending = Template.bind({});
+Pending.args = {
+  statusObjs: [{ pending: true }],
 };
