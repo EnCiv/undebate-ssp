@@ -11,7 +11,7 @@ export default {
 };
 
 const useStyles = createUseStyles({
-  category: { width: "15vw", backgroundColor: "#d4d5d6" },
+  category: { width: "20rem", backgroundColor: "#d4d5d6" },
 });
 
 const Template = (args) => (
@@ -38,7 +38,7 @@ DaysLeft.args = {
 
 export const TextWithIcon = Template.bind({});
 TextWithIcon.args = {
-  statusObjs: "videoSubmitted",
+  statusObjs: "videoSubmitted", // Equal to [{videoSubmitted: true}]
 };
 
 export const WithTable = Template.bind({});
@@ -54,4 +54,34 @@ WithTable.args = {
 export const Pending = Template.bind({});
 Pending.args = {
   statusObjs: [{ pending: true }],
+};
+
+export const InvitationSent = Template.bind({});
+InvitationSent.args = {
+  statusObjs: [{ sent: true }],
+};
+
+export const InvitationAccepted = Template.bind({});
+InvitationAccepted.args = {
+  statusObjs: [{ accepted: true }],
+};
+
+export const InvitationDeclined = Template.bind({});
+InvitationDeclined.args = {
+  statusObjs: [{ declined: true }],
+};
+
+export const ReminderSent = Template.bind({});
+ReminderSent.args = {
+  statusObjs: [{ reminderSent: true }],
+};
+
+export const DeadlineMissed = Template.bind({});
+DeadlineMissed.args = {
+  statusObjs: [{ deadlineMissed: true }],
+};
+
+export const ArbritraryText = Template.bind({});
+ArbritraryText.args = {
+  statusObjs: [{ Testing: true }],
 };
