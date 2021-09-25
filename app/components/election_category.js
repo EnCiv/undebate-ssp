@@ -14,7 +14,7 @@ import {
   SvgReminderSent,
   SvgSent,
   SvgVideoSubmitted,
-} from "./svg.js";
+} from "./lib/svg.js";
 
 const statusInfoEnum = {
   completed: { icon: <SvgCompleted /> },
@@ -148,7 +148,7 @@ const useStyles = createUseStyles({
   category: (props) => ({
     display: "flex",
     flexWrap: "wrap",
-    borderRadius: "0.6vw",
+    borderRadius: "0.5rem",
     padding: `${props.selected ? 1.3 : 0.7}rem 0.7rem`,
     margin: `rem`,
     backgroundColor: props.backgroundColor,
