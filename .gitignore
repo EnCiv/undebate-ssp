@@ -1,5 +1,6 @@
-# Assets should not be put into the repo
-assets*
+# Assets (except svg files) should not be put into the repo
+assets/images
+assets/webpack
 
 # Logs
 logs
