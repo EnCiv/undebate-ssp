@@ -173,4 +173,3 @@ const useStyles = createUseStyles({
 });
 
 export default ElectionDateInput;
-// TODO: Add onEnd (or whatever it was called)
