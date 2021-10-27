@@ -7,3 +7,4 @@ export { default as SvgCompleted } from "../../svgr/completed.js";
 export { default as SvgReminderSent } from "../../svgr/reminder-sent.js";
 export { default as SvgSent } from "../../svgr/sent.js";
 export { default as SvgVideoSubmitted } from "../../svgr/video-submitted.js";
+export { default as SvgCalendar } from "../../svgr/calendar.js";
