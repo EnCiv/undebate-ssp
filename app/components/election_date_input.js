@@ -23,20 +23,46 @@ export function ElectionDateInput(props) {
 
   const today = new Date();
 
-  const mdyToDate = (mdy) => {
-    let [month, day, year] = mdy.split(/-|\//).map((n) => parseInt(n, 10));
-    if (year < 100) {
-      year += 2000;
+  const splitDate = (mdy) => {
+    let mm_dd_yyyy = mdy
+      .split(/-|\//)
+      .map((n) => parseInt(n, 10))
+      .filter((n) => !isNaN(n));
+    if (mm_dd_yyyy[2] < 100) {
+      mm_dd_yyyy[2] += 2000;
     }
+    return mm_dd_yyyy;
+  };
+
+  const mdyToDate = (mdy) => {
+    if (!isMdyValid(mdy)) {
+      return new Date(NaN);
+    }
+    const [month, day, year] = splitDate(mdy);
     return new Date(year, month - 1, day);
   };
+
+  const isMdyValid = (mdy) => {
+    const [month, day, year] = splitDate(mdy);
+    const date = new Date(year, month - 1, day);
+    const yearLength = year?.toString().length;
+    if (
+      !(yearLength === 2 || yearLength === 4) ||
+      year != date.getFullYear() ||
+      date.getMonth() !== month - 1 ||
+      date.getDate() !== day
+    ) {
+      return false;
+    }
+    return true;
+  };
+
   const dateToMdy = (date) => {
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const year = date.getFullYear();
     return `${month}/${day}/${year}`;
   };
-  const isInvalidDate = (date) => isNaN(date);
 
   const defaultDate =
     defaultValue instanceof Date ? dateToMdy(defaultValue) : defaultValue;
@@ -56,7 +82,7 @@ export function ElectionDateInput(props) {
 
   const onInputChange = (e) => {
     const value = e.target.value;
-    if (value.length >= 8 && isInvalidDate(mdyToDate(value))) {
+    if ((value.length === 8 || value.length === 10) && !isMdyValid(value)) {
       setError("Please enter a valid date");
     } else {
       setError(null);
@@ -69,8 +95,7 @@ export function ElectionDateInput(props) {
   };
 
   const datePickerValue = () => {
-    const date = mdyToDate(textDate);
-    return isInvalidDate(date) ? today : date;
+    return isMdyValid(textDate) ? mdyToDate(textDate) : today;
   };
 
   const datePickerButtonOnClick = () => {
@@ -80,7 +105,11 @@ export function ElectionDateInput(props) {
     }
   };
   const dateInputOnBlur = () => {
-    propOnDone(mdyToDate(textDate));
+    if (textDate !== "" && !isMdyValid(textDate)) {
+      setError("Please enter a valid date");
+    } else {
+      propOnDone(mdyToDate(textDate));
+    }
   };
 
   return (
