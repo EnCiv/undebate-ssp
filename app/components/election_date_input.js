@@ -10,6 +10,7 @@ import { SvgCalendar } from "./lib/svg.js";
 import Calendar from "react-calendar";
 
 import "react-calendar/dist/Calendar.css";
+import { useRef } from "react";
 
 export function ElectionDateInput(props) {
   // defaultValue: mm/dd/yyyy string or a Date object
@@ -69,16 +70,34 @@ export function ElectionDateInput(props) {
 
   const [textDate, setTextDate] = useState(defaultDate);
   const [error, setError] = useState(null);
-  const [datePickerOpen, setDatePickerOpen] = useState();
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const parentEl = useRef(null);
+
+  const classes = useStyles({
+    ...props,
+    error,
+    datePickerOpen,
+  });
 
   useEffect(() => {
     propOnChange(mdyToDate(textDate));
   }, [textDate]);
 
-  const classes = useStyles({
-    ...props,
-    error,
-  });
+  useEffect(() => {
+    const onNonDatepickerClick = (e) => {
+      if (
+        !parentEl.current.contains(e.target) &&
+        !e.target.className.includes(classes.datePickerPart)
+      ) {
+        setDatePickerOpen(false);
+        blurDateInput(textDate);
+      }
+    };
+    document.addEventListener("click", onNonDatepickerClick);
+    return () => {
+      document.removeEventListener("click", onNonDatepickerClick);
+    };
+  }, [textDate]);
 
   const onInputChange = (e) => {
     const value = e.target.value;
@@ -89,31 +108,25 @@ export function ElectionDateInput(props) {
     }
     setTextDate(value);
   };
-  const onDatePickerChange = (date) => {
+  const onDatePickerChange = (e) => {
+    const date = e.target.value;
     setError(null);
     setTextDate(dateToMdy(date));
   };
 
-  const datePickerValue = () => {
-    return isMdyValid(textDate) ? mdyToDate(textDate) : today;
-  };
-
-  const datePickerButtonOnClick = () => {
+  const datePickerButtonOnClick = (textDate, datePickerOpen) => {
+    blurDateInput(textDate);
     setDatePickerOpen(!datePickerOpen);
-    if (!datePickerOpen) {
-      dateInputOnBlur();
-    }
   };
-  const dateInputOnBlur = () => {
+  const blurDateInput = (textDate) => {
     if (textDate !== "" && !isMdyValid(textDate)) {
       setError("Please enter a valid date");
     } else {
       propOnDone(mdyToDate(textDate));
     }
   };
-
   return (
-    <>
+    <div ref={parentEl}>
       <div className={classes.dateInputWrapper}>
         <span className={classes.inputContainer}>
           <input
@@ -124,27 +137,25 @@ export function ElectionDateInput(props) {
             required
             value={textDate}
             onChange={onInputChange}
-            onBlur={dateInputOnBlur}
+            onBlur={(e) => blurDateInput(e.target.value)}
             placeholder="mm/dd/yyyy"
           />
           <button
             className={classes.datePickerButton}
-            onClick={datePickerButtonOnClick}
+            onClick={() => datePickerButtonOnClick(textDate, datePickerOpen)}
           >
             <SvgCalendar />
           </button>
         </span>
-        {<span className={classes.errorText}>{error}</span>}
+        <span className={classes.errorText}>{error}</span>
       </div>
-      {datePickerOpen && (
-        <Calendar
-          className={classes.datePicker}
-          tileClassName={classes.datePickerTile}
-          value={datePickerValue()}
-          onChange={onDatePickerChange}
-        />
-      )}
-    </>
+      <Calendar
+        className={classes.datePicker}
+        tileClassName={[classes.datePickerTile, classes.datePickerPart]}
+        value={isMdyValid(textDate) ? mdyToDate(textDate) : today}
+        onChange={onDatePickerChange}
+      />
+    </div>
   );
 }
 
@@ -168,7 +179,8 @@ const useStyles = createUseStyles({
     border: "none",
     outline: "none",
   },
-  datePicker: {
+  datePicker: (props) => ({
+    display: props.datePickerOpen ? "initial" : "none",
     position: "absolute",
     overflow: "hidden",
     padding: "0.3rem",
@@ -180,7 +192,7 @@ const useStyles = createUseStyles({
       backdropFilter: "blur(6rem)",
       background: "#fcfdff00",
     },
-  },
+  }),
   datePickerTile: {
     borderRadius: "0.5rem",
   },
@@ -199,6 +211,7 @@ const useStyles = createUseStyles({
   errorText: {
     color: "red",
   },
+  datePickerPart: {},
 });
 
 export default ElectionDateInput;
