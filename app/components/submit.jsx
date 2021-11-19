@@ -1,3 +1,4 @@
+// https://github.com/EnCiv/undebate-ssp/issues/14
 "use-strict";
 
 import React from "react";
@@ -20,11 +21,14 @@ export const Submit = ({ onDone }) => {
 
 const useStyles = createUseStyles({
   button: {
-    borderRadius: "30px",
+    borderRadius: "1.875rem",
     backgroundColor: "#7470FF",
     border: "none",
     color: "#FFF",
     padding: ".9em 1.3em",
     fontWeight: 600,
+    "&:hover": {
+      cursor: "pointer",
+    },
   },
 });
