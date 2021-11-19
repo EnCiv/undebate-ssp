@@ -1,6 +1,7 @@
 // https://github.com/EnCiv/undebate-ssp/issues/9
 
 import ElectionTextInput from "../app/components/election-text-input";
+import { useState } from "react";
 
 export default {
   title: "Election Text Input",
@@ -27,14 +28,34 @@ DefaultValueSet.args = {
   checkIsEmail: false,
 };
 
-export const EmailValidation = (args) => (
-  <form onSubmit={(e) => e.preventDefault()} style={{ width: "50%" }}>
-    <ElectionTextInput {...args} />
-    <input type="submit" style={{ marginTop: "1rem" }} />
-  </form>
-);
+const ValidationTemplate = (args) => {
+  const [doneState, setDoneState] = useState({ valid: false, value: "" });
+  return (
+    <div style={{ width: "50%" }}>
+      <ElectionTextInput onDone={(done) => setDoneState(done)} {...args} />
+      <div
+        style={{
+          margin: "10px",
+        }}
+      >
+        Is valid email: {`${doneState.valid}`}
+      </div>
+    </div>
+  );
+};
+
+export const EmailValidation = ValidationTemplate.bind({});
+
 EmailValidation.args = {
   name: "Email Address",
-  defaultValue: "",
+  defaultValue: "user@example.com",
   checkIsEmail: true,
+};
+
+export const IsDoneValidation = ValidationTemplate.bind({});
+
+IsDoneValidation.args = {
+  name: "Name",
+  defaultValue: "Default value",
+  checkIsEmail: false,
 };
