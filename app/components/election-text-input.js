@@ -16,11 +16,12 @@ const ElectionTextInput = (props) => {
 
   return (
     <div className={classes.electionTextInput}>
-      <label className={classes.label}>{name}</label>
+      <label for={name} className={classes.label}>{name}</label>
       <input
         type={checkIsEmail ? "email" : "text"}
         className={classes.input}
         value={text}
+        name={name}
         onChange={handleChange}
       />
     </div>
