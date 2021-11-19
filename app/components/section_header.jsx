@@ -1,3 +1,4 @@
+// https://github.com/EnCiv/undebate-ssp/issues/15
 "use-strict";
 
 import React from "react";
