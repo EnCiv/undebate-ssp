@@ -65,7 +65,8 @@ export const ScriptTextInput = ({
                 onChange={event => {
                     updateState(event)
                 }}
-                onBlur={() => {
+                onBlur={(event) => {
+                    updateState(event)
                     const wc = getWordCount();
                     onDone({
                         value: inputText,
