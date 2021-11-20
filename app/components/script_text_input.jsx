@@ -22,7 +22,7 @@ export const ScriptTextInput = ({
 
     const getWordCount = () => {
         return inputText.split(" ").filter(word => {
-            return word != ""
+            return word != "" && word != "\n"
         }).length
     }
 
@@ -32,6 +32,11 @@ export const ScriptTextInput = ({
         const dur = moment.duration(minutes, "minutes")
         const formatted = moment.utc(dur.asMilliseconds()).format("mm:ss")
         return formatted
+    }
+
+    const updateState = (event) => {
+        setInputText(event.target.value)
+        setWordCount(getWordCount())
     }
 
     return (
@@ -58,13 +63,13 @@ export const ScriptTextInput = ({
                 minRows={4}
                 className={classes.input}
                 onChange={event => {
-                    setInputText(event.target.value)
-                    setWordCount(getWordCount())
+                    updateState(event)
                 }}
                 onBlur={() => {
+                    const wc = getWordCount();
                     onDone({
                         value: inputText,
-                        valid: wordCount <= maxWordCount,
+                        valid: wc <= maxWordCount && wc >= 1,
                     })
                 }}
             >
