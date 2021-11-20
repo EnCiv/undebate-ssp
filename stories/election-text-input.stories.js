@@ -38,7 +38,7 @@ const ValidationTemplate = (args) => {
           margin: "10px",
         }}
       >
-        Is valid email: {`${doneState.valid}`}
+        Is valid: {`${doneState.valid}`}
       </div>
     </div>
   );
