@@ -108,8 +108,7 @@ export function ElectionDateInput(props) {
     }
     setTextDate(value);
   };
-  const onDatePickerChange = (e) => {
-    const date = e.target.value;
+  const onDatePickerChange = (date) => {
     setError(null);
     setTextDate(dateToMdy(date));
   };
