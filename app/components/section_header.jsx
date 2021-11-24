@@ -1,5 +1,7 @@
 "use-strict";
 
+// https://github.com/EnCiv/undebate-ssp/issues/15
+
 import React from "react";
 import { createUseStyles } from "react-jss";
 

@@ -1,3 +1,4 @@
+// https://github.com/EnCiv/undebate-ssp/issues/15
 import React from "react";
 
 import { SectionHeader } from "../app/components/section_header";
@@ -14,14 +15,11 @@ const useStyles = createUseStyles({
     width: "20rem",
   },
 });
+
 const Template = (args) => (
-  <SectionHeader
-    className={useStyles().section}
-    name="Configuration"
-    {...args}
-  />
+  <SectionHeader className={useStyles().section} {...args} />
 );
 
 export const SectionHeaderTest = Template.bind({});
 
-SectionHeaderTest.args = {};
+SectionHeaderTest.args = { name: "Configuration" };
