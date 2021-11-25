@@ -24,6 +24,14 @@ DefaultValueSet.args = {
     defaultValue: "12:00",
 }
 
+export const StyleOverride = Template.bind({})
+StyleOverride.args = {
+    style: {
+        background: "white",
+        borderStyle: "solid",
+    },
+}
+
 const ValidationTemplate = args => {
     const [doneState, setDoneState] = useState({ valid: false, value: "" })
     return (
