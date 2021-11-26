@@ -13,7 +13,7 @@ In 2019 we create [Undebates](https://github.com/EnCiv/undebate) and launched th
 
 # Getting Started
 
-The following has been tested using node v16.13.0 and npm v8.1.0.  There are know issues using nmp < 7. During install, you can ignore the warning about incompatibility with previous previous versions of node/npm - we need to go back to those packages and update their dependencies. 
+The following has been tested using node v16.13.0 and npm v8.1.0 on Windows 10 and MacOs.  There are know issues using nmp < 7. During install, you can ignore the warning about incompatibility with previous previous versions of node/npm - we need to go back to those packages and update their dependencies.
 
 ```
 git clone https://github.com/EnCiv/undebate-ssp.git
@@ -42,7 +42,20 @@ These notes are pretty general and always open to reevaluation. Also, we want to
 4. File names should be all lowercase, use '-' between words, and end in .js (.jsx isn't needed). Some OS's are case sensitive others are not. 
 5. Within the stories.js file for a component, create multiple stories that exercise the functionality of the component. - New people are going to come back to the story to see how the component works - or to test it for some new situation. 
 6. Include a link to the github issue as a comment at the top of the component file and the top of the story to make it easier to go back and reference it.  Also, we should add comments to the issues as we make design decisions that change the original direction in the issue. - We end up putting a lot of good info, and pictures, into the issue and its useful to have it handy even after the issue is closed.
-
+7. Components that accept input, or action from the user should accept an `onDone` parameter, which is a function to call with `{valid: bool, value: any}`. Whenever the user leaves the component, typically through onBlur the component should call onDone, and with value set to the value of this input (which could be an object), and valid set to whether or not the value is valid.  Empty should - generally - be considered not valid. Higher level component will figure out how the UI reacts to the valid/value returned.  This allows more complect logic than just 'required'. 
+8. Generally components should accept className and style as parameters, and add those to the outer most element of the component they render. We use `classnames` to combine classes.
+```
+    import cx from 'classnames'
+       ...
+    function Component(props) {
+        const {className, style, ... } = props
+        const classes=useStyle();
+        return (
+            <div className={cx(className, classes.electionTimeInput)} style={style} ...
+                <div ...>
+            </div>
+        )
+```
 ## Notes on git
 When starting to work on a new issue:
 ```
