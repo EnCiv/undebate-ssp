@@ -1,6 +1,6 @@
 # Undebate Self Service Portal
 
-In 2019 we create [Undebates](https://github.com/EnCiv/undebate) and launched them in the 2020 primary and general elections. In 2020 we were contacted by the UCLA Student Associaltion who wanted this for their student body elections. We realized there are other organizations that need a way to create undebates for their democratically run elections and so this project creates a portal that allows people to create their own  - for example a University Student Body might want to have undebates by the candidates for student body office like president and vice president and such.
+In 2019 we create [Undebates](https://github.com/EnCiv/undebate) and launched them in the 2020 primary and general elections. In 2020 we were contacted by the UCLA Student Associaltion who wanted this for their student body elections. We realized there are other organizations that need a way to create undebates for their democratically run elections and so this project creates a portal that allows people to create their own  - for example a University Student Body might want to have undebates by the candidates for student body office like president and vice president and such. In the Undebate repo we documented the requirments for a portal for election leaders in this [issue](https://github.com/EnCiv/undebate/issues/301).
 
 ## [Example:](https://cc.enciv.org/country:us/organization:ucla-student-accociation/office:usac-president/2021-05-07)
 
@@ -12,6 +12,9 @@ In 2019 we create [Undebates](https://github.com/EnCiv/undebate) and launched th
 **Copyright 2021 EnCiv, Inc.** This work is licensed under the terms described in [LICENSE.txt](https://github.com/EnCiv/undebate/blob/master/LICENSE.txt) which is an MIT license with a Public Good License Condition
 
 # Getting Started
+
+The following has been tested using node v16.13.0 and npm v8.1.0.  There are know issues using nmp < 7. During install, you can ignore the warning about incompatibility with previous previous versions of node/npm - we need to go back to those packages and update their dependencies. 
+
 ```
 git clone https://github.com/EnCiv/undebate-ssp.git
 cd undebate-ssp
