@@ -2,30 +2,45 @@
 "use-strict";
 
 import React from "react";
-import SvgBookOpen from '../svgr/book-open'
-import SvgChevronLeft from '../svgr/chevron-left'
-import SvgHome from '../svgr/home'
+import HomeButton from './home-button'
+import BackButton from './back-button'
+import InstructionButton from './instruction-button'
+import cx from "classnames"
 import { createUseStyles } from "react-jss";
 
 const ElectionHeader = (props) => {
   const classes = useStyles();
   const {
+    className,
+    style,
     defaultValue = 0,
     elections = [],
     onDone = () => {},
   } = props;
 
   return (
-    <div className={classes.electionHeader}>
+    <div className={cx(className, classes.electionHeader)} style={style}>
       <div>
-        <SvgChevronLeft />
-        <SvgHome />
+        <BackButton />
+        <HomeButton />
       </div>
-      <select className={classes.electionSelect}>
-        {elections.map(element => <option>{element}</option>)}
+      <select 
+        defaultValue={defaultValue}
+        onChange={event => {
+          onDone({
+            value: event.target.value,
+            valid: true,
+          })
+        }}
+      >
+        {elections.length > 0
+          ? elections.map((input, index) => 
+            <option value={index}>{input}</option>)
+          : null
+        }
       </select>
       <div>
-        <SvgBookOpen />
+        <InstructionButton />
       </div>
     </div>
   );
@@ -39,12 +54,13 @@ const useStyles = createUseStyles({
     flexDirection: "row",
     justifyContent: "space-between",
     padding: "1.25rem 2.5rem",
-  },
-  electionSelect: {
-    border: "none",
-    fontWeight: "bold",
-    "&:hover": {
-      cursor: "pointer",
+    
+    "& select" : {
+      border: "none",
+      fontWeight: "bold",
+      "&:hover": {
+        cursor: "pointer",
+      }
     }
   }
 });

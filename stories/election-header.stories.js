@@ -11,10 +11,10 @@ const Template = (args) => <ElectionHeader {...args} />;
 
 export const ElectionHeaderTest = Template.bind({});
 ElectionHeaderTest.args = {
+  defaultValue : 2,
   elections : [
     'District Attorney Election 1',
     'District Attorney Election 2',
     'District Attorney Election 3'
   ]
 };
-
