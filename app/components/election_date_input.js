@@ -14,11 +14,9 @@ import { useRef } from "react";
 
 export function ElectionDateInput(props) {
   // defaultValue: mm/dd/yyyy string or a Date object
-  // onChange: (null | Date): null
-  // onDone: (null | Date): null
+  // onDone: ({valid: bool, value: Date}): null
   const {
     defaultValue = "",
-    onChange: propOnChange = () => {},
     onDone: propOnDone = () => {},
   } = props;
 
@@ -80,10 +78,6 @@ export function ElectionDateInput(props) {
   });
 
   useEffect(() => {
-    propOnChange(mdyToDate(textDate));
-  }, [textDate]);
-
-  useEffect(() => {
     const onNonDatepickerClick = (e) => {
       if (
         !parentEl.current.contains(e.target) &&
@@ -120,9 +114,8 @@ export function ElectionDateInput(props) {
   const blurDateInput = (textDate) => {
     if (textDate !== "" && !isMdyValid(textDate)) {
       setError("Please enter a valid date");
-    } else {
-      propOnDone(mdyToDate(textDate));
     }
+    propOnDone({valid: error == null, value: mdyToDate(textDate)});
   };
   return (
     <div ref={parentEl}>

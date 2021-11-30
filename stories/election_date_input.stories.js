@@ -17,18 +17,20 @@ const useStyles = createUseStyles({
 });
 
 const Template = (args) => {
-  const [changeMessage, setChangeMessage] = useState("");
   const [doneMessage, setDoneMessage] = useState("");
+  const [valid, setValid] = useState("");
 
   return (
     <div className={useStyles().dateInput}>
       <ElectionDateInput
         {...args}
-        onChange={(u) => setChangeMessage(u.toString().substring(0, 15))}
-        onDone={(u) => setDoneMessage(u.toString().substring(0, 15))}
+        onDone={({valid, value}) => {
+          setValid(valid.toString());
+          setDoneMessage(value.toString().substring(0, 15));
+        }}
       />
-      onChange Value: {changeMessage}
-      <br />
+      Valid: {valid}
+      <br/>
       onDone Value: {doneMessage}
     </div>
   );
