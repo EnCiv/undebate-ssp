@@ -112,10 +112,12 @@ export function ElectionDateInput(props) {
     setDatePickerOpen(!datePickerOpen);
   };
   const blurDateInput = (textDate) => {
+    let valid = true;
     if (textDate !== "" && !isMdyValid(textDate)) {
+      valid = false;
       setError("Please enter a valid date");
     }
-    propOnDone({valid: error == null, value: mdyToDate(textDate)});
+    propOnDone({valid, value: mdyToDate(textDate)});
   };
   return (
     <div ref={parentEl}>
