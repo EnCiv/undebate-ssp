@@ -83,15 +83,17 @@ export function ElectionDateInput(props) {
         !parentEl.current.contains(e.target) &&
         !e.target.className.includes(classes.datePickerPart)
       ) {
+        if (datePickerOpen) {
+          blurDateInput(textDate);
+        }
         setDatePickerOpen(false);
-        blurDateInput(textDate);
       }
     };
     document.addEventListener("click", onNonDatepickerClick);
     return () => {
       document.removeEventListener("click", onNonDatepickerClick);
     };
-  }, [textDate]);
+  }, [textDate, datePickerOpen]);
 
   const onInputChange = (e) => {
     const value = e.target.value;
@@ -108,13 +110,14 @@ export function ElectionDateInput(props) {
   };
 
   const datePickerButtonOnClick = (textDate, datePickerOpen) => {
-    blurDateInput(textDate);
+    blurDateInput(textDate, datePickerOpen ? null : true);
     setDatePickerOpen(!datePickerOpen);
   };
-  const blurDateInput = (textDate) => {
-    let valid = true;
-    if (textDate !== "" && !isMdyValid(textDate)) {
-      valid = false;
+  const blurDateInput = (textDate, valid) => {
+    if (valid == null) {
+      valid = isMdyValid(textDate)
+    }
+    if (!valid) {
       setError("Please enter a valid date");
     }
     propOnDone({valid, value: mdyToDate(textDate)});
