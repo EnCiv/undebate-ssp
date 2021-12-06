@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/18
 
+import React, { useState } from "react"
 import ElectionHeader from "../app/components/election-header";
 
 export default {
@@ -7,7 +8,16 @@ export default {
   component: ElectionHeader,
 };
 
-const Template = (args) => <ElectionHeader {...args} />;
+const Template = args => { 
+  const [validity, setValidity] = useState({ valid: true, value: args.defaultValue });
+  return (
+    <div>
+        <ElectionHeader {...args}  onDone={v => setValidity(v)} />
+        <p>Is valid: {validity.valid ? "True" : "False"}</p>
+        <p>Value: {validity.value}</p>
+    </div>
+  )
+}
 
 export const ElectionHeaderTest = Template.bind({});
 ElectionHeaderTest.args = {
