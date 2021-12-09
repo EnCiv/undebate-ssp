@@ -1,6 +1,5 @@
 const path = require('path')
 const webpack = require('webpack')
-const compressionplugin = require('compression-webpack-plugin')
 
 const env = process.env.NODE_ENV || 'development'
 if (env !== 'development') console.error('NODE_ENV is', env, "but needs to be 'development' when the server runs")
@@ -8,7 +7,6 @@ if (env !== 'development') console.error('NODE_ENV is', env, "but needs to be 'd
 module.exports = {
   context: path.resolve(__dirname, 'app'),
   mode: 'development',
-  watch: true,
   devtool: 'source-map',
   entry: {
     'only-dev-server': 'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
@@ -29,9 +27,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['*', '.js', '.jsx'],
-  },
-  node: {
-    fs: 'empty', // logger wants to require fs though it's not needed on the browser
+    fallbacks:{
+      fs: false // logger wants to require fs though it's not needed on the browser
+    }
   },
   devServer: {
     disableHostCheck: true,
@@ -49,7 +47,7 @@ module.exports = {
     compress: true,
   },
   plugins: [
-    new webpack.IgnorePlugin(/nodemailer/), // not used in the client side - those should be move outside of the app directory
+    new webpack.IgnorePlugin({resourceRegExp: /nodemailer/}), // not used in the client side - those should be move outside of the app directory
     new webpack.NormalModuleReplacementPlugin(/.+models\/.+/, '../models/client-side-model'), // do not include models on the client side - the app/api files contain server side and client side code
     new webpack.NormalModuleReplacementPlugin(/.+\/the-civil-server\.js$/, '/client/client-side-model'), // on the clientsite map imports of civil-server to an empty module
     new webpack.HotModuleReplacementPlugin(), // DO NOT use --hot in the command line - it will cause a stack overflow on the client
