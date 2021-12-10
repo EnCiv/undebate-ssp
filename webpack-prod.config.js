@@ -23,13 +23,21 @@ module.exports = {
   },
   resolve: {
     extensions: ['*', '.js', '.jsx'],
-    fallbacks:{
-      fs: false // logger wants to require fs though it's not needed on the browser
+    fallback:{
+      fs: false, // logger wants to require fs though it's not needed on the browser
+      path: require.resolve("path-browserify"),
+      "stream": require.resolve("stream-browserify"),
+      "os": require.resolve("os-browserify/browser"),
+      "zlib": require.resolve("browserify-zlib"),
+      "constants": require.resolve("constants-browserify"),
+      "buffer": require.resolve("buffer")
     }
   },
   plugins: [
     new webpack.IgnorePlugin({resourceRegExp: /nodemailer/}), // not used in the client side - those should be move outside of the app directory
     new webpack.NormalModuleReplacementPlugin(/.+models\/.+/, '/client/client-side-model'), // do not include models on the client side - the app/api files contain server side and client side code
     new webpack.NormalModuleReplacementPlugin(/.+\/the-civil-server\.js$/, '/client/client-side-model'), // on the clientsite map imports of civil-server to an empty module
+    new webpack.ProvidePlugin({Buffer: ['buffer', 'Buffer']}), // Work around for Buffer is undefined: https://github.com/webpack/changelog-v5/issues/10
+    new webpack.ProvidePlugin({process: 'process/browser'}),// fix "process is not defined" error: // (do "npm install process" before running the build)
   ],
 }
