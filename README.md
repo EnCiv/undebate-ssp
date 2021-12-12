@@ -14,9 +14,9 @@ In 2019 we created [Undebates](https://github.com/EnCiv/undebate) and launched t
 
 # Getting Started
 
-The following has been tested using node v16.13.0 and npm v8.1.0 on Windows 10 and MacOs. There are known issues using npm < 7. During install, you can ignore the warning about incompatibility with previous versions of node/npm - we need to go back to those packages and update their dependencies.
+The following has been tested using node v16.13.0 and npm v8.1.0 on Windows 10 and MacOs. There are known issues using npm < 7. During install, you can ignore the warning about incompatibility with previous versions of node/npm - we need to go back to those packages and update their dependencies. Also, Node version 17 will not work, and in general the odd versions are experimental so we don't try to use those. If you already tried to build this with version 17, you need to install version 16 and then do npm ci to start clean.
 
-Below are specific instructions for cloning and running storybook on your local system using your CLI of choice: 
+Below are specific instructions for cloning and running storybook on your local system using your CLI of choice:
 
 ```
 # Navigate to the local directory where you'd like to clone the project and then issue the following command:
