@@ -19,16 +19,16 @@ The following has been tested using node v16.13.0 and npm v8.1.0 on Windows 10 a
 Below are specific instructions for cloning and running storybook on your local system using your CLI of choice: 
 
 ```
-// Navigate to the local directory where you'd like to clone the project and then issue the following command:
+# Navigate to the local directory where you'd like to clone the project and then issue the following command:
 git clone https://github.com/EnCiv/undebate-ssp.git
 
-// Now navigate into the newly cloned project directory:
+# Now navigate into the newly cloned project directory:
 cd undebate-ssp
 
-// Install the node_module dependencies required to run this project:
+# Install the node_module dependencies required to run this project:
 npm install
 
-// Now start the project:
+# Now start the project:
 npm run storybook
 ```
 
@@ -74,13 +74,13 @@ These notes are pretty general and always open to reevaluation. Also, we want to
 When starting to work on a new issue:
 
 ```
-// Change your local repository's branch to its 'main' branch:
+# Change your local repository's branch to its 'main' branch:
 git checkout main
 
-// Pull the current version of project from the gitHub repository and merge it into your local 'main' branch:
+# Pull the current version of project from the gitHub repository and merge it into your local 'main' branch:
 git pull
 
-// Create a new local branch (e.g., issue-name#nn) where you will add your changes/fixes and switch to that branch:
+# Create a new local branch (e.g., issue-name#nn) where you will add your changes/fixes and switch to that branch:
 git checkout -b issue-name#nn
 ```
 
