@@ -15,9 +15,9 @@ In 2019 we created [Undebates](https://github.com/EnCiv/undebate) and launched t
 
 The following has been tested using node v16.13.0 and npm v8.1.0 on Windows 10 and MacOs.  There are known issues using npm < 7. During install, you can ignore the warning about incompatibility with previous versions of node/npm - we need to go back to those packages and update their dependencies.
 
-Instructions for cloning and running storybook on your local system using your command line utility of choice: 
+Instructions for cloning and running storybook on your local system using your CLI of choice is as follows: 
 ```
-// Create a directory on your local system to hold the project (e.g., 'undebate-ssp')
+// Create a directory on your local system to hold the project that you will be cloning (e.g., 'undebate-ssp')
 mkdir undebate-ssp  
 
 // Navigate to the local project directory you just created: 
