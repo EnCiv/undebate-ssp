@@ -70,6 +70,11 @@ DeadlineMissed.args = {
     statusObjs: [{ deadlineMissed: true }],
 }
 
+export const Locked = Template.bind({})
+Locked.args = {
+    statusObjs: [{ locked: true }],
+}
+
 export const ArbritraryText = Template.bind({})
 ArbritraryText.args = {
     statusObjs: [{ Testing: true }],
