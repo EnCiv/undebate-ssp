@@ -1,7 +1,7 @@
 import React from "react"
 
 import { createUseStyles } from "react-jss"
-import ElectionCategory from "../app/components/election_category.js"
+import ElectionCategory from "../app/components/election-category.js"
 
 // from issue: https://github.com/EnCiv/undebate-ssp/issues/5
 

@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/17
 
-import { ElectionCreated } from "../app/components/election_created"
+import { ElectionCreated } from "../app/components/election-created"
 import React from "react"
 
 export default {

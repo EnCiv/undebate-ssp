@@ -2,7 +2,7 @@
 
 import React, { useState } from "react"
 
-import { SubmitInvitationButton } from "../app/components/submit_invitation_button"
+import { SubmitInvitationButton } from "../app/components/submit-invitation-button"
 import { createUseStyles } from "react-jss"
 
 export default {

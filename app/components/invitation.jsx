@@ -5,7 +5,7 @@ import { createUseStyles } from "react-jss"
 import cx from "classnames"
 import TextareaAutosize from "react-textarea-autosize"
 import ElectionTextInput from "./election-text-input"
-import SubmitInvitationButton from "./submit_invitation_button"
+import SubmitInvitationButton from "./submit-invitation-button"
 import SvgSpeaker from "../svgr/speaker"
 
 export var Invitation = function (props) {

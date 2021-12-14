@@ -5,7 +5,7 @@
 import React, { useState } from "react"
 
 import { createUseStyles } from "react-jss"
-import ElectionDateInput from "../app/components/election_date_input"
+import ElectionDateInput from "../app/components/election-date-input"
 
 export default {
     title: "Election Date Input",
