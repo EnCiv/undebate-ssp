@@ -1,36 +1,54 @@
 // https://github.com/EnCiv/undebate-ssp/issues/22
 
+"use strict"
+
 import { createUseStyles } from "react-jss"
+import cx from "classnames"
+
+import SearchButton from "./search-button"
+import InstructionsButton from "./instruction-button"
+import LinkButton from "./link-button"
+
+import LogoutSVG from "../svgr/log-out"
 import UndebateLogoSVG from "../svgr/undebate-logo"
-import MagnifyingGlassSVG from "../svgr/magnifying-glass"
-import OpenBookSVG from "../svgr/open-book"
 import ExampleUserSVG from "../svgr/example-user"
-import LogOutSVG from "../svgr/log-out"
 
 const UndebatesHeaderBar = props => {
-    const { className, style, userId } = props
+    const { className, style, user } = props
     const classes = useStyles()
-    return (
-        <div className={classes.undebatesHeader}>
-            <UndebateLogoSVG className={classes.logo} />
-            <div className={classes.buttonGroup}>
-                <button className={classes.svgButton}>
-                    <MagnifyingGlassSVG className={classes.svg} />
-                </button>
-                <button className={classes.svgButton}>
-                    <OpenBookSVG className={classes.svg} />
-                </button>
+
+    let userBtns
+    if (user) {
+        userBtns = (
+            <>
                 <button className={classes.button}>Create New</button>
                 <div className={classes.userImageGroup}>
-                    <div className={classes.hidden}>
-                        <span className={classes.userId}>{userId}</span>
-                        <button className={classes.logoutButton}>
-                            <LogOutSVG className={classes.svg} />
+                    <div className={classes.hoverGroup}>
+                        <span className={classes.userId}>{user.email}</span>
+                        <LinkButton href="/sign/out" style={{ padding: "1rem" }}>
+                            <LogoutSVG className={classes.svg} />
                             LOGOUT
-                        </button>
+                        </LinkButton>
                     </div>
                     <ExampleUserSVG className={classes.userImage} />
                 </div>
+            </>
+        )
+    } else {
+        userBtns = (
+            <>
+                <LinkButton href="/sign/in">Sign In</LinkButton>
+                <LinkButton href="/sign/up">Sign Up</LinkButton>
+            </>
+        )
+    }
+    return (
+        <div className={cx(className, classes.undebatesHeader)} style={style}>
+            <UndebateLogoSVG className={classes.logo} />
+            <div className={classes.buttonGroup}>
+                <SearchButton className={classes.svg} />
+                <InstructionsButton className={classes.svg} />
+                {userBtns}
             </div>
         </div>
     )
@@ -50,11 +68,6 @@ const useStyles = createUseStyles({
         justifyContent: "space-around",
         gap: "2rem",
         alignItems: "center",
-    },
-    svgButton: {
-        background: "transparent",
-        border: "none",
-        padding: "0",
     },
     svg: {
         width: "1.25rem",
@@ -82,33 +95,24 @@ const useStyles = createUseStyles({
         background: "linear-gradient(0deg, #7470FF,#7470FF), #FFFFFF",
         width: "auto",
         "&:hover": {
-            "& > $hidden": {
-                width: "17rem",
+            "& > $hoverGroup": {
+                width: "19rem",
             },
         },
     },
-    hidden: {
+    hoverGroup: {
         transition: "width 0.5s",
         display: "flex",
         overflow: "hidden",
         width: "0",
         alignItems: "center",
+        padding: "1rem 0rem",
         justifyContent: "space-between",
-    },
-    logoutButton: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        border: "none",
-        background: "transparent",
-        padding: "1rem",
-        whiteSpace: "nowrap",
-        color: "#FFFFFF",
     },
     userId: {
         opacity: "0.7",
         color: "#FFFFFF",
-        marginLeft: "1rem",
+        marginLeft: "2rem",
     },
     userImage: {
         height: "3.25rem",
