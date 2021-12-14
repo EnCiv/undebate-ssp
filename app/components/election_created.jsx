@@ -5,7 +5,7 @@ import React from "react"
 import moment from "moment"
 import ObjectID from "isomorphic-mongo-objectid"
 
-export const ElectionCreated = ({ electionMetadata }) => {
+export var ElectionCreated = function ({ electionMetadata }) {
     const classes = useStyles()
 
     const formatDate = () => {

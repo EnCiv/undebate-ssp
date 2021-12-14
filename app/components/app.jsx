@@ -1,15 +1,13 @@
-"use strict"
-
 import React from "react"
 import { hot } from "react-hot-loader"
+import { ErrorBoundary } from "civil-client"
 import WebComponents from "../web-components"
 import Footer from "./footer"
-import { ErrorBoundary } from "civil-client"
 
 class App extends React.Component {
     render() {
         if (this.props.iota) {
-            var { iota, ...newProps } = this.props
+            const { iota, ...newProps } = this.props
             Object.assign(newProps, this.props.iota)
             return (
                 <ErrorBoundary>
@@ -19,15 +17,15 @@ class App extends React.Component {
                     </div>
                 </ErrorBoundary>
             )
-        } else
-            return (
-                <ErrorBoundary>
-                    <div style={{ position: "relative" }}>
-                        <div>Nothing Here</div>
-                        <Footer />
-                    </div>
-                </ErrorBoundary>
-            )
+        }
+        return (
+            <ErrorBoundary>
+                <div style={{ position: "relative" }}>
+                    <div>Nothing Here</div>
+                    <Footer />
+                </div>
+            </ErrorBoundary>
+        )
     }
 }
 

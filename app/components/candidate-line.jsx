@@ -4,7 +4,7 @@ import AcceptLogo from "../svgr/accepted"
 import DeclineLogo from "../svgr/declined"
 import VideoLogo from "../svgr/video-submitted"
 
-const CandidateLine = props => {
+const CandidateLine = function (props) {
     const classes = useStyles()
     const { name, office, inviteStatus, submissionStatus, reminders } = props
 
@@ -12,12 +12,12 @@ const CandidateLine = props => {
         <div className={classes.line}>
             <div className={classes.biggerBlock}>
                 <div className={classes.text}>
-                    <div> {name ? name : " - "}</div>
+                    <div> {name || " - "}</div>
                 </div>
             </div>
             <div className={classes.biggerBlock}>
                 <div className={classes.text}>
-                    <div> {office ? office : " - "}</div>
+                    <div> {office || " - "}</div>
                 </div>
             </div>
             <div className={classes.block}>
@@ -61,7 +61,7 @@ const CandidateLine = props => {
             </div>
             <div className={classes.block}>
                 <div className={classes.text}>
-                    <div> {reminders ? reminders : " - "}</div>
+                    <div> {reminders || " - "}</div>
                 </div>
             </div>
         </div>

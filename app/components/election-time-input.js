@@ -6,7 +6,7 @@ import cx from "classnames"
 import svg from "../../assets/svg/clock-solid.svg"
 import ClockSolidSVG from "../svgr/clock-solid"
 
-const ElectionTimeInput = props => {
+const ElectionTimeInput = function (props) {
     const { className, style, defaultValue = "", onDone = () => {} } = props
     const [time, setTime] = useState(defaultValue)
     const classes = useStyles(time)
@@ -21,7 +21,7 @@ const ElectionTimeInput = props => {
     }
 
     const handleDone = e => {
-        onDone({ valid: time ? true : false, value: time })
+        onDone({ valid: !!time, value: time })
     }
 
     return (

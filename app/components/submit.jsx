@@ -5,7 +5,7 @@
 import React from "react"
 import { createUseStyles } from "react-jss"
 
-export const Submit = ({ onDone }) => {
+export var Submit = function ({ onDone }) {
     const classes = useStyles()
 
     return (

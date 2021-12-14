@@ -1,5 +1,3 @@
-"use strict"
-
 // https://github.com/EnCiv/undebate-ssp/issues/50
 
 import React from "react"
@@ -7,7 +5,7 @@ import { createUseStyles } from "react-jss"
 import cx from "classnames"
 
 // <SubmitInviteButton className="" style={} electionOM={[]} onClick={} disabled={false} />
-export const SubmitInvitationButton = props => {
+export var SubmitInvitationButton = function (props) {
     const { className, style, disabled } = props
     const classes = useStyles()
     return (

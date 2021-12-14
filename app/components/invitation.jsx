@@ -1,5 +1,3 @@
-"use strict"
-
 // https://github.com/EnCiv/undebate-ssp/issues/50
 
 import React, { useState, useEffect } from "react"
@@ -10,23 +8,18 @@ import ElectionTextInput from "./election-text-input"
 import SubmitInvitationButton from "./submit_invitation_button"
 import SvgSpeaker from "../svgr/speaker"
 
-export const Invitation = props => {
+export var Invitation = function (props) {
     const { className, style } = props
     const classes = useStyles()
     const [moderatorName, setModeratorName] = useState("")
     const [moderatorEmail, setModeratorEmail] = useState("")
     const [greeting, setGreeting] = useState("")
 
-    const validGreeting = () => {
-        return (
-            greeting
-                .trim()
-                .split(" ")
-                .filter(word => {
-                    return word != "" && word != "\n"
-                }).length <= 400
-        )
-    }
+    const validGreeting = () =>
+        greeting
+            .trim()
+            .split(" ")
+            .filter(word => word != "" && word != "\n").length <= 400
 
     const checkValid = () => validGreeting() && moderatorName.length > 0 && moderatorEmail.length > 0
 
@@ -70,7 +63,7 @@ export const Invitation = props => {
                 />
                 <ElectionTextInput
                     name="Email Address"
-                    checkIsEmail={true}
+                    checkIsEmail
                     onDone={({ valid, value }) => {
                         if (valid) {
                             setModeratorEmail(value)

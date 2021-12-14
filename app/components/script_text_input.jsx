@@ -4,27 +4,23 @@
 
 import React, { useState } from "react"
 import { createUseStyles } from "react-jss"
-import SvgVideo from "../svgr/video"
-import SvgClock from "../svgr/clock"
 import TextareaAutosize from "react-textarea-autosize"
 import moment from "moment"
+import SvgVideo from "../svgr/video"
+import SvgClock from "../svgr/clock"
 
-export const ScriptTextInput = ({
+export var ScriptTextInput = function ({
     questionNumber,
     questionName,
     maxWordCount,
     wordsPerMinute,
     defaultValue,
     onDone,
-}) => {
+}) {
     const classes = useStyles()
     const [inputText, setInputText] = useState(defaultValue)
 
-    const getWordCount = () => {
-        return inputText.split(" ").filter(word => {
-            return word != "" && word != "\n"
-        }).length
-    }
+    const getWordCount = () => inputText.split(" ").filter(word => word != "" && word != "\n").length
 
     const [wordCount, setWordCount] = useState(getWordCount())
 

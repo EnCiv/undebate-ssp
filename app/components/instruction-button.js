@@ -1,10 +1,10 @@
-"use-strict";
+"use-strict"
 
-import React from "react";
-import SvgBookOpen from '../svgr/book-open'
+import React from "react"
+import SvgBookOpen from "../svgr/book-open"
 
-const InstructionButton = () => {
-    return <SvgBookOpen />;
-};
+const InstructionButton = function () {
+    return <SvgBookOpen />
+}
 
-export default InstructionButton;
+export default InstructionButton

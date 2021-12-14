@@ -1,10 +1,10 @@
-"use-strict";
+"use-strict"
 
-import React from "react";
-import SvgHome from '../svgr/home'
+import React from "react"
+import SvgHome from "../svgr/home"
 
-const HomeButton = () => {
-    return <SvgHome />;
-};
+const HomeButton = function () {
+    return <SvgHome />
+}
 
-export default HomeButton;
+export default HomeButton
