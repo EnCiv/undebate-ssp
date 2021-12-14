@@ -1,15 +1,15 @@
 // https://github.com/EnCiv/undebate-ssp/issues/18
 
-"use-strict"
+'use-strict'
 
-import React from "react"
-import cx from "classnames"
-import { createUseStyles } from "react-jss"
-import HomeButton from "./home-button"
-import BackButton from "./back-button"
-import InstructionButton from "./instruction-button"
+import React from 'react'
+import cx from 'classnames'
+import { createUseStyles } from 'react-jss'
+import HomeButton from './home-button'
+import BackButton from './back-button'
+import InstructionButton from './instruction-button'
 
-const ElectionHeader = function (props) {
+const ElectionHeader = props => {
     const classes = useStyles()
     const { className, style, defaultValue = 0, elections = [], onDone = () => {} } = props
 
@@ -41,16 +41,16 @@ export default ElectionHeader
 
 const useStyles = createUseStyles({
     electionHeader: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        padding: "1.25rem 2.5rem",
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: '1.25rem 2.5rem',
 
-        "& select": {
-            border: "none",
-            fontWeight: "bold",
-            "&:hover": {
-                cursor: "pointer",
+        '& select': {
+            border: 'none',
+            fontWeight: 'bold',
+            '&:hover': {
+                cursor: 'pointer',
             },
         },
     },

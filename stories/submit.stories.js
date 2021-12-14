@@ -1,28 +1,28 @@
 // https://github.com/EnCiv/undebate-ssp/issues/14
-import React, { useState } from "react"
+import React, { useState } from 'react'
 
-import { Submit } from "../app/components/submit"
-import { createUseStyles } from "react-jss"
+import { Submit } from '../app/components/submit'
+import { createUseStyles } from 'react-jss'
 
 export default {
-    title: "Submit",
+    title: 'Submit',
     component: Submit,
     argTypes: {},
 }
 
 const useStyles = createUseStyles({
     alert: {
-        margin: "1rem 0",
-        padding: "1rem",
-        width: "fit-content",
+        margin: '1rem 0',
+        padding: '1rem',
+        width: 'fit-content',
     },
     done: {
-        color: "#4F8A10",
-        backgroundColor: "#DFF2BF",
+        color: '#4F8A10',
+        backgroundColor: '#DFF2BF',
     },
     unfinished: {
-        color: "#9F6000",
-        backgroundColor: "#FEEFB3",
+        color: '#9F6000',
+        backgroundColor: '#FEEFB3',
     },
 })
 
@@ -32,7 +32,7 @@ const Template = args => {
     return (
         <>
             <div className={`${styles.alert} ${done ? styles.done : styles.unfinished}`}>
-                {done ? "Done!" : "Unfinished"}
+                {done ? 'Done!' : 'Unfinished'}
             </div>
             <Submit
                 onDone={bool => {

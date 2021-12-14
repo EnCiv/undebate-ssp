@@ -1,11 +1,11 @@
-"use-strict"
+'use-strict'
 
 // https://github.com/EnCiv/undebate-ssp/issues/14
 
-import React from "react"
-import { createUseStyles } from "react-jss"
+import React from 'react'
+import { createUseStyles } from 'react-jss'
 
-export var Submit = function ({ onDone }) {
+export const Submit = ({ onDone }) => {
     const classes = useStyles()
 
     return (
@@ -22,14 +22,14 @@ export var Submit = function ({ onDone }) {
 
 const useStyles = createUseStyles({
     button: {
-        borderRadius: "1.875rem",
-        backgroundColor: "#7470FF",
-        border: "none",
-        color: "#FFF",
-        padding: ".9em 1.3em",
+        borderRadius: '1.875rem',
+        backgroundColor: '#7470FF',
+        border: 'none',
+        color: '#FFF',
+        padding: '.9em 1.3em',
         fontWeight: 600,
-        "&:hover": {
-            cursor: "pointer",
+        '&:hover': {
+            cursor: 'pointer',
         },
     },
 })

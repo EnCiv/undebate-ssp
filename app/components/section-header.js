@@ -1,11 +1,11 @@
-"use-strict"
+'use-strict'
 
 // https://github.com/EnCiv/undebate-ssp/issues/15
 
-import React from "react"
-import { createUseStyles } from "react-jss"
+import React from 'react'
+import { createUseStyles } from 'react-jss'
 
-export var SectionHeader = function ({ name, className }) {
+export const SectionHeader = ({ name, className }) => {
     const classes = useStyles()
 
     return (
@@ -18,18 +18,18 @@ export var SectionHeader = function ({ name, className }) {
 
 const useStyles = createUseStyles({
     sectHeader: {
-        display: "flex",
-        alignItems: "center",
-        gap: ".6rem",
+        display: 'flex',
+        alignItems: 'center',
+        gap: '.6rem',
     },
     sectText: {
-        fontWeight: "bold",
-        fontSize: "1.2rem",
-        textTransform: "uppercase",
+        fontWeight: 'bold',
+        fontSize: '1.2rem',
+        textTransform: 'uppercase',
     },
     sectLine: {
-        height: "1px",
-        backgroundColor: "#262D33",
+        height: '1px',
+        backgroundColor: '#262D33',
         opacity: 0.25,
         flex: 1,
     },

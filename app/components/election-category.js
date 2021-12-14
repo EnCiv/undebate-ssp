@@ -1,9 +1,9 @@
 // from issue: https://github.com/EnCiv/undebate-ssp/issues/5
 
-import humanizeString from "humanize-string"
+import humanizeString from 'humanize-string'
 
-import React from "react"
-import { createUseStyles } from "react-jss"
+import React from 'react'
+import { createUseStyles } from 'react-jss'
 import {
     SvgAccepted,
     SvgCompleted,
@@ -12,29 +12,29 @@ import {
     SvgReminderSent,
     SvgSent,
     SvgVideoSubmitted,
-} from "./lib/svg.js"
+} from './lib/svg.js'
 
 const statusInfoEnum = {
     completed: { icon: <SvgCompleted /> },
-    pending: { text: "Pending…" },
+    pending: { text: 'Pending…' },
     daysLeft: v => ({
         text: `${v} days left…`,
     }),
     reminderSent: {
         icon: <SvgReminderSent />,
-        text: "Reminder Sent",
+        text: 'Reminder Sent',
     },
     percentComplete: v => ({
         text: <ProgressBar percentDone={v} />,
     }),
-    videoSubmitted: { icon: <SvgVideoSubmitted />, text: "Video Submitted" },
-    deadlineMissed: { icon: <SvgDeadlineMissed />, text: "Deadline Missed" },
-    accepted: { icon: <SvgAccepted />, text: "Accepted" },
-    declined: { icon: <SvgDeclined />, text: "Declined" },
-    sent: { icon: <SvgSent />, text: "Sent" },
+    videoSubmitted: { icon: <SvgVideoSubmitted />, text: 'Video Submitted' },
+    deadlineMissed: { icon: <SvgDeadlineMissed />, text: 'Deadline Missed' },
+    accepted: { icon: <SvgAccepted />, text: 'Accepted' },
+    declined: { icon: <SvgDeclined />, text: 'Declined' },
+    sent: { icon: <SvgSent />, text: 'Sent' },
 }
 
-const ProgressBar = function (props) {
+const ProgressBar = props => {
     const classes = useStyles(props)
     const {
         // percentDone // used in styles
@@ -42,22 +42,22 @@ const ProgressBar = function (props) {
     return <div className={classes.progressBar} />
 }
 
-export var ElectionCategory = function (props) {
+export const ElectionCategory = props => {
     const classes = useStyles(props)
-    const { categoryName = "", statusObjs = [], className = "" } = props
+    const { categoryName = '', statusObjs = [], className = '' } = props
 
     // Converts array of objects into one object
     // Also converts strings into keys of that object
     const toCleanStatusObj = val => {
         if (Array.isArray(val)) {
             return val.reduce((obj, v) => {
-                if (typeof v === "string") {
+                if (typeof v === 'string') {
                     v = { [v]: true }
                 }
                 return { ...obj, ...v }
             }, {})
         }
-        if (typeof val === "string") {
+        if (typeof val === 'string') {
             return { [val]: true }
         }
         return val
@@ -82,7 +82,7 @@ export var ElectionCategory = function (props) {
             let content = statusInfoEnum[key]
             if (content == null) {
                 content = {
-                    text: (param !== true ? `${param} ` : "") + humanizeString(key),
+                    text: (param !== true ? `${param} ` : '') + humanizeString(key),
                 }
             } else if (content instanceof Function) {
                 content = content(param)
@@ -90,9 +90,9 @@ export var ElectionCategory = function (props) {
             if (content.icon != null && param !== true) {
                 return [content.icon, param]
             }
-            const icon = content.icon == null ? "" : <span className={classes.icon}>{content.icon}</span>
+            const icon = content.icon == null ? '' : <span className={classes.icon}>{content.icon}</span>
             return (
-                <span className={`${i === 0 ? "" : classes.grow}`}>
+                <span className={`${i === 0 ? '' : classes.grow}`}>
                     {icon} {content.text}
                 </span>
             )
@@ -117,7 +117,7 @@ export var ElectionCategory = function (props) {
             </tbody>
         </table>
     ) : (
-        ""
+        ''
     )
     const statusTextArray = statusArray
         .filter(v => React.isValidElement(v))
@@ -140,36 +140,36 @@ export var ElectionCategory = function (props) {
 
 const useStyles = createUseStyles({
     category: props => ({
-        display: "flex",
-        flexWrap: "wrap",
-        borderRadius: "0.5rem",
+        display: 'flex',
+        flexWrap: 'wrap',
+        borderRadius: '0.5rem',
         padding: `${props.selected ? 1.3 : 0.7}rem 0.7rem`,
-        margin: "rem",
+        margin: 'rem',
         backgroundColor: props.backgroundColor,
-        alignItems: "center",
+        alignItems: 'center',
     }),
     categoryText: {
-        textTransform: "capitalize",
+        textTransform: 'capitalize',
         flex: 1,
     },
-    grow: { flex: "1 1 100%" },
-    icon: { marginRight: "0.2rem" },
+    grow: { flex: '1 1 100%' },
+    icon: { marginRight: '0.2rem' },
     lineBreak: {
-        width: "100%",
-        border: "none",
-        marginTop: ".1rem",
+        width: '100%',
+        border: 'none',
+        marginTop: '.1rem',
     },
     tableItem: {
-        textAlign: "center",
-        padding: "0px .2rem",
+        textAlign: 'center',
+        padding: '0px .2rem',
     },
     progressBar: props => {
         const { percentDone } = props
         return {
             background: `linear-gradient(to right, #7470FF ${percentDone}%, #FFFFFF 0%)`,
-            width: "100%",
-            height: "1em",
-            borderRadius: "0.3vw",
+            width: '100%',
+            height: '1em',
+            borderRadius: '0.3vw',
         }
     },
 })

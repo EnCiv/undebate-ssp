@@ -1,9 +1,9 @@
-"use-strict"
+'use-strict'
 
-import React from "react"
-import SvgChevronLeft from "../svgr/chevron-left"
+import React from 'react'
+import SvgChevronLeft from '../svgr/chevron-left'
 
-const BackButton = function () {
+const BackButton = () => {
     return <SvgChevronLeft />
 }
 

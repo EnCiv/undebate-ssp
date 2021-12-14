@@ -1,17 +1,17 @@
 // From issue: https://github.com/EnCiv/undebate-ssp/issues/7
 
-import React, { useEffect, useState, useRef } from "react"
-import { createUseStyles } from "react-jss"
+import React, { useEffect, useState, useRef } from 'react'
+import { createUseStyles } from 'react-jss'
 
-import Calendar from "react-calendar"
-import { SvgCalendar } from "./lib/svg.js"
+import Calendar from 'react-calendar'
+import { SvgCalendar } from './lib/svg.js'
 
-import "react-calendar/dist/Calendar.css"
+import 'react-calendar/dist/Calendar.css'
 
-export var ElectionDateInput = function (props) {
+export const ElectionDateInput = props => {
     // defaultValue: mm/dd/yyyy string or a Date object
     // onDone: ({valid: bool, value: Date}): null
-    const { defaultValue = "", onDone: propOnDone = () => {} } = props
+    const { defaultValue = '', onDone: propOnDone = () => {} } = props
 
     const today = new Date()
 
@@ -78,16 +78,16 @@ export var ElectionDateInput = function (props) {
                 setDatePickerOpen(false)
             }
         }
-        document.addEventListener("click", onNonDatepickerClick)
+        document.addEventListener('click', onNonDatepickerClick)
         return () => {
-            document.removeEventListener("click", onNonDatepickerClick)
+            document.removeEventListener('click', onNonDatepickerClick)
         }
     }, [textDate, datePickerOpen])
 
     const onInputChange = e => {
         const { value } = e.target
         if ((value.length === 8 || value.length === 10) && !isMdyValid(value)) {
-            setError("Please enter a valid date")
+            setError('Please enter a valid date')
         } else {
             setError(null)
         }
@@ -107,7 +107,7 @@ export var ElectionDateInput = function (props) {
             valid = isMdyValid(textDate)
         }
         if (!valid) {
-            setError("Please enter a valid date")
+            setError('Please enter a valid date')
         }
         propOnDone({ valid, value: mdyToDate(textDate) })
     }
@@ -147,55 +147,55 @@ export var ElectionDateInput = function (props) {
 
 const useStyles = createUseStyles({
     dateInputWrapper: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     inputContainer: props => ({
-        display: "flex",
-        justifyContent: "space-between",
-        border: `.1rem solid ${props.error ? "red" : "#d4d5d6"}`,
-        borderRadius: ".5rem",
-        backgroundColor: "#d4d5d6",
-        padding: "0.7rem",
-        width: "100%",
+        display: 'flex',
+        justifyContent: 'space-between',
+        border: `.1rem solid ${props.error ? 'red' : '#d4d5d6'}`,
+        borderRadius: '.5rem',
+        backgroundColor: '#d4d5d6',
+        padding: '0.7rem',
+        width: '100%',
     }),
     dateInput: {
-        backgroundColor: "inherit",
-        border: "none",
-        outline: "none",
+        backgroundColor: 'inherit',
+        border: 'none',
+        outline: 'none',
     },
     datePicker: props => ({
-        display: props.datePickerOpen ? "initial" : "none",
-        position: "absolute",
-        overflow: "hidden",
-        padding: "0.3rem",
-        transform: "translatex(-0.8rem)",
-        borderRadius: ".5rem",
-        boxShadow: "0rem 0rem 0.6rem #b4b5b6",
-        backgroundColor: "#fcfdff",
-        "@supports (backdrop-filter: blur(6rem))": {
-            backdropFilter: "blur(6rem)",
-            background: "#fcfdff00",
+        display: props.datePickerOpen ? 'initial' : 'none',
+        position: 'absolute',
+        overflow: 'hidden',
+        padding: '0.3rem',
+        transform: 'translatex(-0.8rem)',
+        borderRadius: '.5rem',
+        boxShadow: '0rem 0rem 0.6rem #b4b5b6',
+        backgroundColor: '#fcfdff',
+        '@supports (backdrop-filter: blur(6rem))': {
+            backdropFilter: 'blur(6rem)',
+            background: '#fcfdff00',
         },
     }),
     datePickerTile: {
-        borderRadius: "0.5rem",
+        borderRadius: '0.5rem',
     },
     datePickerButton: {
-        background: "none",
-        border: "none",
-        cursor: "pointer",
-        height: "1.5rem",
-        width: "1.5rem",
-        transition: "background-color 150ms",
-        borderRadius: "50%",
-        "&:hover": {
-            backgroundColor: "#b4b5b6",
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        height: '1.5rem',
+        width: '1.5rem',
+        transition: 'background-color 150ms',
+        borderRadius: '50%',
+        '&:hover': {
+            backgroundColor: '#b4b5b6',
         },
     },
     errorText: {
-        color: "red",
+        color: 'red',
     },
     datePickerPart: {},
 })

@@ -1,10 +1,10 @@
 // https://github.com/EnCiv/undebate-ssp/issues/17
 
-import { ElectionCreated } from "../app/components/election-created"
-import React from "react"
+import { ElectionCreated } from '../app/components/election-created'
+import React from 'react'
 
 export default {
-    title: "Election Created",
+    title: 'Election Created',
     component: ElectionCreated,
     argTypes: {},
 }
@@ -15,6 +15,6 @@ export const ElectionCreatedTest = Template.bind({})
 
 ElectionCreatedTest.args = {
     electionMetadata: {
-        _id: "6199481498ac4e36c8a64753",
+        _id: '6199481498ac4e36c8a64753',
     },
 }

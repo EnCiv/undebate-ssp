@@ -1,12 +1,12 @@
 // https://github.com/EnCiv/undebate-ssp/issues/9
 
-import { useState, useRef, useEffect, React } from "react"
-import { createUseStyles } from "react-jss"
-import IsEmail from "isemail"
+import { useState, useRef, useEffect, React } from 'react'
+import { createUseStyles } from 'react-jss'
+import IsEmail from 'isemail'
 
-const ElectionTextInput = function (props) {
+const ElectionTextInput = props => {
     const classes = useStyles()
-    const { name = "", defaultValue = "", checkIsEmail = false, onDone = () => {} } = props
+    const { name = '', defaultValue = '', checkIsEmail = false, onDone = () => {} } = props
 
     const [text, setText] = useState(defaultValue)
     const inputRef = useRef(null)
@@ -21,7 +21,7 @@ const ElectionTextInput = function (props) {
     }
 
     const handleKeyPress = e => {
-        if (e.key === "Enter") inputRef.current.blur()
+        if (e.key === 'Enter') inputRef.current.blur()
     }
 
     const handleDone = e => {
@@ -52,7 +52,7 @@ const ElectionTextInput = function (props) {
             </label>
             <input
                 key={`${name}input`}
-                type={checkIsEmail ? "email" : "text"}
+                type={checkIsEmail ? 'email' : 'text'}
                 className={classes.input}
                 value={text}
                 name={name}
@@ -69,23 +69,23 @@ export default ElectionTextInput
 
 const useStyles = createUseStyles({
     electionTextInput: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: "0.75rem",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: '0.75rem',
     },
 
     label: {
-        margin: "0 0.625rem",
-        fontWeight: "600",
+        margin: '0 0.625rem',
+        fontWeight: '600',
     },
 
     input: {
-        borderRadius: "0.625rem",
-        background: "linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF",
-        padding: "1rem 1.25rem",
-        border: "none",
-        fontSize: "1.125rem",
-        width: "100%",
+        borderRadius: '0.625rem',
+        background: 'linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF',
+        padding: '1rem 1.25rem',
+        border: 'none',
+        fontSize: '1.125rem',
+        width: '100%',
     },
 })

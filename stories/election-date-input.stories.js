@@ -1,24 +1,24 @@
-"use strict"
+'use strict'
 
 // From issue: https://github.com/EnCiv/undebate-ssp/issues/7
 
-import React, { useState } from "react"
+import React, { useState } from 'react'
 
-import { createUseStyles } from "react-jss"
-import ElectionDateInput from "../app/components/election-date-input"
+import { createUseStyles } from 'react-jss'
+import ElectionDateInput from '../app/components/election-date-input'
 
 export default {
-    title: "Election Date Input",
+    title: 'Election Date Input',
     component: ElectionDateInput,
 }
 
 const useStyles = createUseStyles({
-    dateInput: { width: "15rem" },
+    dateInput: { width: '15rem' },
 })
 
 const Template = args => {
-    const [doneMessage, setDoneMessage] = useState("")
-    const [valid, setValid] = useState("")
+    const [doneMessage, setDoneMessage] = useState('')
+    const [valid, setValid] = useState('')
 
     return (
         <div className={useStyles().dateInput}>
@@ -40,4 +40,4 @@ export const Default = Template.bind({})
 Default.args = {}
 
 export const WithDefaultValue = Template.bind({})
-WithDefaultValue.args = { defaultValue: "11/10/2021" }
+WithDefaultValue.args = { defaultValue: '11/10/2021' }

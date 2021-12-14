@@ -1,9 +1,9 @@
-import React from "react"
+import React from 'react'
 
-import { Footer } from "../app/components/footer"
+import { Footer } from '../app/components/footer'
 
 export default {
-    title: "Footer",
+    title: 'Footer',
     component: Footer,
     argTypes: {},
 }

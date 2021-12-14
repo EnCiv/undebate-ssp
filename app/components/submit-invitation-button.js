@@ -1,11 +1,11 @@
 // https://github.com/EnCiv/undebate-ssp/issues/50
 
-import React from "react"
-import { createUseStyles } from "react-jss"
-import cx from "classnames"
+import React from 'react'
+import { createUseStyles } from 'react-jss'
+import cx from 'classnames'
 
 // <SubmitInviteButton className="" style={} electionOM={} onClick={} disabled={false} />
-export var SubmitInvitationButton = function (props) {
+export const SubmitInvitationButton = props => {
     const { className, style, disabled } = props
     const classes = useStyles()
     return (
@@ -22,21 +22,21 @@ export var SubmitInvitationButton = function (props) {
 
 const useStyles = createUseStyles({
     btn: {
-        borderRadius: "1.875rem",
-        backgroundColor: "#7470FF",
-        border: "none",
-        color: "#FFF",
-        padding: ".9em 1.3em",
+        borderRadius: '1.875rem',
+        backgroundColor: '#7470FF',
+        border: 'none',
+        color: '#FFF',
+        padding: '.9em 1.3em',
         fontWeight: 600,
-        "&:hover": {
-            cursor: "pointer",
+        '&:hover': {
+            cursor: 'pointer',
         },
     },
     disabled: {
-        backgroundColor: "#919597",
-        color: "#fff",
-        "&:hover": {
-            cursor: "initial",
+        backgroundColor: '#919597',
+        color: '#fff',
+        '&:hover': {
+            cursor: 'initial',
         },
     },
 })

@@ -1,32 +1,32 @@
-"use-strict"
+'use-strict'
 
 // https://github.com/EnCiv/undebate-ssp/issues/10
 
-import React, { useState } from "react"
-import { createUseStyles } from "react-jss"
-import TextareaAutosize from "react-textarea-autosize"
-import moment from "moment"
-import SvgVideo from "../svgr/video"
-import SvgClock from "../svgr/clock"
+import React, { useState } from 'react'
+import { createUseStyles } from 'react-jss'
+import TextareaAutosize from 'react-textarea-autosize'
+import moment from 'moment'
+import SvgVideo from '../svgr/video'
+import SvgClock from '../svgr/clock'
 
-export var ScriptTextInput = function ({
+export const ScriptTextInput = ({
     questionNumber,
     questionName,
     maxWordCount,
     wordsPerMinute,
     defaultValue,
     onDone,
-}) {
+}) => {
     const classes = useStyles()
     const [inputText, setInputText] = useState(defaultValue)
 
-    const getWordCount = () => inputText.split(" ").filter(word => word != "" && word != "\n").length
+    const getWordCount = () => inputText.split(' ').filter(word => word != '' && word != '\n').length
 
     const [wordCount, setWordCount] = useState(getWordCount())
 
     const formatDuration = minutes => {
-        const dur = moment.duration(minutes, "minutes")
-        const formatted = moment.utc(dur.asMilliseconds()).format("mm:ss")
+        const dur = moment.duration(minutes, 'minutes')
+        const formatted = moment.utc(dur.asMilliseconds()).format('mm:ss')
         return formatted
     }
 
@@ -78,55 +78,55 @@ export var ScriptTextInput = function ({
 
 const useStyles = createUseStyles({
     container: {
-        display: "flex",
-        flexDirection: "column",
-        fontFamily: "sans-serif",
-        color: "#262D33",
+        display: 'flex',
+        flexDirection: 'column',
+        fontFamily: 'sans-serif',
+        color: '#262D33',
     },
     scriptInfo: {
-        display: "flex",
-        justifyContent: "space-between",
-        padding: ".625rem",
-        fontSize: "0.875rem",
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: '.625rem',
+        fontSize: '0.875rem',
     },
     question: {
-        display: "flex",
-        alignItems: "center",
-        gap: ".4rem",
+        display: 'flex',
+        alignItems: 'center',
+        gap: '.4rem',
     },
     questionNum: {
         margin: 0,
     },
     questionName: {
-        margin: "0rem 0rem 0rem .4rem",
-        fontSize: "0.875rem",
+        margin: '0rem 0rem 0rem .4rem',
+        fontSize: '0.875rem',
     },
     quantity: {
-        display: "flex",
-        alignItems: "center",
+        display: 'flex',
+        alignItems: 'center',
     },
     time: {
-        display: "flex",
-        alignItems: "center",
-        gap: "0.438rem",
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.438rem',
     },
     duration: {
-        opacity: "70%",
+        opacity: '70%',
     },
     words: {
-        opacity: "70%",
-        marginLeft: "2.5rem",
+        opacity: '70%',
+        marginLeft: '2.5rem',
     },
     input: {
-        opacity: "70%",
-        background: "linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF",
-        padding: "0.938rem",
-        resize: "none",
-        border: "none",
-        borderRadius: "0.438rem",
-        fontSize: "1rem",
-        fontWeight: "500",
-        lineHeight: "1.875rem",
-        margin: "0.375rem 0rem",
+        opacity: '70%',
+        background: 'linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF',
+        padding: '0.938rem',
+        resize: 'none',
+        border: 'none',
+        borderRadius: '0.438rem',
+        fontSize: '1rem',
+        fontWeight: '500',
+        lineHeight: '1.875rem',
+        margin: '0.375rem 0rem',
     },
 })
