@@ -9,10 +9,11 @@ import SubmitInvitationButton from "./submit-invitation-button"
 import SvgSpeaker from "../svgr/speaker"
 
 export var Invitation = function (props) {
-    const { className, style } = props
     const classes = useStyles()
-    const [moderatorName, setModeratorName] = useState("")
-    const [moderatorEmail, setModeratorEmail] = useState("")
+    const { className, style, electionOM } = props
+    const { electionObj, electionMethods } = electionOM
+    const [moderatorName, setModeratorName] = useState(electionObj.moderator.name)
+    const [moderatorEmail, setModeratorEmail] = useState(electionObj.moderator.email)
     const [greeting, setGreeting] = useState("")
 
     const validGreeting = () =>
@@ -31,7 +32,7 @@ export var Invitation = function (props) {
 
     const handleUpsert = () => {
         if (checkValid()) {
-            props.electionMethods.upsert({ moderator: { email: moderatorEmail, name: moderatorName } })
+            electionMethods.upsert({ moderator: { email: moderatorEmail, name: moderatorName } })
         }
     }
 
@@ -41,19 +42,16 @@ export var Invitation = function (props) {
                 <span>An invitation will be emailed to the moderator along with the script and a recording link</span>
                 <SubmitInvitationButton
                     disabled={!isValid}
-                    electionOM={props.electionOM}
+                    electionOM={electionOM}
                     onDone={() => {
-                        emit("send-invite", props.electionObj._id, success => {
-                            if (success) {
-                                console.log("Success!")
-                            }
-                        })
+                        electionMethods.sendInvitation()
                     }}
                 />
             </div>
             <div className={classes.form}>
                 <ElectionTextInput
                     name="Moderation Name"
+                    defaultValue={moderatorName}
                     onDone={({ valid, value }) => {
                         if (valid) {
                             setModeratorName(value)
@@ -63,6 +61,7 @@ export var Invitation = function (props) {
                 />
                 <ElectionTextInput
                     name="Email Address"
+                    defaultValue={moderatorEmail}
                     checkIsEmail
                     onDone={({ valid, value }) => {
                         if (valid) {
@@ -96,11 +95,13 @@ export var Invitation = function (props) {
 }
 
 const useStyles = createUseStyles({
+    container: {
+        position: "relative",
+    },
     send: {
         display: "flex",
         justifyContent: "space-between",
         marginBottom: "1rem",
-        position: "relative",
     },
     form: {
         maxWidth: "20rem",
@@ -111,8 +112,9 @@ const useStyles = createUseStyles({
     speaker: {
         height: "18.75rem",
         position: "absolute",
-        bottom: "0",
+        bottom: "0rem",
         right: "1rem",
+        fontSize: "16rem",
     },
     label: {
         margin: "0 0.625rem",

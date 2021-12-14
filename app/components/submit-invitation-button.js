@@ -4,7 +4,7 @@ import React from "react"
 import { createUseStyles } from "react-jss"
 import cx from "classnames"
 
-// <SubmitInviteButton className="" style={} electionOM={[]} onClick={} disabled={false} />
+// <SubmitInviteButton className="" style={} electionOM={} onClick={} disabled={false} />
 export var SubmitInvitationButton = function (props) {
     const { className, style, disabled } = props
     const classes = useStyles()
