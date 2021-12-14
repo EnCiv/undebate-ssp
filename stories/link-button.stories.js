@@ -1,11 +1,11 @@
-import LogoutButton from "../app/components/logout-button"
+import LinkButton from "../app/components/link-button"
 
 export default {
-    title: "Logout Button",
-    component: LogoutButton,
+    title: "Link Button",
+    component: LinkButton,
 }
 
-const Template = args => <LogoutButton {...args} />
+const Template = args => <LinkButton {...args} />
 
 export const Default = Template.bind({})
 Default.args = {}
