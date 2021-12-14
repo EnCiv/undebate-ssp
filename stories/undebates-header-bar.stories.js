@@ -14,4 +14,12 @@ const Template = args => (
 )
 
 export const Default = Template.bind({})
-Default.args = { userId: "someone@example.com" }
+Default.args = {
+    user: {
+        id: "unique id",
+        email: "someone@gmail.com",
+    },
+}
+
+export const LoggedOut = Template.bind({})
+LoggedOut.args = {}
