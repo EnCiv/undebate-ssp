@@ -3,37 +3,33 @@
 import React from "react"
 import { createUseStyles } from "react-jss"
 import cx from "classnames"
-import LogoutSVG from "../svgr/log-out"
 
-const LogoutButton = props => {
-    const { className, style } = props
+const LinkButton = props => {
+    const { className, style, href, children } = props
     const classes = useStyles()
     return (
-        <button className={cx(className, classes.logoutButton)} style={style}>
-            <a className={classes.link} href="/sign/out">
-                <LogoutSVG className={classes.svg} />
-                LOGOUT
-            </a>
-        </button>
+        <a className={cx(className, classes.link)} style={style} href={href}>
+            <button className={classes.button}>{children}</button>
+        </a>
     )
 }
 
-export default LogoutButton
+export default LinkButton
 
 const useStyles = createUseStyles({
-    logoutButton: {
+    button: {
         border: "none",
         background: "linear-gradient(0deg, #7470FF, #7470FF), #FFFFFF",
         borderRadius: "2rem",
         padding: "1rem 2rem",
         whiteSpace: "nowrap",
+        color: "#FFFFFF",
     },
-    link: {
+    a: {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         textDecoration: "none",
-        color: "#FFFFFF",
         gap: "0.5rem",
     },
     svg: {
