@@ -11,7 +11,7 @@ import LinkButton from "./link-button"
 
 import LogoutSVG from "../svgr/log-out"
 import UndebateLogoSVG from "../svgr/undebate-logo"
-import ExampleUserSVG from "../svgr/example-user"
+import DefaultUserSVG from "../svgr/default-user"
 
 const UndebatesHeaderBar = props => {
     const { className, style, user } = props
@@ -24,13 +24,13 @@ const UndebatesHeaderBar = props => {
                 <button className={classes.button}>Create New</button>
                 <div className={classes.userImageGroup}>
                     <div className={classes.hoverGroup}>
-                        <span className={classes.userId}>{user.email}</span>
+                        <span className={classes.userEmail}>{user.email}</span>
                         <LinkButton href="/sign/out" style={{ padding: "1rem" }}>
                             <LogoutSVG className={classes.svg} />
                             LOGOUT
                         </LinkButton>
                     </div>
-                    <ExampleUserSVG className={classes.userImage} />
+                    <DefaultUserSVG className={classes.userImage} />
                 </div>
             </>
         )
@@ -109,7 +109,7 @@ const useStyles = createUseStyles({
         padding: "1rem 0rem",
         justifyContent: "space-between",
     },
-    userId: {
+    userEmail: {
         opacity: "0.7",
         color: "#FFFFFF",
         marginLeft: "2rem",
