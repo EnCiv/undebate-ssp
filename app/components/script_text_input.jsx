@@ -34,7 +34,7 @@ export const ScriptTextInput = ({
         return formatted
     }
 
-    const updateState = (event) => {
+    const updateState = event => {
         setInputText(event.target.value)
         setWordCount(getWordCount())
     }
@@ -65,9 +65,9 @@ export const ScriptTextInput = ({
                 onChange={event => {
                     updateState(event)
                 }}
-                onBlur={(event) => {
+                onBlur={event => {
                     updateState(event)
-                    const wc = getWordCount();
+                    const wc = getWordCount()
                     onDone({
                         value: inputText,
                         valid: wc <= maxWordCount && wc >= 1,
