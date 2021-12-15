@@ -35,12 +35,11 @@ const Template = args => {
                 {done ? 'Done!' : 'Unfinished'}
             </div>
             <Submit
-                name="Submit"
+                {...args}
                 onDone={bool => {
                     setDone(bool)
                     console.log(done)
                 }}
-                {...args}
             />
         </>
     )
@@ -48,4 +47,8 @@ const Template = args => {
 
 export const SubmitTest = Template.bind({})
 
-SubmitTest.args = {}
+SubmitTest.args = {
+    name: "Submit",
+    disabled: false,
+    disableOnClick: true
+}
