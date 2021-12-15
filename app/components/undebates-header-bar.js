@@ -8,10 +8,10 @@ import cx from "classnames"
 import SearchButton from "./search-button"
 import InstructionsButton from "./instruction-button"
 import LinkButton from "./link-button"
+import UserImage from "./user-image"
 
 import LogoutSVG from "../svgr/log-out"
 import UndebateLogoSVG from "../svgr/undebate-logo"
-import DefaultUserSVG from "../svgr/default-user"
 
 const UndebatesHeaderBar = props => {
     const { className, style, user } = props
@@ -30,7 +30,7 @@ const UndebatesHeaderBar = props => {
                             LOGOUT
                         </LinkButton>
                     </div>
-                    <DefaultUserSVG className={classes.userImage} />
+                    <UserImage />
                 </div>
             </>
         )
@@ -89,10 +89,10 @@ const useStyles = createUseStyles({
     userImageGroup: {
         display: "flex",
         alignItems: "center",
+        background: "linear-gradient(0deg, #7470FF,#7470FF), #FFFFFF",
         height: "3.25rem",
         border: "none",
         borderRadius: "2rem",
-        background: "linear-gradient(0deg, #7470FF,#7470FF), #FFFFFF",
         width: "auto",
         "&:hover": {
             "& > $hoverGroup": {
@@ -103,20 +103,17 @@ const useStyles = createUseStyles({
     hoverGroup: {
         transition: "width 0.5s",
         display: "flex",
+        height: "3.25rem",
         overflow: "hidden",
+        borderRadius: "2rem",
         width: "0",
         alignItems: "center",
-        padding: "1rem 0rem",
         justifyContent: "space-between",
     },
     userEmail: {
         opacity: "0.7",
         color: "#FFFFFF",
         marginLeft: "2rem",
-    },
-    userImage: {
-        height: "3.25rem",
-        width: "3.25rem",
     },
     "@media screen and (max-width: 840px)": {
         undebatesHeader: {
