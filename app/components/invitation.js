@@ -5,7 +5,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import TextareaAutosize from 'react-textarea-autosize'
 import ElectionTextInput from './election-text-input'
-import SubmitInvitationButton from './submit-invitation-button'
+import Submit from './submit'
 import SvgSpeaker from '../svgr/speaker'
 
 export const Invitation = props => {
@@ -14,7 +14,9 @@ export const Invitation = props => {
     const { electionObj, electionMethods } = electionOM
     const [moderatorName, setModeratorName] = useState(electionObj.moderator.name)
     const [moderatorEmail, setModeratorEmail] = useState(electionObj.moderator.email)
-    const [greeting, setGreeting] = useState('')
+    const [greeting, setGreeting] = useState(
+        "Thank you for being the moderator in our election. The next step is to click on the link below, and you will be taken to the web app for recording. The page will give you a script to start with, and the questions to ask, and you will be able to review and redo as you like. We aren't able to invite are candidates to record their answers until you ask the questions, so please try to do this soon."
+    )
 
     const validGreeting = () =>
         greeting
@@ -40,36 +42,39 @@ export const Invitation = props => {
         <div className={cx(className, classes.container)} style={style}>
             <div className={classes.send}>
                 <span>An invitation will be emailed to the moderator along with the script and a recording link</span>
-                <SubmitInvitationButton
+                <Submit
+                    name="Send Invitation"
                     disabled={!isValid}
-                    electionOM={electionOM}
+                    disableOnClick={true}
                     onDone={() => {
                         electionMethods.sendInvitation()
                     }}
                 />
             </div>
             <div className={classes.form}>
-                <ElectionTextInput
-                    name="Moderation Name"
-                    defaultValue={moderatorName}
-                    onDone={({ valid, value }) => {
-                        if (valid) {
-                            setModeratorName(value)
-                            handleUpsert()
-                        }
-                    }}
-                />
-                <ElectionTextInput
-                    name="Email Address"
-                    defaultValue={moderatorEmail}
-                    checkIsEmail
-                    onDone={({ valid, value }) => {
-                        if (valid) {
-                            setModeratorEmail(value)
-                            handleUpsert()
-                        }
-                    }}
-                />
+                <div className={classes.inputs}>
+                    <ElectionTextInput
+                        name="Moderation Name"
+                        defaultValue={moderatorName}
+                        onDone={({ valid, value }) => {
+                            if (valid) {
+                                setModeratorName(value)
+                                handleUpsert()
+                            }
+                        }}
+                    />
+                    <ElectionTextInput
+                        name="Email Address"
+                        defaultValue={moderatorEmail}
+                        checkIsEmail
+                        onDone={({ valid, value }) => {
+                            if (valid) {
+                                setModeratorEmail(value)
+                                handleUpsert()
+                            }
+                        }}
+                    />
+                </div>
                 <div className={classes.greeting}>
                     <label htmlFor="greeting" className={classes.label}>
                         Invitation greeting
@@ -84,8 +89,8 @@ export const Invitation = props => {
                         }}
                         className={classes.textarea}
                         name="greeting"
-                        minRows={7}
-                        maxRows={7}
+                        minRows={12}
+                        defaultValue={greeting}
                     />
                 </div>
             </div>
@@ -104,7 +109,13 @@ const useStyles = createUseStyles({
         marginBottom: '1rem',
     },
     form: {
-        maxWidth: '20rem',
+        maxWidth: '38rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '2rem',
+    },
+    inputs: {
+        width: '20rem',
         display: 'flex',
         flexDirection: 'column',
         gap: '2rem',
@@ -137,7 +148,6 @@ const useStyles = createUseStyles({
         border: 'none',
         fontSize: '1.125rem',
         fontFamily: 'sans-serif',
-        resize: 'none',
     },
 })
 

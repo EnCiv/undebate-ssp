@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/undebate-ssp/issues/14
 import React, { useState } from 'react'
 
-import { Submit } from '../app/components/submit'
+import Submit from '../app/components/submit'
 import { createUseStyles } from 'react-jss'
 
 export default {
@@ -35,6 +35,7 @@ const Template = args => {
                 {done ? 'Done!' : 'Unfinished'}
             </div>
             <Submit
+                name="Submit"
                 onDone={bool => {
                     setDone(bool)
                     console.log(done)
