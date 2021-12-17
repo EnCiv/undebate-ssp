@@ -10,6 +10,7 @@ import InstructionsButton from "./instruction-button"
 import LinkButton from "./link-button"
 import SignInButton from "./sign-in-button"
 import SignUpButton from "./sign-up-button"
+import { Submit as SubmitButton } from "./submit"
 
 import UserImage from "./user-image"
 
@@ -17,14 +18,19 @@ import LogoutSVG from "../svgr/log-out"
 import UndebateLogoSVG from "../svgr/undebate-logo"
 
 const UndebatesHeaderBar = props => {
-    const { className, style, user } = props
+    const { className, style, user, electionOM } = props
+    const [electionObj, electionMethods] = electionOM
     const classes = useStyles()
+
+    const handleCreateNew = valid => {
+        if (valid) electionMethods.createNew()
+    }
 
     let userBtns
     if (user) {
         userBtns = (
             <>
-                <button className={classes.button}>Create New</button>
+                <SubmitButton name="Create New" onDone={handleCreateNew} />
                 <div className={classes.userImageGroup}>
                     <div className={classes.hoverGroup}>
                         <span className={classes.userEmail}>{user.email}</span>
