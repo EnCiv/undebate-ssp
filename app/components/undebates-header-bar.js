@@ -8,6 +8,9 @@ import cx from "classnames"
 import SearchButton from "./search-button"
 import InstructionsButton from "./instruction-button"
 import LinkButton from "./link-button"
+import SignInButton from "./sign-in-button"
+import SignUpButton from "./sign-up-button"
+
 import UserImage from "./user-image"
 
 import LogoutSVG from "../svgr/log-out"
@@ -37,8 +40,8 @@ const UndebatesHeaderBar = props => {
     } else {
         userBtns = (
             <>
-                <LinkButton href="/sign/in">Sign In</LinkButton>
-                <LinkButton href="/sign/up">Sign Up</LinkButton>
+                <SignInButton />
+                <SignUpButton />
             </>
         )
     }
