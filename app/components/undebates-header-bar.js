@@ -124,7 +124,7 @@ const useStyles = createUseStyles({
         color: "#FFFFFF",
         marginLeft: "2rem",
     },
-    "@media screen and (max-width: 840px)": {
+    "@media screen and (max-width: 56rem)": {
         undebatesHeader: {
             flexDirection: "column",
             justifyContent: "center",
