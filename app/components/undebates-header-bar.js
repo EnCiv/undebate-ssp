@@ -20,7 +20,8 @@ import UndebateLogoSVG from "../svgr/undebate-logo"
 const UndebatesHeaderBar = props => {
     const { className, style, user, electionOM } = props
     const [electionObj, electionMethods] = electionOM
-    const classes = useStyles()
+
+    const classes = useStylesFromThemeFunction(props)
 
     const handleCreateNew = valid => {
         if (valid) electionMethods.createNew()
@@ -65,7 +66,7 @@ const UndebatesHeaderBar = props => {
 
 export default UndebatesHeaderBar
 
-const useStyles = createUseStyles({
+const useStylesFromThemeFunction = createUseStyles(theme => ({
     undebatesHeader: {
         display: "flex",
         justifyContent: "flex-end",
@@ -87,18 +88,11 @@ const useStyles = createUseStyles({
         width: "12.5rem",
         marginRight: "auto",
     },
-    button: {
-        borderRadius: "2rem",
-        border: "none",
-        background: "linear-gradient(0deg, #7470FF,#7470FF), #FFFFFF",
-        padding: "1rem 2.75rem",
-        whiteSpace: "nowrap",
-        color: "#FFFFFF",
-    },
     userImageGroup: {
         display: "flex",
         alignItems: "center",
-        background: "linear-gradient(0deg, #7470FF,#7470FF), #FFFFFF",
+        //background: "linear-gradient(0deg, #7470FF,#7470FF), #FFFFFF",
+        background: theme.colorPrimary,
         height: "3.25rem",
         border: "none",
         borderRadius: "2rem",
@@ -122,7 +116,7 @@ const useStyles = createUseStyles({
     userEmail: {
         opacity: "0.7",
         color: "#FFFFFF",
-        marginLeft: "2rem",
+        marginLeft: "3rem",
     },
     "@media screen and (max-width: 56rem)": {
         undebatesHeader: {
@@ -138,4 +132,4 @@ const useStyles = createUseStyles({
             flexDirection: "column",
         },
     },
-})
+}))
