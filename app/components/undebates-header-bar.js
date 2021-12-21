@@ -10,7 +10,7 @@ import InstructionsButton from "./instruction-button"
 import LinkButton from "./link-button"
 import SignInButton from "./sign-in-button"
 import SignUpButton from "./sign-up-button"
-import { Submit as SubmitButton } from "./submit"
+import SubmitButton from "./submit"
 
 import UserImage from "./user-image"
 
