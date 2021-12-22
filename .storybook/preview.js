@@ -1,5 +1,5 @@
 import { ThemeProvider } from "react-jss"
-import "../index.css"
+import "../assets/index.css"
 import theme from "../theme"
 
 export const parameters = {
