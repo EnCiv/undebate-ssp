@@ -19,7 +19,8 @@
         "storybook": "start-storybook -p 6006",
         "build-storybook": "build-storybook",
         "svgr": "svgr --icon --filename-case kebab assets/svg --out-dir app/svgr && rm app/svgr/index.js",
-        "format": "prettier --write './**/*.{js,jsx,css,scss,md,json}' --config ./.prettierrc.json"
+        "format": "prettier --write './**/*.{js,jsx,css,scss,md,json}' --config ./.prettierrc.json",
+        "prepare": "husky install"
     },
     "repository": {
         "type": "git",
@@ -52,9 +53,11 @@
         "@storybook/react": "^6.4.9",
         "@svgr/cli": "^6.1.1",
         "concurrently": "^6.4.0",
+        "husky": "^7.0.0",
         "nodemon": "^2.0.15",
-        "react-calendar": "^3.5.0",
-        "prettier": "^2.5.1"
+        "prettier": "^2.5.1",
+        "pretty-quick": "^3.1.2",
+        "react-calendar": "^3.5.0"
     },
     "dependencies": {
         "@babel/core": "^7.16.0",
