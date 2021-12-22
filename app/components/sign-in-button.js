@@ -1,7 +1,7 @@
-"use strict"
+'use strict'
 
-import React from "react"
-import LinkButton from "./link-button"
+import React from 'react'
+import LinkButton from './link-button'
 
 const SignInButton = props => {
     const { className, style } = props

@@ -1,7 +1,7 @@
-"use-strict"
+'use-strict'
 
-import React from "react"
-import SvgBookOpen from "../svgr/book-open"
+import React from 'react'
+import SvgBookOpen from '../svgr/book-open'
 
 const InstructionButton = props => {
     const { className, style } = props
@@ -9,4 +9,3 @@ const InstructionButton = props => {
 }
 
 export default InstructionButton
-
