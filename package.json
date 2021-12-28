@@ -57,7 +57,6 @@
         "nodemon": "^2.0.15",
         "prettier": "^2.5.1",
         "pretty-quick": "^3.1.2",
-        "react-calendar": "^3.5.0"
     },
     "dependencies": {
         "@babel/core": "^7.16.0",
@@ -79,6 +78,7 @@
         "isomorphic-mongo-objectid": "^1.0.9",
         "moment": "^2.29.1",
         "react": "^16.13.1",
+        "react-calendar": "^3.5.0",
         "react-dom": "^16.13.1",
         "react-hot-loader": "^4.13.0",
         "react-jss": "^10.9.0",
