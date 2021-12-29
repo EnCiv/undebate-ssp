@@ -136,3 +136,13 @@ function renderSomething(){
 # Slack
 
 Use this form to join the [slack workspace](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform)
+
+# Prettier
+
+This project is using prettier. This makes some spacing and the use of quotes and a few other things consistent across the project. It's really handy when using Visual Studio Code (see below) to be able to just save the file and have the formatting automatically fixed up. This can help find problems some times, or save some of the tedium.
+
+## To get prettier in Visual Studio Code
+
+This repo has a .vscode/settings.json file with the basic configuation for using prettier setup for this workspace. It will not override the configuration for other workspaces. If you don't already have [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for VSC installed, go [here](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and click **Install**.
+
+If you are not using VSC prettier will also be run before you commit, but see if prettier is available for your editor and post instuctions here.
