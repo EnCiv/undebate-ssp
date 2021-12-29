@@ -14,7 +14,7 @@ const useStyles = createUseStyles({
     category: { width: '20rem', backgroundColor: '#d4d5d6' },
 })
 
-const Template = args => <ElectionCategory className={useStyles().category} categoryName="Testing" {...args} />
+const Template = args => <ElectionCategory className={useStyles().category} categoryName='Testing' {...args} />
 
 export const Default = Template.bind({})
 Default.args = {}

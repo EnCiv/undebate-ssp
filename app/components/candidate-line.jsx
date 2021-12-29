@@ -25,19 +25,19 @@ const CandidateLine = props => {
                     <div className={classes.holder}>
                         {inviteStatus === 'accepted' && (
                             <>
-                                <AcceptLogo fontSize="1.7rem" /> <span className={classes.logoText}>Accepted</span>{' '}
+                                <AcceptLogo fontSize='1.7rem' /> <span className={classes.logoText}>Accepted</span>{' '}
                             </>
                         )}
                         {inviteStatus === 'declined' && (
                             <>
-                                <DeclineLogo fontSize="1.7rem" />
+                                <DeclineLogo fontSize='1.7rem' />
                                 {'   '}
                                 <span className={classes.logoText}>Declined</span>{' '}
                             </>
                         )}
                         {inviteStatus === 'sent' && (
                             <>
-                                <SentLogo fontSize="2rem" /> {'      '}
+                                <SentLogo fontSize='2rem' /> {'      '}
                                 <span className={classes.logoText}>Sent</span>{' '}
                             </>
                         )}
@@ -50,7 +50,7 @@ const CandidateLine = props => {
                     <div className={classes.holder}>
                         {submissionStatus === 'submitted' ? (
                             <>
-                                <VideoLogo fontSize="1.5rem" />{' '}
+                                <VideoLogo fontSize='1.5rem' />{' '}
                                 <span className={classes.logoText}>Video Submitted</span>{' '}
                             </>
                         ) : (

@@ -10,7 +10,7 @@ export default {
 
 const Template = args => (
     <div style={{ width: '50%' }}>
-        <ElectionTextInput name="Input Name" {...args} />
+        <ElectionTextInput name='Input Name' {...args} />
     </div>
 )
 

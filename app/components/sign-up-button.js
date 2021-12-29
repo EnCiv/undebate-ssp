@@ -6,7 +6,7 @@ import LinkButton from './link-button'
 const SignUpButton = props => {
     const { className, style } = props
     return (
-        <LinkButton className={className} style={style} href="/join">
+        <LinkButton className={className} style={style} href='/join'>
             Sign Up
         </LinkButton>
     )

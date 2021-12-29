@@ -30,11 +30,11 @@ const UndebatesHeaderBar = props => {
     if (user) {
         userBtns = (
             <>
-                <SubmitButton name="Create New" onDone={handleCreateNew} />
+                <SubmitButton name='Create New' onDone={handleCreateNew} />
                 <div className={classes.userImageGroup}>
                     <div className={classes.hoverGroup}>
                         <span className={classes.userEmail}>{user.email}</span>
-                        <LinkButton href="/sign/out" style={{ padding: '1rem' }}>
+                        <LinkButton href='/sign/out' style={{ padding: '1rem' }}>
                             <LogoutSVG className={classes.svg} />
                             LOGOUT
                         </LinkButton>

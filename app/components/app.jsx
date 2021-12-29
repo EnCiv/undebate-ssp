@@ -14,8 +14,8 @@ class App extends React.Component {
             return (
                 <ErrorBoundary>
                     <div style={{ position: 'relative' }}>
-                        <WebComponents key="web-component" webComponent={this.props.iota.webComponent} {...newProps} />
-                        <Footer key="footer" />
+                        <WebComponents key='web-component' webComponent={this.props.iota.webComponent} {...newProps} />
+                        <Footer key='footer' />
                     </div>
                 </ErrorBoundary>
             )

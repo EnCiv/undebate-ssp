@@ -120,15 +120,15 @@ export function ElectionDateInput(props) {
             <div className={classes.dateInputWrapper}>
                 <span className={classes.inputContainer}>
                     <input
-                        aria-label="Date Input"
+                        aria-label='Date Input'
                         className={classes.dateInput}
-                        type="text"
-                        maxLength="10"
+                        type='text'
+                        maxLength='10'
                         required
                         value={textDate}
                         onChange={onInputChange}
                         onBlur={e => blurDateInput(e.target.value)}
-                        placeholder="mm/dd/yyyy"
+                        placeholder='mm/dd/yyyy'
                     />
                     <button
                         className={classes.datePickerButton}

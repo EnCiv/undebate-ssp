@@ -28,7 +28,7 @@ const ElectionTimeInput = props => {
         <div className={cx(className, classes.electionTimeInput)} style={style}>
             <input
                 className={classes.input}
-                type="time"
+                type='time'
                 defaultValue={time}
                 onBlur={handleDone}
                 onChange={handleChange}

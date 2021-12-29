@@ -23,7 +23,7 @@ export function Footer() {
     const classes = useStyles()
     return (
         <div className={classes['footer']}>
-            <a href="https://enciv.org/terms" target="_blank">
+            <a href='https://enciv.org/terms' target='_blank'>
                 Terms
             </a>
         </div>
