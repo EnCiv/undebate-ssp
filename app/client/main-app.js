@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-import {clientMain} from 'civil-client'
+import { clientMain } from 'civil-client'
 import App from '../components/app'
 
 // this is the entry point for the client App running on the browser

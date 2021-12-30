@@ -1,7 +1,7 @@
-"use strict"
+'use strict'
 
-import React from "react"
-import MagnifyingGlassSVG from "../svgr/magnifying-glass"
+import React from 'react'
+import MagnifyingGlassSVG from '../svgr/magnifying-glass'
 
 const SearchButton = props => {
     const { className, style } = props

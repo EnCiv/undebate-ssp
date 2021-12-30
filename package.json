@@ -20,7 +20,9 @@
         "build-storybook": "build-storybook",
         "svgr": "svgr --icon --filename-case kebab assets/svg --out-dir app/svgr && rm app/svgr/index.js",
         "_lint": "eslint --config .eslintrc.js --ext js",
-        "lint": "npm run _lint -- ./app ./stories"
+        "lint": "npm run _lint -- ./app ./stories",
+        "format": "prettier --write \"./**/*.{js,jsx,css,scss,md,json}\" --config ./.prettierrc",
+        "prepare": "husky install"
     },
     "repository": {
         "type": "git",
@@ -53,8 +55,6 @@
         "@storybook/react": "^6.4.9",
         "@svgr/cli": "^6.1.1",
         "concurrently": "^6.4.0",
-        "nodemon": "^2.0.15",
-        "react-calendar": "^3.5.0",
         "eslint": "^8.4.1",
         "eslint-config-airbnb": "^19.0.2",
         "eslint-config-prettier": "^8.3.0",
@@ -62,7 +62,11 @@
         "eslint-plugin-jsx-a11y": "^6.5.1",
         "eslint-plugin-prettier": "^4.0.0",
         "eslint-plugin-react": "^7.27.1",
-        "eslint-plugin-react-hooks": "^4.3.0"
+        "eslint-plugin-react-hooks": "^4.3.0",
+        "husky": "^7.0.0",
+        "nodemon": "^2.0.15",
+        "prettier": "^2.5.1",
+        "pretty-quick": "^3.1.2"
     },
     "dependencies": {
         "@babel/core": "^7.16.0",
@@ -84,6 +88,7 @@
         "isomorphic-mongo-objectid": "^1.0.9",
         "moment": "^2.29.1",
         "react": "^16.13.1",
+        "react-calendar": "^3.5.0",
         "react-dom": "^16.13.1",
         "react-hot-loader": "^4.13.0",
         "react-jss": "^10.9.0",
@@ -94,7 +99,7 @@
         "webpack-dev-server": "^4.6.0"
     },
     "engines": {
-        "node": "~14.x.x",
-        "npm": "~7.17.x"
+        "node": "~16.13.x",
+        "npm": "~8.1.x"
     }
 }
