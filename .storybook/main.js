@@ -19,6 +19,7 @@ module.exports = {
             os: require.resolve('os-browserify/browser'),
             zlib: require.resolve('browserify-zlib'),
             constants: require.resolve('constants-browserify'),
+            util: require.resolve('util/'),
         })
         if (!config.plugins) config.plugins = []
         config.plugins.push(new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }))
