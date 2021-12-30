@@ -1,9 +1,9 @@
 // https://github.com/EnCiv/undebate-ssp/issues/17
 
-import { createUseStyles } from "react-jss"
-import React from "react"
-import moment from "moment"
-import ObjectID from "isomorphic-mongo-objectid"
+import { createUseStyles } from 'react-jss'
+import React from 'react'
+import moment from 'moment'
+import ObjectID from 'isomorphic-mongo-objectid'
 
 export const ElectionCreated = ({ electionMetadata }) => {
     const classes = useStyles()
@@ -11,7 +11,7 @@ export const ElectionCreated = ({ electionMetadata }) => {
     const formatDate = () => {
         console.log(ObjectID(electionMetadata._id).getDate())
         const date = moment(ObjectID(electionMetadata._id).getDate())
-        const formatted = date.format("DD MMMM YYYY, LTS")
+        const formatted = date.format('DD MMMM YYYY, LTS')
         return formatted
     }
 
@@ -25,17 +25,17 @@ export const ElectionCreated = ({ electionMetadata }) => {
 
 const useStyles = createUseStyles({
     electionCreated: {
-        color: "#262D33",
+        color: '#262D33',
     },
     header: {
-        lineHeight: "1.5rem",
+        lineHeight: '1.5rem',
         fontWeight: 600,
-        margin: "0.313rem 0rem",
+        margin: '0.313rem 0rem',
     },
     timestamp: {
-        fontSize: "0.875rem",
-        lineHeight: "1.313rem",
-        margin: "0.313rem 0rem",
-        opacity: "70%",
+        fontSize: '0.875rem',
+        lineHeight: '1.313rem',
+        margin: '0.313rem 0rem',
+        opacity: '70%',
     },
 })

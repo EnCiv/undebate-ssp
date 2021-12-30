@@ -48,7 +48,7 @@ const Template = args => {
 export const SubmitTest = Template.bind({})
 
 SubmitTest.args = {
-    name: "Submit",
+    name: 'Submit',
     disabled: false,
-    disableOnClick: true
+    disableOnClick: true,
 }

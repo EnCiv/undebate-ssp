@@ -1,13 +1,13 @@
-"use-strict"
+'use-strict'
 
 // https://github.com/EnCiv/undebate-ssp/issues/10
 
-import React, { useState } from "react"
-import { createUseStyles } from "react-jss"
-import SvgVideo from "../svgr/video"
-import SvgClock from "../svgr/clock"
-import TextareaAutosize from "react-textarea-autosize"
-import moment from "moment"
+import React, { useState } from 'react'
+import { createUseStyles } from 'react-jss'
+import SvgVideo from '../svgr/video'
+import SvgClock from '../svgr/clock'
+import TextareaAutosize from 'react-textarea-autosize'
+import moment from 'moment'
 
 export const ScriptTextInput = ({
     questionNumber,
@@ -21,20 +21,20 @@ export const ScriptTextInput = ({
     const [inputText, setInputText] = useState(defaultValue)
 
     const getWordCount = () => {
-        return inputText.split(" ").filter(word => {
-            return word != "" && word != "\n"
+        return inputText.split(' ').filter(word => {
+            return word != '' && word != '\n'
         }).length
     }
 
     const [wordCount, setWordCount] = useState(getWordCount())
 
     const formatDuration = minutes => {
-        const dur = moment.duration(minutes, "minutes")
-        const formatted = moment.utc(dur.asMilliseconds()).format("mm:ss")
+        const dur = moment.duration(minutes, 'minutes')
+        const formatted = moment.utc(dur.asMilliseconds()).format('mm:ss')
         return formatted
     }
 
-    const updateState = (event) => {
+    const updateState = event => {
         setInputText(event.target.value)
         setWordCount(getWordCount())
     }
@@ -65,9 +65,9 @@ export const ScriptTextInput = ({
                 onChange={event => {
                     updateState(event)
                 }}
-                onBlur={(event) => {
+                onBlur={event => {
                     updateState(event)
-                    const wc = getWordCount();
+                    const wc = getWordCount()
                     onDone({
                         value: inputText,
                         valid: wc <= maxWordCount && wc >= 1,
@@ -82,55 +82,55 @@ export const ScriptTextInput = ({
 
 const useStyles = createUseStyles({
     container: {
-        display: "flex",
-        flexDirection: "column",
-        fontFamily: "sans-serif",
-        color: "#262D33",
+        display: 'flex',
+        flexDirection: 'column',
+        fontFamily: 'sans-serif',
+        color: '#262D33',
     },
     scriptInfo: {
-        display: "flex",
-        justifyContent: "space-between",
-        padding: ".625rem",
-        fontSize: "0.875rem",
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: '.625rem',
+        fontSize: '0.875rem',
     },
     question: {
-        display: "flex",
-        alignItems: "center",
-        gap: ".4rem",
+        display: 'flex',
+        alignItems: 'center',
+        gap: '.4rem',
     },
     questionNum: {
         margin: 0,
     },
     questionName: {
-        margin: "0rem 0rem 0rem .4rem",
-        fontSize: "0.875rem",
+        margin: '0rem 0rem 0rem .4rem',
+        fontSize: '0.875rem',
     },
     quantity: {
-        display: "flex",
-        alignItems: "center",
+        display: 'flex',
+        alignItems: 'center',
     },
     time: {
-        display: "flex",
-        alignItems: "center",
-        gap: "0.438rem",
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.438rem',
     },
     duration: {
-        opacity: "70%",
+        opacity: '70%',
     },
     words: {
-        opacity: "70%",
-        marginLeft: "2.5rem",
+        opacity: '70%',
+        marginLeft: '2.5rem',
     },
     input: {
-        opacity: "70%",
-        background: "linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF",
-        padding: "0.938rem",
-        resize: "none",
-        border: "none",
-        borderRadius: "0.438rem",
-        fontSize: "1rem",
-        fontWeight: "500",
-        lineHeight: "1.875rem",
-        margin: "0.375rem 0rem",
+        opacity: '70%',
+        background: 'linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF',
+        padding: '0.938rem',
+        resize: 'none',
+        border: 'none',
+        borderRadius: '0.438rem',
+        fontSize: '1rem',
+        fontWeight: '500',
+        lineHeight: '1.875rem',
+        margin: '0.375rem 0rem',
     },
 })

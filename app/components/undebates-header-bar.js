@@ -1,21 +1,21 @@
 // https://github.com/EnCiv/undebate-ssp/issues/22
 
-"use strict"
+'use strict'
 
-import { createUseStyles } from "react-jss"
-import cx from "classnames"
+import { createUseStyles } from 'react-jss'
+import cx from 'classnames'
 
-import SearchButton from "./search-button"
-import InstructionsButton from "./instruction-button"
-import LinkButton from "./link-button"
-import SignInButton from "./sign-in-button"
-import SignUpButton from "./sign-up-button"
-import SubmitButton from "./submit"
+import SearchButton from './search-button'
+import InstructionsButton from './instruction-button'
+import LinkButton from './link-button'
+import SignInButton from './sign-in-button'
+import SignUpButton from './sign-up-button'
+import SubmitButton from './submit'
 
-import UserImage from "./user-image"
+import UserImage from './user-image'
 
-import LogoutSVG from "../svgr/log-out"
-import UndebateLogoSVG from "../svgr/undebate-logo"
+import LogoutSVG from '../svgr/log-out'
+import UndebateLogoSVG from '../svgr/undebate-logo'
 
 const UndebatesHeaderBar = props => {
     const { className, style, user, electionOM } = props
@@ -31,11 +31,11 @@ const UndebatesHeaderBar = props => {
     if (user) {
         userBtns = (
             <>
-                <SubmitButton name="Create New" onDone={handleCreateNew} />
+                <SubmitButton name='Create New' onDone={handleCreateNew} />
                 <div className={classes.userImageGroup}>
                     <div className={classes.hoverGroup}>
                         <span className={classes.userEmail}>{user.email}</span>
-                        <LinkButton href="/sign/out" style={{ padding: "1rem" }}>
+                        <LinkButton href='/sign/out' style={{ padding: '1rem' }}>
                             <LogoutSVG className={classes.svg} />
                             LOGOUT
                         </LinkButton>
@@ -68,68 +68,68 @@ export default UndebatesHeaderBar
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
     undebatesHeader: {
-        display: "flex",
-        justifyContent: "flex-end",
-        alignItems: "center",
-        padding: "2.5rem",
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        padding: '2.5rem',
     },
     buttonGroup: {
-        display: "flex",
-        justifyContent: "space-around",
-        gap: "2rem",
-        alignItems: "center",
+        display: 'flex',
+        justifyContent: 'space-around',
+        gap: '2rem',
+        alignItems: 'center',
     },
     svg: {
-        width: "1.25rem",
-        height: "1.25rem",
+        width: '1.25rem',
+        height: '1.25rem',
     },
     logo: {
-        height: "2.75rem",
-        width: "12.5rem",
-        marginRight: "auto",
+        height: '2.75rem',
+        width: '12.5rem',
+        marginRight: 'auto',
     },
     userImageGroup: {
-        display: "flex",
-        alignItems: "center",
+        display: 'flex',
+        alignItems: 'center',
         //background: "linear-gradient(0deg, #7470FF,#7470FF), #FFFFFF",
         background: theme.colorPrimary,
-        height: "3.25rem",
-        border: "none",
-        borderRadius: "2rem",
-        width: "auto",
-        "&:hover": {
-            "& > $hoverGroup": {
-                width: "19rem",
+        height: '3.25rem',
+        border: 'none',
+        borderRadius: '2rem',
+        width: 'auto',
+        '&:hover': {
+            '& > $hoverGroup': {
+                width: '19rem',
             },
         },
     },
     hoverGroup: {
-        transition: "width 0.5s",
-        display: "flex",
-        height: "3.25rem",
-        overflow: "hidden",
-        borderRadius: "2rem",
-        width: "0",
-        alignItems: "center",
-        justifyContent: "space-between",
+        transition: 'width 0.5s',
+        display: 'flex',
+        height: '3.25rem',
+        overflow: 'hidden',
+        borderRadius: '2rem',
+        width: '0',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     userEmail: {
-        opacity: "0.7",
-        color: "#FFFFFF",
-        marginLeft: "3rem",
+        opacity: '0.7',
+        color: '#FFFFFF',
+        marginLeft: '3rem',
     },
-    "@media screen and (max-width: 56rem)": {
+    '@media screen and (max-width: 56rem)': {
         undebatesHeader: {
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
         },
         logo: {
-            marginRight: "0",
-            width: "100rem",
+            marginRight: '0',
+            width: '100rem',
         },
         buttonGroup: {
-            flexDirection: "column",
+            flexDirection: 'column',
         },
     },
 }))

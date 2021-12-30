@@ -43,7 +43,7 @@ export const Invitation = props => {
             <div className={classes.send}>
                 <span>An invitation will be emailed to the moderator along with the script and a recording link</span>
                 <Submit
-                    name="Send Invitation"
+                    name='Send Invitation'
                     disabled={!isValid}
                     disableOnClick={true}
                     onDone={() => {
@@ -54,7 +54,7 @@ export const Invitation = props => {
             <div className={classes.form}>
                 <div className={classes.inputs}>
                     <ElectionTextInput
-                        name="Moderation Name"
+                        name='Moderation Name'
                         defaultValue={moderatorName}
                         onDone={({ valid, value }) => {
                             if (valid) {
@@ -64,7 +64,7 @@ export const Invitation = props => {
                         }}
                     />
                     <ElectionTextInput
-                        name="Email Address"
+                        name='Email Address'
                         defaultValue={moderatorEmail}
                         checkIsEmail
                         onDone={({ valid, value }) => {
@@ -76,7 +76,7 @@ export const Invitation = props => {
                     />
                 </div>
                 <div className={classes.greeting}>
-                    <label htmlFor="greeting" className={classes.label}>
+                    <label htmlFor='greeting' className={classes.label}>
                         Invitation greeting
                     </label>
                     <span className={classes.desc}>
@@ -88,7 +88,7 @@ export const Invitation = props => {
                             setGreeting(text)
                         }}
                         className={classes.textarea}
-                        name="greeting"
+                        name='greeting'
                         minRows={12}
                         defaultValue={greeting}
                     />

@@ -1,9 +1,9 @@
-"use strict"
+'use strict'
 
-import { createUseStyles } from "react-jss"
-import cx from "classnames"
+import { createUseStyles } from 'react-jss'
+import cx from 'classnames'
 
-import DefaultUserSVG from "../svgr/default-user"
+import DefaultUserSVG from '../svgr/default-user'
 
 const UserImage = props => {
     const { className, style } = props
@@ -18,17 +18,17 @@ const UserImage = props => {
 
 const useStyles = createUseStyles({
     userImage: {
-        height: "70%",
-        width: "70%",
+        height: '70%',
+        width: '70%',
     },
     background: {
-        background: "white",
-        borderRadius: "2rem",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "3.25rem",
-        width: "3.25rem",
+        background: 'white',
+        borderRadius: '2rem',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '3.25rem',
+        width: '3.25rem',
     },
 })
 
