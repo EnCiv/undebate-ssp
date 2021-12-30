@@ -5,6 +5,7 @@ import { hot } from 'react-hot-loader'
 import WebComponents from '../web-components'
 import Footer from './footer'
 import { ErrorBoundary } from 'civil-client'
+import '../../assets/styles/index.css'
 
 class App extends React.Component {
     render() {
