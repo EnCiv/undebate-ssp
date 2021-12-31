@@ -38,6 +38,8 @@ A storybook browser window will open up:
 
 ![image](https://user-images.githubusercontent.com/3317487/147786004-a6cf5bb9-030a-4011-b0e3-eabc4a1f4c38.png)
 
+Storybook allows us to create React components independently, test them, and leaves a visual catalog of our components for the next contributer. Also, as soon as you get your new component and story started, you can build/edit them on the fly and the browser will update as you make your changes. (Because Storybook uses Webpack to push updates to the browser). 
+
 # Prettier
 
 ## If you don't already have [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for VSC installed, go [here](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and click **Install**.
@@ -53,7 +55,7 @@ If you are not using VSC, prettier will also be run on the changed files before 
 
 This project is using ESLint to help prevent bugs. This works really well within the Visual Studio Code environment where it higlights the issues, and can auto fix some of them.
 
-There is no requirement to resolve lint issues, and many that are more preference than bug related have been turned off. If there aare rules that we should turn off, or add - its worth discussing. The goal is not to enforce a particular coding style to make it "easier to read", many people work on this project who are experienced with different coding styles. The goal is to prevent bugs. The best coding style is the working code style.
+There is no requirement to resolve lint issues, and many that are more preference than bug related have been turned off. If there are rules that we should turn off, or add - its worth discussing. The goal is not to enforce a particular coding style to make it "easier to read", many people work on this project who are experienced with different coding styles. The goal is to prevent bugs. The best coding style is the working code style.
 
 One burden is that if we create new input components, we need to push them to the array in .eslintrc.js/module.exports.rules[jsx-a11y/label-has-associated-control][1].controlComponents
 
