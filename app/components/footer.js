@@ -1,7 +1,6 @@
-'use strict'
-
 import React from 'react'
 import { createUseStyles } from 'react-jss'
+
 const useStyles = createUseStyles({
     footer: {
         position: 'absolute',
@@ -19,15 +18,13 @@ const useStyles = createUseStyles({
     },
 })
 
-export function Footer() {
+export default function Footer() {
     const classes = useStyles()
     return (
-        <div className={classes['footer']}>
-            <a href='https://enciv.org/terms' target='_blank'>
+        <div className={classes.footer}>
+            <a href='https://enciv.org/terms' target='_blank' rel='noreferrer'>
                 Terms
             </a>
         </div>
     )
 }
-
-export default Footer

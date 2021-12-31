@@ -5,11 +5,10 @@ import React from 'react'
 import moment from 'moment'
 import ObjectID from 'isomorphic-mongo-objectid'
 
-export const ElectionCreated = ({ electionMetadata }) => {
+export default function ElectionCreated({ electionMetadata }) {
     const classes = useStyles()
 
     const formatDate = () => {
-        console.log(ObjectID(electionMetadata._id).getDate())
         const date = moment(ObjectID(electionMetadata._id).getDate())
         const formatted = date.format('DD MMMM YYYY, LTS')
         return formatted

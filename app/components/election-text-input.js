@@ -1,12 +1,10 @@
-'use strict'
-
 // https://github.com/EnCiv/undebate-ssp/issues/9
 
 import { useState, useRef, useEffect, React } from 'react'
 import { createUseStyles } from 'react-jss'
 import IsEmail from 'isemail'
 
-const ElectionTextInput = props => {
+function ElectionTextInput(props) {
     const classes = useStyles()
     const { name = '', defaultValue = '', checkIsEmail = false, onDone = () => {} } = props
 
@@ -26,6 +24,7 @@ const ElectionTextInput = props => {
         if (e.key === 'Enter') inputRef.current.blur()
     }
 
+    // eslint-disable-next-line no-unused-vars
     const handleDone = e => {
         if (isTextValid()) {
             onDone({ valid: true, value: text })
@@ -53,7 +52,7 @@ const ElectionTextInput = props => {
                 {name}
             </label>
             <input
-                key={name + 'input'}
+                key={`${name}input`}
                 type={checkIsEmail ? 'email' : 'text'}
                 className={classes.input}
                 value={text}

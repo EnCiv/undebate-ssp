@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 
-import { ScriptTextInput } from '../app/components/script_text_input'
+import ScriptTextInput from '../app/components/script-text-input'
 
 export default {
     title: 'Script Text Input',

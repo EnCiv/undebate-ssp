@@ -9,7 +9,8 @@ export default {
 }
 
 const Template = args => {
-    const [validity, setValidity] = useState({ valid: true, value: args.defaultValue })
+    const { defaultValue } = args
+    const [validity, setValidity] = useState({ valid: true, value: defaultValue })
     return (
         <div>
             <ElectionHeader {...args} onDone={v => setValidity(v)} />

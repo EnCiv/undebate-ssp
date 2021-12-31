@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // https://github.com/EnCiv/undebate-ssp/issues/50
 
 import React from 'react'

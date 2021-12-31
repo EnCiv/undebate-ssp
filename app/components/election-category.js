@@ -1,5 +1,3 @@
-'use strict'
-
 // from issue: https://github.com/EnCiv/undebate-ssp/issues/5
 
 import humanizeString from 'humanize-string'
@@ -14,7 +12,7 @@ import {
     SvgReminderSent,
     SvgSent,
     SvgVideoSubmitted,
-} from './lib/svg.js'
+} from './lib/svg'
 
 const statusInfoEnum = {
     completed: { icon: <SvgCompleted /> },
@@ -38,13 +36,10 @@ const statusInfoEnum = {
 
 function ProgressBar(props) {
     const classes = useStyles(props)
-    const {
-        // percentDone // used in styles
-    } = props
     return <div className={classes.progressBar} />
 }
 
-export function ElectionCategory(props) {
+function ElectionCategory(props) {
     const classes = useStyles(props)
     const { categoryName = '', statusObjs = [], className = '' } = props
 
@@ -53,10 +48,8 @@ export function ElectionCategory(props) {
     const toCleanStatusObj = val => {
         if (Array.isArray(val)) {
             return val.reduce((obj, v) => {
-                if (typeof v === 'string') {
-                    v = { [v]: true }
-                }
-                return { ...obj, ...v }
+                const vv = typeof v === 'string' ? { [v]: true } : v
+                return { ...obj, ...vv }
             }, {})
         } else if (typeof val === 'string') {
             return { [val]: true }
@@ -124,7 +117,7 @@ export function ElectionCategory(props) {
         .filter(v => React.isValidElement(v))
         .reduce((previous, v, index, source) => {
             const result = [...previous, v]
-            if (source.length - 1 != index) {
+            if (source.length - 1 !== index) {
                 result.push(<hr className={classes.lineBreak} />)
             }
             return result

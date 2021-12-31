@@ -1,12 +1,11 @@
 // https://github.com/EnCiv/undebate-ssp/issues/6
 
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import svg from '../../assets/svg/clock-solid.svg'
 import ClockSolidSVG from '../svgr/clock-solid'
 
-const ElectionTimeInput = props => {
+function ElectionTimeInput(props) {
     const { className, style, defaultValue = '', onDone = () => {} } = props
     const [time, setTime] = useState(defaultValue)
     const classes = useStyles(time)
@@ -20,8 +19,8 @@ const ElectionTimeInput = props => {
         setTime(e.target.value)
     }
 
-    const handleDone = e => {
-        onDone({ valid: time ? true : false, value: time })
+    const handleDone = () => {
+        onDone({ valid: !!time, value: time })
     }
 
     return (

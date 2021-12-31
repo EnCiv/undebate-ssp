@@ -1,11 +1,7 @@
-'use strict'
-
 // From issue: https://github.com/EnCiv/undebate-ssp/issues/7
-
 import React, { useState } from 'react'
-
 import { createUseStyles } from 'react-jss'
-import ElectionDateInput from '../app/components/election_date_input'
+import ElectionDateInput from '../app/components/election-date-input'
 
 export default {
     title: 'Election Date Input',
@@ -18,7 +14,7 @@ const useStyles = createUseStyles({
 
 const Template = args => {
     const [doneMessage, setDoneMessage] = useState('')
-    const [valid, setValid] = useState('')
+    const [validValue, setValid] = useState('')
 
     return (
         <div className={useStyles().dateInput}>
@@ -29,7 +25,7 @@ const Template = args => {
                     setDoneMessage(value.toString().substring(0, 15))
                 }}
             />
-            Valid: {valid}
+            Valid: {validValue}
             <br />
             onDone Value: {doneMessage}
         </div>

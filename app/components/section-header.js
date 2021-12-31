@@ -5,7 +5,7 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 
-export const SectionHeader = ({ name, className }) => {
+export default function SectionHeader({ name, className }) {
     const classes = useStyles()
 
     return (

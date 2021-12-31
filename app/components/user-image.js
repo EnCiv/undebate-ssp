@@ -1,11 +1,10 @@
-'use strict'
-
+import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
 import DefaultUserSVG from '../svgr/default-user'
 
-const UserImage = props => {
+function UserImage(props) {
     const { className, style } = props
     const classes = useStyles()
 

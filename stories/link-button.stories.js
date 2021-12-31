@@ -1,5 +1,5 @@
+import React from 'react'
 import LinkButton from '../app/components/link-button'
-
 import InstructionSVG from '../app/svgr/home'
 
 export default {

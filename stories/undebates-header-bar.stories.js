@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/undebate-ssp/issues/22
 
+import React, { useState } from 'react'
 import UndebatesHeaderBar from '../app/components/undebates-header-bar'
-import { useState } from 'react'
 
 export default {
     title: 'Undebates Header Bar',
