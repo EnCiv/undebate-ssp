@@ -81,11 +81,11 @@ These notes are pretty general and always open to reevaluation. Also, we want to
 
 ```js
 // https://github.com/EnCiv/undebate-ssp/issue/NUMBER
-
+import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
-const MyComponent = props => {
+export default function MyComponent( props ) {
     const { className, style } = props
     const classes = useStylesFromThemeFunction(props)
 
@@ -95,8 +95,9 @@ const MyComponent = props => {
         </div>
     )
 }
+
 // we want to see the code first, so we put the classes at the bottom
-const useStylesFromThemeFunction = createUseStyles(theme => ({
+const useStylesFromThemeFunction = createUseStyles( theme => ({
     wrapper: {
         background: theme.colorPrimary,
         padding: '1rem',
