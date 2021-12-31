@@ -1,8 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/22
 
-'use strict'
-
-import { createUseStyles } from 'react-jss'
+import React, { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
 import SearchButton from './search-button'
@@ -17,8 +15,9 @@ import UserImage from './user-image'
 import LogoutSVG from '../svgr/log-out'
 import UndebateLogoSVG from '../svgr/undebate-logo'
 
-const UndebatesHeaderBar = props => {
+function UndebatesHeaderBar(props) {
     const { className, style, user, electionOM } = props
+    // eslint-disable-next-line no-unused-vars
     const [electionObj, electionMethods] = electionOM
 
     const classes = useStylesFromThemeFunction(props)

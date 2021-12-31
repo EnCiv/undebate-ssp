@@ -1,5 +1,3 @@
-'use strict'
-
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
@@ -7,7 +5,7 @@ import cx from 'classnames'
 // A link styled as a button for cases where a button should provide a simple redirect
 // Accepts 'href' prop and can take in text/svgs as children
 
-const LinkButton = props => {
+function LinkButton(props) {
     const { className, style, href, children } = props
     const classes = useStyles()
     return (

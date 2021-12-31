@@ -1,9 +1,7 @@
-'use strict'
-
 import React from 'react'
 import MagnifyingGlassSVG from '../svgr/magnifying-glass'
 
-const SearchButton = props => {
+function SearchButton(props) {
     const { className, style } = props
     return <MagnifyingGlassSVG className={className} style={style} />
 }

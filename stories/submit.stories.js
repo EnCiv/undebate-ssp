@@ -1,8 +1,7 @@
 // https://github.com/EnCiv/undebate-ssp/issues/14
 import React, { useState } from 'react'
-
-import Submit from '../app/components/submit'
 import { createUseStyles } from 'react-jss'
+import Submit from '../app/components/submit'
 
 export default {
     title: 'Submit',
@@ -38,6 +37,7 @@ const Template = args => {
                 {...args}
                 onDone={bool => {
                     setDone(bool)
+                    // eslint-disable-next-line no-console
                     console.log(done)
                 }}
             />

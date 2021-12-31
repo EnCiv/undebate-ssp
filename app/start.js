@@ -1,12 +1,10 @@
-'use strict'
-
-var civilServer = require('civil-server').default
-const path = require('path')
-import { Iota } from 'civil-server'
-import civilIotas from '../node_modules/civil-server/iotas.json'
-import undebateIotas from '../node_modules/undebate/iotas.json'
+import CivilServer, { Iota } from 'civil-server'
+import civilIotas from 'civil-server/iotas.json'
+import undebateIotas from 'undebate/iotas.json'
 import iotas from '../iotas.json'
 import App from './components/app'
+
+const path = require('path')
 
 Iota.load(civilIotas)
 Iota.load(undebateIotas)
@@ -14,7 +12,7 @@ Iota.load(iotas) // set the initial data for the database
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function start() {
     try {
-        const server = new civilServer()
+        const server = new CivilServer()
         server.App = App // set the outer React wrapper for this site
         await server.earlyStart() // connect to the database, and such
         server.routesDirPaths.push(path.resolve(__dirname, '../node_modules/undebate/dist/routes'))

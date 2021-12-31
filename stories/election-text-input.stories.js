@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/undebate-ssp/issues/9
 
+import React, { useState } from 'react'
 import ElectionTextInput from '../app/components/election-text-input'
-import { useState } from 'react'
 
 export default {
     title: 'Election Text Input',

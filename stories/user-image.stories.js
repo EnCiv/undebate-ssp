@@ -1,3 +1,4 @@
+import React from 'react'
 import UserImage from '../app/components/user-image'
 
 export default {

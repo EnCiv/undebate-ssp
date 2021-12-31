@@ -1,8 +1,7 @@
 // https://github.com/EnCiv/undebate-ssp/issues/15
 import React from 'react'
-
-import { SectionHeader } from '../app/components/section_header'
 import { createUseStyles } from 'react-jss'
+import SectionHeader from '../app/components/section-header'
 
 export default {
     title: 'Section Header',

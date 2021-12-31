@@ -3,7 +3,7 @@
 import React from 'react'
 import SvgHome from '../svgr/home'
 
-const HomeButton = () => {
+function HomeButton() {
     return <SvgHome />
 }
 

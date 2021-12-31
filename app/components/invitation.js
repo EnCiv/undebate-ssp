@@ -8,7 +8,7 @@ import ElectionTextInput from './election-text-input'
 import Submit from './submit'
 import SvgSpeaker from '../svgr/speaker'
 
-export const Invitation = props => {
+export function Invitation(props) {
     const classes = useStyles()
     const { className, style, electionOM } = props
     const { electionObj, electionMethods } = electionOM
@@ -22,7 +22,7 @@ export const Invitation = props => {
         greeting
             .trim()
             .split(' ')
-            .filter(word => word != '' && word != '\n').length <= 400
+            .filter(word => word !== '' && word !== '\n').length <= 400
 
     const checkValid = () => validGreeting() && moderatorName.length > 0 && moderatorEmail.length > 0
 
@@ -45,7 +45,7 @@ export const Invitation = props => {
                 <Submit
                     name='Send Invitation'
                     disabled={!isValid}
-                    disableOnClick={true}
+                    disableOnClick
                     onDone={() => {
                         electionMethods.sendInvitation()
                     }}
@@ -76,22 +76,24 @@ export const Invitation = props => {
                     />
                 </div>
                 <div className={classes.greeting}>
-                    <label htmlFor='greeting' className={classes.label}>
+                    <label className={classes.label}>
                         Invitation greeting
+                        <div className={classes.instruction}>
+                            <span className={classes.desc}>
+                                This would be included in the invite email for the moderator. Not more than 400 words.
+                            </span>
+                        </div>
+                        <TextareaAutosize
+                            onBlur={e => {
+                                const text = e.target.value
+                                setGreeting(text)
+                            }}
+                            className={classes.textarea}
+                            name='greeting'
+                            minRows={12}
+                            defaultValue={greeting}
+                        />
                     </label>
-                    <span className={classes.desc}>
-                        This would be included in the invite email for the moderator. Not more than 400 words.
-                    </span>
-                    <TextareaAutosize
-                        onBlur={e => {
-                            const text = e.target.value
-                            setGreeting(text)
-                        }}
-                        className={classes.textarea}
-                        name='greeting'
-                        minRows={12}
-                        defaultValue={greeting}
-                    />
                 </div>
             </div>
             <SvgSpeaker className={classes.speaker} />
@@ -131,8 +133,11 @@ const useStyles = createUseStyles({
         margin: '0 0.625rem',
         fontWeight: '600',
     },
+    instruction: {
+        marginBottom: '2rem',
+    },
     desc: {
-        margin: '.3rem .4rem 0.625rem',
+        margin: '.3rem 0rem 0.625rem 0rem',
         fontSize: '.875rem',
         color: '#9da0a2',
     },
@@ -141,6 +146,7 @@ const useStyles = createUseStyles({
         flexDirection: 'column',
     },
     textarea: {
+        boxSizing: 'border-box',
         width: '100%',
         borderRadius: '0.625rem',
         backgroundColor: '#d4d5d6',

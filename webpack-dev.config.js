@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const path = require('path')
 const webpack = require('webpack')
 
@@ -23,6 +24,10 @@ module.exports = {
                 exclude: /node_modules/,
                 use: 'babel-loader',
             },
+            {
+                test: /\.css$/i,
+                use: 'css-loader',
+            },
         ],
     },
     resolve: {
@@ -42,6 +47,12 @@ module.exports = {
         hot: 'only',
         host: '0.0.0.0',
         port: 3011,
+        client: {
+            overlay: {
+                errors: true,
+                warnings: false,
+            },
+        },
         proxy: {
             // the dev server will proxy all traffic other than publicPath to target below.
             context: () => true,

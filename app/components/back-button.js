@@ -3,7 +3,7 @@
 import React from 'react'
 import SvgChevronLeft from '../svgr/chevron-left'
 
-const BackButton = () => {
+function BackButton() {
     return <SvgChevronLeft />
 }
 
