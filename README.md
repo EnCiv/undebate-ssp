@@ -14,7 +14,9 @@ In 2019 we created [Undebates](https://github.com/EnCiv/undebate) and launched t
 
 # Getting Started
 
-The following has been tested using node v16.13.0 and npm v8.1.0 on Windows 10 and MacOs. There are known issues using npm < 7. During install, you can ignore the warning about incompatibility with previous versions of node/npm - we need to go back to those packages and update their dependencies. Also, Node version 17 will not work, and in general the odd versions are experimental so we don't try to use those. If you already tried to build this with version 17, you need to install version 16 and then do npm ci to start clean.
+## **Slack** - Use this form to get an invite to the [slack workspace](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform)
+
+The following has been tested using node v16.13.0 and npm v8.1.0 on Windows 10 and MacOs. There are known issues using npm < 7. During install, you can ignore the warning about incompatibility with previous versions of node/npm - we need to go back to those packages and update their dependencies. Also, Node version 17 will not work, and in general the odd versions are experimental so we don't try to use those. If you already tried to build this with version 17, you need to install version 16 and then do `npm ci` to start clean.
 
 Below are specific instructions for cloning and running storybook on your local system using your CLI of choice:
 
@@ -32,16 +34,38 @@ npm install
 npm run storybook
 ```
 
-![image](https://user-images.githubusercontent.com/3317487/147786004-a6cf5bb9-030a-4011-b0e3-eabc4a1f4c38.png)
-A storybook browser window will open up.
+A storybook browser window will open up:
 
-## This is the beginning phase of the project.
+![image](https://user-images.githubusercontent.com/3317487/147786004-a6cf5bb9-030a-4011-b0e3-eabc4a1f4c38.png)
+
+# Prettier
+
+## If you don't already have [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for VSC installed, go [here](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and click **Install**.
+
+Prettier makes some spacing and the use of quotes and a few other things consistent across the project. It's really handy when using Visual Studio Code (see below) to be able to just save the file and have the indenting and formatting automatically fixed up. This can help find problems sometimes, and save some of the tedium.
+
+This repo has a .vscode/settings.json file with the basic configuation for using prettier setup for this workspace. It will not override the configuration for other workspaces.
+If you are not using VSC, prettier will also be run on the changed files before you commit, but see if prettier is available for your editor and post instuctions here.
+
+# ESLint
+
+## If you don't already have [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for VSC installed, go [here](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and click **Install**.
+
+This project is using ESLint to help prevent bugs. This works really well within the Visual Studio Code environment where it higlights the issues, and can auto fix some of them.
+
+There is no requirement to resolve lint issues, and many that are more preference than bug related have been turned off. If there aare rules that we should turn off, or add - its worth discussing. The goal is not to enforce a particular coding style to make it "easier to read", many people work on this project who are experienced with different coding styles. The goal is to prevent bugs. The best coding style is the working code style.
+
+One burden is that if we create new input components, we need to push them to the array in .eslintrc.js/module.exports.rules[jsx-a11y/label-has-associated-control][1].controlComponents
+
+## See the Github **[Issues](https://github.com/EnCiv/undebate-ssp/issues)** for tasks that need doing
 
 -   We are creating React components based on UI design in [figma](https://www.figma.com/proto/IQKPx02pkBErpmhQoECoq9/Undebate?node-id=123%3A1694&scaling=min-zoom&page-id=102%3A2&starting-point-node-id=123%3A1694)
 
--   We are breaking the UI down into React components, and we are creating [issues](https://github.com/EnCiv/undebate-ssp/issues) for each component.
+-   For React work, look for issues with a **React** tag.
 
--   Each component goes into app/components
+-   There are also some node and non-rendering client side tasks marked with the **Javascript** tag.
+
+-   Each React component goes into app/components
 
 -   For each component we will also build a story in stories/
 
@@ -71,7 +95,7 @@ const MyComponent = props => {
         </div>
     )
 }
-// by convention we put the classes at the bottom
+// we want to see the code first, so we put the classes at the bottom
 const useStylesFromThemeFunction = createUseStyles(theme => ({
     wrapper: {
         background: theme.colorPrimary,
@@ -161,17 +185,3 @@ function renderSomething(){
     return <SvgTrashCan />
 }
 ```
-
-# Slack
-
-Use this form to join the [slack workspace](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform)
-
-# Prettier
-
-This project is using prettier. This makes some spacing and the use of quotes and a few other things consistent across the project. It's really handy when using Visual Studio Code (see below) to be able to just save the file and have the formatting automatically fixed up. This can help find problems some times, or save some of the tedium.
-
-## To get prettier in Visual Studio Code
-
-This repo has a .vscode/settings.json file with the basic configuation for using prettier setup for this workspace. It will not override the configuration for other workspaces. If you don't already have [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for VSC installed, go [here](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and click **Install**.
-
-If you are not using VSC prettier will also be run before you commit, but see if prettier is available for your editor and post instuctions here.
