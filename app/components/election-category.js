@@ -145,7 +145,6 @@ const useStyles = createUseStyles({
         alignItems: 'center',
     }),
     categoryText: {
-        textTransform: 'capitalize',
         flex: 1,
     },
     grow: { flex: '1 1 100%' },
