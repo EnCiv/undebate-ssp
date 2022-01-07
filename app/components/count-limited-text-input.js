@@ -8,7 +8,17 @@ export default function CountLimitedTextInput({ name, maxCount, defaultValue, on
     const [inputText, setInputText] = useState(defaultValue)
 
     const updateState = event => {
-        setInputText(event.target.value)
+        const input = event.target.value
+        const inputLength = input.length
+        const recentLength = inputText.length
+        if (recentLength <= maxCount) {
+            const diffLength = maxCount - recentLength
+            if (inputLength <= diffLength) {
+                setInputText(input)
+            } else {
+                setInputText(input.substring(0, maxCount))
+            }
+        }
     }
 
     return (
@@ -21,6 +31,7 @@ export default function CountLimitedTextInput({ name, maxCount, defaultValue, on
             </div>
             <TextareaAutosize
                 className={classes.input}
+                value={inputText}
                 onChange={event => {
                     updateState(event)
                 }}

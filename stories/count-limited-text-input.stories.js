@@ -22,9 +22,15 @@ const Template = args => {
 }
 
 export const CountLimitedTextInputTest = Template.bind({})
-
 CountLimitedTextInputTest.args = {
     name: 'Question 2',
     maxCount: 250,
     defaultValue: '',
+}
+
+export const CountLimitedTextInputDefaultValue = Template.bind({})
+CountLimitedTextInputDefaultValue.args = {
+    name: 'Question 2',
+    maxCount: 250,
+    defaultValue: 'What is your favorite pet?',
 }
