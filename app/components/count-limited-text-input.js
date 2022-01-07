@@ -7,17 +7,8 @@ export default function CountLimitedTextInput({ name, maxCount, defaultValue, on
     const classes = useStyles()
     const [inputText, setInputText] = useState(defaultValue)
 
-    const getWordCount = () => {
-        return inputText.split(' ').filter(word => {
-            return word !== '' && word !== '\n'
-        }).length
-    }
-
-    const [wordCount, setWordCount] = useState(getWordCount())
-
     const updateState = event => {
         setInputText(event.target.value)
-        setWordCount(getWordCount())
     }
 
     return (
@@ -25,7 +16,7 @@ export default function CountLimitedTextInput({ name, maxCount, defaultValue, on
             <div className={classes.scriptInfo}>
                 <div className={classes.question}>{name}</div>
                 <div className={classes.quantity}>
-                    ({wordCount}/{maxCount})
+                    ({inputText.length}/{maxCount})
                 </div>
             </div>
             <TextareaAutosize
@@ -33,11 +24,10 @@ export default function CountLimitedTextInput({ name, maxCount, defaultValue, on
                 onChange={event => {
                     updateState(event)
                 }}
-                onBlur={event => {
-                    updateState(event)
+                onBlur={() => {
                     onDone({
                         value: inputText,
-                        valid: wordCount <= maxCount && wordCount >= 1,
+                        valid: inputText.length <= maxCount && inputText.length >= 1,
                     })
                 }}
             >
