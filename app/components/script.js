@@ -8,10 +8,10 @@ import ScriptTextInput from './script-text-input'
 const defaults = {
     description: `Below is an auto-generated script that will be emailed to the moderator. The moderator will record a
                   segment based on each section of the script. If you wish to make any changes, go ahead!`,
-    firstAnswer: 'Our first question is: "{question}", ...',
+    firstAnswer: 'Our first question is "{question}", ...',
     middleAnswer: 'Our next question is "{question}", ...',
     lastAnswer: 'Consectetur adipiscing elit',
-    firstQuestion: '{moderator} welcomes the viewers and asks the candidate to introduce themselves',
+    firstQuestion: '{moderator} welcomes the viewers and asks the candidates: "{question}"',
     middleQuestion: '{moderator} thanks the candidates and asks: "{question}" ',
     lastQuestion:
         '{moderator} thanks candidates for answering the previous question and thanks the viewer for watching',
@@ -21,9 +21,9 @@ const defaults = {
 }
 
 const processTemplate = (template, substitutions) =>
-    Object.entries(substitutions).reduce((filledTemplate, { key, value }) => {
+    Object.entries(substitutions).reduce((filledTemplate, [key, value]) => {
         return filledTemplate.replace(`{${key}}`, value == null ? '' : value)
-    })
+    }, template)
 
 const numberedToArray = numObj => {
     const val = []
@@ -42,11 +42,8 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
     const script = numberedToArray(electionObj.script)
     const questions = numberedToArray(electionObj.questions)
     const classes = useStyles()
-    if (questions.length === 0) {
-        return null
-    }
     const substitutions = { moderator: electionObj.moderator.name, question: questions[0] }
-    return (
+    return questions.length === 0 ? null : (
         <div className={`${className} ${classes.page}`} style={style}>
             <span className={classes.submitContainer}>
                 {electionMethods.areQuestionsLocked() ? (
@@ -61,9 +58,11 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
                         }
                     />
                 ) : (
-                    <span className={classes.submitButton}>
-                        <Submit onDone={() => onDone(true, { script })} />
-                    </span>
+                    <Submit
+                        name={script.length === 0 ? 'Submit' : 'Edit'}
+                        onDone={() => onDone(true, { script })}
+                        className={classes.submitButton}
+                    />
                 )}
             </span>
             <div className={classes.scripts}>
@@ -84,20 +83,17 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
                                 questionName={processTemplate(defaults.middleQuestion, middleSub)}
                                 maxWordCount={defaults.maxWordCount}
                                 wordsPerMinute={defaults.wordsPerMin}
-                                defaultValue={script[i]?.text || processTemplate(defaults.middleAnswer, middleSub)}
+                                defaultValue={script[i + 1] || processTemplate(defaults.middleAnswer, middleSub)}
                             />
                         </span>
                     )
                 })}
                 <ScriptTextInput
                     questionNumber={questions.length + 1}
-                    questionName={processTemplate(defaults.lastQuestion, {
-                        ...substitutions,
-                        question: questions.at(-1),
-                    })}
+                    questionName={processTemplate(defaults.lastQuestion, substitutions)}
                     maxWordCount={defaults.maxWordCount}
                     wordsPerMinute={defaults.wordsPerMin}
-                    defaultValue={script.at(-1) || processTemplate(defaults.lastAnswer, substitutions)}
+                    defaultValue={script[questions.length] || processTemplate(defaults.lastAnswer, substitutions)}
                 />
             </div>
         </div>
@@ -113,11 +109,3 @@ const useStyles = createUseStyles({
     cardHeader: { color: 'white', fontSize: '1.1rem', lineHeight: '.5rem' },
     page: {},
 })
-
-// Questions to Confirm:
-// 1. Should the first question always be the same default or given? Right now given, but doesn't matter. (ask about this)
-// 4. Is skipping from 1 -> 4 acceptable behavior when a question is deleted?
-// ElectionObj Questions:
-// 2. I'm assuming that the scripts are in the electionObj. If that isn't true, how are they passed? (probably just not documented; ask about it)
-// 3. In questions, can the numbers just be array indexes instead of objects in the array? Empty spots can be null.
-// 5. Is hasSubmittedScript an election method?
