@@ -5,6 +5,8 @@ import ElectionCategory from './election-category'
 
 import ScriptTextInput from './script-text-input'
 
+// https://github.com/EnCiv/undebate-ssp/issues/49
+
 const defaults = {
     description: `Below is an auto-generated script that will be emailed to the moderator. The moderator will record a
                   segment based on each section of the script. If you wish to make any changes, go ahead!`,
