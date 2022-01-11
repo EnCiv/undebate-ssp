@@ -23,28 +23,22 @@ export const Default = Template.bind({})
 Default.args = {
     electionOM: [
         {
-            questions: [
-                {
-                    number: 1,
-                    text: 'What is your name and background?',
-                },
-                {
-                    number: 2,
+            questions: {
+                0: {
                     text: 'What is your favorite color?',
+                    time: '30',
                 },
-                {
-                    number: 3,
+                1: {
                     text: 'Do you have a pet?',
+                    time: '60',
                 },
-                {
-                    number: 4,
+                2: {
                     text: 'Should we try to fix income inequality?',
+                    time: '90',
                 },
-            ],
-            moderator: {
-                name: 'Bill Smith',
             },
             script: [],
+            moderator: { name: 'Bill Smith' },
         },
         { areQuestionsLocked: () => false },
     ],
@@ -58,7 +52,7 @@ Locked.args = {
 export const Edit = Template.bind({})
 Edit.args = {
     electionOM: [
-        { ...Default.args.electionOM[0], script: [{ number: 1, text: 'Lorem Ipsum Dolor Amet' }] },
+        { ...Default.args.electionOM[0], script: [{ number: 0, text: 'Lorem Ipsum Dolor Amet' }] },
         Default.args.electionOM[1],
     ],
 }

@@ -27,14 +27,12 @@ const processTemplate = (template, substitutions) =>
         return filledTemplate.replace(`{${key}}`, value == null ? '' : value)
     }, template)
 
-const numberedToArray = numObj => {
-    const val = []
-    numObj?.forEach(v => {
-        val[v.number - 1] = v.text
-    })
-    val.map(v => (v === undefined ? null : v))
-    return val
-}
+const numberedToArray = numObj =>
+    Object.entries(numObj).reduce((array, [k, v]) => {
+        const tempArray = array
+        tempArray[k] = v
+        return array
+    }, [])
 
 // First  question: template_1, given question, given answer
 // Middle question: template_2, given question, given answer
@@ -44,7 +42,7 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
     const script = numberedToArray(electionObj.script)
     const questions = numberedToArray(electionObj.questions)
     const classes = useStyles()
-    const substitutions = { moderator: electionObj.moderator.name, question: questions[0] }
+    const substitutions = { moderator: electionObj.moderator.name, question: questions[0]?.text }
     return questions.length === 0 ? null : (
         <div className={`${className} ${classes.page}`} style={style}>
             <span className={classes.submitContainer}>
@@ -74,10 +72,10 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
                     questionName={processTemplate(defaults.firstQuestion, substitutions)}
                     maxWordCount={defaults.maxWordCount}
                     wordsPerMinute={defaults.wordsPerMin}
-                    defaultValue={script[0] || processTemplate(defaults.firstAnswer, substitutions)}
+                    defaultValue={script[0]?.text || processTemplate(defaults.firstAnswer, substitutions)}
                 />
                 {questions.slice(1).map((q, i) => {
-                    const middleSub = { ...substitutions, question: q }
+                    const middleSub = { ...substitutions, question: q?.text }
                     return (
                         <span className={classes.scriptTextInput}>
                             <ScriptTextInput
@@ -85,7 +83,7 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
                                 questionName={processTemplate(defaults.middleQuestion, middleSub)}
                                 maxWordCount={defaults.maxWordCount}
                                 wordsPerMinute={defaults.wordsPerMin}
-                                defaultValue={script[i + 1] || processTemplate(defaults.middleAnswer, middleSub)}
+                                defaultValue={script[i + 1]?.text || processTemplate(defaults.middleAnswer, middleSub)}
                             />
                         </span>
                     )
@@ -95,7 +93,7 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
                     questionName={processTemplate(defaults.lastQuestion, substitutions)}
                     maxWordCount={defaults.maxWordCount}
                     wordsPerMinute={defaults.wordsPerMin}
-                    defaultValue={script[questions.length] || processTemplate(defaults.lastAnswer, substitutions)}
+                    defaultValue={script[questions.length]?.text || processTemplate(defaults.lastAnswer, substitutions)}
                 />
             </div>
         </div>
