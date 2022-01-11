@@ -19,6 +19,12 @@ export default function Questions({ electionOM, onDone }) {
         setIsValid(checkValid())
     }, [isValid, electionMethods, questions])
 
+    useEffect(() => {
+        if (!questions.includes('')) {
+            setError('')
+        }
+    }, [questions, error])
+
     const addQuestion = () => {
         if (!questions.includes('')) {
             setError('')
@@ -47,19 +53,19 @@ export default function Questions({ electionOM, onDone }) {
                     }}
                 />
             </div>
-            {questions.map((question, index) => (
-                <CountLimitedTextInput
-                    key={generateKey(index)}
-                    name={`Question ${index + 1}`}
-                    maxCount={250}
-                    defaultValue={question}
-                    onDone={({ valid, value }) => {
-                        if (valid) {
-                            setQuestions([...questions.slice(0, index), value, ...questions.slice(index + 1)])
-                        }
-                    }}
-                />
-            ))}
+            <div className={classes.questionBox}>
+                {questions.map((question, index) => (
+                    <CountLimitedTextInput
+                        key={generateKey(index)}
+                        name={`Question ${index + 1}`}
+                        maxCount={250}
+                        defaultValue={question}
+                        onDone={props => {
+                            setQuestions([...questions.slice(0, index), props.value, ...questions.slice(index + 1)])
+                        }}
+                    />
+                ))}
+            </div>
             <button className={classes.addQuestionBtn} onClick={addQuestion} type='button'>
                 Add question
             </button>
@@ -79,6 +85,9 @@ const useStyles = createUseStyles({
         display: 'flex',
         justifyContent: 'space-between',
         marginBottom: '1rem',
+    },
+    questionBox: {
+        width: '70%',
     },
     addQuestionBtn: {
         color: '#262D33',
