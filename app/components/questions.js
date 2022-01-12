@@ -6,36 +6,39 @@ import Submit from './submit'
 
 export default function Questions({ electionOM, onDone }) {
     const classes = useStyles()
-    const { electionMethods } = electionOM
-    const [questions, setQuestions] = useState([''])
+    const [electionObj, electionMethods] = electionOM
+    const [questions, setQuestions] = useState(electionObj.questions || { 0: { text: '' } })
     const [error, setError] = useState('')
     const [isValid, setIsValid] = useState(false)
 
-    const checkValid = () =>
-        !electionMethods.areQuestionsLocked() &&
-        (questions.length > 1 || (questions.length === 1 && !questions.includes('')))
+    const checkEmptyQuestion = () => {
+        for (const key in questions) {
+            if (questions[key].text === '') {
+                return false
+            }
+        }
+        return true
+    }
+
+    const checkValid = () => !electionMethods.areQuestionsLocked()
 
     useEffect(() => {
         setIsValid(checkValid())
-    }, [isValid, electionMethods, questions])
+    }, [isValid, electionOM, questions])
 
     useEffect(() => {
-        if (!questions.includes('')) {
+        if (checkEmptyQuestion()) {
             setError('')
         }
     }, [questions, error])
 
     const addQuestion = () => {
-        if (!questions.includes('')) {
+        if (checkEmptyQuestion()) {
             setError('')
-            setQuestions([...questions, ''])
+            setQuestions({ ...questions, [Object.keys(questions).length]: { text: '' } })
         } else {
             setError('All questions must not be empty!')
         }
-    }
-
-    const generateKey = pre => {
-        return `${pre}_${new Date().getTime()}`
     }
 
     return (
@@ -47,21 +50,22 @@ export default function Questions({ electionOM, onDone }) {
                     disableOnClick
                     onDone={() => {
                         onDone({
-                            value: questions.filter(question => question !== ''),
+                            value: questions,
                             valid: checkValid(),
                         })
                     }}
                 />
             </div>
             <div className={classes.questionBox}>
-                {questions.map((question, index) => (
+                {Object.entries(questions).map((key, question) => (
                     <CountLimitedTextInput
-                        key={generateKey(index)}
-                        name={`Question ${index + 1}`}
+                        key={key}
+                        name={`Question ${question + 1}`}
                         maxCount={250}
-                        defaultValue={question}
+                        defaultValue={questions[question].text}
                         onDone={props => {
-                            setQuestions([...questions.slice(0, index), props.value, ...questions.slice(index + 1)])
+                            electionMethods.upsert({ questions: { [key]: props.value } })
+                            setQuestions({ ...questions, [question]: { ...questions[question], text: props.value } })
                         }}
                     />
                 ))}
