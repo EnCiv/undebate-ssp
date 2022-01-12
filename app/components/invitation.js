@@ -11,9 +11,15 @@ import SvgSpeaker from '../svgr/speaker'
 export function Invitation(props) {
     const classes = useStyles()
     const { className, style, electionOM } = props
-    const { electionObj, electionMethods } = electionOM
-    const [moderatorName, setModeratorName] = useState(electionObj.moderator.name)
-    const [moderatorEmail, setModeratorEmail] = useState(electionObj.moderator.email)
+    const [electionObj, electionMethods] = electionOM
+    //const {email, name, invitations, submissions}=moderator
+    const { moderator = {} } = electionObj
+    const { email = '', name = '', invitations = [] } = moderator
+
+    //const [moderatorName, setModeratorName] = useState(electionObj?.moderator?.name || '')
+    const moderatorName = electionObj?.moderator?.name || ''
+    //const [moderatorEmail, setModeratorEmail] = useState(electionObj?.moderator?.email || '')
+    const moderatorEmail = electionObj?.moderator?.email || ''
     const [greeting, setGreeting] = useState(
         "Thank you for being the moderator in our election. The next step is to click on the link below, and you will be taken to the web app for recording. The page will give you a script to start with, and the questions to ask, and you will be able to review and redo as you like. We aren't able to invite are candidates to record their answers until you ask the questions, so please try to do this soon."
     )
@@ -58,8 +64,9 @@ export function Invitation(props) {
                         defaultValue={moderatorName}
                         onDone={({ valid, value }) => {
                             if (valid) {
-                                setModeratorName(value)
-                                handleUpsert()
+                                //setModeratorName(value)
+                                //handleUpsert()
+                                electionMethods.upsert({ moderator: { name: value } })
                             }
                         }}
                     />
@@ -69,8 +76,9 @@ export function Invitation(props) {
                         checkIsEmail
                         onDone={({ valid, value }) => {
                             if (valid) {
-                                setModeratorEmail(value)
-                                handleUpsert()
+                                //setModeratorEmail(value)
+                                electionMethods.upsert({ moderator: { email: value } })
+                                //handleUpsert()
                             }
                         }}
                     />

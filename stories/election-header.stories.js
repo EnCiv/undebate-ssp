@@ -8,14 +8,11 @@ export default {
     component: ElectionHeader,
 }
 
-const Template = args => {
-    const { defaultValue } = args
-    const [validity, setValidity] = useState({ valid: true, value: defaultValue })
+const Template = (args, context) => {
+    const { onDone } = context
     return (
         <div>
-            <ElectionHeader {...args} onDone={v => setValidity(v)} />
-            <p>Is valid: {validity.valid ? 'True' : 'False'}</p>
-            <p>Value: {validity.value}</p>
+            <ElectionHeader {...context} {...args} onDone={onDone} />
         </div>
     )
 }

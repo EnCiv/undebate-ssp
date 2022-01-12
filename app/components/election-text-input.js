@@ -9,6 +9,7 @@ function ElectionTextInput(props) {
     const { name = '', defaultValue = '', checkIsEmail = false, onDone = () => {} } = props
 
     const [text, setText] = useState(defaultValue)
+    useEffect(() => setText(defaultValue), [defaultValue])
     const inputRef = useRef(null)
 
     // this allows initial defaultValue to be passed up as input if valid
