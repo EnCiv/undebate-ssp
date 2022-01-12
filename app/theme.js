@@ -13,7 +13,7 @@ const theme = {
     // Sizing
     iconSize: '1.25rem',
     buttonPadding: '1rem 1.875rem',
-    defaultPadding: '1.5rem',
+    inputFieldPadding: '1rem 1.25rem',
     buttonBorderRadius: '1.875rem',
     defaultBorderRadius: '0.625rem',
 }
