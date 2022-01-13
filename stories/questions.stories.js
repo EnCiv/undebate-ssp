@@ -41,6 +41,7 @@ QuestionsTest.args = {
                 },
             },
         },
+        // eslint-disable-next-line no-unused-vars
         { upsert: obj => {}, areQuestionsLocked: () => false },
     ],
 }
