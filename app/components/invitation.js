@@ -14,8 +14,15 @@ export function Invitation(props) {
     const [electionObj, electionMethods] = electionOM
     //const {email, name, invitations, submissions}=moderator
     const { moderator = {} } = electionObj
-    const { email = '', name = '', invitations = [] } = moderator
+    const {
+        email = '',
+        name = '',
+        greeting = "Thank you for being the moderator in our election. The next step is to click on the link below, and you will be taken to the web app for recording. The page will give you a script to start with, and the questions to ask, and you will be able to review and redo as you like. We aren't able to invite are candidates to record their answers until you ask the questions, so please try to do this soon.",
+        invitations = [],
+    } = moderator
+    const [validInputs, setValidInputs] = useState({ name: false, email: false, greeting: false })
 
+    /*
     //const [moderatorName, setModeratorName] = useState(electionObj?.moderator?.name || '')
     const moderatorName = electionObj?.moderator?.name || ''
     //const [moderatorEmail, setModeratorEmail] = useState(electionObj?.moderator?.email || '')
@@ -24,13 +31,9 @@ export function Invitation(props) {
         "Thank you for being the moderator in our election. The next step is to click on the link below, and you will be taken to the web app for recording. The page will give you a script to start with, and the questions to ask, and you will be able to review and redo as you like. We aren't able to invite are candidates to record their answers until you ask the questions, so please try to do this soon."
     )
 
-    const validGreeting = () =>
-        greeting
-            .trim()
-            .split(' ')
-            .filter(word => word !== '' && word !== '\n').length <= 400
-
     const checkValid = () => validGreeting() && moderatorName.length > 0 && moderatorEmail.length > 0
+
+
 
     const [isValid, setIsValid] = useState(checkValid())
 
@@ -43,6 +46,7 @@ export function Invitation(props) {
             electionMethods.upsert({ moderator: { email: moderatorEmail, name: moderatorName } })
         }
     }
+    */
 
     return (
         <div className={cx(className, classes.container)} style={style}>
@@ -50,10 +54,10 @@ export function Invitation(props) {
                 <span>An invitation will be emailed to the moderator along with the script and a recording link</span>
                 <Submit
                     name='Send Invitation'
-                    disabled={!isValid}
+                    disabled={Object.values(validInputs).some(i => i === false)}
                     disableOnClick
-                    onDone={() => {
-                        electionMethods.sendInvitation()
+                    onDone={({ valid, value }) => {
+                        if (valid) electionMethods.sendInvitation()
                     }}
                 />
             </div>
@@ -61,51 +65,70 @@ export function Invitation(props) {
                 <div className={classes.inputs}>
                     <ElectionTextInput
                         name='Moderation Name'
-                        defaultValue={moderatorName}
+                        defaultValue={name}
                         onDone={({ valid, value }) => {
-                            if (valid) {
-                                //setModeratorName(value)
-                                //handleUpsert()
-                                electionMethods.upsert({ moderator: { name: value } })
-                            }
+                            setValidInputs({ ...validInputs, name: valid })
+                            electionMethods.upsert({ moderator: { name: value } })
                         }}
                     />
                     <ElectionTextInput
                         name='Email Address'
-                        defaultValue={moderatorEmail}
+                        defaultValue={email}
                         checkIsEmail
                         onDone={({ valid, value }) => {
-                            if (valid) {
-                                //setModeratorEmail(value)
-                                electionMethods.upsert({ moderator: { email: value } })
-                                //handleUpsert()
-                            }
+                            setValidInputs({ ...validInputs, email: valid })
+                            electionMethods.upsert({ moderator: { email: value } })
                         }}
                     />
                 </div>
                 <div className={classes.greeting}>
-                    <label className={classes.label}>
-                        Invitation greeting
-                        <div className={classes.instruction}>
-                            <span className={classes.desc}>
-                                This would be included in the invite email for the moderator. Not more than 400 words.
-                            </span>
-                        </div>
-                        <TextareaAutosize
-                            onBlur={e => {
-                                const text = e.target.value
-                                setGreeting(text)
-                            }}
-                            className={classes.textarea}
-                            name='greeting'
-                            minRows={12}
-                            defaultValue={greeting}
-                        />
-                    </label>
+                    <ElectionArea
+                        name='greeting'
+                        defaultValue={greeting}
+                        maxWords={400}
+                        onDone={({ valid, value }) => {
+                            setValidInputs({ ...validInputs, greeting: valid })
+                            electionMethods.upsert({ moderator: { greeting: value } })
+                        }}
+                    />
                 </div>
             </div>
             <SvgSpeaker className={classes.speaker} />
         </div>
+    )
+}
+
+const validGreeting = (greeting, max = 400) =>
+    greeting
+        .trim()
+        .split(' ')
+        .filter(word => word !== '' && word !== '\n').length <= max
+
+function ElectionArea(props) {
+    const { name, onDone, defaultValue, maxWords } = props
+    const classes = useStyles()
+    useEffect(() => {
+        if (onDone) onDone({ valid: validGreeting(defaultValue, maxWords), defaultValue })
+    }, []) // initiall report if default value is valid or not
+    return (
+        <label className={classes.label}>
+            Invitation greeting
+            <div className={classes.instruction}>
+                <span className={classes.desc}>
+                    This would be included in the invite email for the moderator. Not more than 400 words.
+                </span>
+            </div>
+            <TextareaAutosize
+                onBlur={e => {
+                    const { value } = e.target
+                    if (onDone) onDone({ valid: validGreeting(value, maxWords), value })
+                }}
+                className={classes.textarea}
+                name={name}
+                minRows={12}
+                defaultValue={defaultValue}
+            />
+        </label>
     )
 }
 

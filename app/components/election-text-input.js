@@ -9,7 +9,12 @@ function ElectionTextInput(props) {
     const { name = '', defaultValue = '', checkIsEmail = false, onDone = () => {} } = props
 
     const [text, setText] = useState(defaultValue)
-    useEffect(() => setText(defaultValue), [defaultValue])
+    useEffect(() => {
+        if (text !== defaultValue) {
+            setText(defaultValue)
+            handleDone()
+        }
+    }, [defaultValue])
     const inputRef = useRef(null)
 
     // this allows initial defaultValue to be passed up as input if valid
@@ -27,14 +32,14 @@ function ElectionTextInput(props) {
 
     // eslint-disable-next-line no-unused-vars
     const handleDone = e => {
-        if (isTextValid()) {
+        if (isTextValid(text)) {
             onDone({ valid: true, value: text })
             return
         }
         onDone({ valid: false, value: text })
     }
 
-    const isTextValid = () => {
+    const isTextValid = text => {
         // minDomainAtoms opt force requires a two part domain name
         // ex: user@example.com
         // this can be removed to accept a one part domain name if needed
