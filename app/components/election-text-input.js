@@ -12,7 +12,7 @@ function ElectionTextInput(props) {
     useEffect(() => {
         if (text !== defaultValue) {
             setText(defaultValue)
-            handleDone()
+            onDone({ valid: isTextValid(defaultValue), value: defaultValue })
         }
     }, [defaultValue])
     const inputRef = useRef(null)
@@ -32,24 +32,16 @@ function ElectionTextInput(props) {
 
     // eslint-disable-next-line no-unused-vars
     const handleDone = e => {
-        if (isTextValid(text)) {
-            onDone({ valid: true, value: text })
-            return
-        }
-        onDone({ valid: false, value: text })
+        onDone({ valid: isTextValid(text), value: text })
     }
 
-    const isTextValid = text => {
+    const isTextValid = txt => {
         // minDomainAtoms opt force requires a two part domain name
         // ex: user@example.com
         // this can be removed to accept a one part domain name if needed
         // ex: user@example
-        const isValidEmail = IsEmail.validate(text, { minDomainAtoms: 2 })
-
-        if (!text || (checkIsEmail && !isValidEmail)) {
-            return false
-        }
-        return true
+        if (checkIsEmail) return !!txt && IsEmail.validate(txt, { minDomainAtoms: 2 })
+        else return !!txt
     }
 
     return (
