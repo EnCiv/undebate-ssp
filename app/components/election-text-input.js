@@ -8,13 +8,10 @@ function ElectionTextInput(props) {
     const classes = useStyles()
     const { name = '', defaultValue = '', checkIsEmail = false, onDone = () => {} } = props
 
-    const [text, setText] = useState(defaultValue)
     useEffect(() => {
-        if (text !== defaultValue) {
-            setText(defaultValue)
-            onDone({ valid: isTextValid(defaultValue), value: defaultValue })
-        }
+        handleDone() // if default value changes, inputRef.value will be set to it by the time useEffect is called - need to update the validity
     }, [defaultValue])
+
     const inputRef = useRef(null)
 
     // this allows initial defaultValue to be passed up as input if valid
@@ -22,17 +19,13 @@ function ElectionTextInput(props) {
         handleDone()
     }, [])
 
-    const handleChange = e => {
-        setText(e.target.value)
-    }
-
     const handleKeyPress = e => {
         if (e.key === 'Enter') inputRef.current.blur()
     }
 
     // eslint-disable-next-line no-unused-vars
     const handleDone = e => {
-        onDone({ valid: isTextValid(text), value: text })
+        onDone({ valid: isTextValid(inputRef.current.value), value: inputRef.current.value })
     }
 
     const isTextValid = txt => {
@@ -53,9 +46,8 @@ function ElectionTextInput(props) {
                 key={`${name}input`}
                 type={checkIsEmail ? 'email' : 'text'}
                 className={classes.input}
-                value={text}
+                defaultValue={defaultValue}
                 name={name}
-                onChange={handleChange}
                 onBlur={handleDone}
                 onKeyPress={handleKeyPress}
                 ref={inputRef}

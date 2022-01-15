@@ -96,6 +96,7 @@
         "react-jss": "^10.9.0",
         "react-textarea-autosize": "^8.3.3",
         "undebate": "github:EnCiv/undebate#civ-serv",
+        "use-methods": "github:EnCiv/use-methods",
         "util": "^0.12.4",
         "webpack": "^5.65.0",
         "webpack-cli": "^4.9.1",

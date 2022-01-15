@@ -3,10 +3,10 @@
 import React, { useState, useEffect, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import TextareaAutosize from 'react-textarea-autosize'
 import ElectionTextInput from './election-text-input'
 import Submit from './submit'
 import SvgSpeaker from '../svgr/speaker'
+import ElectionTextArea from './election-text-area'
 
 export function Invitation(props) {
     const classes = useStyles()
@@ -53,7 +53,7 @@ export function Invitation(props) {
                         name='Moderation Name'
                         defaultValue={name}
                         onDone={({ valid, value }) => {
-                            if (validInputs.name !== null)
+                            if (validInputs.name !== null || valid)
                                 sideEffects.push(() => electionMethods.upsert({ moderator: { name: value } })) // side effect because we don't want the upsert to cause a rerender before setValidInputs does
                             setValidInputs({ name: valid })
                         }}
@@ -63,19 +63,20 @@ export function Invitation(props) {
                         defaultValue={email}
                         checkIsEmail
                         onDone={({ valid, value }) => {
-                            if (validInputs.email !== null)
+                            if (validInputs.email !== null || valid)
                                 sideEffects.push(() => electionMethods.upsert({ moderator: { email: value } }))
                             setValidInputs({ email: valid })
                         }}
                     />
                 </div>
                 <div className={classes.greeting}>
-                    <ElectionArea
-                        name='greeting'
+                    <ElectionTextArea
+                        name='Invitation greeting'
+                        description='This would be included in the invite email for the moderator. Not more than 400 words.'
                         defaultValue={greeting}
                         maxWords={400}
                         onDone={({ valid, value }) => {
-                            if (validInputs.greeting !== null)
+                            if (validInputs.greeting !== null || valid)
                                 sideEffects.push(() => electionMethods.upsert({ moderator: { greeting: value } }))
                             setValidInputs({ greeting: valid })
                         }}
@@ -84,40 +85,6 @@ export function Invitation(props) {
             </div>
             <SvgSpeaker className={classes.speaker} />
         </div>
-    )
-}
-
-const validGreeting = (greeting, max = 400) =>
-    greeting
-        .trim()
-        .split(' ')
-        .filter(word => word !== '' && word !== '\n').length <= max
-
-function ElectionArea(props) {
-    const { name, onDone, defaultValue, maxWords } = props
-    const classes = useStyles()
-    useEffect(() => {
-        if (onDone) onDone({ valid: validGreeting(defaultValue, maxWords), defaultValue })
-    }, []) // initiall report if default value is valid or not
-    return (
-        <label className={classes.label}>
-            Invitation greeting
-            <div className={classes.instruction}>
-                <span className={classes.desc}>
-                    This would be included in the invite email for the moderator. Not more than 400 words.
-                </span>
-            </div>
-            <TextareaAutosize
-                onBlur={e => {
-                    const { value } = e.target
-                    if (onDone) onDone({ valid: validGreeting(value, maxWords), value })
-                }}
-                className={classes.textarea}
-                name={name}
-                minRows={12}
-                defaultValue={defaultValue}
-            />
-        </label>
     )
 }
 
@@ -149,31 +116,9 @@ const useStyles = createUseStyles({
         right: '1rem',
         fontSize: '16rem',
     },
-    label: {
-        margin: '0 0.625rem',
-        fontWeight: '600',
-    },
-    instruction: {
-        marginBottom: '2rem',
-    },
-    desc: {
-        margin: '.3rem 0rem 0.625rem 0rem',
-        fontSize: '.875rem',
-        color: '#9da0a2',
-    },
     greeting: {
         display: 'flex',
         flexDirection: 'column',
-    },
-    textarea: {
-        boxSizing: 'border-box',
-        width: '100%',
-        borderRadius: '0.625rem',
-        backgroundColor: '#d4d5d6',
-        padding: '1rem 1.25rem',
-        border: 'none',
-        fontSize: '1.125rem',
-        fontFamily: 'sans-serif',
     },
 })
 
