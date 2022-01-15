@@ -14,11 +14,6 @@ function ElectionTextInput(props) {
 
     const inputRef = useRef(null)
 
-    // this allows initial defaultValue to be passed up as input if valid
-    useEffect(() => {
-        handleDone()
-    }, [])
-
     const handleKeyPress = e => {
         if (e.key === 'Enter') inputRef.current.blur()
     }
