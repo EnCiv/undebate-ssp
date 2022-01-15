@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/9
 
-import { useState, useRef, useEffect, React } from 'react'
+import { useRef, useEffect, React } from 'react'
 import { createUseStyles } from 'react-jss'
 import IsEmail from 'isemail'
 
