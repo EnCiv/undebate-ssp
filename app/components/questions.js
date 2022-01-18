@@ -1,16 +1,28 @@
 // https://github.com/EnCiv/undebate-ssp/issues/48
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
+import cx from 'classnames'
 import CountLimitedTextInput from './count-limited-text-input'
 import Submit from './submit'
 
-export default function Questions({ electionOM, onDone }) {
+export default function Questions({ className, style, electionOM, onDone }) {
     const classes = useStyles()
     const [electionObj, electionMethods] = electionOM
-    const [questions, setQuestions] = useState(electionObj?.questions || { 0: { text: '' } })
     const [error, setError] = useState('')
     const [lockedMessage, setLockedMessage] = useState('')
     const [isValid, setIsValid] = useState(false)
+
+    const { questions = {} } = electionObj
+
+    const [validInputs, setValidInputs] = useReducer((state, action) => ({ ...state, ...action }), {
+        0: { text: null },
+    })
+
+    // side effects to do after the component rerenders from a state change
+    const [sideEffects] = useState([]) // never set sideEffects
+    useEffect(() => {
+        while (sideEffects.length) sideEffects.shift()()
+    })
 
     const checkEmptyQuestion = () => {
         // eslint-disable-next-line no-restricted-syntax
@@ -46,10 +58,6 @@ export default function Questions({ electionOM, onDone }) {
     }
 
     useEffect(() => {
-        setQuestions(electionObj?.questions || { 0: { text: '' } })
-    }, [electionOM])
-
-    useEffect(() => {
         setIsValid(checkValid())
     }, [isValid, electionOM])
 
@@ -62,15 +70,17 @@ export default function Questions({ electionOM, onDone }) {
     const addQuestion = () => {
         if (checkEmptyQuestion()) {
             setError('')
-            electionMethods.upsert({ questions: { [Object.keys(questions).length]: { text: '' } } })
-            setQuestions({ ...questions, [Object.keys(questions).length]: { text: '' } })
+            sideEffects.push(() =>
+                electionMethods.upsert({ questions: { [Object.keys(questions).length]: { text: '' } } })
+            )
+            setValidInputs({ [Object.keys(questions).length]: { text: '' } })
         } else {
             setError('Please fill out empty question before add more')
         }
     }
 
     return (
-        <div className={classes.container}>
+        <div className={cx(className, classes.container)} style={style}>
             <div className={classes.send}>
                 <span>What questions would you like to ask the candidates?</span>
                 <Submit
@@ -90,9 +100,13 @@ export default function Questions({ electionOM, onDone }) {
                         name={`Question ${question + 1}`}
                         maxCount={250}
                         defaultValue={questions[question].text}
-                        onDone={props => {
-                            electionMethods.upsert({ questions: { [question]: { text: props.value } } })
-                            setQuestions({ ...questions, [question]: { ...questions[question], text: props.value } })
+                        onDone={({ valid, value }) => {
+                            if (validInputs[question] !== null || valid) {
+                                sideEffects.push(() =>
+                                    electionMethods.upsert({ questions: { [question]: { text: value } } })
+                                )
+                            }
+                            setValidInputs({ [question]: { text: value } })
                         }}
                     />
                 ))}
