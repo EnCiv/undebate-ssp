@@ -40,7 +40,7 @@ export default function ElectionTextArea(props) {
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     label: {
         margin: '0 0.625rem',
         fontWeight: '600',
@@ -50,17 +50,18 @@ const useStyles = createUseStyles({
     },
     desc: {
         margin: '.3rem 0rem 0.625rem 0rem',
-        fontSize: '.875rem',
-        color: '#9da0a2',
+        fontSize: theme.secondaryTextFontSize,
+        color: theme.colorSecondary,
+        opacity: theme.secondaryTextOpacity,
     },
     textarea: {
         boxSizing: 'border-box',
         width: '100%',
-        borderRadius: '0.625rem',
-        backgroundColor: '#d4d5d6',
-        padding: '1rem 1.25rem',
+        borderRadius: theme.defaultBorderRadius,
+        backgroundColor: theme.backgroundColorComponent,
+        padding: theme.inputFieldPadding,
         border: 'none',
-        fontSize: '1.125rem',
-        fontFamily: 'sans-serif',
+        fontSize: theme.inputFieldFontSize,
+        fontFamily: theme.defaultFontFamily,
     },
-})
+}))
