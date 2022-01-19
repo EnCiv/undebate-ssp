@@ -52,7 +52,7 @@ const useStyles = createUseStyles(theme => ({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        fontFamily: 'Poppins',
+        fontFamily: theme.defaultFontFamily,
         color: theme.colorSecondary,
     },
     scriptInfo: {
