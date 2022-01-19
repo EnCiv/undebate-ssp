@@ -8,27 +8,19 @@ import { createUseStyles } from 'react-jss'
 
 function Submit({ onDone, name = 'Submit', style, className, disabled = false, disableOnClick = false }) {
     const classes = useStyles()
-    const [clickedOnce, setClickedOnce] = useState(false)
+    const [disabledAfterClick, setDisabledAfterClick] = useState(false)
 
     const handleOnClick = () => {
-        if (!disabled) {
-            onDone({ finished: true })
+        if (!disabled && !disabledAfterClick) {
+            onDone({ valid: true })
         }
-        setClickedOnce(true)
-    }
-
-    const getDisabledClass = () => {
-        let isDisabled = disabled
-        if (disableOnClick && clickedOnce) {
-            isDisabled = true
-        }
-        return { [classes.disabled]: isDisabled }
+        if (disableOnClick) setDisabledAfterClick(true)
     }
 
     return (
         <button
             type='button'
-            className={cx(className, classes.btn, getDisabledClass())}
+            className={cx(className, classes.btn, (disabled || disabledAfterClick) && classes.disabled)}
             style={style}
             onClick={handleOnClick}
             disabled={disabled}
@@ -54,7 +46,7 @@ const useStyles = createUseStyles({
         backgroundColor: '#919597',
         color: '#fff',
         '&:hover': {
-            cursor: 'initial',
+            cursor: 'not-allowed',
         },
     },
 })

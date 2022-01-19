@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/9
 
-import React, { useState } from 'react'
+import React from 'react'
 import ElectionTextInput from '../app/components/election-text-input'
 
 export default {
@@ -8,11 +8,14 @@ export default {
     component: ElectionTextInput,
 }
 
-const Template = args => (
-    <div style={{ width: '50%' }}>
-        <ElectionTextInput name='Input Name' {...args} />
-    </div>
-)
+const Template = (args, context) => {
+    const { onDone } = context
+    return (
+        <div style={{ width: '50%' }}>
+            <ElectionTextInput name='Input Name' onDone={onDone} {...args} />
+        </div>
+    )
+}
 
 export const Default = Template.bind({})
 Default.args = {
@@ -28,23 +31,7 @@ DefaultValueSet.args = {
     checkIsEmail: false,
 }
 
-const ValidationTemplate = args => {
-    const [doneState, setDoneState] = useState({ valid: false, value: '' })
-    return (
-        <div style={{ width: '50%' }}>
-            <ElectionTextInput onDone={done => setDoneState(done)} {...args} />
-            <div
-                style={{
-                    margin: '10px',
-                }}
-            >
-                Is valid: {`${doneState.valid}`}
-            </div>
-        </div>
-    )
-}
-
-export const EmailValidation = ValidationTemplate.bind({})
+export const EmailValidation = Template.bind({})
 
 EmailValidation.args = {
     name: 'Email Address',
@@ -52,7 +39,7 @@ EmailValidation.args = {
     checkIsEmail: true,
 }
 
-export const IsDoneValidation = ValidationTemplate.bind({})
+export const IsDoneValidation = Template.bind({})
 
 IsDoneValidation.args = {
     name: 'Name',
