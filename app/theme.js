@@ -20,6 +20,9 @@ const theme = {
     inputFieldPadding: '1rem 1.25rem',
     inputFieldFontSize: '1.125rem',
 
+    // Use for things like Election Header and Section Header
+    headerFontSize: '1.125rem',
+
     //Font
     defaultFontFamily: 'Poppins',
 }
