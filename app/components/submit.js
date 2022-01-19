@@ -30,25 +30,26 @@ function Submit({ onDone, name = 'Submit', style, className, disabled = false, d
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     btn: {
-        borderRadius: '1.875rem',
-        backgroundColor: '#7470FF',
+        borderRadius: theme.buttonBorderRadius,
+        backgroundColor: theme.colorPrimary,
         border: 'none',
         color: '#FFF',
-        padding: '.9em 1.3em',
+        padding: theme.buttonPadding,
         fontWeight: 600,
         '&:hover': {
             cursor: 'pointer',
         },
     },
     disabled: {
-        backgroundColor: '#919597',
+        backgroundColor: theme.colorPrimary,
+        opacity: theme.disabledOpacity,
         color: '#fff',
         '&:hover': {
             cursor: 'not-allowed',
         },
     },
-})
+}))
 
 export default Submit

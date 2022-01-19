@@ -68,17 +68,17 @@ const useStyles = createUseStyles(theme => ({
     quantity: {
         display: 'flex',
         alignItems: 'center',
-        fontSize: '0.875rem',
-        opacity: '70%',
+        fontSize: theme.secondaryTextFontSize,
+        opacity: theme.secondaryTextOpacity,
     },
     input: {
         background: theme.backgroundColorComponent,
         padding: theme.inputFieldPadding,
+        fontFamily: theme.defaultFontFamily,
         resize: 'none',
         border: 'none',
         borderRadius: theme.defaultBorderRadius,
         fontSize: '1rem',
         margin: '0.375rem 0rem',
-        opacity: '80%',
     },
 }))

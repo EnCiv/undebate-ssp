@@ -44,6 +44,7 @@ const useStyles = createUseStyles(theme => ({
         padding: '1.25rem 2.5rem',
 
         '& select': {
+            fontFamily: theme.defaultFontFamily,
             fontSize: theme.headingFontSize,
             border: 'none',
             fontWeight: 'bold',
