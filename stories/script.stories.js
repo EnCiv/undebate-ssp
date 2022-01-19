@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/49
 
-import React from 'react'
+import React, { useState } from 'react'
 
 import { createUseStyles } from 'react-jss'
 import Script from '../app/components/script'
@@ -13,10 +13,24 @@ export default {
 
 const useStyles = createUseStyles({
     page: { width: '80%', float: 'right' },
+    output: { whiteSpace: 'pre-wrap' },
 })
 
 const Template = args => {
-    return <Script {...args} className={useStyles().page} />
+    const [upsertData, setUpsertData] = useState({})
+    const { electionOM } = args
+    const [electionObj, electionMethods] = electionOM
+    const modifiedArgs = { ...args, electionOM: [electionObj, { ...electionMethods, upsert: setUpsertData }] }
+    const classes = useStyles()
+    return (
+        <div className={classes.page}>
+            <Script {...modifiedArgs} className={classes.page} />
+            <h3>Upsert Data:</h3>
+            <pre className={classes.output}>
+                <code>{JSON.stringify(upsertData, null, 2)}</code>
+            </pre>
+        </div>
+    )
 }
 
 export const Default = Template.bind({})
@@ -52,7 +66,7 @@ Locked.args = {
 export const Edit = Template.bind({})
 Edit.args = {
     electionOM: [
-        { ...Default.args.electionOM[0], script: [{ number: 0, text: 'Lorem Ipsum Dolor Amet' }] },
+        { ...Default.args.electionOM[0], script: { 0: { text: 'Lorem Ipsum Dolor Amet' } } },
         Default.args.electionOM[1],
     ],
 }
@@ -62,15 +76,29 @@ GivenQA.args = {
     electionOM: [
         {
             ...Default.args.electionOM[0],
-            questions: [
-                { number: 1, text: 'Lorem Ipsum?' },
-                { number: 2, text: 'Dolor Amet?' },
-            ],
-            script: [
-                { number: 1, text: 'Lorem Ipsum Dolor Amet' },
-                { number: 2, text: 'Consectetur adipiscing elit' },
-                { number: 3, text: 'Sed do eiusmod tempor' },
-            ],
+            questions: {
+                0: { text: 'Lorem Ipsum?' },
+                1: { text: 'Dolor Amet?' },
+            },
+            script: {
+                0: { text: 'Lorem Ipsum Dolor Amet' },
+                1: { text: 'Lorem Ipsum Dolor Amet' },
+                2: { text: 'Consectetur adipiscing elit' },
+                3: { text: 'Sed do eiusmod tempor' },
+            },
+        },
+        Default.args.electionOM[1],
+    ],
+}
+
+export const Error = Template.bind({})
+Error.args = {
+    electionOM: [
+        {
+            ...Default.args.electionOM[0],
+            script: {
+                0: { text: 'Lorem Ipsum Dolor Amet '.repeat(160) },
+            },
         },
         Default.args.electionOM[1],
     ],
