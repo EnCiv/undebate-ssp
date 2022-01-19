@@ -5,6 +5,13 @@ const theme = {
     colorWarning: '#EE6055',
     colorSuccess: '#46941B',
 
+    // Can be combined with UI colors to create a 'disabled' version
+    disabledOpacity: '0.3',
+
+    // Can be applied to text used to add more description to things like text used to give info about an input field
+    secondaryTextOpacity: '0.7',
+    secondaryTextFontSize: '0.875rem',
+
     // Background Colors
     backgroundColorApp: '#ECECEC',
     backgroundColorWarning: 'rgba(238, 96, 85, 0.25)',
