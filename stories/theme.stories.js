@@ -70,7 +70,7 @@ Sizes.args = {
         },
         inputFieldPadding: {
             background: theme.colorPrimary,
-            padding: theme.defaultPadding,
+            padding: theme.inputFieldPadding,
         },
         buttonPadding: {
             background: theme.colorPrimary,

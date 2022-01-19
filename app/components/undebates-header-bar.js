@@ -79,8 +79,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         alignItems: 'center',
     },
     svg: {
-        width: '1.25rem',
-        height: '1.25rem',
+        width: theme.iconSize,
+        height: theme.iconSize,
     },
     logo: {
         height: '2.75rem',
