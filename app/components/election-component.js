@@ -12,25 +12,40 @@ export function ElectionComponent(props) {
     const classes = useStyles()
 
     return (
-        <div className={cx(className, classes.wrapper)} style={style}>
-            <ElectionTextInput
-                name='Election Name'
-                defaultValue={'Input'}
-                // onDone={}
-            />
-            <ElectionTextInput
-                name='Organization Name'
-                defaultValue={'Input'}
-                // onDone={}
-            />
-            <Submit
-                name='Submit'
-                // onDone={}
-            />
+        <div className={cx(className, classes.container)} style={style}>
+            <div className={classes.inputs}>
+                <ElectionTextInput
+                    name='Election Name'
+                    defaultValue={'Input'}
+                    // onDone={}
+                />
+                <ElectionTextInput
+                    name='Organization Name'
+                    defaultValue={'Input'}
+                    // onDone={}
+                />
+            </div>
+            <div>
+                <Submit
+                    name='Submit'
+                    // onDone={}
+                />
+            </div>
         </div>
     )
 }
 
-const useStyles = createUseStyles({})
+const useStyles = createUseStyles({
+    container: {
+        display: 'flex',
+        justifyContent: 'space-between',
+    },
+    inputs: {
+        width: '20rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '2rem',
+    },
+})
 
 export default ElectionComponent
