@@ -79,8 +79,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         alignItems: 'center',
     },
     svg: {
-        width: '1.25rem',
-        height: '1.25rem',
+        width: theme.iconSize,
+        height: theme.iconSize,
     },
     logo: {
         height: '2.75rem',
@@ -90,11 +90,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     userImageGroup: {
         display: 'flex',
         alignItems: 'center',
-        //background: "linear-gradient(0deg, #7470FF,#7470FF), #FFFFFF",
         background: theme.colorPrimary,
         height: '3.25rem',
         border: 'none',
-        borderRadius: '2rem',
+        borderRadius: theme.buttonBorderRadius,
         width: 'auto',
         '&:hover': {
             '& > $hoverGroup': {
@@ -107,15 +106,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         display: 'flex',
         height: '3.25rem',
         overflow: 'hidden',
-        borderRadius: '2rem',
+        borderRadius: theme.buttonBorderRadius,
         width: '0',
         alignItems: 'center',
         justifyContent: 'space-between',
     },
     userEmail: {
-        opacity: '0.7',
+        opacity: theme.secondaryTextOpacity,
         color: '#FFFFFF',
-        marginLeft: '3rem',
+        marginLeft: '2rem',
     },
     '@media screen and (max-width: 56rem)': {
         undebatesHeader: {

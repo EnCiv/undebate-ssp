@@ -38,7 +38,7 @@ A storybook browser window will open up:
 
 ![image](https://user-images.githubusercontent.com/3317487/147786004-a6cf5bb9-030a-4011-b0e3-eabc4a1f4c38.png)
 
-Storybook allows us to create React components independently, test them, and leaves a visual catalog of our components for the next contributer. Also, as soon as you get your new component and story started, you can build/edit them on the fly and the browser will update as you make your changes. (Because Storybook uses Webpack to push updates to the browser). 
+Storybook allows us to create React components independently, test them, and leaves a visual catalog of our components for the next contributer. Also, as soon as you get your new component and story started, you can build/edit them on the fly and the browser will update as you make your changes. (Because Storybook uses Webpack to push updates to the browser).
 
 # Prettier
 
@@ -87,7 +87,7 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
-export default function MyComponent( props ) {
+export default function MyComponent(props) {
     const { className, style } = props
     const classes = useStylesFromThemeFunction(props)
 
@@ -99,7 +99,7 @@ export default function MyComponent( props ) {
 }
 
 // we want to see the code first, so we put the classes at the bottom
-const useStylesFromThemeFunction = createUseStyles( theme => ({
+const useStylesFromThemeFunction = createUseStyles(theme => ({
     wrapper: {
         background: theme.colorPrimary,
         padding: '1rem',
@@ -109,7 +109,7 @@ const useStylesFromThemeFunction = createUseStyles( theme => ({
 
 1. This project is using React-jss for styles, and they should be at the bottom of the file. -- It's efficient to have all the code and style for a component in one place. We've learned over time that we want to see the code first, and then look for the css, so we put the styles at the bottom. We have also started using a theme.
 
-2. The theme is in **app/theme.js**. We should look through there, and add to it as we go, and talk through the best ways to make properties that are common to many components.
+2. The theme is in [**app/theme.js**](https://github.com/EnCiv/undebate-ssp/blob/main/app/theme.js). We should look through there, and add to it as we go, and talk through the best ways to make properties that are common to many components. To see examples of how to use the theme and what colors, sizes and other styling information are currently part of the theme, we can also check out the 'Theme Examples' Storybook stories and its code at [**stories/theme.stories.js**](https://github.com/EnCiv/undebate-ssp/blob/main/stories/theme.stories.js).
 
 3. As in the above example, generally components should accept className and style as parameters, and add those to the outer most element of the component they render. We use `classnames` to combine classes.
 

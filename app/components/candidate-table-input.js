@@ -255,32 +255,32 @@ function CandidateTableInput(props) {
         </div>
     )
 }
-const useElectionStyles = createUseStyles({
+const useElectionStyles = createUseStyles(theme => ({
     addQuestionBtn: {
-        color: '#262D33',
+        color: theme.colorSecondary,
         background: 'white',
-        border: '1px solid #262D33',
+        border: `1px solid ${theme.colorSecondary}`,
         alignSelf: 'flex-start',
-        padding: '.9rem 1.3rem',
-        borderRadius: '1.875rem',
+        padding: theme.buttonPadding,
+        borderRadius: theme.buttonBorderRadius,
         fontWeight: 600,
         '&:hover': {
             cursor: 'pointer',
         },
         marginTop: '0.5rem',
     },
-})
+}))
 
 export default CandidateTableInput
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     wrapper: {
-        fontFamily: 'poppins',
+        fontFamily: theme.defaultFont,
         fontStyle: 'normal',
         fontWeight: 500,
         lineHeight: '1.5rem',
         padding: '1rem',
-        backgroundColor: '#ECECEC',
+        backgroundColor: theme.backgroundColorApp,
         'table&': {
             borderSpacing: 0,
             '& tr': {
@@ -305,11 +305,11 @@ const useStyles = createUseStyles({
                 },
 
                 '& input': {
-                    fontSize: '1.125rem',
+                    fontSize: theme.inputFieldFontSize,
                     lineHeight: '1.6875',
                     color: '#262D33B3',
-                    background: 'linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF',
-                    padding: '1rem 1.25rem',
+                    background: theme.backgroundColorComponent,
+                    padding: theme.inputFieldPadding,
                     margin: 0,
                     border: 0,
                 },
@@ -319,4 +319,4 @@ const useStyles = createUseStyles({
     pagination: {
         padding: '0.5rem',
     },
-})
+}))

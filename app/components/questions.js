@@ -120,12 +120,12 @@ export default function Questions({ className, style, electionOM, onDone }) {
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        fontFamily: 'Poppins',
-        color: '#262D33',
+        fontFamily: theme.defaultFontFamily,
+        color: theme.colorSecondary,
     },
     send: {
         display: 'flex',
@@ -134,14 +134,15 @@ const useStyles = createUseStyles({
     },
     questionBox: {
         width: '70%',
+        fontFamily: theme.defaultFontFamily,
     },
     addQuestionBtn: {
-        color: '#262D33',
+        color: theme.colorSecondary,
         background: 'white',
-        border: '1px solid #262D33',
+        border: `1px solid ${theme.colorSecondary}`,
         alignSelf: 'flex-start',
-        padding: '.9rem 1.3rem',
-        borderRadius: '1.875rem',
+        padding: theme.buttonPadding,
+        borderRadius: theme.buttonBorderRadius,
         fontWeight: 600,
         '&:hover': {
             cursor: 'pointer',
@@ -151,4 +152,4 @@ const useStyles = createUseStyles({
     err: {
         color: 'red',
     },
-})
+}))

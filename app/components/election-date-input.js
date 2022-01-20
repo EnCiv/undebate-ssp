@@ -125,7 +125,7 @@ export default function ElectionDateInput(props) {
                         placeholder='mm/dd/yyyy'
                     />
                     <button type='button' className={classes.datePickerButton} onClick={datePickerButtonOnClick}>
-                        <SvgCalendar />
+                        <SvgCalendar className={classes.icon} />
                     </button>
                 </span>
                 <span className={classes.errorText}>{error}</span>
@@ -142,25 +142,27 @@ export default function ElectionDateInput(props) {
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     dateInputWrapper: {
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
     },
     inputContainer: props => ({
         display: 'flex',
         justifyContent: 'space-between',
-        border: `.1rem solid ${props.error ? 'red' : '#d4d5d6'}`,
-        borderRadius: '.5rem',
-        backgroundColor: '#d4d5d6',
-        padding: '0.7rem',
+        alignItems: 'center',
+        border: `.1rem solid ${props.error ? 'red' : 'none'}`,
+        borderRadius: theme.defaultBorderRadius,
+        backgroundColor: theme.backgroundColorComponent,
+        padding: theme.inputFieldPadding,
         width: '100%',
     }),
     dateInput: {
-        backgroundColor: 'inherit',
+        backgroundColor: 'transparent',
         border: 'none',
         outline: 'none',
+        fontSize: theme.inputFieldFontSize,
+        fontFamily: theme.defaultFontFamily,
     },
     datePicker: {
         position: 'absolute',
@@ -181,11 +183,12 @@ const useStyles = createUseStyles({
     datePickerButton: {
         background: 'none',
         border: 'none',
+        display: 'flex',
         cursor: 'pointer',
-        height: '1.5rem',
-        width: '1.5rem',
+        padding: '0',
+        height: '100%',
         transition: 'background-color 150ms',
-        borderRadius: '50%',
+        borderRadius: '100%',
         '&:hover': {
             backgroundColor: '#b4b5b6',
         },
@@ -193,5 +196,9 @@ const useStyles = createUseStyles({
     errorText: {
         color: 'red',
     },
+    icon: {
+        height: theme.iconSize,
+        width: theme.iconSize,
+    },
     datePickerPart: {},
-})
+}))
