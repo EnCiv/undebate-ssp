@@ -109,7 +109,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
 1. This project is using React-jss for styles, and they should be at the bottom of the file. -- It's efficient to have all the code and style for a component in one place. We've learned over time that we want to see the code first, and then look for the css, so we put the styles at the bottom. We have also started using a theme.
 
-2. The theme is in **app/theme.js**. We should look through there, and add to it as we go, and talk through the best ways to make properties that are common to many components.
+2. The theme is in [**app/theme.js**](https://github.com/EnCiv/undebate-ssp/blob/main/app/theme.js). We should look through there, and add to it as we go, and talk through the best ways to make properties that are common to many components. To see examples of how to use the theme and what colors, sizes and other styling information are currently part of the theme, we can also check out the 'Theme Examples' Storybook stories and its code at [**stories/theme.stories.js**](https://github.com/EnCiv/undebate-ssp/blob/main/stories/theme.stories.js).
 
 3. As in the above example, generally components should accept className and style as parameters, and add those to the outer most element of the component they render. We use `classnames` to combine classes.
 

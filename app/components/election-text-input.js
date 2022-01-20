@@ -58,7 +58,7 @@ function ElectionTextInput(props) {
 
 export default ElectionTextInput
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     electionTextInput: {
         display: 'flex',
         flexDirection: 'column',
@@ -70,11 +70,11 @@ const useStyles = createUseStyles({
         fontWeight: '600',
     },
     input: {
-        borderRadius: '0.625rem',
-        background: 'linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF',
-        padding: '1rem 1.25rem',
+        borderRadius: theme.defaultBorderRadius,
+        background: theme.backgroundColorComponent,
+        padding: theme.inputFieldPadding,
         border: 'none',
-        fontSize: '1.125rem',
+        fontSize: theme.inputFieldFontSize,
         width: '100%',
     },
     validity: {
@@ -83,4 +83,4 @@ const useStyles = createUseStyles({
         color: 'red',
         fontSize: '.85rem',
     },
-})
+}))

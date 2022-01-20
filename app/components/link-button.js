@@ -17,7 +17,7 @@ function LinkButton(props) {
 
 export default LinkButton
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     a: {
         display: 'flex',
         width: 'fit-content',
@@ -26,8 +26,8 @@ const useStyles = createUseStyles({
         textDecoration: 'none',
         color: '#FFFFFF',
         gap: '0.5rem',
-        background: 'linear-gradient(0deg, #7470FF, #7470FF), #FFFFFF',
-        borderRadius: '2rem',
-        padding: '1rem 2rem',
+        background: theme.colorPrimary,
+        borderRadius: theme.buttonBorderRadius,
+        padding: theme.buttonPadding,
     },
-})
+}))

@@ -3,8 +3,9 @@
 import React from 'react'
 import SvgChevronLeft from '../svgr/chevron-left'
 
-function BackButton() {
-    return <SvgChevronLeft />
+function BackButton(props) {
+    const { className, style } = props
+    return <SvgChevronLeft className={className} style={style} />
 }
 
 export default BackButton

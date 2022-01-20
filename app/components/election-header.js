@@ -13,8 +13,8 @@ function ElectionHeader(props) {
     return (
         <div className={cx(className, classes.electionHeader)} style={style}>
             <div>
-                <BackButton />
-                <HomeButton />
+                <BackButton className={classes.icon} />
+                <HomeButton className={classes.icon} />
             </div>
             <select
                 defaultValue={defaultValue}
@@ -28,7 +28,7 @@ function ElectionHeader(props) {
                 {elections.length > 0 ? elections.map((input, index) => <option value={index}>{input}</option>) : null}
             </select>
             <div>
-                <InstructionButton />
+                <InstructionButton className={classes.icon} />
             </div>
         </div>
     )
@@ -36,7 +36,7 @@ function ElectionHeader(props) {
 
 export default ElectionHeader
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     electionHeader: {
         display: 'flex',
         flexDirection: 'row',
@@ -44,6 +44,8 @@ const useStyles = createUseStyles({
         padding: '1.25rem 2.5rem',
 
         '& select': {
+            fontFamily: theme.defaultFontFamily,
+            fontSize: theme.headingFontSize,
             border: 'none',
             fontWeight: 'bold',
             '&:hover': {
@@ -51,4 +53,8 @@ const useStyles = createUseStyles({
             },
         },
     },
-})
+    icon: {
+        height: theme.iconSize,
+        width: theme.iconSize,
+    },
+}))
