@@ -1,0 +1,4 @@
+dist/*
+app/data-components/index.js
+app/web-components/index.js
+app/svgr/*
