@@ -8,7 +8,7 @@ const theme = {
     // Can be combined with UI colors to create a 'disabled' version
     disabledOpacity: '0.3',
 
-    // Can be applied to text used to add more description to things like text used to give info about an input field
+    // Can be applied to text used to add more description to things such as text used to give info about an input field
     secondaryTextOpacity: '0.7',
     secondaryTextFontSize: '0.875rem',
 

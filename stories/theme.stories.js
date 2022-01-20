@@ -1,4 +1,5 @@
 import { createUseStyles } from 'react-jss'
+import React from 'react'
 export default {
     title: 'Theme Examples',
 }
@@ -47,6 +48,18 @@ Colors.args = {
             padding: theme.buttonPadding,
             background: theme.backgroundColorComponent,
         },
+        disabledOpacity: {
+            padding: theme.buttonPadding,
+            background: theme.colorPrimary,
+            opacity: theme.disabledOpacity,
+        },
+        normalTextOpacity: {
+            padding: theme.buttonPadding,
+        },
+        secondaryTextOpacity: {
+            padding: theme.buttonPadding,
+            opacity: theme.secondaryTextOpacity,
+        },
     })),
 }
 
@@ -75,6 +88,15 @@ Sizes.args = {
         buttonPadding: {
             background: theme.colorPrimary,
             padding: theme.buttonPadding,
+        },
+        headerFontSize: {
+            fontSize: theme.headerFontSize,
+        },
+        defaultFontSize: {
+            fontSize: '1rem',
+        },
+        secondaryTextFontSize: {
+            fontSize: theme.secondaryTextFontSize,
         },
     })),
 }
