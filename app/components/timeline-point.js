@@ -1,36 +1,7 @@
 import { React, useEffect, useState, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 
-import ElectionTimeInput from './election-time-input'
-import ElectionDateInput from './election-date-input'
-
-const DateTimeInput = function (props) {
-    const { dateTime, className, style, electionOM } = props
-    const classes = useStyles()
-
-    const [time, setTime] = useState({})
-    const [date, setDate] = useState({})
-
-    useEffect(() => {
-        console.log(time)
-        console.log(date)
-    }, [time, date])
-
-    return (
-        <div className={classes.dateTimePair}>
-            <ElectionDateInput
-                className={classes.input}
-                defaultValue={dateTime.date}
-                onDone={({ valid, value }) => setDate({ date: value, valid })}
-            />
-            <ElectionTimeInput
-                className={classes.input}
-                defaultValue={dateTime.time}
-                onDone={({ valid, value }) => setTime({ time: value, valid })}
-            />
-        </div>
-    )
-}
+import DateTimeInput from './datetime-input'
 
 const TimelinePoint = function (props) {
     const { className, style, electionOM, title, description, dateTimes = [], onDone = () => {}, ref } = props
@@ -99,9 +70,6 @@ const useStyles = createUseStyles(theme => {
             width: '100%',
             padding: '1rem',
             gap: '3rem',
-        },
-        input: {
-            //width: '50%',
         },
     }
 })
