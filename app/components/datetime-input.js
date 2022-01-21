@@ -5,27 +5,25 @@ import ElectionTimeInput from './election-time-input'
 import ElectionDateInput from './election-date-input'
 
 const DateTimeInput = function (props) {
-    const { dateTime, className, style, onDone = () => {}, electionOM } = props
+    const { defaultValue, className, style, onDone = () => {}, electionOM } = props
     const classes = useStyles()
 
-    const [time, setTime] = useState({})
-    const [date, setDate] = useState({})
+    const [timeObj, setTimeObj] = useState({})
+    const [dateObj, setDateObj] = useState({})
 
     useEffect(() => {
-        console.log('time', time)
-        console.log('date', date)
-        onDone({ value: { date, time }, valid: time.valid && date.valid })
-    }, [time, date])
+        onDone({ value: { date: dateObj.value, time: timeObj.value }, valid: timeObj.valid && dateObj.valid })
+    }, [timeObj, dateObj])
 
     return (
         <div className={classes.dateTimePair}>
             <ElectionDateInput
-                defaultValue={dateTime.date}
-                onDone={({ valid, value }) => setDate({ date: value, valid })}
+                defaultValue={defaultValue.date}
+                onDone={({ valid, value }) => setDateObj({ value, valid })}
             />
             <ElectionTimeInput
-                defaultValue={dateTime.time}
-                onDone={({ valid, value }) => setTime({ time: value, valid })}
+                defaultValue={defaultValue.time}
+                onDone={({ valid, value }) => setTimeObj({ value, valid })}
             />
         </div>
     )

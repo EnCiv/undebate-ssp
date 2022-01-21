@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import DateTimeInput from '../app/components/datetime-input'
 
 export default {
@@ -6,18 +6,25 @@ export default {
     component: DateTimeInput,
 }
 
-const Template = args => (
-    <div style={{ width: '50%' }}>
-        <DateTimeInput {...args} />
-    </div>
-)
+const Template = args => {
+    const [doneState, setDoneState] = useState({ valid: false, value: { time: '', date: '' } })
+
+    return (
+        <div style={{ width: '50%' }}>
+            <DateTimeInput onDone={done => setDoneState(done)} {...args} />
+            <div style={{ margin: '10px' }}>Is valid datetime: {`${doneState.valid}`}</div>
+            <div style={{ margin: '10px' }}>Date: {`${doneState.value.date}`}</div>
+            <div style={{ margin: '10px' }}>Time: {`${doneState.value.time}`}</div>
+        </div>
+    )
+}
 
 export const Default = Template.bind({})
 Default.args = {
-    dateTime: { date: '', time: '' },
+    defaultValue: { date: '', time: '' },
 }
 
 export const Filled = Template.bind({})
 Filled.args = {
-    dateTime: { date: '11/26/21', time: '14:00' },
+    defaultValue: { date: '11/26/21', time: '14:00' },
 }
