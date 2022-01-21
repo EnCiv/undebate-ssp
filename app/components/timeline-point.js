@@ -1,8 +1,36 @@
-import { React, useEffect, useReducer } from 'react'
+import { React, useEffect, useState, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 
 import ElectionTimeInput from './election-time-input'
 import ElectionDateInput from './election-date-input'
+
+const DateTimeInput = function (props) {
+    const { dateTime, className, style, electionOM } = props
+    const classes = useStyles()
+
+    const [time, setTime] = useState({})
+    const [date, setDate] = useState({})
+
+    useEffect(() => {
+        console.log(time)
+        console.log(date)
+    }, [time, date])
+
+    return (
+        <div className={classes.dateTimePair}>
+            <ElectionDateInput
+                className={classes.input}
+                defaultValue={dateTime.date}
+                onDone={({ valid, value }) => setDate({ date: value, valid })}
+            />
+            <ElectionTimeInput
+                className={classes.input}
+                defaultValue={dateTime.time}
+                onDone={({ valid, value }) => setTime({ time: value, valid })}
+            />
+        </div>
+    )
+}
 
 const TimelinePoint = function (props) {
     const { className, style, electionOM, title, description, dateTimes = [], onDone = () => {}, ref } = props
@@ -20,6 +48,7 @@ const TimelinePoint = function (props) {
             case 'invalid':
                 // if it has become invalid, it must be removed from the state
                 // if it is just initially invalid, in just must not be added
+                // if it is invalid, it should be updated to be invalid but should not be removed
                 delete state[`${action.payload.id}`]
 
                 //return state.filter((el)=> el)
@@ -56,32 +85,9 @@ const TimelinePoint = function (props) {
         <div ref={ref}>
             <div>{title}</div>
             <div>{description}</div>
-            {dateTimes.map(({ date, time }, i) => {
-                return (
-                    <div className={classes.dateTimePair}>
-                        <ElectionDateInput
-                            className={classes.input}
-                            defaultValue={date}
-                            onDone={({ valid, value }) =>
-                                dispatch({
-                                    type: valid ? 'valid' : 'invalid',
-                                    payload: { value: { date: value }, id: `date-${i}` },
-                                })
-                            }
-                        />
-                        <ElectionTimeInput
-                            className={classes.input}
-                            defaultValue={time}
-                            onDone={({ valid, value }) => {
-                                dispatch({
-                                    type: valid ? 'valid' : 'invalid',
-                                    payload: { value: { time: value }, id: `time-${i}` },
-                                })
-                            }}
-                        />
-                    </div>
-                )
-            })}
+            {dateTimes.map(dateTime => (
+                <DateTimeInput dateTime={dateTime} />
+            ))}
         </div>
     )
 }
