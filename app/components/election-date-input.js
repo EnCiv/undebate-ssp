@@ -84,6 +84,11 @@ export default function ElectionDateInput(props) {
         }
     }, [textDate, datePickerOpen])
 
+    // Calls onDone/validation for initial defaultValue
+    useEffect(() => {
+        propOnDone({ valid: isMdyValid(textDate), value: textDate })
+    }, [])
+
     const onInputChange = e => {
         const { value } = e.target
         if ((value.length === 8 || value.length === 10) && !isMdyValid(value)) {
@@ -107,7 +112,7 @@ export default function ElectionDateInput(props) {
         if (!valid) {
             setError('Please enter a valid date')
         }
-        propOnDone({ valid, value: mdyToDate(textDate) })
+        propOnDone({ valid: isMdyValid(textDate), value: textDate })
     }
     return (
         <div ref={parentEl}>
