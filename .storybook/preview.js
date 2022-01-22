@@ -37,13 +37,23 @@ export const decorators = [
                         )
                     )
                 },
+                sendCandidateInvitations() {
+                    dispatch(
+                        merge(
+                            {},
+                            state,
+                            { _sendCandidateInvitations: (state._sendCandidateInvitations || 0) + 1 },
+                            { _count: state._count + 1 }
+                        )
+                    )
+                },
             }),
             { _count: 0 }
         )
         const [electionObj, electionMethods] = electionOM
         return (
             <ThemeProvider theme={theme}>
-                <div>
+                <div style={{ backgroundColor: theme.backgroundColorApp }}>
                     <Story onDone={doneM.onDone} electionOM={electionOM} />
                 </div>
                 <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem' }} />

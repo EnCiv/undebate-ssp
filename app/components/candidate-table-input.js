@@ -242,34 +242,12 @@ function CandidateTableInput(props) {
         setSkipPageReset(false)
     }, [data])
 
-    const classes = useElectionStyles()
-
     return (
         <div className={className} style={style}>
             <Table columns={columns} data={data} updateMyData={updateMyData} skipPageReset={skipPageReset} />
-            {editable && (
-                <button className={classes.addQuestionBtn} onClick={addRow} type='button'>
-                    Add Candidate
-                </button>
-            )}
         </div>
     )
 }
-const useElectionStyles = createUseStyles(theme => ({
-    addQuestionBtn: {
-        color: theme.colorSecondary,
-        background: 'white',
-        border: `1px solid ${theme.colorSecondary}`,
-        alignSelf: 'flex-start',
-        padding: theme.buttonPadding,
-        borderRadius: theme.buttonBorderRadius,
-        fontWeight: 600,
-        '&:hover': {
-            cursor: 'pointer',
-        },
-        marginTop: '0.5rem',
-    },
-}))
 
 export default CandidateTableInput
 
@@ -279,7 +257,6 @@ const useStyles = createUseStyles(theme => ({
         fontStyle: 'normal',
         fontWeight: 500,
         lineHeight: '1.5rem',
-        padding: '1rem',
         backgroundColor: theme.backgroundColorApp,
         'table&': {
             borderSpacing: 0,
@@ -306,9 +283,9 @@ const useStyles = createUseStyles(theme => ({
 
                 '& input': {
                     fontSize: theme.inputFieldFontSize,
-                    lineHeight: '1.6875',
-                    color: '#262D33B3',
-                    background: theme.backgroundColorComponent,
+                    lineHeight: theme.inputFieldLineHeight,
+                    color: theme.colorSecondary,
+                    background: theme.inputFieldBackgroundColor,
                     padding: theme.inputFieldPadding,
                     margin: 0,
                     border: 0,

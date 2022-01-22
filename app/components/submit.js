@@ -32,12 +32,10 @@ function Submit({ onDone, name = 'Submit', style, className, disabled = false, d
 
 const useStyles = createUseStyles(theme => ({
     btn: {
-        borderRadius: theme.buttonBorderRadius,
+        ...theme.button,
         backgroundColor: theme.colorPrimary,
         border: 'none',
         color: '#FFF',
-        padding: theme.buttonPadding,
-        fontWeight: 600,
         '&:hover': {
             cursor: 'pointer',
         },
