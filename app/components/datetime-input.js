@@ -1,22 +1,23 @@
-import { React, useEffect, useState, useReducer } from 'react'
+import { React, useEffect, useState } from 'react'
+import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
 import ElectionTimeInput from './election-time-input'
 import ElectionDateInput from './election-date-input'
 
-const DateTimeInput = function (props) {
+function DateTimeInput(props) {
     const { defaultValue, className, style, onDone = () => {}, electionOM } = props
     const classes = useStyles()
 
-    const [timeObj, setTimeObj] = useState({})
-    const [dateObj, setDateObj] = useState({})
+    const [timeObj, setTimeObj] = useState({ value: '', valid: false })
+    const [dateObj, setDateObj] = useState({ value: '', valid: false })
 
     useEffect(() => {
         onDone({ value: { date: dateObj.value, time: timeObj.value }, valid: timeObj.valid && dateObj.valid })
     }, [timeObj, dateObj])
 
     return (
-        <div className={classes.dateTimePair}>
+        <div className={cx(className, classes.dateTimePair)} style={style}>
             <ElectionDateInput
                 defaultValue={defaultValue.date}
                 onDone={({ valid, value }) => setDateObj({ value, valid })}
