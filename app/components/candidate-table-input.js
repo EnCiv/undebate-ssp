@@ -139,8 +139,8 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
                             type='number'
                             defaultValue={pageIndex + 1}
                             onChange={e => {
-                                const page = e.target.value ? Number(e.target.value) - 1 : 0
-                                gotoPage(page)
+                                const _page = e.target.value ? Number(e.target.value) - 1 : 0
+                                gotoPage(_page)
                             }}
                             style={{ width: '100px' }}
                         />
@@ -151,9 +151,9 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
                             setPageSize(Number(e.target.value))
                         }}
                     >
-                        {[100, 50, 20, 10].map(pageSize => (
-                            <option key={pageSize} value={pageSize}>
-                                Show {pageSize}
+                        {[100, 50, 20, 10].map(_pageSize => (
+                            <option key={_pageSize} value={_pageSize}>
+                                Show {_pageSize}
                             </option>
                         ))}
                     </select>
@@ -214,10 +214,6 @@ function CandidateTableInput(props) {
     }
 
     const [skipPageReset, setSkipPageReset] = React.useState(false)
-    const addRow = () => {
-        const uniqueId = ObjectID().toString()
-        onDone({ valid: true, value: { uniqueId } })
-    }
 
     // We need to keep the table from resetting the pageIndex when we
     // Update data. So we can keep track of that flag with a ref.

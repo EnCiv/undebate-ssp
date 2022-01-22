@@ -31,6 +31,7 @@ module.exports = {
             },
         ],
         'react/jsx-props-no-spreading': 'off',
+        'no-unused-vars': ['error', { varsIgnorePattern: 'electionObj', args: 'none' }],
     },
     globals: {
         logger: 'readonly',
