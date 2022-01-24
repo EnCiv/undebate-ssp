@@ -1,24 +1,27 @@
 // https://github.com/EnCiv/undebate-ssp/issues/8
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import TextareaAutosize from 'react-textarea-autosize'
 
-export default function CountLimitedTextInput({ name, maxCount, defaultValue, onDone }) {
+export default function CountLimitedTextInput({ name = '', maxCount = 0, defaultValue = '', onDone = () => {} }) {
     const classes = useStyles()
-    const [inputText, setInputText] = useState(defaultValue)
+    const [length, setLength] = useState(defaultValue.length)
 
-    const updateState = event => {
-        const input = event.target.value
-        const inputLength = input.length
-        const recentLength = inputText.length
-        if (recentLength <= maxCount) {
-            const diffLength = maxCount - recentLength
-            if (inputLength <= diffLength) {
-                setInputText(input)
-            } else {
-                setInputText(input.substring(0, maxCount))
-            }
-        }
+    useEffect(() => {
+        handleDone() // if default value changes, inputRef.value will be set to it by the time useEffect is called - need to update the validity
+    }, [defaultValue])
+
+    const inputRef = useRef(null)
+
+    // eslint-disable-next-line no-unused-vars
+    const handleDone = e => {
+        onDone({ valid: isTextValid(inputRef?.current?.value), value: inputRef?.current?.value })
+    }
+
+    const isTextValid = txt => txt?.length <= maxCount && txt?.length >= 1
+
+    const handleKeyPress = e => {
+        if (e.key === 'Enter') inputRef.current.blur()
     }
 
     return (
@@ -26,34 +29,31 @@ export default function CountLimitedTextInput({ name, maxCount, defaultValue, on
             <div className={classes.scriptInfo}>
                 <div className={classes.question}>{name}</div>
                 <div className={classes.quantity}>
-                    ({inputText.length}/{maxCount})
+                    ({length}/{maxCount})
                 </div>
             </div>
+
             <TextareaAutosize
                 className={classes.input}
-                value={inputText}
-                onChange={event => {
-                    updateState(event)
+                defaultValue={defaultValue}
+                maxLength={maxCount}
+                onBlur={handleDone}
+                onKeyPress={handleKeyPress}
+                onChange={e => {
+                    setLength(e.target.value.length)
                 }}
-                onBlur={() => {
-                    onDone({
-                        value: inputText,
-                        valid: inputText.length <= maxCount && inputText.length >= 1,
-                    })
-                }}
-            >
-                {inputText}
-            </TextareaAutosize>
+                ref={inputRef}
+            />
         </div>
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        fontFamily: 'Poppins',
-        color: '#262D33',
+        fontFamily: theme.defaultFontFamily,
+        color: theme.colorSecondary,
     },
     scriptInfo: {
         display: 'flex',
@@ -68,17 +68,17 @@ const useStyles = createUseStyles({
     quantity: {
         display: 'flex',
         alignItems: 'center',
-        fontSize: '0.875rem',
-        opacity: '70%',
+        fontSize: theme.secondaryTextFontSize,
+        opacity: theme.secondaryTextOpacity,
     },
     input: {
-        background: 'linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF',
-        padding: '0.9375rem 1.25rem',
+        background: theme.backgroundColorComponent,
+        padding: theme.inputFieldPadding,
+        fontFamily: theme.defaultFontFamily,
         resize: 'none',
         border: 'none',
-        borderRadius: '0.625rem',
+        borderRadius: theme.defaultBorderRadius,
         fontSize: '1rem',
         margin: '0.375rem 0rem',
-        opacity: '80%',
     },
-})
+}))

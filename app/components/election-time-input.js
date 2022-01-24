@@ -43,28 +43,29 @@ function ElectionTimeInput(props) {
 
 export default ElectionTimeInput
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     electionTimeInput: {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderRadius: '0.625rem',
-        background: 'linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF',
-        padding: '1rem 1.25rem',
+        borderRadius: theme.defaultBorderRadius,
+        background: theme.backgroundColorComponent,
+        padding: theme.inputFieldPadding,
         width: '100%',
     },
     input: time => ({
         border: 'none',
         background: 'transparent',
         color: time ? 'black' : 'grey',
-        fontSize: '1.125rem',
+        fontSize: theme.inputFieldFontSize,
+        fontFamily: theme.defaultFontFamily,
         width: '100%',
         '&::-webkit-calendar-picker-indicator': {
             display: 'none',
         },
     }),
     clockIcon: {
-        height: '1.25rem',
-        width: '1.25rem',
+        height: theme.iconSize,
+        width: theme.iconSize,
     },
-})
+}))

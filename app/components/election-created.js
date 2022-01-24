@@ -22,9 +22,9 @@ export default function ElectionCreated({ electionMetadata }) {
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     electionCreated: {
-        color: '#262D33',
+        color: theme.colorSecondary,
     },
     header: {
         lineHeight: '1.5rem',
@@ -37,4 +37,4 @@ const useStyles = createUseStyles({
         margin: '0.313rem 0rem',
         opacity: '70%',
     },
-})
+}))
