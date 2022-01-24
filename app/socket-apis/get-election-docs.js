@@ -2,11 +2,11 @@
 
 import { Iota } from 'civil-server'
 
-export default async function getElectionDocs(id, cb) {
+export default async function getElectionDocs(cb) {
     if (!this.synuser) return cb && cb() // no user
     try {
         const results = await Iota.aggregate([
-            { $match: { parentId: id, webComponent: 'ElectionDoc' } },
+            { $match: { userId: this.synuser.id, webComponent: 'ElectionDoc' } },
             { $sort: { _id: -1 } },
         ])
         cb && cb(results)
