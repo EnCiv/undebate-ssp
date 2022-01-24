@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import TimelinePoint from '../app/components/timeline-point'
 
 export default {
@@ -6,11 +6,26 @@ export default {
     component: TimelinePoint,
 }
 
-const Template = args => (
-    <div style={{ width: '50%' }}>
-        <TimelinePoint {...args} />
-    </div>
-)
+const Template = args => {
+    const [doneState, setDoneState] = useState({ valid: false, value: [] })
+    return (
+        <div>
+            <div style={{ width: '50%' }}>
+                <TimelinePoint onDone={done => setDoneState(done)} {...args} />
+            </div>
+            <div style={{ margin: '10px' }}>Is valid: {`${doneState.valid}`}</div>
+            <div style={{ margin: '10px' }}>
+                {doneState.value.map(dateTime => {
+                    return (
+                        <div>
+                            Date: {dateTime.value.date} Time: {dateTime.value.time}
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
+    )
+}
 
 export const Default = Template.bind({})
 Default.args = {

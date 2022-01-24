@@ -7,17 +7,13 @@ const TimelinePoint = function (props) {
     const { className, style, electionOM, title, description, dateTimes = [], onDone = () => {}, ref } = props
     const classes = useStyles()
 
+    // setEverything to currentState, then setDateTimePairs(currentState)
+    // AKA modify currentState and set with setDateTimePairs
+    const currentState = {}
     const [dateTimePairs, setDateTimePairs] = useState({})
 
-    const handleChange = ({ valid, value, id }) => {
-        //const dateTimePairsCopy = { ...dateTimePairs }
-        //dateTimePairsCopy[id] = { valid, value }
-
-        setDateTimePairs({ ...dateTimePairs, [id]: { valid, value } })
-    }
-
     const areAllPairsValid = () => {
-        const dateTimeObjs = Object.values(dateTimePairs)
+        const dateTimeObjs = Object.values(currentState)
         if (!dateTimeObjs.length) return false
         for (let i = 0; i < dateTimeObjs.length; i += 1) {
             if (!dateTimeObjs[i].valid) return false
@@ -28,11 +24,17 @@ const TimelinePoint = function (props) {
     useEffect(() => {
         const valid = areAllPairsValid()
         console.log('valid?', valid)
-        console.log(dateTimePairs)
-        onDone({ value: dateTimePairs, valid })
+        console.log('onDone value', Object.values(dateTimePairs))
+
+        onDone({ value: Object.values(dateTimePairs), valid })
     }, [dateTimePairs])
 
     // updating the state works correctly but the initial state is wrong
+    useEffect(() => {
+        //setDateTimePairs(currentState)
+        console.log(currentState)
+        //currentState = {}
+    }, [currentState])
 
     return (
         <div ref={ref}>
@@ -41,7 +43,16 @@ const TimelinePoint = function (props) {
             {dateTimes.map((dateTime, i) => (
                 <DateTimeInput
                     defaultValue={dateTime}
-                    onDone={({ valid, value }) => handleChange({ valid, value, id: i })}
+                    onDone={({ valid, value }) => {
+                        currentState[i] = { valid, value }
+                        console.log(i)
+                        console.log('currentState', currentState)
+                        const isValid = areAllPairsValid()
+                        console.log('valid?', isValid)
+                        console.log('onDone value', Object.values(dateTimePairs))
+
+                        onDone({ value: Object.values(currentState), valid })
+                    }}
                 />
             ))}
         </div>
