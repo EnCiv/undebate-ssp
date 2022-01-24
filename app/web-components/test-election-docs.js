@@ -6,6 +6,9 @@ export default function TestElectionDoc(props) {
         socket.emit('get-election-docs', docs => {
             console.log(docs)
         })
+        socket.emit("upsert-election-doc", testDoc, (ok) => {
+            console.log(ok)
+        })
     }, [])
     return (
         <div style={{ width: '100vw', height: '100vh' }}>
