@@ -7,5 +7,19 @@
         "subject": "Civil Server Template",
         "description": "Civil Server Template Home Page",
         "webComponent": "Home"
+    },
+    {
+        "_id": {
+            "$oid": "61e328437e61d163b8d1a53f"
+        },
+        "path": "/test-election-docs",
+        "subject": "Testing get-election-docs socket API",
+        "description": "Testing get-election-docs socket API",
+        "webComponent": "TestElectionDocs"
+    },
+    {
+        "_id": "61e3309613eec40628793064",
+        "parentId": "600f2e3d7be64409f0387718",
+        "webComponent": "ElectionDoc"
     }
 ]
