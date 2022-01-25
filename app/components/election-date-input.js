@@ -52,7 +52,7 @@ const dateToMdy = date => {
 export default function ElectionDateInput(props) {
     // defaultValue: mm/dd/yyyy string or a Date object
     // onDone: ({valid: bool, value: Date}): null
-    const { defaultValue = '', onDone: propOnDone = () => {} } = props
+    const { defaultValue = '', disabled = false, onDone: propOnDone = () => {} } = props
 
     const today = new Date()
 
@@ -125,11 +125,17 @@ export default function ElectionDateInput(props) {
                         maxLength='10'
                         required
                         value={textDate}
+                        disabled={disabled}
                         onChange={onInputChange}
                         onBlur={e => blurDateInput(e.target.value)}
                         placeholder='mm/dd/yyyy'
                     />
-                    <button type='button' className={classes.datePickerButton} onClick={datePickerButtonOnClick}>
+                    <button
+                        disabled={disabled}
+                        type='button'
+                        className={classes.datePickerButton}
+                        onClick={datePickerButtonOnClick}
+                    >
                         <SvgCalendar className={classes.icon} />
                     </button>
                 </span>
@@ -162,13 +168,15 @@ const useStyles = createUseStyles(theme => ({
         padding: theme.inputFieldPadding,
         width: '100%',
     }),
-    dateInput: {
+    dateInput: props => ({
         backgroundColor: 'transparent',
         border: 'none',
         outline: 'none',
         fontSize: theme.inputFieldFontSize,
         fontFamily: theme.defaultFontFamily,
-    },
+        color: props.disabled ? 'grey' : 'black',
+        cursor: props.disabled ? 'not-allowed' : 'pointer',
+    }),
     datePicker: {
         position: 'absolute',
         overflow: 'hidden',
@@ -185,7 +193,7 @@ const useStyles = createUseStyles(theme => ({
     datePickerTile: {
         borderRadius: '0.5rem',
     },
-    datePickerButton: {
+    datePickerButton: props => ({
         background: 'none',
         border: 'none',
         display: 'flex',
@@ -197,7 +205,8 @@ const useStyles = createUseStyles(theme => ({
         '&:hover': {
             backgroundColor: '#b4b5b6',
         },
-    },
+        cursor: props.disabled ? 'not-allowed' : 'pointer',
+    }),
     errorText: {
         color: 'red',
     },
