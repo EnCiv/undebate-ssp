@@ -9,12 +9,18 @@ function DateTimeInput(props) {
     const { defaultValue, className, style, onDone = () => {}, electionOM } = props
     const classes = useStyles()
 
-    const [timeObj, setTimeObj] = useState({ value: '', valid: false })
-    const [dateObj, setDateObj] = useState({ value: '', valid: false })
+    const [timeObj, setTimeObj] = useState({ value: defaultValue.time.value, valid: defaultValue.time.valid })
+    const [dateObj, setDateObj] = useState({ value: defaultValue.date.value, valid: defaultValue.date.valid })
 
     useEffect(() => {
         onDone({ value: { date: dateObj.value, time: timeObj.value }, valid: timeObj.valid && dateObj.valid })
     }, [timeObj, dateObj])
+
+    useEffect(() => {
+        console.log(defaultValue)
+    }, [])
+
+    // only on init if the time is passed, the input must be disabled
 
     return (
         <div className={cx(className, classes.dateTimePair)} style={style}>

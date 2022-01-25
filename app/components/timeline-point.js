@@ -1,4 +1,5 @@
 import { React, useRef } from 'react'
+import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
 import DateTimeInput from './datetime-input'
@@ -19,11 +20,12 @@ const TimelinePoint = function (props) {
     }
 
     return (
-        <div ref={ref}>
+        <div ref={ref} className={cx(className)}>
             <div>{title}</div>
             <div>{description}</div>
             {dateTimes.map((dateTime, i) => (
                 <DateTimeInput
+                    className={classes.dateTimeInput}
                     defaultValue={dateTime}
                     onDone={({ valid, value }) => {
                         state.current[i] = { valid, value }
@@ -37,7 +39,11 @@ const TimelinePoint = function (props) {
 }
 
 const useStyles = createUseStyles(theme => {
-    return {}
+    return {
+        dateTimeInput: {
+            padding: '1rem 0',
+        },
+    }
 })
 
 export default TimelinePoint
