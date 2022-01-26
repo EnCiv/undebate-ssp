@@ -6,7 +6,7 @@
     "scripts": {
         "db-up": "start /b mongod --quiet --dbpath ./tmp/db --port 27017",
         "db-down": "mongo --eval \"db.getSiblingDB('admin').shutdownServer(); quit()\"",
-        "dev": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"sleep 20 && npm run hot-server\" \"sleep 15 && npm run hot-client\"",
+        "dev": "bash postinstall.sh && echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"sleep 20 && npm run hot-server\" \"sleep 15 && npm run hot-client\"",
         "hot-client": "webpack-dev-server --config webpack-dev.config.js --devtool source-map --host 0.0.0.0",
         "hot-server": "nodemon --inspect dist/start.js",
         "hot-transpile": "babel --watch app --ignore **/__tests__ --out-dir dist --source-maps",
@@ -16,7 +16,7 @@
         "start": "node --max_old_space_size=460 dist/start.js",
         "test": "echo \"Error: no test specified\" && exit 1",
         "transpile": "babel app --ignore **/__tests__ --out-dir dist --source-maps",
-        "storybook": "start-storybook -p 6006",
+        "storybook": "bash postinstall.sh && start-storybook -p 6006",
         "build-storybook": "build-storybook",
         "svgr": "svgr --icon --filename-case kebab assets/svg --out-dir app/svgr && rm app/svgr/index.js",
         "_lint": "eslint --config .eslintrc.js --ext js",
