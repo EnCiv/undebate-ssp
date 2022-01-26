@@ -12,6 +12,7 @@ const Template = args => {
     return (
         <div style={{ width: '50%' }}>
             <DateTimeInput onDone={done => setDoneState(done)} {...args} />
+            <h3>OnDone Values:</h3>
             <div style={{ margin: '10px' }}>Is valid datetime: {`${doneState.valid}`}</div>
             <div style={{ margin: '10px' }}>Date: {`${doneState.value.date}`}</div>
             <div style={{ margin: '10px' }}>Time: {`${doneState.value.time}`}</div>

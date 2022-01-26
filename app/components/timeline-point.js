@@ -1,10 +1,9 @@
 import { React, useRef } from 'react'
-import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
 import DateTimeInput from './datetime-input'
 
-const TimelinePoint = function (props) {
+function TimelinePoint(props) {
     const { className, style, electionOM, title, description, dateTimes = [], onDone = () => {}, ref } = props
     const classes = useStyles()
 
@@ -20,7 +19,7 @@ const TimelinePoint = function (props) {
     }
 
     return (
-        <div ref={ref} className={cx(className)}>
+        <div ref={ref} className={className} style={style}>
             <div>{title}</div>
             <div>{description}</div>
             {dateTimes.map((dateTime, i) => (
@@ -38,12 +37,10 @@ const TimelinePoint = function (props) {
     )
 }
 
-const useStyles = createUseStyles(theme => {
-    return {
-        dateTimeInput: {
-            padding: '1rem 0',
-        },
-    }
+const useStyles = createUseStyles({
+    dateTimeInput: {
+        padding: '.75rem 0',
+    },
 })
 
 export default TimelinePoint
