@@ -59,7 +59,10 @@ export const decorators = [
                 <div style={{ width: '100%', border: 'solid 1px black', marginTop: '1rem', marginBottom: '1rem' }} />
                 {doneS._count > 0 && (
                     <div>
-                        onDone: <span id='onDone'>{JSON.stringify(doneS, null, 4)}</span>
+                        onDone:{' '}
+                        <span id='onDone' style={{ whiteSpace: 'pre-wrap' }}>
+                            {JSON.stringify(doneS, null, 4)}
+                        </span>
                     </div>
                 )}
                 {electionObj._count > 0 && (
