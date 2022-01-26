@@ -10,7 +10,6 @@ function ElectionTimeInput(props) {
     const [time, setTime] = useState(defaultValue)
     const classes = useStyles({ time, disabled })
     const inputRef = useRef(null)
-    console.log(!time || disabled)
 
     useEffect(() => {
         handleDone(time)

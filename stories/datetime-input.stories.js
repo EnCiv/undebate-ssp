@@ -26,5 +26,10 @@ Default.args = {
 
 export const Filled = Template.bind({})
 Filled.args = {
+    defaultValue: { date: '11/26/22', time: '14:00' },
+}
+
+export const Disabled = Template.bind({})
+Disabled.args = {
     defaultValue: { date: '11/26/21', time: '14:00' },
 }

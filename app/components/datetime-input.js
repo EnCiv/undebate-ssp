@@ -1,4 +1,4 @@
-import { React, useEffect, useState, useRef } from 'react'
+import { React, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
@@ -6,28 +6,38 @@ import ElectionTimeInput from './election-time-input'
 import ElectionDateInput from './election-date-input'
 
 function DateTimeInput(props) {
-    const { defaultValue = '', className, style, onDone = () => {}, electionOM } = props
+    const { defaultValue, className, style, onDone = () => {}, electionOM } = props
     const classes = useStyles()
 
-    const [timeObj, setTimeObj] = useState({ value: defaultValue.time, valid: defaultValue.time.valid })
-    const [dateObj, setDateObj] = useState({ value: defaultValue.date, valid: null })
-    const [init, setInit] = useState(true)
-    const [disabled, setDisabled] = useState(false)
+    const [timeObj, setTimeObj] = useState()
+    const [dateObj, setDateObj] = useState()
 
-    useEffect(() => {
-        if (init && dateObj.valid && timeObj.valid) {
-            setInit(false)
-            const date = new Date(dateObj.value)
-            if (Date.now() > date) {
-                setDisabled(true)
-                console.log('time has passed')
-            }
-            console.log(date)
+    const [disabled, setDisabled] = useState()
+
+    const isDateTimePassed = () => {
+        if (!timeObj || !dateObj) return
+        const date = new Date(`${dateObj.value} ${timeObj.value}`)
+        if (Date.now() > date) {
+            return true
         }
-        onDone({ value: { date: dateObj.value, time: timeObj.value }, valid: timeObj.valid && dateObj.valid })
-    }, [timeObj, dateObj])
+        return false
+    }
 
-    // only on init if the time is passed, the input must be disabled
+    const shouldBeDisabled = () => {
+        if (isDateTimePassed() && defaultValue.date === dateObj.value && defaultValue.time === timeObj.value) {
+            return true
+        }
+        return false
+    }
+    useEffect(() => {
+        if (shouldBeDisabled()) {
+            setDisabled(true)
+        }
+
+        const isValid = !isDateTimePassed() && dateObj?.valid && timeObj?.valid
+
+        onDone({ value: { date: dateObj?.value, time: timeObj?.value }, valid: isValid })
+    }, [timeObj, dateObj])
 
     return (
         <div className={cx(className, classes.dateTimePair)} style={style}>
