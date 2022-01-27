@@ -1,3 +1,5 @@
+// https://github.com/EnCiv/undebate-ssp/issues/12
+
 import React, { useState } from 'react'
 import TimelinePoint from '../app/components/timeline-point'
 

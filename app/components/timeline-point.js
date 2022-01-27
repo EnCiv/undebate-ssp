@@ -1,3 +1,5 @@
+// https://github.com/EnCiv/undebate-ssp/issues/12
+
 import { React, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 
@@ -20,8 +22,8 @@ function TimelinePoint(props) {
 
     return (
         <div ref={ref} className={className} style={style}>
-            <div>{title}</div>
-            <div>{description}</div>
+            <div className={classes.title}>{title}</div>
+            <div className={classes.description}>{description}</div>
             {dateTimes.map((dateTime, i) => (
                 <DateTimeInput
                     className={classes.dateTimeInput}
@@ -37,10 +39,21 @@ function TimelinePoint(props) {
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
+    title: {
+        fontWeight: '600',
+        margin: '5px',
+    },
+    description: {
+        color: theme.colorSecondary,
+        fontSize: theme.secondaryTextFontSize,
+        opacity: theme.secondaryTextOpacity,
+        fontWeight: '500',
+        margin: '5px',
+    },
     dateTimeInput: {
         padding: '.75rem 0',
     },
-})
+}))
 
 export default TimelinePoint
