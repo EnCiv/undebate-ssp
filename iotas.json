@@ -7,5 +7,41 @@
         "subject": "Civil Server Template",
         "description": "Civil Server Template Home Page",
         "webComponent": "Home"
+    },
+    {
+        "_id": "61e3309613eec40628793064",
+        "path": "/test-election-docs",
+        "parentId": "600f2e3d7be64409f0387718",
+        "subject": "Testing get-election-docs socket API",
+        "description": "Testing get-election-docs socket API",
+        "webComponent": "TestElectionDocs"
+    },
+    {
+        "_id": "61edf8791dff058c2a73724d",
+        "userId": "61edf83e01fb518ba162fe70",
+        "subject": "Election document",
+        "description": "Election document #1",
+        "webComponent": "ElectionDoc"
+    },
+    {
+        "_id": "61edf96846c0a28ef1ce5d5d",
+        "userId": "61edf83e01fb518ba162fe70",
+        "subject": "Election document",
+        "description": "Election document #2",
+        "webComponent": "ElectionDoc"
+    },
+    {
+        "_id": "61edf96be782378f2179622e",
+        "userId": "61edf83e01fb518ba162fe70",
+        "subject": "Election document",
+        "description": "Election document #3",
+        "webComponent": "ElectionDoc"
+    },
+    {
+        "_id": "61edf96c1d87738f395d12d8",
+        "userId": "61edf83e01fb518ba162fe70",
+        "subject": "Election document",
+        "description": "Election document #4",
+        "webComponent": "ElectionDoc"
     }
 ]
