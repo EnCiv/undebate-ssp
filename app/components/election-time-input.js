@@ -53,6 +53,7 @@ const useStyles = createUseStyles(theme => ({
         background: theme.backgroundColorComponent,
         padding: theme.inputFieldPadding,
         width: '100%',
+        height: 'fit-content',
     },
     input: ({ time, disabled }) => ({
         border: 'none',

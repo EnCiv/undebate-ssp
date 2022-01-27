@@ -162,7 +162,7 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        border: `.1rem solid ${props.error ? 'red' : 'none'}`,
+        outline: `.1rem solid ${props.error ? 'red' : 'none'}`,
         borderRadius: theme.defaultBorderRadius,
         backgroundColor: theme.backgroundColorComponent,
         padding: theme.inputFieldPadding,
@@ -205,7 +205,6 @@ const useStyles = createUseStyles(theme => ({
         '&:hover': {
             backgroundColor: '#b4b5b6',
         },
-        cursor: props.disabled ? 'not-allowed' : 'pointer',
     }),
     errorText: {
         color: 'red',
