@@ -1,10 +1,6 @@
-<<<<<<< HEAD
 // https://github.com/EnCiv/undebate-ssp/issues/12
 
-import React, { useState } from 'react'
-=======
 import React from 'react'
->>>>>>> d1443dd1641de3d73c90907b8e38705019bf35f3
 import TimelinePoint from '../app/components/timeline-point'
 
 export default {

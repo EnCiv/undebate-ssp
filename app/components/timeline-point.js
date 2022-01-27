@@ -31,7 +31,10 @@ function TimelinePoint(props) {
                     onDone={({ valid, value }) => {
                         state.current[i] = { valid, value }
                         const isValid = areAllPairsValid()
-                        onDone({ value: Object.values(state.current), valid: isValid })
+                        onDone({
+                            value: Object.values(state.current).map(dateTimeObj => dateTimeObj.value),
+                            valid: isValid,
+                        })
                     }}
                 />
             ))}
