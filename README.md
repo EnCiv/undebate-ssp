@@ -160,6 +160,34 @@ to update what's on github.
 
 When the code is ready to merge, go to github.com/EnCiv/undebate-ssp and create a pull request for it. When you go there - there will probably a note at the top asking if you want to create a pull request.
 
+# Testing
+
+In many cases, like APIs, it is faster to build the API and create a test for it, than it is to test the API by going through the UI.
+
+This project is using Jest for testing, and we have set it up to allow tests to use the Mongo database. See are example at [app/socket_apis/\_\_tests\_\_/get-election-documents](https://github.com/EnCiv/undebate-ssp/blob/main/app/socket-apis/__tests__/get-election-docs.js)
+
+You can use `npm run test` to run all the tests or `npm run test -i ` to run just the file you are working on. For example:
+
+```
+$ npm run test -i app/socket-apis/__tests__/get-election-docs.js
+
+> undebate-ssp@v0.0.0 test
+> jest "app/socket-apis/__tests__/get-election-docs.js"
+
+ PASS  app/socket-apis/__tests__/get-election-docs.js
+  √ get election docs should return undefined if user not logged in (2 ms)
+  √ get election docs should return empty array if user has no docs (4 ms)
+  √ get election docs should get them (3 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        3.309 s, estimated 4 s
+Ran all test suites matching /app\\socket-apis\\__tests__\\get-election-docs.js/i.
+```
+
+When you got down to writing the tests, expect is what's used to check for success or failure. Here are are the [docs on expect](https://jestjs.io/docs/expect)
+
 # Icons, Figma and SVG
 
 You can export svg from figma and paste it into a .svg file in assets/svg to create icons. For example assets/svg/trash-can.svg
