@@ -6,9 +6,9 @@ import cx from 'classnames'
 import ClockSolidSVG from '../svgr/clock-solid'
 
 function ElectionTimeInput(props) {
-    const { className, style, defaultValue = '', onDone = () => {} } = props
+    const { className, style, disabled = false, defaultValue = '', onDone = () => {} } = props
     const [time, setTime] = useState(defaultValue)
-    const classes = useStyles(time)
+    const classes = useStyles({ time, disabled })
     const inputRef = useRef(null)
 
     useEffect(() => {
@@ -29,6 +29,7 @@ function ElectionTimeInput(props) {
                 className={classes.input}
                 type='time'
                 defaultValue={time}
+                disabled={disabled}
                 onBlur={handleDone}
                 onChange={handleChange}
                 onKeyPress={e => {
@@ -52,17 +53,19 @@ const useStyles = createUseStyles(theme => ({
         background: theme.backgroundColorComponent,
         padding: theme.inputFieldPadding,
         width: '100%',
+        height: 'fit-content',
     },
-    input: time => ({
+    input: ({ time, disabled }) => ({
         border: 'none',
         background: 'transparent',
-        color: time ? 'black' : 'grey',
+        color: time && !disabled ? 'black' : 'grey',
         fontSize: theme.inputFieldFontSize,
         fontFamily: theme.defaultFontFamily,
         width: '100%',
         '&::-webkit-calendar-picker-indicator': {
             display: 'none',
         },
+        cursor: disabled ? 'not-allowed' : 'pointer',
     }),
     clockIcon: {
         height: theme.iconSize,
