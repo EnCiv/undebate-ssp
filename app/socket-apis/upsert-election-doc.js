@@ -2,13 +2,10 @@
 
 import { Iota } from 'civil-server'
 import Joi from 'joi'
+import ObjectID from 'joi-objectid'
+Joi.objectId = ObjectID(Joi)
 
-const ID = Joi.object({
-    increment: Joi.number(),
-    machine: Joi.number(),
-    pid: Joi.number(),
-    timestamp: Joi.number(),
-})
+const ID = Joi.objectId()
 
 const schema = Joi.object({
     _id: ID,
@@ -18,14 +15,14 @@ const schema = Joi.object({
     organizationName: Joi.string(),
     electionDate: Joi.string(),
     questions: Joi.object().pattern(
-        Joi.number(),
+        Joi.string(),
         Joi.object({
             text: Joi.string(),
             time: Joi.string(),
         })
     ),
     script: Joi.object().pattern(
-        Joi.number(),
+        Joi.string(),
         Joi.object({
             text: Joi.string(),
         })
@@ -53,7 +50,7 @@ const schema = Joi.object({
     candidates: Joi.object().pattern(
         Joi.string(),
         Joi.object({
-            uniqueId: Joi.string(),
+            uniqueId: ID,
             name: Joi.string(),
             email: Joi.string(),
             office: Joi.string(),
@@ -77,35 +74,35 @@ const schema = Joi.object({
     ),
     timeline: {
         moderatorDeadlineReminderEmails: Joi.object().pattern(
-            Joi.number(),
+            Joi.string(),
             Joi.object({
                 date: Joi.string(),
                 sent: Joi.boolean(),
             })
         ),
         moderatorSubmissionDeadline: Joi.object().pattern(
-            Joi.number(),
+            Joi.string(),
             Joi.object({
                 date: Joi.string(),
                 sent: Joi.boolean(),
             })
         ),
         moderatorInviteDeadline: Joi.object().pattern(
-            Joi.number(),
+            Joi.string(),
             Joi.object({
                 date: Joi.string(),
                 sent: Joi.boolean(),
             })
         ),
         candidateDeadlineReminderEmails: Joi.object().pattern(
-            Joi.number(),
+            Joi.string(),
             Joi.object({
                 date: Joi.string(),
                 sent: Joi.boolean(),
             })
         ),
         candidateSubmissionDeadline: Joi.object().pattern(
-            Joi.number(),
+            Joi.string(),
             Joi.object({
                 date: Joi.string(),
                 sent: Joi.boolean(),

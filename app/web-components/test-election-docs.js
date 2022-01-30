@@ -9,7 +9,7 @@ export default function TestElectionDoc(props) {
         })
 
         const testDoc = {
-            _id: ObjectID(),
+            _id: ObjectID().toString(),
             subject: 'Election Document',
             description: 'Election Document',
             electionName: 'U.S Presidential Election',
@@ -49,11 +49,16 @@ export default function TestElectionDoc(props) {
                 message: 'Please be a moderator',
                 invitations: [
                     // derived data, list may be empty or not present
-                    { _id: ObjectID(), text: 'Hi Mike, please send answers', sentDate: 'date', acceptedDate: 'date' },
+                    {
+                        _id: ObjectID().toString(),
+                        text: 'Hi Mike, please send answers',
+                        sentDate: 'date',
+                        acceptedDate: 'date',
+                    },
                 ],
                 submissions: [
                     // derived data, list may be empty or not present
-                    { _id: ObjectID(), url: 'url', date: 'date' },
+                    { _id: ObjectID().toString(), url: 'url', date: 'date' },
                 ],
             },
             candidates: {
@@ -66,7 +71,7 @@ export default function TestElectionDoc(props) {
                     invitations: [
                         // derived data - list may be empty or not present
                         {
-                            _id: ObjectID(),
+                            _id: ObjectID().toString(),
                             text: 'text',
                             sentDate: 'date',
                             acceptedDate: 'date',
@@ -74,7 +79,7 @@ export default function TestElectionDoc(props) {
                     ],
                     submissions: [
                         // derived data - list may be empty or not present
-                        { _id: ObjectID(), url: 'url', date: 'date' },
+                        { _id: ObjectID().toString(), url: 'url', date: 'date' },
                     ],
                 },
                 '61e76bfc8a82733d08f0cf12': {
@@ -85,7 +90,7 @@ export default function TestElectionDoc(props) {
                     region: 'United States',
                     invitations: [
                         {
-                            _id: ObjectID(),
+                            _id: ObjectID().toString(),
                             text: 'Hi Mike, please send answers',
                             sentDate: 'date',
                             acceptedDate: 'date',
@@ -93,7 +98,7 @@ export default function TestElectionDoc(props) {
                     ],
                     submissions: [
                         {
-                            _id: ObjectID(),
+                            _id: ObjectID().toString(),
                             url: 'date',
                             date: 'date',
                         },
