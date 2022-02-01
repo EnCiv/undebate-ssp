@@ -52,7 +52,7 @@ const dateToMdy = date => {
 export default function ElectionDateInput(props) {
     // defaultValue: mm/dd/yyyy string or a Date object
     // onDone: ({valid: bool, value: Date}): null
-    const { defaultValue = '', onDone: propOnDone = () => {} } = props
+    const { defaultValue = '', disabled = false, onDone: propOnDone = () => {} } = props
 
     const today = new Date()
 
@@ -84,6 +84,11 @@ export default function ElectionDateInput(props) {
         }
     }, [textDate, datePickerOpen])
 
+    // Calls onDone/validation for initial defaultValue
+    useEffect(() => {
+        propOnDone({ valid: isMdyValid(textDate), value: textDate })
+    }, [])
+
     const onInputChange = e => {
         const { value } = e.target
         if ((value.length === 8 || value.length === 10) && !isMdyValid(value)) {
@@ -107,7 +112,7 @@ export default function ElectionDateInput(props) {
         if (!valid) {
             setError('Please enter a valid date')
         }
-        propOnDone({ valid, value: mdyToDate(textDate) })
+        propOnDone({ valid: isMdyValid(textDate), value: textDate })
     }
     return (
         <div ref={parentEl}>
@@ -120,11 +125,17 @@ export default function ElectionDateInput(props) {
                         maxLength='10'
                         required
                         value={textDate}
+                        disabled={disabled}
                         onChange={onInputChange}
                         onBlur={e => blurDateInput(e.target.value)}
                         placeholder='mm/dd/yyyy'
                     />
-                    <button type='button' className={classes.datePickerButton} onClick={datePickerButtonOnClick}>
+                    <button
+                        disabled={disabled}
+                        type='button'
+                        className={classes.datePickerButton}
+                        onClick={datePickerButtonOnClick}
+                    >
                         <SvgCalendar className={classes.icon} />
                     </button>
                 </span>
@@ -151,19 +162,21 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        border: `.1rem solid ${props.error ? 'red' : 'none'}`,
+        outline: `.1rem solid ${props.error ? 'red' : 'none'}`,
         borderRadius: theme.defaultBorderRadius,
         backgroundColor: theme.backgroundColorComponent,
         padding: theme.inputFieldPadding,
         width: '100%',
     }),
-    dateInput: {
+    dateInput: props => ({
         backgroundColor: 'transparent',
         border: 'none',
         outline: 'none',
         fontSize: theme.inputFieldFontSize,
         fontFamily: theme.defaultFontFamily,
-    },
+        color: props.disabled ? 'grey' : 'black',
+        cursor: props.disabled ? 'not-allowed' : 'pointer',
+    }),
     datePicker: {
         position: 'absolute',
         overflow: 'hidden',
@@ -180,7 +193,7 @@ const useStyles = createUseStyles(theme => ({
     datePickerTile: {
         borderRadius: '0.5rem',
     },
-    datePickerButton: {
+    datePickerButton: props => ({
         background: 'none',
         border: 'none',
         display: 'flex',
@@ -192,7 +205,7 @@ const useStyles = createUseStyles(theme => ({
         '&:hover': {
             backgroundColor: '#b4b5b6',
         },
-    },
+    }),
     errorText: {
         color: 'red',
     },
