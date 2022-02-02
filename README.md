@@ -185,7 +185,6 @@ Snapshots:   0 total
 Time:        3.309 s, estimated 4 s
 Ran all test suites matching /app\\socket-apis\\__tests__\\get-election-docs.js/i.
 ```
-
 When you got down to writing the tests, expect is what's used to check for success or failure. Here are are the [docs on expect](https://jestjs.io/docs/expect)
 
 ## Debugging Jest
@@ -202,6 +201,24 @@ Click on **inspect** at the bottom and a Chrome Debugger will open up.
 If you haven't already, in Chrome you should do [Filesystem][Add folder to workspace] and add the project directory.  You only have to do this once.
 
 Note that in the --config of the shell command above, testTimeout is set really large, this is so that tests don't time out while you are trying to debug them.  The rest of the config is a copy of what's in jest.config.js
+
+You won't be able to set breakpoint in the jest tests, so you'll need to add a debugger statement to get it to stop.  Then you can single step and things, but breakpoints still may not work.  Remember to take your debugger statements out before checking in. Example:
+```
+test('get election docs should return undefined if user not logged in', done => {
+    function callback(docs) {
+        try {
+            debugger
+            expect(docs).toEqual(undefined)
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    debugger
+    getElectionDocs.call({}, callback)
+})
+```
+
 
 
 # Icons, Figma and SVG
