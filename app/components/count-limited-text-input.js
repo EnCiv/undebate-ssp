@@ -48,12 +48,12 @@ export default function CountLimitedTextInput({ name = '', maxCount = 0, default
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        fontFamily: 'Poppins',
-        color: '#262D33',
+        fontFamily: theme.defaultFontFamily,
+        color: theme.colorSecondary,
     },
     scriptInfo: {
         display: 'flex',
@@ -68,17 +68,17 @@ const useStyles = createUseStyles({
     quantity: {
         display: 'flex',
         alignItems: 'center',
-        fontSize: '0.875rem',
-        opacity: '70%',
+        fontSize: theme.secondaryTextFontSize,
+        opacity: theme.secondaryTextOpacity,
     },
     input: {
-        background: 'linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF',
-        padding: '0.9375rem 1.25rem',
+        background: theme.backgroundColorComponent,
+        padding: theme.inputFieldPadding,
+        fontFamily: theme.defaultFontFamily,
         resize: 'none',
         border: 'none',
-        borderRadius: '0.625rem',
+        borderRadius: theme.defaultBorderRadius,
         fontSize: '1rem',
         margin: '0.375rem 0rem',
-        opacity: '80%',
     },
-})
+}))

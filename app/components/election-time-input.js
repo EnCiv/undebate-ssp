@@ -6,9 +6,9 @@ import cx from 'classnames'
 import ClockSolidSVG from '../svgr/clock-solid'
 
 function ElectionTimeInput(props) {
-    const { className, style, defaultValue = '', onDone = () => {} } = props
+    const { className, style, disabled = false, defaultValue = '', onDone = () => {} } = props
     const [time, setTime] = useState(defaultValue)
-    const classes = useStyles(time)
+    const classes = useStyles({ time, disabled })
     const inputRef = useRef(null)
 
     useEffect(() => {
@@ -29,6 +29,7 @@ function ElectionTimeInput(props) {
                 className={classes.input}
                 type='time'
                 defaultValue={time}
+                disabled={disabled}
                 onBlur={handleDone}
                 onChange={handleChange}
                 onKeyPress={e => {
@@ -43,28 +44,31 @@ function ElectionTimeInput(props) {
 
 export default ElectionTimeInput
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     electionTimeInput: {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderRadius: '0.625rem',
-        background: 'linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF',
-        padding: '1rem 1.25rem',
+        borderRadius: theme.defaultBorderRadius,
+        background: theme.backgroundColorComponent,
+        padding: theme.inputFieldPadding,
         width: '100%',
+        height: 'fit-content',
     },
-    input: time => ({
+    input: ({ time, disabled }) => ({
         border: 'none',
         background: 'transparent',
-        color: time ? 'black' : 'grey',
-        fontSize: '1.125rem',
+        color: time && !disabled ? 'black' : 'grey',
+        fontSize: theme.inputFieldFontSize,
+        fontFamily: theme.defaultFontFamily,
         width: '100%',
         '&::-webkit-calendar-picker-indicator': {
             display: 'none',
         },
+        cursor: disabled ? 'not-allowed' : 'pointer',
     }),
     clockIcon: {
-        height: '1.25rem',
-        width: '1.25rem',
+        height: theme.iconSize,
+        width: theme.iconSize,
     },
-})
+}))

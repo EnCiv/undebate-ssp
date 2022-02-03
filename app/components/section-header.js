@@ -16,7 +16,7 @@ export default function SectionHeader({ name, className }) {
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     sectHeader: {
         display: 'flex',
         alignItems: 'center',
@@ -24,13 +24,13 @@ const useStyles = createUseStyles({
     },
     sectText: {
         fontWeight: 'bold',
-        fontSize: '1.2rem',
+        fontSize: theme.headerFontSize,
         textTransform: 'uppercase',
     },
     sectLine: {
         height: '1px',
-        backgroundColor: '#262D33',
+        backgroundColor: theme.colorSecondary,
         opacity: 0.25,
         flex: 1,
     },
-})
+}))

@@ -77,18 +77,18 @@ export default function ScriptTextInput({
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     container: {
         display: 'flex',
         flexDirection: 'column',
         fontFamily: 'sans-serif',
-        color: '#262D33',
+        color: theme.colorSecondary,
     },
     scriptInfo: {
         display: 'flex',
         justifyContent: 'space-between',
         padding: '.625rem',
-        fontSize: '0.875rem',
+        fontSize: theme.secondaryTextFontSize,
     },
     question: {
         display: 'flex',
@@ -100,7 +100,7 @@ const useStyles = createUseStyles({
     },
     questionName: {
         margin: '0rem 0rem 0rem .4rem',
-        fontSize: '0.875rem',
+        fontSize: theme.secondaryTextFontSize,
     },
     quantity: {
         display: 'flex',
@@ -112,22 +112,22 @@ const useStyles = createUseStyles({
         gap: '0.438rem',
     },
     duration: {
-        opacity: '70%',
+        opacity: theme.secondaryTextOpacity,
     },
     words: {
-        opacity: '70%',
+        opacity: theme.secondaryTextOpacity,
         marginLeft: '2.5rem',
     },
     input: {
-        opacity: '70%',
-        background: 'linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF',
-        padding: '0.938rem',
+        backgroundColor: theme.backgroundColorComponent,
+        padding: theme.inputFieldPadding,
         resize: 'none',
         border: 'none',
-        borderRadius: '0.438rem',
-        fontSize: '1rem',
-        fontWeight: '500',
+        borderRadius: theme.defaultBorderRadius,
+        fontFamily: theme.defaultFontFamily,
+        fontSize: theme.inputFieldFontSize,
+        fontWeight: 'normal',
         lineHeight: '1.875rem',
         margin: '0.375rem 0rem',
     },
-})
+}))

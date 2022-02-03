@@ -139,8 +139,8 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
                             type='number'
                             defaultValue={pageIndex + 1}
                             onChange={e => {
-                                const page = e.target.value ? Number(e.target.value) - 1 : 0
-                                gotoPage(page)
+                                const _page = e.target.value ? Number(e.target.value) - 1 : 0
+                                gotoPage(_page)
                             }}
                             style={{ width: '100px' }}
                         />
@@ -151,9 +151,9 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
                             setPageSize(Number(e.target.value))
                         }}
                     >
-                        {[100, 50, 20, 10].map(pageSize => (
-                            <option key={pageSize} value={pageSize}>
-                                Show {pageSize}
+                        {[100, 50, 20, 10].map(_pageSize => (
+                            <option key={_pageSize} value={_pageSize}>
+                                Show {_pageSize}
                             </option>
                         ))}
                     </select>
@@ -214,10 +214,6 @@ function CandidateTableInput(props) {
     }
 
     const [skipPageReset, setSkipPageReset] = React.useState(false)
-    const addRow = () => {
-        const uniqueId = ObjectID().toString()
-        onDone({ valid: true, value: { uniqueId } })
-    }
 
     // We need to keep the table from resetting the pageIndex when we
     // Update data. So we can keep track of that flag with a ref.
@@ -242,45 +238,22 @@ function CandidateTableInput(props) {
         setSkipPageReset(false)
     }, [data])
 
-    const classes = useElectionStyles()
-
     return (
         <div className={className} style={style}>
             <Table columns={columns} data={data} updateMyData={updateMyData} skipPageReset={skipPageReset} />
-            {editable && (
-                <button className={classes.addQuestionBtn} onClick={addRow} type='button'>
-                    Add Candidate
-                </button>
-            )}
         </div>
     )
 }
-const useElectionStyles = createUseStyles({
-    addQuestionBtn: {
-        color: '#262D33',
-        background: 'white',
-        border: '1px solid #262D33',
-        alignSelf: 'flex-start',
-        padding: '.9rem 1.3rem',
-        borderRadius: '1.875rem',
-        fontWeight: 600,
-        '&:hover': {
-            cursor: 'pointer',
-        },
-        marginTop: '0.5rem',
-    },
-})
 
 export default CandidateTableInput
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     wrapper: {
-        fontFamily: 'poppins',
+        fontFamily: theme.defaultFont,
         fontStyle: 'normal',
         fontWeight: 500,
         lineHeight: '1.5rem',
-        padding: '1rem',
-        backgroundColor: '#ECECEC',
+        backgroundColor: theme.backgroundColorApp,
         'table&': {
             borderSpacing: 0,
             '& tr': {
@@ -305,11 +278,11 @@ const useStyles = createUseStyles({
                 },
 
                 '& input': {
-                    fontSize: '1.125rem',
-                    lineHeight: '1.6875',
-                    color: '#262D33B3',
-                    background: 'linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF',
-                    padding: '1rem 1.25rem',
+                    fontSize: theme.inputFieldFontSize,
+                    lineHeight: theme.inputFieldLineHeight,
+                    color: theme.colorSecondary,
+                    background: theme.inputFieldBackgroundColor,
+                    padding: theme.inputFieldPadding,
                     margin: 0,
                     border: 0,
                 },
@@ -319,4 +292,4 @@ const useStyles = createUseStyles({
     pagination: {
         padding: '0.5rem',
     },
-})
+}))

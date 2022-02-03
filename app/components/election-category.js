@@ -134,11 +134,11 @@ function ElectionCategory(props) {
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     category: props => ({
         display: 'flex',
         flexWrap: 'wrap',
-        borderRadius: '0.5rem',
+        borderRadius: theme.defaultBorderRadius,
         padding: `${props.selected ? 1.3 : 0.7}rem 0.7rem`,
         margin: `rem`,
         backgroundColor: props.backgroundColor,
@@ -148,7 +148,11 @@ const useStyles = createUseStyles({
         flex: 1,
     },
     grow: { flex: '1 1 100%' },
-    icon: { marginRight: '0.2rem' },
+    icon: {
+        marginRight: '0.2rem',
+        width: theme.iconSize,
+        height: theme.iconSize,
+    },
     lineBreak: {
         width: '100%',
         border: 'none',
@@ -164,9 +168,9 @@ const useStyles = createUseStyles({
             background: `linear-gradient(to right, #7470FF ${percentDone}%, #FFFFFF 0%)`,
             width: '100%',
             height: '1em',
-            borderRadius: '0.3vw',
+            borderRadius: theme.defaultBorderRadius,
         }
     },
-})
+}))
 
 export default ElectionCategory
