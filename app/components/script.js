@@ -1,15 +1,16 @@
-import React, { useState } from 'react'
+/* eslint-disable no-shadow */
+// https://github.com/EnCiv/undebate-ssp/issues/49
+import React, { useState, useEffect, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 import Submit from './submit'
 import ElectionCategory from './election-category'
-
 import ScriptTextInput from './script-text-input'
-
-// https://github.com/EnCiv/undebate-ssp/issues/49
 
 const defaults = {
     description: `Below is an auto-generated script that will be emailed to the moderator. The moderator will record a
                   segment based on each section of the script. If you wish to make any changes, go ahead!`,
+    noQuestions:
+        'After the questions are created, you will be able to create the script for the moderator to use when recording.',
     firstAnswer: 'Our first question is "{question}", ...',
     middleAnswer: 'Our next question is "{question}", ...',
     lastAnswer: 'Consectetur adipiscing elit',
@@ -18,7 +19,7 @@ const defaults = {
     lastQuestion:
         '{moderator} thanks candidates for answering the previous question and thanks the viewer for watching',
     lockedScript: 'You cannot change the script once the invitation to the moderator has been sent',
-    errorText: 'The length of some of the scripts are longer than the limit of {maxWordCount} words or are empty',
+    errorText: 'Please correct {errorCount} errors in order to submit.',
     maxWordCount: 600,
     wordsPerMin: 120,
 }
@@ -28,40 +29,32 @@ const processTemplate = (template, substitutions) =>
         return filledTemplate.replace(`{${key}}`, value == null ? '' : value)
     }, template)
 
-const numberedToArray = numObj =>
-    Object.entries(numObj).reduce((array, [k, v]) => {
-        const tempArray = array
-        tempArray[k] = v.text
-        return array
-    }, [])
-
 // First  question: template_1, given question, given answer
 // Middle question: template_2, given question, given answer
 // Last   question: template_3, default question, given answer
 export default function Script({ className = '', style = {}, onDone = () => {}, electionOM }) {
     const [electionObj, electionMethods] = electionOM
-    const [script, setScript] = useState(numberedToArray(electionObj.script))
-    const [valid, setValid] = useState(true)
-    const [submitted, setSubmitted] = useState(electionObj.script.length !== 0)
-    const questions = numberedToArray(electionObj.questions)
+    const { questions = {}, script = {} } = electionObj
+    const [validInputs, setValidInputs] = useReducer((state, action) => ({ ...state, ...action }), {})
+    const errorCount = Object.values(validInputs).reduce((count, valid) => (valid === false ? count + 1 : count), 0)
+    const valid = Object.values(validInputs).length > 0 && !Object.values(validInputs).some(v => !v)
+    const [submitted, setSubmitted] = useState(electionObj?.script?.length > 0)
     const classes = useStyles({ electionOM, valid })
+
     const substitutions = {
-        moderator: electionObj.moderator.name,
-        question: questions[0],
+        moderator: electionObj?.moderator?.name || '',
+        question: questions[0]?.text || '',
         maxWordCount: defaults.maxWordCount,
     }
-    const createHandleTextInputOnDone =
-        questionNumber =>
-        ({ valid: handleValid, value }) => {
-            setValid(handleValid)
-            const tempScript = script
-            tempScript[questionNumber] = value
-            setScript(tempScript)
-            if (valid) {
-                electionMethods.upsert({ script })
-            }
-        }
-    return questions.length === 0 ? null : (
+    // side effects to do after the component rerenders from a state change
+    const [sideEffects] = useState([]) // never set sideEffects
+    useEffect(() => {
+        while (sideEffects.length) sideEffects.shift()()
+    })
+
+    const questionsLength = Object.keys(questions).length
+
+    return (
         <div className={`${className} ${classes.page}`} style={style}>
             <span className={classes.submitContainer}>
                 {electionMethods.areQuestionsLocked() ? (
@@ -76,65 +69,83 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
                         }
                     />
                 ) : (
-                    <>
-                        <Submit
-                            name={submitted ? 'Edit' : 'Submit'}
-                            onDone={() => {
-                                setSubmitted(true)
-                                electionMethods.upsert({ script })
-                                onDone(valid, { script })
-                            }}
-                            className={classes.submitButton}
-                        />
-                        <p className={classes.errorText}> {processTemplate(defaults.errorText, substitutions)} </p>
-                    </>
+                    <div>
+                        <div>
+                            <Submit
+                                name={submitted ? 'Edit' : 'Submit'}
+                                onDone={() => {
+                                    setSubmitted(true)
+                                    electionMethods.upsert({ script })
+                                    onDone({ valid, script })
+                                }}
+                                className={classes.submitButton}
+                            />
+                        </div>
+                        <div className={classes.errorArea}>
+                            <p className={classes.errorText}>
+                                {processTemplate(questionsLength ? defaults.errorText : defaults.noQuestions, {
+                                    ...substitutions,
+                                    errorCount,
+                                })}{' '}
+                            </p>
+                        </div>
+                    </div>
                 )}
             </span>
             <div className={classes.scripts}>
-                <p>{defaults.description}</p>
-                <ScriptTextInput
-                    questionNumber={1}
-                    questionName={processTemplate(defaults.firstQuestion, substitutions)}
-                    maxWordCount={defaults.maxWordCount}
-                    wordsPerMinute={defaults.wordsPerMin}
-                    defaultValue={script[0] || processTemplate(defaults.firstAnswer, substitutions)}
-                    onDone={createHandleTextInputOnDone(0)}
-                />
-                {questions.slice(1).map((q, i) => {
-                    const middleSub = { ...substitutions, question: q }
-                    return (
-                        <span className={classes.scriptTextInput}>
-                            <ScriptTextInput
-                                questionNumber={i + 2}
-                                questionName={processTemplate(defaults.middleQuestion, middleSub)}
-                                maxWordCount={defaults.maxWordCount}
-                                wordsPerMinute={defaults.wordsPerMin}
-                                defaultValue={script[i + 1] || processTemplate(defaults.middleAnswer, middleSub)}
-                                onDone={createHandleTextInputOnDone(i + 1)}
-                            />
-                        </span>
-                    )
-                })}
-                <ScriptTextInput
-                    questionNumber={questions.length + 1}
-                    questionName={processTemplate(defaults.lastQuestion, substitutions)}
-                    maxWordCount={defaults.maxWordCount}
-                    wordsPerMinute={defaults.wordsPerMin}
-                    defaultValue={script[questions.length] || processTemplate(defaults.lastAnswer, substitutions)}
-                    onDone={createHandleTextInputOnDone(questions.length)}
-                />
+                <p>{questionsLength ? defaults.description : defaults.noQuestions}</p>
+                {questionsLength
+                    ? Object.entries(questions)
+                          .concat([[questionsLength, '']])
+                          .map(([qId, qTxt], i) => {
+                              const subs = { ...substitutions, question: qTxt.text || '' }
+                              const sourceOf = i === 0 ? 'first' : i < questionsLength ? 'middle' : 'last'
+                              return (
+                                  <ScriptTextInput
+                                      key={qId}
+                                      questionNumber={i + 1}
+                                      questionName={processTemplate(defaults[`${sourceOf}Question`], subs)}
+                                      maxWordCount={defaults.maxWordCount}
+                                      wordsPerMinute={defaults.wordsPerMin}
+                                      defaultValue={
+                                          script[i]?.text || processTemplate(defaults[`${sourceOf}Answer`], subs)
+                                      }
+                                      onDone={({ valid, value }) => {
+                                          if (
+                                              (typeof validInputs[i] === 'undefined' && valid) ||
+                                              validInputs[i] !== null ||
+                                              valid
+                                          ) {
+                                              sideEffects.push(() =>
+                                                  electionMethods.upsert({ script: { [i]: { text: value } } })
+                                              )
+                                          }
+                                          setValidInputs({ [i]: valid })
+                                      }}
+                                  />
+                              )
+                          })
+                    : null}
             </div>
         </div>
     )
 }
 
 const useStyles = createUseStyles({
-    scripts: { display: 'flex', flexDirection: 'column' },
-    submitContainer: { display: 'absolute', float: 'right', width: '35%', padding: '1rem' },
+    scripts: {
+        display: 'flex',
+        flexDirection: 'column',
+        '& p:first-child': {
+            paddingTop: 0,
+            marginTop: 0,
+        },
+    },
+    submitContainer: { display: 'absolute', float: 'right', width: '35%', padding: 0 },
     scriptTextInput: { margin: '0.5rem 0rem' },
     lockedCard: { width: '85%', background: '#262D33', color: '#838789', float: 'right' },
     submitButton: ({ valid }) => ({ float: 'right', border: valid ? 'unset' : '.15rem solid red' }),
     cardHeader: { color: 'white', fontSize: '1.1rem', lineHeight: '.5rem' },
+    errorArea: { clear: 'both', padding: '2rem', paddingRight: 0, color: 'red' },
     errorText: ({ valid }) => ({
         display: valid ? 'none' : 'unset',
     }),
