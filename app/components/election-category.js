@@ -85,9 +85,10 @@ function ElectionCategory(props) {
                 return [content.icon, param]
             }
             const icon = content.icon == null ? '' : <span className={classes.icon}>{content.icon}</span>
+            const contentText = content.text == null ? '' : <span className={classes.contentText}>{content.text}</span>
             return (
                 <span className={`${i === 0 ? '' : classes.grow}`}>
-                    {icon} {content.text}
+                    {icon} {contentText}
                 </span>
             )
         })
@@ -137,9 +138,26 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         flexWrap: 'wrap',
         borderRadius: theme.defaultBorderRadius,
-        padding: `${props.selected ? 1.3 : 0.7}rem 0.7rem`,
+        padding: `${
+            props.statusObjs?.pending ||
+            props.statusObjs?.daysLeft ||
+            props.statusObjs?.declined ||
+            props.statusObjs?.deadlineMissed ||
+            props.selected
+                ? 1.3
+                : 0.7
+        }rem 0.7rem`,
         margin: `rem`,
-        backgroundColor: props.backgroundColor,
+        backgroundColor: `${
+            props.statusObjs?.pending ||
+            props.statusObjs?.daysLeft ||
+            props.statusObjs?.declined ||
+            props.statusObjs?.deadlineMissed
+                ? theme.backgroundColorWarning
+                : props.selected
+                ? theme.inputFieldBackgroundColor
+                : theme.backgroundColorApp
+        }`,
         alignItems: 'center',
     }),
     categoryText: {
@@ -152,6 +170,16 @@ const useStyles = createUseStyles(theme => ({
         width: theme.iconSize,
         height: theme.iconSize,
     },
+    contentText: props => ({
+        color: `${
+            props.statusObjs?.pending ||
+            props.statusObjs?.daysLeft ||
+            props.statusObjs?.declined ||
+            props.statusObjs?.deadlineMissed
+                ? theme.colorWarning
+                : theme.colorSecondary
+        }`,
+    }),
     lineBreak: {
         width: '100%',
         border: 'none',
@@ -164,7 +192,7 @@ const useStyles = createUseStyles(theme => ({
     progressBar: props => {
         const { percentDone } = props
         return {
-            background: `linear-gradient(to right, #7470FF ${percentDone}%, #FFFFFF 0%)`,
+            background: `linear-gradient(to right, ${theme.colorPrimary} ${percentDone}%, #FFFFFF 0%)`,
             width: '100%',
             height: '1em',
             borderRadius: theme.defaultBorderRadius,
