@@ -16,8 +16,16 @@ In 2019 we created [Undebates](https://github.com/EnCiv/undebate) and launched t
 
 ## **Slack** - Use this form to get an invite to the [slack workspace](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform)
 
+## [Node](https://nodejs.org/en/download/)
+
+Download the **LTS version** not the Current Version.  This project uses some packages, like bcrypt, that install binary code into node for efficiency.  It takes these packages time to catch up.
+
 The following has been tested using node v16.13.0 and npm v8.1.0 on Windows 10 and MacOs. There are known issues using npm < 7. During install, you can ignore the warning about incompatibility with previous versions of node/npm - we need to go back to those packages and update their dependencies. Also, Node version 17 will not work, and in general the odd versions are experimental so we don't try to use those. If you already tried to build this with version 17, you need to install version 16 and then do `npm ci` to start clean.
 
+## [Git for Windows](https://git-scm.com/download/win)
+If you are on a PC. There are gui and web based systems for doing git and you are welcome to use them, but it easier to document what to do using a CLI.  If you have a mac, git is already there. 
+
+## Install
 Below are specific instructions for cloning and running storybook on your local system using your CLI of choice:
 
 ```
