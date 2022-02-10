@@ -2,7 +2,7 @@
 import { expect, test, beforeAll, afterAll } from '@jest/globals'
 import MongoModels from 'mongo-models'
 import { Iota, User } from 'civil-server'
-import findAndSetElectionDoc from '../upsert-election-doc'
+import findAndSetElectionDoc from '../find-and-set-election-doc'
 const ObjectID = Iota.ObjectId
 
 // dummy out logger for tests
