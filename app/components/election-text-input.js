@@ -1,16 +1,13 @@
 // https://github.com/EnCiv/undebate-ssp/issues/9
 
-import { useRef, useEffect, React } from 'react'
+import { useRef, useState, useEffect, React } from 'react'
 import { createUseStyles } from 'react-jss'
+import cx from 'classnames'
 import IsEmail from 'isemail'
 
 function ElectionTextInput(props) {
     const classes = useStyles()
-    const { name = '', defaultValue = '', checkIsEmail = false, onDone = () => {} } = props
-
-    useEffect(() => {
-        handleDone() // if default value changes, inputRef.value will be set to it by the time useEffect is called - need to update the validity
-    }, [defaultValue])
+    const { className, style, name = '', defaultValue = '', checkIsEmail = false, onDone = () => {} } = props
 
     const inputRef = useRef(null)
 
@@ -21,6 +18,23 @@ function ElectionTextInput(props) {
     // eslint-disable-next-line no-unused-vars
     const handleDone = e => {
         onDone({ valid: isTextValid(inputRef.current.value), value: inputRef.current.value })
+    }
+
+    // call onDone after:
+    // initial render - so parent knows if it's valid or not
+    // onBlur so parent gets updated data
+    // when defaultValue changes so parent knows if it's valid - this happens when data is changed by external/asynchronous source
+    const [sideEffects] = useState([]) // never set sideEffects
+    useEffect(() => {
+        while (sideEffects.length) sideEffects.shift()()
+    })
+    const [prev] = useState({})
+    if (prev.defaultValue !== defaultValue) {
+        prev.defaultValue = defaultValue
+        if (defaultValue !== inputRef.current?.value) {
+            if (inputRef.current) inputRef.current.value = defaultValue // input doesnt change value on rerender when defaultValue changes
+            sideEffects.push(() => onDone({ valid: isTextValid(defaultValue), value: defaultValue }))
+        }
     }
 
     const checkEmail = email => IsEmail.validate(email, { minDomainAtoms: 2 })
@@ -35,7 +49,7 @@ function ElectionTextInput(props) {
     }
 
     return (
-        <div className={classes.electionTextInput}>
+        <div className={cx(className, classes.electionTextInput)} style={style}>
             <label htmlFor={name} className={classes.label}>
                 {name}
             </label>
