@@ -2,147 +2,133 @@
 
 import { Iota } from 'civil-server'
 import Joi from 'joi'
-import ObjectID from 'joi-objectid'
-Joi.objectId = ObjectID(Joi)
+import JoiObjectID from 'joi-objectid'
 
-const ID = Joi.object({
-    increment: Joi.number(),
-    machine: Joi.number(),
-    pid: Joi.number(),
-    timestamp: Joi.number(),
-})
+Joi.objectId = JoiObjectID(Joi)
+
+const Integer = /^[0-9]+$/
+const ObjectID = /^[0-9a-fA-F]{24}$/
+const SANE = 4096
 
 const electionSchema = Joi.object({
-    _id: ID,
     webComponent: 'ElectionDoc',
-    electionName: Joi.string(),
-    organizationName: Joi.string(),
-    electionDate: Joi.string(),
+    electionName: Joi.string().max(SANE),
+    organizationName: Joi.string().max(SANE),
+    electionDate: Joi.string().isoDate(),
     questions: Joi.object().pattern(
-        Joi.string(),
+        Joi.string().pattern(Integer),
         Joi.object({
-            text: Joi.string(),
-            time: Joi.string(),
+            text: Joi.string().max(SANE),
+            time: Joi.string().pattern(Integer),
         })
     ),
     script: Joi.object().pattern(
-        Joi.string(),
+        Joi.string().pattern(Integer),
         Joi.object({
-            text: Joi.string(),
+            text: Joi.string().max(SANE),
         })
     ),
     moderator: Joi.object({
-        name: Joi.string(),
-        email: Joi.string(),
-        message: Joi.string(),
+        name: Joi.string().max(SANE),
+        email: Joi.string().email(),
+        message: Joi.string().max(SANE),
         invitations: Joi.array().items(
             Joi.object({
-                _id: ID,
-                text: Joi.string(),
-                sentDate: Joi.string(),
-                responseDate: Joi.string(),
-                status: Joi.string(),
+                _id: Joi.objectId(),
+                text: Joi.string().max(SANE),
+                sentDate: Joi.string().isoDate(),
+                responseDate: Joi.string().isoDate(),
+                status: Joi.string().max(SANE),
             })
         ),
         submissions: Joi.array().items(
             Joi.object({
-                _id: ID,
-                url: Joi.string(),
-                date: Joi.string(),
+                _id: Joi.objectId(),
+                url: Joi.string().max(SANE),
+                date: Joi.string().isoDate(),
             })
         ),
     }),
     candidates: Joi.object().pattern(
-        Joi.string(),
+        Joi.string().pattern(ObjectID),
         Joi.object({
-            uniqueId: ID,
-            name: Joi.string(),
-            email: Joi.string(),
-            office: Joi.string(),
-            region: Joi.string(),
+            uniqueId: Joi.string().pattern(ObjectID),
+            name: Joi.string().max(SANE),
+            email: Joi.string().email(),
+            office: Joi.string().max(SANE),
+            region: Joi.string().max(SANE),
             invitations: Joi.array().items(
                 Joi.object({
-                    _id: ID,
-                    text: Joi.string(),
-                    sentDate: Joi.string(),
-                    responseDate: Joi.string(),
-                    status: Joi.string(),
+                    _id: Joi.objectId(),
+                    text: Joi.string().max(SANE),
+                    sentDate: Joi.string().isoDate(),
+                    responseDate: Joi.string().isoDate(),
+                    status: Joi.string().max(SANE),
                 })
             ),
             submissions: Joi.array().items(
                 Joi.object({
-                    _id: ID,
-                    url: Joi.string(),
-                    date: Joi.string(),
-                    parentId: Joi.string(),
+                    _id: Joi.objectId(),
+                    url: Joi.string().max(SANE),
+                    date: Joi.string().isoDate(),
+                    parentId: Joi.string().pattern(ObjectID),
                 })
             ),
         })
     ),
     timeline: {
         moderatorDeadlineReminderEmails: Joi.object().pattern(
-            Joi.string(),
+            Joi.string().pattern(Integer),
             Joi.object({
-                date: Joi.string(),
+                date: Joi.string().isoDate(),
                 sent: Joi.boolean(),
             })
         ),
         moderatorSubmissionDeadline: Joi.object().pattern(
-            Joi.string(),
+            Joi.string().pattern(Integer),
             Joi.object({
-                date: Joi.string(),
+                date: Joi.string().isoDate(),
                 sent: Joi.boolean(),
             })
         ),
         moderatorInviteDeadline: Joi.object().pattern(
-            Joi.string(),
+            Joi.string().pattern(Integer),
             Joi.object({
-                date: Joi.string(),
+                date: Joi.string().isoDate(),
                 sent: Joi.boolean(),
             })
         ),
         candidateDeadlineReminderEmails: Joi.object().pattern(
-            Joi.string(),
+            Joi.string().pattern(Integer),
             Joi.object({
-                date: Joi.string(),
+                date: Joi.string().isoDate(),
                 sent: Joi.boolean(),
             })
         ),
         candidateSubmissionDeadline: Joi.object().pattern(
-            Joi.string(),
+            Joi.string().pattern(Integer),
             Joi.object({
-                date: Joi.string(),
+                date: Joi.string().isoDate(),
                 sent: Joi.boolean(),
             })
         ),
     },
-    undebateDate: Joi.string(),
-})
-
-const schema = Joi.object({
-    _id: ID,
-    subject: Joi.string(),
-    description: Joi.string(),
-    webComponent: electionSchema,
+    undebateDate: Joi.string().isoDate(),
 })
 
 export default async function findAndSetElectionDoc(query, doc, cb) {
     if (!this.synuser) return cb && cb() // no user
-    if (!doc._id) {
-        logger.error('ElectionDoc must container an _id', doc)
-        return cb && cb()
-    }
     const valid = electionSchema.validate(doc)
     if (valid.error) {
-        logger.error('ElectionDoc validation', valid)
+        logger.error('ElectionDoc validation', JSON.stringify(valid, null, 2))
         return cb && cb()
     }
     try {
         // upsert
         await Iota.updateOne(query, { $set: { webComponent: doc } }, { upsert: true })
-        cb && cb(true)
+        return cb && cb(true)
     } catch (err) {
         logger.error('upsertElectionDoc', err)
-        cb && cb()
+        return cb && cb()
     }
 }
