@@ -1,29 +1,35 @@
 // https://github.com/EnCiv/undebate-ssp/issues/10
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
+import cx from 'classnames'
 import SvgVideo from '../svgr/video'
 import SvgClock from '../svgr/clock'
 
 export default function ScriptTextInput({
     questionNumber,
     questionName,
-    maxWordCount,
-    wordsPerMinute,
+    maxWordCount = 600,
+    wordsPerMinute = 120,
     defaultValue,
     onDone,
 }) {
     const classes = useStyles()
-    const [inputText, setInputText] = useState(defaultValue)
 
-    const getWordCount = () => {
+    const getWordCount = inputText => {
+        if (!inputText) return 0
         return inputText.split(' ').filter(word => {
             return word !== '' && word !== '\n'
         }).length
     }
 
-    const [wordCount, setWordCount] = useState(getWordCount())
+    const isValid = inputText => {
+        const wc = getWordCount(inputText)
+        return wc > 0 && wc <= maxWordCount
+    }
+
+    const [wordCount, setWordCount] = useState(getWordCount(defaultValue))
 
     const formatDuration = minutes => {
         const dur = moment.duration(minutes, 'minutes')
@@ -32,9 +38,12 @@ export default function ScriptTextInput({
     }
 
     const updateState = event => {
-        setInputText(event.target.value)
-        setWordCount(getWordCount())
+        setWordCount(getWordCount(event.target.value))
     }
+
+    useEffect(() => {
+        if (onDone) onDone({ valid: isValid(defaultValue), value: defaultValue })
+    }, [defaultValue]) // initiall report if default value is valid or not
 
     return (
         <div className={classes.container}>
@@ -58,37 +67,35 @@ export default function ScriptTextInput({
             </div>
             <TextareaAutosize
                 minRows={4}
-                className={classes.input}
+                className={cx(classes.input, !(wordCount > 0 && wordCount <= maxWordCount) && classes.inputError)}
                 onChange={event => {
                     updateState(event)
                 }}
                 onBlur={event => {
                     updateState(event)
-                    const wc = getWordCount()
                     onDone({
-                        value: inputText,
-                        valid: wc <= maxWordCount && wc >= 1,
+                        value: event.target.value,
+                        valid: isValid(event.target.value),
                     })
                 }}
-            >
-                {inputText}
-            </TextareaAutosize>
+                defaultValue={defaultValue}
+            />
         </div>
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     container: {
         display: 'flex',
         flexDirection: 'column',
         fontFamily: 'sans-serif',
-        color: '#262D33',
+        color: theme.colorSecondary,
     },
     scriptInfo: {
         display: 'flex',
         justifyContent: 'space-between',
         padding: '.625rem',
-        fontSize: '0.875rem',
+        fontSize: theme.secondaryTextFontSize,
     },
     question: {
         display: 'flex',
@@ -100,7 +107,7 @@ const useStyles = createUseStyles({
     },
     questionName: {
         margin: '0rem 0rem 0rem .4rem',
-        fontSize: '0.875rem',
+        fontSize: theme.secondaryTextFontSize,
     },
     quantity: {
         display: 'flex',
@@ -112,22 +119,25 @@ const useStyles = createUseStyles({
         gap: '0.438rem',
     },
     duration: {
-        opacity: '70%',
+        opacity: theme.secondaryTextOpacity,
     },
     words: {
-        opacity: '70%',
+        opacity: theme.secondaryTextOpacity,
         marginLeft: '2.5rem',
     },
     input: {
-        opacity: '70%',
-        background: 'linear-gradient(0deg, rgba(38, 45, 51, 0.2), rgba(38, 45, 51, 0.2)), #FFFFFF',
-        padding: '0.938rem',
+        backgroundColor: theme.backgroundColorComponent,
+        padding: theme.inputFieldPadding,
         resize: 'none',
         border: 'none',
-        borderRadius: '0.438rem',
-        fontSize: '1rem',
-        fontWeight: '500',
+        borderRadius: theme.defaultBorderRadius,
+        fontFamily: theme.defaultFontFamily,
+        fontSize: theme.inputFieldFontSize,
+        fontWeight: 'normal',
         lineHeight: '1.875rem',
         margin: '0.375rem 0rem',
     },
-})
+    inputError: {
+        border: '.3rem solid red',
+    },
+}))

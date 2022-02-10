@@ -8,27 +8,19 @@ import { createUseStyles } from 'react-jss'
 
 function Submit({ onDone, name = 'Submit', style, className, disabled = false, disableOnClick = false }) {
     const classes = useStyles()
-    const [clickedOnce, setClickedOnce] = useState(false)
+    const [disabledAfterClick, setDisabledAfterClick] = useState(false)
 
     const handleOnClick = () => {
-        if (!disabled) {
-            onDone({ finished: true })
+        if (!disabled && !disabledAfterClick) {
+            onDone({ valid: true })
         }
-        setClickedOnce(true)
-    }
-
-    const getDisabledClass = () => {
-        let isDisabled = disabled
-        if (disableOnClick && clickedOnce) {
-            isDisabled = true
-        }
-        return { [classes.disabled]: isDisabled }
+        if (disableOnClick) setDisabledAfterClick(true)
     }
 
     return (
         <button
             type='button'
-            className={cx(className, classes.btn, getDisabledClass())}
+            className={cx(className, classes.btn, (disabled || disabledAfterClick) && classes.disabled)}
             style={style}
             onClick={handleOnClick}
             disabled={disabled}
@@ -38,25 +30,24 @@ function Submit({ onDone, name = 'Submit', style, className, disabled = false, d
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     btn: {
-        borderRadius: '1.875rem',
-        backgroundColor: '#7470FF',
+        ...theme.button,
+        backgroundColor: theme.colorPrimary,
         border: 'none',
         color: '#FFF',
-        padding: '.9em 1.3em',
-        fontWeight: 600,
         '&:hover': {
             cursor: 'pointer',
         },
     },
     disabled: {
-        backgroundColor: '#919597',
+        backgroundColor: theme.colorPrimary,
+        opacity: theme.disabledOpacity,
         color: '#fff',
         '&:hover': {
-            cursor: 'initial',
+            cursor: 'not-allowed',
         },
     },
-})
+}))
 
 export default Submit

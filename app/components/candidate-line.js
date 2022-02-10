@@ -25,19 +25,20 @@ function CandidateLine(props) {
                     <div className={classes.holder}>
                         {inviteStatus === 'accepted' && (
                             <>
-                                <AcceptLogo fontSize='1.7rem' /> <span className={classes.logoText}>Accepted</span>{' '}
+                                <AcceptLogo className={classes.icon} />{' '}
+                                <span className={classes.logoText}>Accepted</span>{' '}
                             </>
                         )}
                         {inviteStatus === 'declined' && (
                             <>
-                                <DeclineLogo fontSize='1.7rem' />
+                                <DeclineLogo className={classes.icon} />
                                 {'   '}
                                 <span className={classes.logoText}>Declined</span>{' '}
                             </>
                         )}
                         {inviteStatus === 'sent' && (
                             <>
-                                <SentLogo fontSize='2rem' /> {'      '}
+                                <SentLogo className={classes.icon} /> {'      '}
                                 <span className={classes.logoText}>Sent</span>{' '}
                             </>
                         )}
@@ -50,7 +51,7 @@ function CandidateLine(props) {
                     <div className={classes.holder}>
                         {submissionStatus === 'submitted' ? (
                             <>
-                                <VideoLogo fontSize='1.5rem' />{' '}
+                                <VideoLogo className={classes.icon} />{' '}
                                 <span className={classes.logoText}>Video Submitted</span>{' '}
                             </>
                         ) : (
@@ -70,7 +71,7 @@ function CandidateLine(props) {
 
 export default CandidateLine
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     line: {
         display: 'flex',
         alignItems: 'flex-start',
@@ -79,28 +80,22 @@ const useStyles = createUseStyles({
     },
     block: {
         width: '16rem',
-        height: '3.5rem',
         background: '#7470FF80',
         display: 'table',
-        paddingLeft: '1.25rem',
-        paddingRight: '1.25rem',
+        padding: theme.inputFieldPadding,
         flex: 'none',
         margin: 'auto -0.2rem',
     },
     text: {
-        fontFamily: 'Poppins',
-        fontSize: '1rem',
         display: 'table-cell',
         verticalAlign: 'middle',
         color: '#262D33',
     },
     biggerBlock: {
         width: '22rem',
-        height: '3.5rem',
         background: '#7470FF80',
         display: 'table',
-        paddingLeft: '1.25rem',
-        paddingRight: '1.25rem',
+        padding: theme.inputFieldPadding,
         flex: 'none',
         margin: 'auto -0.2rem',
     },
@@ -112,4 +107,8 @@ const useStyles = createUseStyles({
     logoText: {
         marginLeft: '0.7rem',
     },
-})
+    icon: {
+        height: theme.iconSize,
+        width: theme.iconSize,
+    },
+}))

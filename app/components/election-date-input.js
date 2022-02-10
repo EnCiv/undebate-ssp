@@ -52,7 +52,7 @@ const dateToMdy = date => {
 export default function ElectionDateInput(props) {
     // defaultValue: mm/dd/yyyy string or a Date object
     // onDone: ({valid: bool, value: Date}): null
-    const { defaultValue = '', onDone: propOnDone = () => {} } = props
+    const { defaultValue = '', disabled = false, onDone: propOnDone = () => {} } = props
 
     const today = new Date()
 
@@ -84,6 +84,11 @@ export default function ElectionDateInput(props) {
         }
     }, [textDate, datePickerOpen])
 
+    // Calls onDone/validation for initial defaultValue
+    useEffect(() => {
+        propOnDone({ valid: isMdyValid(textDate), value: textDate })
+    }, [])
+
     const onInputChange = e => {
         const { value } = e.target
         if ((value.length === 8 || value.length === 10) && !isMdyValid(value)) {
@@ -107,7 +112,7 @@ export default function ElectionDateInput(props) {
         if (!valid) {
             setError('Please enter a valid date')
         }
-        propOnDone({ valid, value: mdyToDate(textDate) })
+        propOnDone({ valid: isMdyValid(textDate), value: textDate })
     }
     return (
         <div ref={parentEl}>
@@ -120,12 +125,18 @@ export default function ElectionDateInput(props) {
                         maxLength='10'
                         required
                         value={textDate}
+                        disabled={disabled}
                         onChange={onInputChange}
                         onBlur={e => blurDateInput(e.target.value)}
                         placeholder='mm/dd/yyyy'
                     />
-                    <button type='button' className={classes.datePickerButton} onClick={datePickerButtonOnClick}>
-                        <SvgCalendar />
+                    <button
+                        disabled={disabled}
+                        type='button'
+                        className={classes.datePickerButton}
+                        onClick={datePickerButtonOnClick}
+                    >
+                        <SvgCalendar className={classes.icon} />
                     </button>
                 </span>
                 <span className={classes.errorText}>{error}</span>
@@ -142,26 +153,30 @@ export default function ElectionDateInput(props) {
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     dateInputWrapper: {
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
     },
     inputContainer: props => ({
         display: 'flex',
         justifyContent: 'space-between',
-        border: `.1rem solid ${props.error ? 'red' : '#d4d5d6'}`,
-        borderRadius: '.5rem',
-        backgroundColor: '#d4d5d6',
-        padding: '0.7rem',
+        alignItems: 'center',
+        outline: `.1rem solid ${props.error ? 'red' : 'none'}`,
+        borderRadius: theme.defaultBorderRadius,
+        backgroundColor: theme.backgroundColorComponent,
+        padding: theme.inputFieldPadding,
         width: '100%',
     }),
-    dateInput: {
-        backgroundColor: 'inherit',
+    dateInput: props => ({
+        backgroundColor: 'transparent',
         border: 'none',
         outline: 'none',
-    },
+        fontSize: theme.inputFieldFontSize,
+        fontFamily: theme.defaultFontFamily,
+        color: props.disabled ? 'grey' : 'black',
+        cursor: props.disabled ? 'not-allowed' : 'pointer',
+    }),
     datePicker: {
         position: 'absolute',
         overflow: 'hidden',
@@ -178,20 +193,25 @@ const useStyles = createUseStyles({
     datePickerTile: {
         borderRadius: '0.5rem',
     },
-    datePickerButton: {
+    datePickerButton: props => ({
         background: 'none',
         border: 'none',
+        display: 'flex',
         cursor: 'pointer',
-        height: '1.5rem',
-        width: '1.5rem',
+        padding: '0',
+        height: '100%',
         transition: 'background-color 150ms',
-        borderRadius: '50%',
+        borderRadius: '100%',
         '&:hover': {
             backgroundColor: '#b4b5b6',
         },
-    },
+    }),
     errorText: {
         color: 'red',
     },
+    icon: {
+        height: theme.iconSize,
+        width: theme.iconSize,
+    },
     datePickerPart: {},
-})
+}))
