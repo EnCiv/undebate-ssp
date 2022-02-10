@@ -198,19 +198,22 @@ Ran all test suites matching /app\\socket-apis\\__tests__\\get-election-docs.js/
 When you got down to writing the tests, expect is what's used to check for success or failure. Here are are the [docs on expect](https://jestjs.io/docs/expect)
 
 ## Debugging Jest
+
 If you are trying to get a test working and need to use a debugger, here's how
+
 ```
 node --inspect-brk node_modules/jest/bin/jest.js --runInBand path/to/test-file.js --config "{testTimeout: 5000000, setupFilesAfterEnv: ['<rootDir>/setupTests.js', '<rootDir>/node_modules/jest-enzyme/lib/index.js'],preset: '@shelf/jest-mongodb'}"
 ```
+
 This will start Jest, but it will wait for a debugger to connect.
 User the Chrome browser to browse to **about:inspect**
 Wait a few seconds and you will see:
 ![image](https://user-images.githubusercontent.com/3317487/151715405-eb4fabd9-8cb0-4b24-b282-ab85504ea2d2.png)
 Click on **inspect** at the bottom and a Chrome Debugger will open up.
 
-If you haven't already, in Chrome you should do [Filesystem][Add folder to workspace] and add the project directory.  You only have to do this once.
+If you haven't already, in Chrome you should do [Filesystem][add folder to workspace] and add the project directory. You only have to do this once.
 
-Note that in the --config of the shell command above, testTimeout is set really large, this is so that tests don't time out while you are trying to debug them.  The rest of the config is a copy of what's in jest.config.js
+Note that in the --config of the shell command above, testTimeout is set really large, this is so that tests don't time out while you are trying to debug them. The rest of the config is a copy of what's in jest.config.js
 
 You won't be able to set breakpoint in the jest tests, so you'll need to add a debugger statement to get it to stop.  Then you can single step and things, but breakpoints still may not work.  Remember to take your debugger statements out before checking in. Example:
 ```
@@ -228,7 +231,6 @@ test('get election docs should return undefined if user not logged in', done => 
     getElectionDocs.call({}, callback)
 })
 ```
-
 
 
 # Icons, Figma and SVG
