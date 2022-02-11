@@ -1,7 +1,5 @@
 // https://github.com/EnCiv/undebate-ssp/issues/16
-
 import React, { useEffect } from 'react'
-
 import NavigationPanel from '../app/components/navigation-panel'
 
 export default {
@@ -23,347 +21,189 @@ const Template = (args, context) => {
     )
 }
 
+const defaultElectionObject = {
+    _id: 'mongoobjid',
+    electionName: 'U.S Presidential Election',
+    organizationName: 'United States Federal Government',
+    electionDate: '2022-11-07T23:59:59.999Z',
+    questions: {
+        0: {
+            text: 'What is your favorite color?',
+            time: '30',
+        },
+        1: {
+            text: 'Do you have a pet?',
+            time: '60',
+        },
+        2: {
+            text: 'Should we try to fix income inequality?',
+            time: '90',
+        },
+    },
+    script: {
+        0: {
+            text: 'Welcome everyone. Our first question is: What is your favorite color?',
+        },
+        1: {
+            text: 'Thank you. Our next Question is: Do you have a pet?',
+        },
+        2: {
+            text: 'Great. And our last question is: Should we try to fix income inequality?',
+        },
+        3: {
+            text: 'Thanks everyone for watching this!',
+        },
+    },
+    moderator: {
+        name: 'Bill Smith',
+        email: 'billsmith@gmail.com',
+        message: 'Please be a moderator',
+        invitations: [
+            // derived data, list may be empty or not present
+            {
+                _id: '123',
+                sentDate: '2022-01-07T22:09:32.952Z',
+                responseDate: '2022-01-07T22:09:32.952Z',
+                status: 'Accepted',
+            },
+        ],
+        submissions: [
+            // derived data, list may be empty or not present
+            { _id: '', url: '', date: '' },
+        ],
+    },
+    candidates: {
+        '61e76bbefeaa4a25840d85d0': {
+            uniqueId: '61e76bbefeaa4a25840d85d0',
+            name: 'Sarah Jones',
+            email: 'sarahjones@mail.com',
+            office: 'President of the U.S.',
+            region: 'United States',
+            invitations: [
+                // derived data - list may be empty or not present
+                {
+                    _id: '',
+                    sentDate: '2022-01-07T22:09:32.952Z',
+                    responseDate: '2022-01-07T22:09:32.952Z',
+                    status: 'Declined',
+                    parentId: '',
+                },
+            ],
+        },
+    },
+    timeline: {
+        moderatorDeadlineReminderEmails: {
+            0: {
+                date: '2022-01-07T22:09:32.952Z',
+                sent: true,
+            },
+            1: {
+                date: '2022-01-07T22:09:32.952Z',
+                sent: false,
+            },
+        },
+        moderatorSubmissionDeadline: {
+            0: {
+                date: '2022-01-07T22:09:32.952Z',
+                sent: true,
+            },
+        },
+        candidateDeadlineReminderEmails: {
+            0: {
+                date: '2022-01-07T22:09:32.952Z',
+                sent: true,
+            },
+            1: {
+                date: '2022-01-07T22:09:32.952Z',
+                sent: false,
+            },
+        },
+        candidateSubmissionDeadline: {
+            0: {
+                date: '2022-01-07T22:09:32.952Z',
+                sent: true,
+            },
+        },
+        moderatorInviteDeadline: {
+            0: {
+                date: '2022-01-07T22:09:32.952Z',
+                sent: true,
+            },
+            1: {
+                date: '2022-01-07T22:09:32.952Z',
+                sent: false,
+            },
+        },
+    },
+    undebateDate: '2022-01-07T22:09:32.952Z',
+}
+
 export const ElectionDefault = Template.bind({})
 ElectionDefault.args = {
     defaultElectionObj: {
-        _id: '2349099238402',
+        ...defaultElectionObject,
+        electionName: null,
+        organizationName: null,
+        electionDate: null,
+        questions: null,
+        script: null,
+        moderator: null,
+        candidates: null,
+        timeline: null,
+        undebateDate: null,
     },
 }
 
 export const ElectionComplete = Template.bind({})
 ElectionComplete.args = {
     defaultElectionObj: {
-        _id: '2349099238402',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
+        ...defaultElectionObject,
+        electionDate: null,
+        questions: null,
+        script: null,
+        moderator: null,
+        candidates: null,
+        timeline: null,
     },
 }
 
 export const QuestionsAfterTimelineAreCompleted = Template.bind({})
 QuestionsAfterTimelineAreCompleted.args = {
     defaultElectionObj: {
-        _id: '2349099238402',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
-        electionDate: '2022-11-07T23:59:59.999Z',
-        timeline: {
-            moderatorDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            moderatorSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            candidateDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            moderatorInviteDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-        },
+        ...defaultElectionObject,
+        questions: null,
+        script: null,
+        moderator: null,
+        candidates: null,
     },
 }
 
 export const ScriptAterQuestionsAreCompleted = Template.bind({})
 ScriptAterQuestionsAreCompleted.args = {
     defaultElectionObj: {
-        _id: '2349099238402',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
-        electionDate: '2022-11-07T23:59:59.999Z',
-        questions: {
-            0: {
-                text: 'What is your favorite color?',
-                time: '30',
-            },
-            1: {
-                text: 'Do you have a pet?',
-                time: '60',
-            },
-            2: {
-                text: 'Should we try to fix income inequality?',
-                time: '90',
-            },
-        },
-        timeline: {
-            moderatorDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            moderatorSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            candidateDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            moderatorInviteDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-        },
+        ...defaultElectionObject,
+        script: null,
+        moderator: null,
+        candidates: null,
     },
 }
 
 export const ScriptIsCompleted = Template.bind({})
 ScriptIsCompleted.args = {
     defaultElectionObj: {
-        _id: '2349099238402',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
-        electionDate: '2022-11-07T23:59:59.999Z',
-        questions: {
-            0: {
-                text: 'What is your favorite color?',
-                time: '30',
-            },
-            1: {
-                text: 'Do you have a pet?',
-                time: '60',
-            },
-            2: {
-                text: 'Should we try to fix income inequality?',
-                time: '90',
-            },
-        },
-        script: {
-            0: {
-                text: 'Welcome everyone. Our first question is: What is your favorite color?',
-            },
-            1: {
-                text: 'Thank you. Our next Question is: Do you have a pet?',
-            },
-            2: {
-                text: 'Great. And our last question is: Should we try to fix income inequality?',
-            },
-            3: {
-                text: 'Thanks everyone for watching this!',
-            },
-        },
-        timeline: {
-            moderatorDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            moderatorSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            candidateDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            moderatorInviteDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-        },
-    },
-}
-
-export const InvitationAterScriptIsCompleted = Template.bind({})
-InvitationAterScriptIsCompleted.args = {
-    defaultElectionObj: {
-        _id: '2349099238402',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
-        electionDate: '2022-11-07T23:59:59.999Z',
-        questions: {
-            0: {
-                text: 'What is your favorite color?',
-                time: '30',
-            },
-            1: {
-                text: 'Do you have a pet?',
-                time: '60',
-            },
-            2: {
-                text: 'Should we try to fix income inequality?',
-                time: '90',
-            },
-        },
-        script: {
-            0: {
-                text: 'Welcome everyone. Our first question is: What is your favorite color?',
-            },
-            1: {
-                text: 'Thank you. Our next Question is: Do you have a pet?',
-            },
-            2: {
-                text: 'Great. And our last question is: Should we try to fix income inequality?',
-            },
-            3: {
-                text: 'Thanks everyone for watching this!',
-            },
-        },
-        timeline: {
-            moderatorDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            moderatorSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            candidateDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            moderatorInviteDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-        },
+        ...defaultElectionObject,
+        moderator: null,
+        candidates: null,
+        undebateDate: null,
     },
 }
 
 export const InvitationAfterInviteIsSent = Template.bind({})
 InvitationAfterInviteIsSent.args = {
     defaultElectionObj: {
-        _id: '2349099238402',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
-        electionDate: '2022-11-07T23:59:59.999Z',
-        questions: {
-            0: {
-                text: 'What is your favorite color?',
-                time: '30',
-            },
-            1: {
-                text: 'Do you have a pet?',
-                time: '60',
-            },
-            2: {
-                text: 'Should we try to fix income inequality?',
-                time: '90',
-            },
-        },
-        script: {
-            0: {
-                text: 'Welcome everyone. Our first question is: What is your favorite color?',
-            },
-            1: {
-                text: 'Thank you. Our next Question is: Do you have a pet?',
-            },
-            2: {
-                text: 'Great. And our last question is: Should we try to fix income inequality?',
-            },
-            3: {
-                text: 'Thanks everyone for watching this!',
-            },
-        },
+        ...defaultElectionObject,
         moderator: {
-            name: 'Bill Smith',
-            email: 'billsmith@gmail.com',
-            message: 'Please be a moderator',
+            ...defaultElectionObject.moderator,
             invitations: [
                 // derived data, list may be empty or not present
                 {
@@ -381,92 +221,15 @@ InvitationAfterInviteIsSent.args = {
                 },
             ],
         },
-        timeline: {
-            moderatorDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            moderatorSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            candidateDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            moderatorInviteDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-        },
     },
 }
 
 export const InvitationIsAccepted = Template.bind({})
 InvitationIsAccepted.args = {
     defaultElectionObj: {
-        _id: '2349099238402',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
-        electionDate: '2022-11-07T23:59:59.999Z',
-        questions: {
-            0: {
-                text: 'What is your favorite color?',
-                time: '30',
-            },
-            1: {
-                text: 'Do you have a pet?',
-                time: '60',
-            },
-            2: {
-                text: 'Should we try to fix income inequality?',
-                time: '90',
-            },
-        },
-        script: {
-            0: {
-                text: 'Welcome everyone. Our first question is: What is your favorite color?',
-            },
-            1: {
-                text: 'Thank you. Our next Question is: Do you have a pet?',
-            },
-            2: {
-                text: 'Great. And our last question is: Should we try to fix income inequality?',
-            },
-            3: {
-                text: 'Thanks everyone for watching this!',
-            },
-        },
+        ...defaultElectionObject,
         moderator: {
-            name: 'Bill Smith',
-            email: 'billsmith@gmail.com',
-            message: 'Please be a moderator',
+            ...defaultElectionObject.moderator,
             invitations: [
                 // derived data, list may be empty or not present
                 {
@@ -484,92 +247,15 @@ InvitationIsAccepted.args = {
                 },
             ],
         },
-        timeline: {
-            moderatorDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            moderatorSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            candidateDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            moderatorInviteDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-        },
     },
 }
 
 export const InvitationIsDeclined = Template.bind({})
 InvitationIsDeclined.args = {
     defaultElectionObj: {
-        _id: '2349099238402',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
-        electionDate: '2022-11-07T23:59:59.999Z',
-        questions: {
-            0: {
-                text: 'What is your favorite color?',
-                time: '30',
-            },
-            1: {
-                text: 'Do you have a pet?',
-                time: '60',
-            },
-            2: {
-                text: 'Should we try to fix income inequality?',
-                time: '90',
-            },
-        },
-        script: {
-            0: {
-                text: 'Welcome everyone. Our first question is: What is your favorite color?',
-            },
-            1: {
-                text: 'Thank you. Our next Question is: Do you have a pet?',
-            },
-            2: {
-                text: 'Great. And our last question is: Should we try to fix income inequality?',
-            },
-            3: {
-                text: 'Thanks everyone for watching this!',
-            },
-        },
+        ...defaultElectionObject,
         moderator: {
-            name: 'Bill Smith',
-            email: 'billsmith@gmail.com',
-            message: 'Please be a moderator',
+            ...defaultElectionObject.moderator,
             invitations: [
                 // derived data, list may be empty or not present
                 {
@@ -587,149 +273,22 @@ InvitationIsDeclined.args = {
                 },
             ],
         },
-        timeline: {
-            moderatorDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            moderatorSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            candidateDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            moderatorInviteDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-        },
     },
 }
 
 export const SubmissionWhenReminderIsSent = Template.bind({})
 SubmissionWhenReminderIsSent.args = {
     defaultElectionObj: {
-        _id: '2349099238402',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
-        electionDate: '2022-11-07T23:59:59.999Z',
-        questions: {
-            0: {
-                text: 'What is your favorite color?',
-                time: '30',
-            },
-            1: {
-                text: 'Do you have a pet?',
-                time: '60',
-            },
-            2: {
-                text: 'Should we try to fix income inequality?',
-                time: '90',
-            },
-        },
-        script: {
-            0: {
-                text: 'Welcome everyone. Our first question is: What is your favorite color?',
-            },
-            1: {
-                text: 'Thank you. Our next Question is: Do you have a pet?',
-            },
-            2: {
-                text: 'Great. And our last question is: Should we try to fix income inequality?',
-            },
-            3: {
-                text: 'Thanks everyone for watching this!',
-            },
-        },
-        moderator: {
-            name: 'Bill Smith',
-            email: 'billsmith@gmail.com',
-            message: 'Please be a moderator',
-            invitations: [
-                // derived data, list may be empty or not present
-                {
-                    _id: '123',
-                    sentDate: '2020-12-07T23:59:59.999Z',
-                    responseDate: '2021-2-07T23:59:59.999Z',
-                    status: 'Accepted',
-                },
-                // derived data, list may be empty or not present
-                {
-                    _id: '124',
-                    sentDate: '2020-11-07T23:59:59.999Z',
-                    responseDate: '',
-                    status: '',
-                },
-            ],
-        },
+        ...defaultElectionObject,
         timeline: {
+            ...defaultElectionObject.timeline,
             moderatorDeadlineReminderEmails: {
                 0: {
                     date: '2022-01-07T22:09:32.952Z',
                     sent: true,
                 },
                 1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            moderatorSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            candidateDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            moderatorInviteDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
+                    date: '2022-01-01T22:09:32.952Z',
                     sent: false,
                 },
             },
@@ -740,106 +299,13 @@ SubmissionWhenReminderIsSent.args = {
 export const SubmissionWhenVideoIsSubmitted = Template.bind({})
 SubmissionWhenVideoIsSubmitted.args = {
     defaultElectionObj: {
-        _id: '2349099238402',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
-        electionDate: '2022-11-07T23:59:59.999Z',
-        questions: {
-            0: {
-                text: 'What is your favorite color?',
-                time: '30',
-            },
-            1: {
-                text: 'Do you have a pet?',
-                time: '60',
-            },
-            2: {
-                text: 'Should we try to fix income inequality?',
-                time: '90',
-            },
-        },
-        script: {
-            0: {
-                text: 'Welcome everyone. Our first question is: What is your favorite color?',
-            },
-            1: {
-                text: 'Thank you. Our next Question is: Do you have a pet?',
-            },
-            2: {
-                text: 'Great. And our last question is: Should we try to fix income inequality?',
-            },
-            3: {
-                text: 'Thanks everyone for watching this!',
-            },
-        },
+        ...defaultElectionObject,
         moderator: {
-            name: 'Bill Smith',
-            email: 'billsmith@gmail.com',
-            message: 'Please be a moderator',
-            invitations: [
-                // derived data, list may be empty or not present
-                {
-                    _id: '123',
-                    sentDate: '2020-12-07T23:59:59.999Z',
-                    responseDate: '2021-2-07T23:59:59.999Z',
-                    status: 'Declined',
-                },
-                // derived data, list may be empty or not present
-                {
-                    _id: '124',
-                    sentDate: '2020-11-07T23:59:59.999Z',
-                    responseDate: '',
-                    status: '',
-                },
-            ],
+            ...defaultElectionObject.moderator,
             submissions: [
                 // derived data, list may be empty or not present
                 { _id: '1', url: 'www.youtube.com/123', date: '2022-01-07T22:09:32.952Z' },
             ],
-        },
-        timeline: {
-            moderatorDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            moderatorSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            candidateDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            moderatorInviteDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
         },
     },
 }
@@ -847,99 +313,12 @@ SubmissionWhenVideoIsSubmitted.args = {
 export const SubmissionWhenDeadlineIsMissedByModerator = Template.bind({})
 SubmissionWhenDeadlineIsMissedByModerator.args = {
     defaultElectionObj: {
-        _id: '2349099238402',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
-        electionDate: '2022-11-07T23:59:59.999Z',
-        questions: {
-            0: {
-                text: 'What is your favorite color?',
-                time: '30',
-            },
-            1: {
-                text: 'Do you have a pet?',
-                time: '60',
-            },
-            2: {
-                text: 'Should we try to fix income inequality?',
-                time: '90',
-            },
-        },
-        script: {
-            0: {
-                text: 'Welcome everyone. Our first question is: What is your favorite color?',
-            },
-            1: {
-                text: 'Thank you. Our next Question is: Do you have a pet?',
-            },
-            2: {
-                text: 'Great. And our last question is: Should we try to fix income inequality?',
-            },
-            3: {
-                text: 'Thanks everyone for watching this!',
-            },
-        },
-        moderator: {
-            name: 'Bill Smith',
-            email: 'billsmith@gmail.com',
-            message: 'Please be a moderator',
-            invitations: [
-                // derived data, list may be empty or not present
-                {
-                    _id: '123',
-                    sentDate: '2020-12-07T23:59:59.999Z',
-                    responseDate: '2021-2-07T23:59:59.999Z',
-                    status: 'Declined',
-                },
-                // derived data, list may be empty or not present
-                {
-                    _id: '124',
-                    sentDate: '2020-11-07T23:59:59.999Z',
-                    responseDate: '',
-                    status: '',
-                },
-            ],
-        },
+        ...defaultElectionObject,
         timeline: {
-            moderatorDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
+            ...defaultElectionObject.timeline,
             moderatorSubmissionDeadline: {
                 0: {
                     date: '2020-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            moderatorInviteDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
                     sent: false,
                 },
             },
@@ -950,247 +329,14 @@ SubmissionWhenDeadlineIsMissedByModerator.args = {
 export const ElectionTableIsFilled = Template.bind({})
 ElectionTableIsFilled.args = {
     defaultElectionObj: {
-        _id: 'mongoobjid',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
-        electionDate: '2022-11-07T23:59:59.999Z',
-        questions: {
-            0: {
-                text: 'What is your favorite color?',
-                time: '30',
-            },
-            1: {
-                text: 'Do you have a pet?',
-                time: '60',
-            },
-            2: {
-                text: 'Should we try to fix income inequality?',
-                time: '90',
-            },
-        },
-        script: {
-            0: {
-                text: 'Welcome everyone. Our first question is: What is your favorite color?',
-            },
-            1: {
-                text: 'Thank you. Our next Question is: Do you have a pet?',
-            },
-            2: {
-                text: 'Great. And our last question is: Should we try to fix income inequality?',
-            },
-            3: {
-                text: 'Thanks everyone for watching this!',
-            },
-        },
-        moderator: {
-            name: 'Bill Smith',
-            email: 'billsmith@gmail.com',
-            message: 'Please be a moderator',
-            invitations: [
-                // derived data, list may be empty or not present
-                {
-                    _id: '123',
-                    sentDate: '2022-01-07T22:09:32.952Z',
-                    responseDate: '2022-01-07T22:09:32.952Z',
-                    status: 'Accepted',
-                },
-            ],
-            submissions: [
-                // derived data, list may be empty or not present
-                { _id: '', url: '', date: '' },
-            ],
-        },
-        candidates: {
-            '61e76bbefeaa4a25840d85d0': {
-                uniqueId: '61e76bbefeaa4a25840d85d0',
-                name: 'Sarah Jones',
-                email: 'sarahjones@mail.com',
-                office: 'President of the U.S.',
-                region: 'United States',
-                invitations: [
-                    // derived data - list may be empty or not present
-                    {
-                        _id: '',
-                        sentDate: '2022-01-07T22:09:32.952Z',
-                        responseDate: '2022-01-07T22:09:32.952Z',
-                        status: 'Declined',
-                        parentId: '',
-                    },
-                ],
-                submissions: [
-                    // derived data - list may be empty or not present
-                    { _id: '', url: '', date: '', parentId: '' },
-                ],
-            },
-        },
-        timeline: {
-            moderatorDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            moderatorSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            candidateDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            moderatorInviteDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-        },
-        undebateDate: '2022-01-07T22:09:32.952Z',
+        ...defaultElectionObject,
     },
 }
 
 export const UnderbateIsLive = Template.bind({})
 UnderbateIsLive.args = {
     defaultElectionObj: {
-        _id: 'mongoobjid',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
-        electionDate: '2022-11-07T23:59:59.999Z',
-        questions: {
-            0: {
-                text: 'What is your favorite color?',
-                time: '30',
-            },
-            1: {
-                text: 'Do you have a pet?',
-                time: '60',
-            },
-            2: {
-                text: 'Should we try to fix income inequality?',
-                time: '90',
-            },
-        },
-        script: {
-            0: {
-                text: 'Welcome everyone. Our first question is: What is your favorite color?',
-            },
-            1: {
-                text: 'Thank you. Our next Question is: Do you have a pet?',
-            },
-            2: {
-                text: 'Great. And our last question is: Should we try to fix income inequality?',
-            },
-            3: {
-                text: 'Thanks everyone for watching this!',
-            },
-        },
-        moderator: {
-            name: 'Bill Smith',
-            email: 'billsmith@gmail.com',
-            message: 'Please be a moderator',
-            invitations: [
-                // derived data, list may be empty or not present
-                {
-                    _id: '123',
-                    sentDate: '2022-01-07T22:09:32.952Z',
-                    responseDate: '2022-01-07T22:09:32.952Z',
-                    status: 'Accepted',
-                },
-            ],
-            submissions: [
-                // derived data, list may be empty or not present
-                { _id: '', url: '', date: '' },
-            ],
-        },
-        candidates: {
-            '61e76bbefeaa4a25840d85d0': {
-                uniqueId: '61e76bbefeaa4a25840d85d0',
-                name: 'Sarah Jones',
-                email: 'sarahjones@mail.com',
-                office: 'President of the U.S.',
-                region: 'United States',
-                invitations: [
-                    // derived data - list may be empty or not present
-                    {
-                        _id: '',
-                        sentDate: '2022-01-07T22:09:32.952Z',
-                        responseDate: '2022-01-07T22:09:32.952Z',
-                        status: 'Declined',
-                        parentId: '',
-                    },
-                ],
-                submissions: [
-                    // derived data - list may be empty or not present
-                    { _id: '', url: '', date: '', parentId: '' },
-                ],
-            },
-        },
-        timeline: {
-            moderatorDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            moderatorSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            candidateDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            moderatorInviteDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-        },
+        ...defaultElectionObject,
         undebateDate: new Date().toISOString,
     },
 }
@@ -1198,123 +344,8 @@ UnderbateIsLive.args = {
 export const UnderbateArchieved = Template.bind({})
 UnderbateArchieved.args = {
     defaultElectionObj: {
-        _id: 'mongoobjid',
-        electionName: 'U.S Presidential Election',
-        organizationName: 'United States Federal Government',
+        ...defaultElectionObject,
         electionDate: '2020-11-07T23:59:59.999Z',
-        questions: {
-            0: {
-                text: 'What is your favorite color?',
-                time: '30',
-            },
-            1: {
-                text: 'Do you have a pet?',
-                time: '60',
-            },
-            2: {
-                text: 'Should we try to fix income inequality?',
-                time: '90',
-            },
-        },
-        script: {
-            0: {
-                text: 'Welcome everyone. Our first question is: What is your favorite color?',
-            },
-            1: {
-                text: 'Thank you. Our next Question is: Do you have a pet?',
-            },
-            2: {
-                text: 'Great. And our last question is: Should we try to fix income inequality?',
-            },
-            3: {
-                text: 'Thanks everyone for watching this!',
-            },
-        },
-        moderator: {
-            name: 'Bill Smith',
-            email: 'billsmith@gmail.com',
-            message: 'Please be a moderator',
-            invitations: [
-                // derived data, list may be empty or not present
-                {
-                    _id: '123',
-                    sentDate: '2022-01-07T22:09:32.952Z',
-                    responseDate: '2022-01-07T22:09:32.952Z',
-                    status: 'Accepted',
-                },
-            ],
-            submissions: [
-                // derived data, list may be empty or not present
-                { _id: '', url: '', date: '' },
-            ],
-        },
-        candidates: {
-            '61e76bbefeaa4a25840d85d0': {
-                uniqueId: '61e76bbefeaa4a25840d85d0',
-                name: 'Sarah Jones',
-                email: 'sarahjones@mail.com',
-                office: 'President of the U.S.',
-                region: 'United States',
-                invitations: [
-                    // derived data - list may be empty or not present
-                    {
-                        _id: '',
-                        sentDate: '2022-01-07T22:09:32.952Z',
-                        responseDate: '2022-01-07T22:09:32.952Z',
-                        status: 'Declined',
-                        parentId: '',
-                    },
-                ],
-                submissions: [
-                    // derived data - list may be empty or not present
-                    { _id: '', url: '', date: '', parentId: '' },
-                ],
-            },
-        },
-        timeline: {
-            moderatorDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            moderatorSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            candidateDeadlineReminderEmails: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-            candidateSubmissionDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-            },
-            moderatorInviteDeadline: {
-                0: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: true,
-                },
-                1: {
-                    date: '2022-01-07T22:09:32.952Z',
-                    sent: false,
-                },
-            },
-        },
         undebateDate: '2020-01-07T22:09:32.952Z',
     },
 }

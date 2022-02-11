@@ -149,14 +149,27 @@ const useStyles = createUseStyles(theme => ({
         }rem 0.7rem`,
         margin: `rem`,
         backgroundColor: `${
-            props.statusObjs?.pending ||
-            props.statusObjs?.daysLeft ||
-            props.statusObjs?.declined ||
-            props.statusObjs?.deadlineMissed
+            !props.selected &&
+            (props.statusObjs?.pending ||
+                props.statusObjs?.daysLeft ||
+                props.statusObjs?.declined ||
+                props.statusObjs?.deadlineMissed)
                 ? theme.backgroundColorWarning
                 : props.selected
                 ? theme.inputFieldBackgroundColor
                 : theme.backgroundColorApp
+        }`,
+
+        border: `5px solid ${
+            !props.selected
+                ? 'transparent'
+                : props.selected &&
+                  (props.statusObjs?.pending ||
+                      props.statusObjs?.daysLeft ||
+                      props.statusObjs?.declined ||
+                      props.statusObjs?.deadlineMissed)
+                ? theme.backgroundColorWarning
+                : 'transparent'
         }`,
         alignItems: 'center',
     }),

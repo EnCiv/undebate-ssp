@@ -122,9 +122,9 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
     }
 
     const getSubmissionStatus = () => {
-        if (!checkSubmissionBeforeDeadline()) return 'missed'
-        if (checkVideoSubmitted()) return 'submitted'
-        if (checkReminderSent()) return 'sent'
+        if (electionObj?.timeline?.moderatorSubmissionDeadline && !checkSubmissionBeforeDeadline()) return 'missed'
+        if (electionObj?.moderator?.submissions && checkVideoSubmitted()) return 'submitted'
+        if (electionObj?.timeline?.moderatorDeadlineReminderEmails && checkReminderSent()) return 'sent'
         return 'default'
     }
 
@@ -205,6 +205,10 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
         onDone({ valid, value })
     }
 
+    const onMouseEnterHandler = e => {
+        e.target.style.cursor = 'pointer'
+    }
+
     return (
         <div className={cx(className, classes.container)} style={style}>
             <div className={classes.top}>
@@ -216,17 +220,19 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                     onClick={e => {
                         handleClick(e, getElectionStatus() === 'completed', 'Election')
                     }}
+                    onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Election'
                         statusObjs={getElectionStatus() === 'completed' ? 'completed' : {}}
-                        selected={current?.includes('Election')}
+                        selected={current?.includes('Election') && !current?.includes('Table')}
                     />
                 </div>
                 <div
                     onClick={e => {
                         handleClick(e, getTimelineStatus() === 'completed', 'Timeline')
                     }}
+                    onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Timeline'
@@ -244,6 +250,7 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                     onClick={e => {
                         handleClick(e, getQuestionsStatus() === 'completed', 'Questions')
                     }}
+                    onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Questions'
@@ -257,7 +264,7 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                         selected={current?.includes('Questions')}
                     />
                 </div>
-                <div onClick={handleClick}>
+                <div onClick={handleClick} onMouseEnter={onMouseEnterHandler}>
                     <ElectionCategory categoryName='Danger Zone' selected={current?.includes('Danger Zone')} />
                 </div>
             </div>
@@ -270,6 +277,7 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                     onClick={e => {
                         handleClick(e, getScriptStatus() === 'completed', 'Script')
                     }}
+                    onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Script'
@@ -287,6 +295,7 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                     onClick={e => {
                         handleClick(e, getInvitationStatus() === 'completed', 'Invitation')
                     }}
+                    onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Invitation'
@@ -308,6 +317,7 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                     onClick={e => {
                         handleClick(e, getSubmissionStatus() === 'completed', 'Submission')
                     }}
+                    onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Submission'
@@ -335,6 +345,7 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                     onClick={e => {
                         handleClick(e, getElectionTableStatus() === 'completed', 'Election Table')
                     }}
+                    onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Election Table'
@@ -352,6 +363,7 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                     onClick={e => {
                         handleClick(e, getSubmissionsStatus() !== 'default', 'Submissions')
                     }}
+                    onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Submissions'
