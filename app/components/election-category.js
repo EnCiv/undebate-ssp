@@ -9,6 +9,7 @@ import {
     SvgCompleted,
     SvgDeadlineMissed,
     SvgDeclined,
+    SvgLock,
     SvgReminderSent,
     SvgSent,
     SvgVideoSubmitted,
@@ -32,6 +33,7 @@ const statusInfoEnum = {
     accepted: { icon: <SvgAccepted />, text: 'Accepted' },
     declined: { icon: <SvgDeclined />, text: 'Declined' },
     sent: { icon: <SvgSent />, text: 'Sent' },
+    locked: { icon: <SvgLock /> },
 }
 
 function ProgressBar(props) {
@@ -174,7 +176,6 @@ const useStyles = createUseStyles(theme => ({
         alignItems: 'center',
     }),
     categoryText: {
-        textTransform: 'capitalize',
         flex: 1,
     },
     grow: { flex: '1 1 100%' },

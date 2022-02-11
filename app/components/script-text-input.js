@@ -1,29 +1,35 @@
 // https://github.com/EnCiv/undebate-ssp/issues/10
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
+import cx from 'classnames'
 import SvgVideo from '../svgr/video'
 import SvgClock from '../svgr/clock'
 
 export default function ScriptTextInput({
     questionNumber,
     questionName,
-    maxWordCount,
-    wordsPerMinute,
+    maxWordCount = 600,
+    wordsPerMinute = 120,
     defaultValue,
     onDone,
 }) {
     const classes = useStyles()
-    const [inputText, setInputText] = useState(defaultValue)
 
-    const getWordCount = () => {
+    const getWordCount = inputText => {
+        if (!inputText) return 0
         return inputText.split(' ').filter(word => {
             return word !== '' && word !== '\n'
         }).length
     }
 
-    const [wordCount, setWordCount] = useState(getWordCount())
+    const isValid = inputText => {
+        const wc = getWordCount(inputText)
+        return wc > 0 && wc <= maxWordCount
+    }
+
+    const [wordCount, setWordCount] = useState(getWordCount(defaultValue))
 
     const formatDuration = minutes => {
         const dur = moment.duration(minutes, 'minutes')
@@ -32,9 +38,12 @@ export default function ScriptTextInput({
     }
 
     const updateState = event => {
-        setInputText(event.target.value)
-        setWordCount(getWordCount())
+        setWordCount(getWordCount(event.target.value))
     }
+
+    useEffect(() => {
+        if (onDone) onDone({ valid: isValid(defaultValue), value: defaultValue })
+    }, [defaultValue]) // initiall report if default value is valid or not
 
     return (
         <div className={classes.container}>
@@ -58,21 +67,19 @@ export default function ScriptTextInput({
             </div>
             <TextareaAutosize
                 minRows={4}
-                className={classes.input}
+                className={cx(classes.input, !(wordCount > 0 && wordCount <= maxWordCount) && classes.inputError)}
                 onChange={event => {
                     updateState(event)
                 }}
                 onBlur={event => {
                     updateState(event)
-                    const wc = getWordCount()
                     onDone({
-                        value: inputText,
-                        valid: wc <= maxWordCount && wc >= 1,
+                        value: event.target.value,
+                        valid: isValid(event.target.value),
                     })
                 }}
-            >
-                {inputText}
-            </TextareaAutosize>
+                defaultValue={defaultValue}
+            />
         </div>
     )
 }
@@ -129,5 +136,8 @@ const useStyles = createUseStyles(theme => ({
         fontWeight: 'normal',
         lineHeight: '1.875rem',
         margin: '0.375rem 0rem',
+    },
+    inputError: {
+        border: '.3rem solid red',
     },
 }))

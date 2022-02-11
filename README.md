@@ -16,8 +16,18 @@ In 2019 we created [Undebates](https://github.com/EnCiv/undebate) and launched t
 
 ## **Slack** - Use this form to get an invite to the [slack workspace](https://docs.google.com/forms/d/e/1FAIpQLSee58BUiy12dtloG9pLITsELcNldIwXcEtCotV9r95BZJSIVA/viewform)
 
+## [Node](https://nodejs.org/en/download/)
+
+[Download](https://nodejs.org/en/download/) the **LTS version** not the Current Version.  This project uses some packages, like bcrypt, that install binary code into node for efficiency.  It takes these packages time to catch up.
+
 The following has been tested using node v16.13.0 and npm v8.1.0 on Windows 10 and MacOs. There are known issues using npm < 7. During install, you can ignore the warning about incompatibility with previous versions of node/npm - we need to go back to those packages and update their dependencies. Also, Node version 17 will not work, and in general the odd versions are experimental so we don't try to use those. If you already tried to build this with version 17, you need to install version 16 and then do `npm ci` to start clean.
 
+## GIT 
+On PC, install [Git for Windows](https://git-scm.com/download/win)
+On Mac,install [Brew](https://brew.sh/) first, and then `brew install git`
+There are gui and web based systems for doing git and you are welcome to use them, but it is easier to document what to do using a CLI. 
+
+## Install
 Below are specific instructions for cloning and running storybook on your local system using your CLI of choice:
 
 ```
@@ -185,8 +195,43 @@ Snapshots:   0 total
 Time:        3.309 s, estimated 4 s
 Ran all test suites matching /app\\socket-apis\\__tests__\\get-election-docs.js/i.
 ```
-
 When you got down to writing the tests, expect is what's used to check for success or failure. Here are are the [docs on expect](https://jestjs.io/docs/expect)
+
+## Debugging Jest
+
+If you are trying to get a test working and need to use a debugger, here's how
+
+```
+node --inspect-brk node_modules/jest/bin/jest.js --runInBand path/to/test-file.js --config "{testTimeout: 5000000, setupFilesAfterEnv: ['<rootDir>/setupTests.js', '<rootDir>/node_modules/jest-enzyme/lib/index.js'],preset: '@shelf/jest-mongodb'}"
+```
+
+This will start Jest, but it will wait for a debugger to connect.
+User the Chrome browser to browse to **about:inspect**
+Wait a few seconds and you will see:
+![image](https://user-images.githubusercontent.com/3317487/151715405-eb4fabd9-8cb0-4b24-b282-ab85504ea2d2.png)
+Click on **inspect** at the bottom and a Chrome Debugger will open up.
+
+If you haven't already, in Chrome you should do [Filesystem][add folder to workspace] and add the project directory. You only have to do this once.
+
+Note that in the --config of the shell command above, testTimeout is set really large, this is so that tests don't time out while you are trying to debug them. The rest of the config is a copy of what's in jest.config.js
+
+You won't be able to set breakpoint in the jest tests, so you'll need to add a debugger statement to get it to stop.  Then you can single step and things, but breakpoints still may not work.  Remember to take your debugger statements out before checking in. Example:
+```
+test('get election docs should return undefined if user not logged in', done => {
+    function callback(docs) {
+        try {
+            debugger
+            expect(docs).toEqual(undefined)
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    debugger
+    getElectionDocs.call({}, callback)
+})
+```
+
 
 # Icons, Figma and SVG
 
