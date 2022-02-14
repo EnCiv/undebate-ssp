@@ -50,6 +50,34 @@ A storybook browser window will open up:
 
 Storybook allows us to create React components independently, test them, and leaves a visual catalog of our components for the next contributer. Also, as soon as you get your new component and story started, you can build/edit them on the fly and the browser will update as you make your changes. (Because Storybook uses Webpack to push updates to the browser).
 
+# .bashrc 
+This project uses bash on windows or zsh on mac. This models the cloud environment. The .bashrc file in the each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by git and won't be put in the repo.
+
+Make sure that in hour home (cd ~) directory you have a **.bash_profile** on PC or a **.profile** on mac file that contains something like: 
+```
+test -f ~/.profile && . ~/.profile
+test -f ~/.bashrc && . ~/.bashrc
+```
+
+do `source bashsetup.sh` from your command line
+this will initialize the .bashrc file for this project with a few simple things
+
+
+# MongoDB
+To develope on the server side (not required for storybook above), MongoDB is required.  It's possible to do this with a hosted database or with a local one.  The advantage of hosted is that if you move between local development and cloud deployment like on heroku, the hosted database allows you to access the same data from both places.  For info on setting up hosted, go [here](https://github.com/EnCiv/civil-server/blob/main/doc/Install.md) and look at the steps for setting up mongo.  
+
+## To setup MongoDB locally
+- on PC Get the [MongoDb Community Server](https://www.mongodb.com/try/download/community) for your system.
+- on Mac do `brew tap mongodb/brew` and then `brew install mongodb-community@5.0`
+
+
+After it has been installed, use `dbup` to bring up the datbase.  It will store the data in a **tmp** directory in your project that is .gitignore'd so it won't get pushed to the repo.
+`dbdown` will shut down the database
+
+After the database is up, you can run `npm run dev` and this will start the server.  There will be warnings about other enviornment variable that aren't setup, but we don't need those.
+
+With the server runing you can browse to `localhost:3011/qa/ccwrapper` and see a candidate conversation. And you can visit `localhost:3011/qa/ccwrapper-recorder' and be a participant.
+
 # Prettier
 
 ## If you don't already have [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for VSC installed, go [here](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and click **Install**.
@@ -69,7 +97,7 @@ There is no requirement to resolve lint issues, and many that are more preferenc
 
 One burden is that if we create new input components, we need to push them to the array in .eslintrc.js/module.exports.rules[jsx-a11y/label-has-associated-control][1].controlComponents
 
-## See the Github **[Issues](https://github.com/EnCiv/undebate-ssp/issues)** for tasks that need doing
+# See the Github **[Issues](https://github.com/EnCiv/undebate-ssp/issues)** for tasks that need doing
 
 -   We are creating React components based on UI design in [figma](https://www.figma.com/proto/IQKPx02pkBErpmhQoECoq9/Undebate?node-id=123%3A1694&scaling=min-zoom&page-id=102%3A2&starting-point-node-id=123%3A1694)
 
