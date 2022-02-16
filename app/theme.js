@@ -3,7 +3,10 @@ const theme = {
     colorPrimary: '#7470FF',
     colorSecondary: '#262D33',
     colorWarning: '#EE6055',
+    colorLightRed: '#f3ada7',
     colorSuccess: '#46941B',
+    colorGray: '#7d8084',
+    colorLightGray: '#d4d5d6',
 
     // Can be combined with UI colors to create a 'disabled' version
     disabledOpacity: '0.3',

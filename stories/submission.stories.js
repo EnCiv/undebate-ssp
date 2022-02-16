@@ -1,21 +1,25 @@
 // https://github.com/EnCiv/undebate-ssp/issues/51
-import React from 'react'
+import React, { useEffect } from 'react'
 import Submission from '../app/components/submission'
 
 export default {
     title: 'Submission',
     component: Submission,
-    argTypes: {},
+    argTypes: { electionOM: { type: 'object' } },
 }
 
 const Template = (args, context) => {
-    const { onDone } = context
-    return <Submission electionObj={onDone} {...args} />
+    const { electionOM, onDone } = context
+    const { defaultElectionObj, customMethods = {}, ...otherArgs } = args
+    const [electionObj, electionMethods] = electionOM
+    Object.assign(electionMethods, customMethods)
+    useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
+    return <Submission electionOM={electionOM} {...args} />
 }
 
 export const Default = Template.bind({})
 Default.args = {
-    electionObj: {
+    defaultElectionObj: {
         moderator: {
             submissions: [],
         },
@@ -36,9 +40,14 @@ Default.args = {
     },
 }
 
+export const Empty = Template.bind({})
+Empty.args = {
+    defaultElectionObj: {},
+}
+
 export const ReminderSent = Template.bind({})
 ReminderSent.args = {
-    electionObj: {
+    defaultElectionObj: {
         moderator: {
             submissions: [],
         },
@@ -61,7 +70,7 @@ ReminderSent.args = {
 
 export const VideoSubmitted = Template.bind({})
 VideoSubmitted.args = {
-    electionObj: {
+    defaultElectionObj: {
         moderator: {
             submissions: [
                 {
@@ -90,7 +99,7 @@ VideoSubmitted.args = {
 
 export const DeadlineMissed = Template.bind({})
 DeadlineMissed.args = {
-    electionObj: {
+    defaultElectionObj: {
         moderator: {
             submissions: [
                 {

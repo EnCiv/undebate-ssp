@@ -9,11 +9,26 @@ import SvgReminder from '../svgr/reminder-sent'
 import SvgFeelingBlue from '../svgr/feeling-blue'
 
 export default function Submission(props) {
-    const { className, style, electionObj } = props
+    const { className, style, electionOM } = props
+    const [electionObj] = electionOM
     const classes = useStyles(props)
+    const emptySubmission = {
+        moderator: {
+            submissions: [],
+        },
+        timeline: {
+            moderatorDeadlineReminderEmails: {},
+            moderatorSubmissionDeadline: {},
+        },
+    }
 
     const getSubmission = () => {
-        const sortedSubmissions = electionObj.moderator.submissions.sort((a, b) => b.date - a.date)
+        const sortedSubmissions = electionObj.moderator?.submissions.sort(function (a, b) {
+            return ('' + b.date).localeCompare(a.date)
+        })
+        if (sortedSubmissions === undefined) {
+            return emptySubmission
+        }
         return sortedSubmissions[0]
     }
 
@@ -30,13 +45,16 @@ export default function Submission(props) {
     }
 
     const checkVideoSubmitted = () => {
-        return submission.url !== ''
+        return submission !== undefined && submission.url !== ''
     }
 
     const checkSubmissionBeforeDeadline = () => {
-        const submission = electionObj?.timeline?.moderatorSubmissionDeadline
-        for (const key in submission) {
-            if (submission[key]?.date && submission[key]?.sent) {
+        const msubmission = electionObj?.timeline?.moderatorSubmissionDeadline
+        if (msubmission === true) {
+            return true
+        }
+        for (const key in msubmission) {
+            if (msubmission[key]?.date && msubmission[key]?.sent) {
                 return true
             }
         }
@@ -44,8 +62,9 @@ export default function Submission(props) {
     }
 
     const getSubmissionStatus = () => {
-        if (submission && !checkSubmissionBeforeDeadline()) return 'missed'
-        if (submission && checkVideoSubmitted()) return 'submitted'
+        if (submission === emptySubmission) return 'empty'
+        if (!checkSubmissionBeforeDeadline()) return 'missed'
+        if (checkVideoSubmitted()) return 'submitted'
         if (checkReminderSent()) return 'sent'
         return 'default'
     }
@@ -68,6 +87,7 @@ export default function Submission(props) {
     let prevIcon
     let cornerPic
     let missed = false
+    let empty = false
     switch (getSubmissionStatus()) {
         case 'missed':
             statusTitle = 'Deadline Missed!'
@@ -89,27 +109,34 @@ export default function Submission(props) {
             statusDesc = getSubmissionDaysLeft() + ' days left'
             statusTitle = 'No Submission Yet'
             break
+        case 'empty':
+            empty = true
+            break
     }
 
     const icon = <div className={classes.icon}>{prevIcon}</div>
     return (
         <div className={cx(className, classes.container)} style={style}>
-            <div className={cx(classes.card, { [classes.backgroundRed]: missed })}>
-                <div className={classes.preview}>
-                    {submission?.url && getSubmissionStatus() === 'submitted' ? (
-                        <iframe src={submission?.url} frameborder='0'>
-                            {icon}
-                        </iframe>
-                    ) : (
-                        <div className={classes.placeholder}>{icon}</div>
-                    )}
-                </div>
-                <div className={classes.meta}>
-                    <p className={cx(classes.title, { [classes.colorWhite]: missed })}>{statusTitle}</p>
-                    <p className={cx(classes.desc, { [classes.colorLightRed]: missed })}>{statusDesc}</p>
-                </div>
-            </div>
-            <div className={classes.cornerPic}>{cornerPic}</div>
+            {!empty && (
+                <>
+                    <div className={cx(classes.card, { [classes.backgroundRed]: missed })}>
+                        <div className={classes.preview}>
+                            {submission?.url && getSubmissionStatus() === 'submitted' ? (
+                                <iframe src={submission?.url} frameborder='0'>
+                                    {icon}
+                                </iframe>
+                            ) : (
+                                <div className={classes.placeholder}>{icon}</div>
+                            )}
+                        </div>
+                        <div className={classes.meta}>
+                            <p className={cx(classes.title, { [classes.colorWhite]: missed })}>{statusTitle}</p>
+                            <p className={cx(classes.desc, { [classes.colorLightRed]: missed })}>{statusDesc}</p>
+                        </div>
+                    </div>
+                    <div className={classes.cornerPic}>{cornerPic}</div>
+                </>
+            )}
         </div>
     )
 }
@@ -117,16 +144,16 @@ export default function Submission(props) {
 const useStyles = createUseStyles(theme => ({
     container: {
         padding: '2rem',
-        backgroundColor: '#ececec',
+        backgroundColor: theme.backgroundColorApp,
     },
     card: {
         width: '18.75rem',
-        backgroundColor: '#d4d5d6',
+        backgroundColor: theme.colorLightGray,
         padding: '.5rem',
         borderRadius: '0.625rem',
     },
     preview: {
-        backgroundColor: '#ffffff',
+        backgroundColor: 'white',
         height: '10rem',
     },
     title: {
@@ -138,7 +165,7 @@ const useStyles = createUseStyles(theme => ({
     desc: {
         padding: '0',
         margin: '0',
-        color: '#7d8084',
+        color: theme.colorGray,
         fontSize: '0.875rem',
         paddingLeft: '.5rem',
         paddingBottom: '.5rem',
@@ -161,12 +188,12 @@ const useStyles = createUseStyles(theme => ({
         height: '100%',
     },
     backgroundRed: {
-        backgroundColor: '#ee6055',
+        backgroundColor: theme.colorWarning,
     },
     colorWhite: {
         color: 'white',
     },
     colorLightRed: {
-        color: '#f3ada7',
+        color: theme.colorLightRed,
     },
 }))
