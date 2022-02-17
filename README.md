@@ -79,25 +79,6 @@ After the database is up, you can run `npm run dev` and this will start the serv
 
 With the server runing you can browse to `localhost:3011/qa/ccwrapper` and see a candidate conversation. And you can visit `localhost:3011/qa/ccwrapper-recorder' and be a participant.
 
-# Prettier
-
-## If you don't already have [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for VSC installed, go [here](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and click **Install**.
-
-Prettier makes some spacing and the use of quotes and a few other things consistent across the project. It's really handy when using Visual Studio Code (see below) to be able to just save the file and have the indenting and formatting automatically fixed up. This can help find problems sometimes, and save some of the tedium.
-
-This repo has a .vscode/settings.json file with the basic configuation for using prettier setup for this workspace. It will not override the configuration for other workspaces.
-If you are not using VSC, prettier will also be run on the changed files before you commit, but see if prettier is available for your editor and post instuctions here.
-
-# ESLint
-
-## If you don't already have [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for VSC installed, go [here](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and click **Install**.
-
-This project is using ESLint to help prevent bugs. This works really well within the Visual Studio Code environment where it higlights the issues, and can auto fix some of them.
-
-There is no requirement to resolve lint issues, and many that are more preference than bug related have been turned off. If there are rules that we should turn off, or add - its worth discussing. The goal is not to enforce a particular coding style to make it "easier to read", many people work on this project who are experienced with different coding styles. The goal is to prevent bugs. The best coding style is the working code style.
-
-One burden is that if we create new input components, we need to push them to the array in .eslintrc.js/module.exports.rules[jsx-a11y/label-has-associated-control][1].controlComponents
-
 # See the Github **[Issues](https://github.com/EnCiv/undebate-ssp/issues)** for tasks that need doing
 
 -   We are creating React components based on UI design in [figma](https://www.figma.com/proto/IQKPx02pkBErpmhQoECoq9/Undebate?node-id=123%3A1694&scaling=min-zoom&page-id=102%3A2&starting-point-node-id=123%3A1694)
@@ -114,12 +95,13 @@ One burden is that if we create new input components, we need to push them to th
 
 -   See here for info on the [data schema](https://github.com/EnCiv/undebate-ssp/issues/46)
 
-## Notes on React component guidelines:
-
-These notes are pretty general and always open to reevaluation. Also, we want to state the 'why' for each guideline.
+# React Component guidelines and notes:
+<details>
+    <summary>General notes on react component boilerplate stuff. Also, we want to state the 'why' for each guideline.</summary>
+    
+These notes are pretty general and always open to reevaluation. 
 
 **my-component.js**
-
 ```js
 // https://github.com/EnCiv/undebate-ssp/issue/NUMBER
 import React from 'react'
@@ -163,9 +145,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 8. Include a link to the github issue as a comment at the top of the component file and the top of the story to make it easier to go back and reference it. Also, we should add comments to the issues as we make design decisions that change the original direction in the issue. - We end up putting a lot of good info, and pictures, into the issue and its useful to have it handy even after the issue is closed.
 
 9. Components that accept input, or action from the user should accept an `onDone` parameter, which is a function to call with `{valid: bool, value: any}`. Whenever the user leaves the component, typically through onBlur the component should call onDone, and with value set to the value of this input (which could be an object), and valid set to whether or not the value is valid. Empty should - generally - be considered not valid. Higher level components will figure out how the UI reacts to the valid/value returned. This allows more complete logic than just 'required'.
+</details>
 
-## Notes on git
-
+# Using Git
+<details>
+    <summary>We're using git from the command line, because it's easier to document what to do.</summary>
+    
 When starting to work on a new issue:
 
 ```
@@ -198,10 +183,11 @@ git push
 to update what's on github.
 
 When the code is ready to merge, go to github.com/EnCiv/undebate-ssp and create a pull request for it. When you go there - there will probably a note at the top asking if you want to create a pull request.
+</details>
 
-# Testing
-
-In many cases, like APIs, it is faster to build the API and create a test for it, than it is to test the API by going through the UI.
+# Testing with Jest
+<details>
+    <summary>In many cases, like APIs, it is faster to build the API and create a test for it, than it is to test the API by going through the UI.</summary>
 
 This project is using Jest for testing, and we have set it up to allow tests to use the Mongo database. See are example at [app/socket_apis/\_\_tests\_\_/get-election-documents](https://github.com/EnCiv/undebate-ssp/blob/main/app/socket-apis/__tests__/get-election-docs.js)
 
@@ -227,7 +213,6 @@ Ran all test suites matching /app\\socket-apis\\__tests__\\get-election-docs.js/
 When you got down to writing the tests, expect is what's used to check for success or failure. Here are are the [docs on expect](https://jestjs.io/docs/expect)
 
 ## Debugging Jest
-
 If you are trying to get a test working and need to use a debugger, here's how
 
 ```
@@ -260,11 +245,13 @@ test('get election docs should return undefined if user not logged in', done => 
     getElectionDocs.call({}, callback)
 })
 ```
-
+</details>
 
 # Icons, Figma and SVG
+<details>
+    <summary>You can export svg from figma and paste it into a .svg file in assets/svg to create icons.</summary>
 
-You can export svg from figma and paste it into a .svg file in assets/svg to create icons. For example assets/svg/trash-can.svg
+For example assets/svg/trash-can.svg
 
 ```
 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -290,3 +277,34 @@ function renderSomething(){
     return <SvgTrashCan />
 }
 ```
+</details>
+
+# Prettier
+
+## If you don't already have [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for VSC installed, go [here](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and click **Install**.
+    
+<details>
+    <summary>Prettier makes some spacing and the use of quotes and a few other things consistent across the project.</summary>
+    
+
+It's really handy when using Visual Studio Code (see below) to be able to just save the file and have the indenting and formatting automatically fixed up. This can help find problems sometimes, and save some of the tedium.
+
+This repo has a .vscode/settings.json file with the basic configuation for using prettier setup for this workspace. It will not override the configuration for other workspaces.
+If you are not using VSC, prettier will also be run on the changed files before you commit, but see if prettier is available for your editor and post instuctions here.
+</details>
+
+# ESLint
+
+## If you don't already have [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for VSC installed, go [here](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and click **Install**.
+
+<details>
+<summary>This project is using ESLint to help prevent bugs. This works really well within the Visual Studio Code environment where it higlights the issues, and can auto fix some of them.
+</summary>
+
+
+There is no requirement to resolve lint issues, and many that are more preference than bug related have been turned off. If there are rules that we should turn off, or add - its worth discussing. The goal is not to enforce a particular coding style to make it "easier to read", many people work on this project who are experienced with different coding styles. The goal is to prevent bugs. The best coding style is the working code style.
+
+One burden is that if we create new input components, we need to push them to the array in .eslintrc.js/module.exports.rules[jsx-a11y/label-has-associated-control][1].controlComponents
+</details>
+
+
