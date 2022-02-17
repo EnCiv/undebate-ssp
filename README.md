@@ -58,10 +58,11 @@ Make sure that in hour home (cd ~) directory you have a **.bash_profile** on PC 
 test -f ~/.profile && . ~/.profile
 test -f ~/.bashrc && . ~/.bashrc
 ```
-
-do `source bashsetup.sh` from your command line
-this will initialize the .bashrc file for this project with a few simple things
-
+cd back to the directory with your this repo and from the command line do
+```
+source bashsetup.sh
+```
+This will initialize the .bashrc file for this project with a few simple things. But don't do this more than once (as it would create redundant entries in the file).
 
 # MongoDB
 To develope on the server side (not required for storybook above), MongoDB is required.  It's possible to do this with a hosted database or with a local one.  The advantage of hosted is that if you move between local development and cloud deployment like on heroku, the hosted database allows you to access the same data from both places.  For info on setting up hosted, go [here](https://github.com/EnCiv/civil-server/blob/main/doc/Install.md) and look at the steps for setting up mongo.  
