@@ -15,7 +15,8 @@ import {
     SvgVideoSubmitted,
 } from './lib/svg'
 
-const statusInfoEnum = {
+// TODO: Consider moving
+export const statusInfoEnum = {
     completed: { icon: <SvgCompleted /> },
     pending: { text: 'Pending…' },
     daysLeft: v => ({
