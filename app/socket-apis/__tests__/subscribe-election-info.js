@@ -6,8 +6,8 @@ import { Iota, User, serverEvents } from 'civil-server'
 import socketIo from 'socket.io'
 import clientIo from 'socket.io-client'
 import subscribeElectionInfo from '../subscribe-election-info'
-if (typeof window === 'undefined') global.window = { addEventListener: () => {} } // socketApiSubscribe expects to run on the browser
-import socketApiSubscribe, { subscribeEventName } from '../../components/lib/socket-api-subscribe'
+if (typeof window === 'undefined') global.window = {} // socketApiSubscribe expects to run on the browser
+import socketApiSubscribe from '../../components/lib/socket-api-subscribe'
 
 // dummy out logger for tests
 if (!global.logger) {
@@ -27,39 +27,46 @@ const exampleUser = {
     password: 'a-really-secure-password',
 }
 
-// apis are called with 'this' that has synuser defined
-var apisThis = {}
-
 const handle = 'subscribe-election-info'
-
-let SocketIoPort // an available PORT for Socket.io
+const socketApiUnderTest = subscribeElectionInfo
 
 beforeAll(async () => {
-    SocketIoPort = await getPort()
-    serverEvents.eNameAdd('ParticipantCreated') // we will be simulating this event
+    serverEvents.eNameAdd('ParticipantCreated') // event names need to be added before socketApiUnderTest subscribes to them
+
+    // initialize Mongo
     await MongoModels.connect({ uri: global.__MONGO_URI__ }, { useUnifiedTopology: true })
     // run the init functions that models require - after the connection is setup
     const { toInit = [] } = MongoModels.toInit
     MongoModels.toInit = []
-    // eslint-disable-next-line no-restricted-syntax
     for await (const init of toInit) await init()
+
+    // initialize data in Mongo
+    const user = await User.create(exampleUser)
+    testDoc.userId = User.ObjectID(user._id).toString()
+    await Iota.create(testDoc)
+
+    // setup socket.io server
+    const SocketIoPort = await getPort() // not static port# because there may be multiple tests in parallel
     const server = socketIo()
     let connections = 0
     server.on('connection', socket => {
         connections++
-        // eslint-disable-next-line no-param-reassign
-        socket.synuser = { id: MongoModels.ObjectID(user._id).toString() }
-        socket.on(handle, subscribeElectionInfo.bind(socket))
+        // synuser info is used by APIs
+        socket.synuser = { id: User.ObjectID(user._id).toString() }
+        socket.on(handle, socketApiUnderTest.bind(socket)) // this is what we are testing
         socket.on('disconnect', reason => {
-            if (--connections <= 0) server.close()
+            if (--connections <= 0) server.close() // so test will finish
         })
     })
     server.listen(SocketIoPort)
-    const user = await User.create(exampleUser)
-    apisThis.synuser = { id: MongoModels.ObjectID(user._id).toString() }
-    // eslint-disable-next-line no-restricted-syntax
-    testDoc.userId = apisThis.synuser.id
-    await Iota.create(testDoc)
+
+    // start socket.io client connection to server
+    window.socket = clientIo.connect(`http://localhost:${SocketIoPort}`)
+    await new Promise((ok, ko) => {
+        window.socket.on('connect', () => {
+            ok()
+        })
+    })
 })
 
 afterAll(async () => {
@@ -73,24 +80,17 @@ const testParticipant = {
 }
 
 let requestedDoc
-let disconnectReason
 
 test('subscribeElectionInfo update should match the doc', done => {
-    const ioClient = clientIo.connect(`http://localhost:${SocketIoPort}`)
-    window.socket = ioClient // as if we were running on the browser
     function requestHandler(doc) {
         requestedDoc = doc
         serverEvents.emit(serverEvents.eNames.ParticipantCreated, testParticipant)
     }
     function updateHandler(doc) {
         expect(doc).toMatchObject({ participants: [testParticipant] })
-        ioClient.close()
         done()
     }
-    ioClient.on('connect', () => {
-        socketApiSubscribe(handle, Iota.ObjectID(testDoc._id).toString(), requestHandler, updateHandler)
-    })
-    ioClient.on('disconnect', reason => (disconnectReason = reason))
+    socketApiSubscribe(handle, Iota.ObjectID(testDoc._id).toString(), requestHandler, updateHandler)
 })
 
 test('subscribeElectionInfo request should match the doc', () => {
@@ -98,6 +98,9 @@ test('subscribeElectionInfo request should match the doc', () => {
     expect(requestedDoc).toMatchObject(_testDoc)
 })
 
-test('it should disconnect', () => {
+test('socket should disconnect', () => {
+    let disconnectReason
+    window.socket.on('disconnect', reason => (disconnectReason = reason))
+    window.socket.close()
     expect(disconnectReason).toMatch('io client disconnect')
 })
