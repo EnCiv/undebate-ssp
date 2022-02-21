@@ -1,11 +1,12 @@
 // https://github.com/EnCiv/undebate-ssp/issues/71
-import { expect, test, beforeAll, afterAll } from '@jest/globals'
+import { expect, test, beforeAll, afterAll, describe } from '@jest/globals'
 const { getPort } = require('get-port-please')
 import MongoModels from 'mongo-models'
 import { Iota, User, serverEvents } from 'civil-server'
 import socketIo from 'socket.io'
 import clientIo from 'socket.io-client'
 import subscribeElectionInfo from '../subscribe-election-info'
+
 if (typeof window === 'undefined') global.window = {} // socketApiSubscribe expects to run on the browser
 import socketApiSubscribe from '../../components/lib/socket-api-subscribe'
 
@@ -79,23 +80,26 @@ const testParticipant = {
     parentId: Iota.ObjectID(testDoc._id).toString(),
 }
 
-let requestedDoc
+describe('subscribeElectionInfo first returns request, then updates', () => {
+    let requestedDoc
 
-test('subscribeElectionInfo update should match the doc', done => {
-    function requestHandler(doc) {
-        requestedDoc = doc
-        serverEvents.emit(serverEvents.eNames.ParticipantCreated, testParticipant)
-    }
-    function updateHandler(doc) {
-        expect(doc).toMatchObject({ participants: [testParticipant] })
-        done()
-    }
-    socketApiSubscribe(handle, Iota.ObjectID(testDoc._id).toString(), requestHandler, updateHandler)
-})
+    test('subscribeElectionInfo update should match the doc', done => {
+        function requestHandler(doc) {
+            requestedDoc = doc
+            // now simulate the Participant Create Event to cause the update
+            serverEvents.emit(serverEvents.eNames.ParticipantCreated, testParticipant)
+        }
+        function updateHandler(doc) {
+            expect(doc).toMatchObject({ participants: [testParticipant] })
+            done()
+        }
+        socketApiSubscribe(handle, Iota.ObjectID(testDoc._id).toString(), requestHandler, updateHandler)
+    })
 
-test('subscribeElectionInfo request should match the doc', () => {
-    const _testDoc = { ...testDoc, _id: Iota.ObjectId(testDoc._id).toString() } // _id is stringified through socket.io
-    expect(requestedDoc).toMatchObject(_testDoc)
+    test('subscribeElectionInfo request should match the doc', () => {
+        const _testDoc = { ...testDoc, _id: Iota.ObjectId(testDoc._id).toString() } // _id is stringified through socket.io
+        expect(requestedDoc).toMatchObject(_testDoc)
+    })
 })
 
 test('socket should disconnect', () => {
