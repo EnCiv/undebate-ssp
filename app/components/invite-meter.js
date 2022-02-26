@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { createUseStyles } from 'react-jss'
-import { getStatus } from './lib/utilities'
+import { getStatus, validStatuses } from './lib/utilities'
 
 function StatusIcon({ value, themeColorName, textColor }) {
     const classes = statusIconUseStyles({ themeColorName, textColor })
@@ -36,25 +36,17 @@ const sumArray = arr => arr.reduce((prev, v) => prev + v, 0)
 export default function InviteMeter({ electionOM, className, style }) {
     const [electionObj, electionMethods] = electionOM
     const deadline = electionObj.timeline.candidateSubmissionDeadline[0].date
+    const defaultStatusCounts = Object.fromEntries(validStatuses.map(k => [k, 0]))
     const statusCounts = Object.values(electionObj.candidates).reduce(
         (prev, v) => ({ ...prev, [getStatus(v, deadline)]: prev[getStatus(v, deadline)] + 1 }),
-        {
-            videoSubmitted: 0,
-            declined: 0,
-            sent: 0,
-            accepted: 0,
-        }
+        defaultStatusCounts
     )
-    const candidateCount = sumArray(Object.values(statusCounts))
-    const orderedStatusCounts = [
-        statusCounts.declined,
-        statusCounts.accepted,
-        statusCounts.videoSubmitted,
-        statusCounts.sent,
-    ]
+    const orderedStatusCounts = validStatuses.map(k => statusCounts[k])
+    const meterCandidateCount = sumArray(Object.values(orderedStatusCounts))
+    const candidateCount = Object.values(electionObj.candidates).length
     const statusPercentages = orderedStatusCounts
-        .map(v => (v * 100) / candidateCount)
-        .map((v, i, arr) => `${sumArray(arr.slice(0, i)) + v}%`)
+        .map(v => (v * 100) / meterCandidateCount)
+        .map((v, i, arr) => `${sumArray(arr.slice(0, i)) + v}% 100%`)
     const classes = useStyles({ statusPercentages })
     return (
         <div className={className} style={style}>
@@ -67,6 +59,10 @@ export default function InviteMeter({ electionOM, className, style }) {
                 <span>
                     <StatusIcon value={statusCounts.accepted} themeColorName='colorAccepted' />
                     <span className={classes.statusText}>Invite Accepted</span>
+                </span>
+                <span>
+                    <StatusIcon value={statusCounts.deadlineMissed} themeColorName='colorDeadlineMissed' />
+                    <span className={classes.statusText}>Deadline Missed</span>
                 </span>
                 <span>
                     <StatusIcon value={statusCounts.videoSubmitted} themeColorName='colorSubmitted' />
@@ -92,6 +88,7 @@ const useStyles = createUseStyles(theme => ({
         backgroundImage: [
             `linear-gradient(${theme.colorDeclined}, ${theme.colorDeclined})`,
             `linear-gradient(${theme.colorAccepted}, ${theme.colorAccepted})`,
+            `linear-gradient(${theme.colorDeadlineMissed}, ${theme.colorDeadlineMissed})`,
             `linear-gradient(${theme.colorSubmitted}, ${theme.colorSubmitted})`,
             `linear-gradient(${theme.colorSent}, ${theme.colorSent})`,
         ],
