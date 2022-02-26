@@ -209,6 +209,7 @@ const filterListUseStyles = createUseStyles(theme => ({
         border: 'none',
         color: 'white',
         marginRight: '1rem',
+        fontFamily: 'inherit',
     },
 }))
 
