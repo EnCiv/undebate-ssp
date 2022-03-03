@@ -50,7 +50,7 @@ A storybook browser window will open up:
 
 Storybook allows us to create React components independently, test them, and leaves a visual catalog of our components for the next contributer. Also, as soon as you get your new component and story started, you can build/edit them on the fly and the browser will update as you make your changes. (Because Storybook uses Webpack to push updates to the browser).
 
-# .bashrc 
+## .bashrc 
 This project uses bash on windows or zsh on mac. This models the cloud environment. The .bashrc file in the each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by git and won't be put in the repo.
 
 Make sure that in hour home (cd ~) directory you have a **.bash_profile** on PC or a **.profile** on mac file that contains something like: 
@@ -71,13 +71,13 @@ source ./bashsetup.sh
 This will initialize the .bashrc file for this project with a few simple things. But don't do this more than once (as it would create redundant entries in the file).
 Then everytime you work on this project, the environment variable will be set for this project. If you setup a .bashrc file for another repo, when you work on that repo it will use those environment variables. 
 
-# MongoDB
+## MongoDB
 To develope on the server side (not required for storybook above), MongoDB is required.  It's possible to do this with a (free) hosted database or with a localy running one.  The advantage of hosted is that if you move between local development and cloud deployment like on heroku, the hosted database allows you to access the same data from both places.
 
-## To setup MongoDB hosted (recommended)
+### To setup MongoDB hosted (recommended)
 Go to these [slides](https://docs.google.com/presentation/d/1HzXSX_fo0qr8ozC9rLGaWc965vM9IGEpCuIx8jmcUxI/present) to setup a free MongoDB Atlas account and database, and create a MONGODB_URI in your .bashrc file
 
-## To setup MongoDB locally
+### To setup MongoDB locally
 - on PC Get the [MongoDb Community Server](https://www.mongodb.com/try/download/community) for your system.
 - on Mac do `brew tap mongodb/brew` and then `brew install mongodb-community@5.0`
 
@@ -86,7 +86,10 @@ After it has been installed, use `dbup` to bring up the datbase.  It will store 
 
 **Note:** that these scripts for running the database locally will erase the database every time.  If there are database recordes that should be made a permanent part of the project, put them in iotas.json.  
 
-# Running the Dev server
+## Cloudinary
+Videos and images are stored at cloudinary, a content delivery network (CDN) with image and video transform APIs. You won't need this until you start posting recorded videos, so you can set it up now, or later by following these [instructions](https://docs.google.com/presentation/d/14i6XuQ1i5HuM1BS69s4m6FHI0FK9ketSdERvid7LJTo/present)
+
+## Running the Dev server
 After the database is up, you can do `npm run dev` and this will start the server.  There will be warnings about other enviornment variable that aren't setup, but we don't need those.
 
 ```
@@ -330,7 +333,7 @@ The output may differ from this example.
     
 With the server runing you can browse to `localhost:3011/qa/ccwrapper` and see a candidate conversation. And you can visit `localhost:3011/qa/ccwrapper-recorder' and be a participant.
 
-# See the Github **[Issues](https://github.com/EnCiv/undebate-ssp/issues)** for tasks that need doing
+# Find **[Tasks to work on](https://github.com/EnCiv/undebate-ssp/issues)** for tasks that need doing
 
 -   We are creating React components based on UI design in [figma](https://www.figma.com/proto/IQKPx02pkBErpmhQoECoq9/Undebate?node-id=123%3A1694&scaling=min-zoom&page-id=102%3A2&starting-point-node-id=123%3A1694)
 
