@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react'
 import { createUseStyles } from 'react-jss'
-import { getStatus } from './lib/utilities'
+import { getStatus } from './lib/get-candidate-invite-status'
 import CandidateTableInput from './candidate-table-input'
 import ElectionCategory, { statusInfoEnum } from './election-category'
 import InviteMeter from './invite-meter'

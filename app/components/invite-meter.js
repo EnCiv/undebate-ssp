@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { createUseStyles } from 'react-jss'
-import { getStatus, validStatuses } from './lib/utilities'
+import { getStatus, validStatuses } from './lib/get-candidate-invite-status'
 
 function StatusIcon({ value, themeColorName, textColor }) {
     const classes = statusIconUseStyles({ themeColorName, textColor })
