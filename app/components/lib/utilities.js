@@ -29,9 +29,15 @@ export const getStatus = (candidate, deadline) => {
         return 'videoSubmitted'
     }
     const status = recentInvitation(candidate.invitations)?.status
+    if (status == null) {
+        return ''
+    }
     const normalStatus = properStatus[status.toLowerCase()] ?? status.toLowerCase()
-    if (today.getTime() > dateDeadline.getTime() && normalStatus === 'accepted') {
+    if (dateDeadline != null && today.getTime() > dateDeadline.getTime() && normalStatus === 'accepted') {
         return 'deadlineMissed'
     }
-    return validStatuses.includes(normalStatus) ? normalStatus : status
+    if (validStatuses.includes(normalStatus)) {
+        return normalStatus
+    }
+    return status
 }

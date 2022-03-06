@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/56
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Submissions from '../app/components/submissions'
 
 export default {
@@ -11,15 +11,14 @@ export default {
 
 const today = new Date()
 
-const Template = (args, { electionOM: { electionObj, electionMethods }, onDone }) => {
-    const { defaultElectionObj } = args
-    return (
-        <Submissions
-            electionOM={[{ ...electionObj, ...defaultElectionObj }, electionMethods]}
-            onDone={onDone}
-            {...args}
-        />
-    )
+const Template = (args, context) => {
+    const { onDone, electionOM } = context
+    const [electionObj, electionMethods] = electionOM
+    const { defaultElectionObj, customMethods = {}, ...otherArgs } = args
+    Object.assign(electionMethods, customMethods)
+
+    useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
+    return <Submissions electionOM={electionOM} onDone={onDone} {...otherArgs} />
 }
 
 export const Default = Template.bind({})
@@ -181,3 +180,6 @@ DeadlineMissed.args = {
         timeline: { candidateSubmissionDeadline: { 0: { date: '2022-01-07T22:09:32.952Z', sent: true } } },
     },
 }
+
+export const Empty = Template.bind({})
+Empty.args = {}

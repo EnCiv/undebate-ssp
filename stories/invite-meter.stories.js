@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import InviteMeter from '../app/components/invite-meter'
 
 export default {
@@ -7,9 +7,7 @@ export default {
     argTypes: {},
 }
 
-// TODO: Is using width and style like this best practice for this project?
-
-const defaultElectionObject = {
+const storyDefaultElectionObj = {
     _id: 'mongoobjid',
     electionName: 'U.S Presidential Election',
     organizationName: 'United States Federal Government',
@@ -198,14 +196,20 @@ const defaultElectionObject = {
 const Template = (args, context) => {
     const { onDone, electionOM } = context
     const [electionObj, electionMethods] = electionOM
-    const newElectionObj = { ...electionObj, ...defaultElectionObject }
+    const { defaultElectionObj, customMethods = {}, ...otherArgs } = args
+    Object.assign(electionMethods, customMethods)
+
+    useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
 
     return (
         <div>
-            <InviteMeter electionOM={[newElectionObj, electionMethods]} onDone={onDone} {...args} style={{}} />
+            <InviteMeter electionOM={electionOM} onDone={onDone} {...otherArgs} />
         </div>
     )
 }
 
 export const Default = Template.bind({})
-Default.args = {}
+Default.args = { defaultElectionObj: storyDefaultElectionObj }
+
+export const Empty = Template.bind({})
+Empty.args = {}

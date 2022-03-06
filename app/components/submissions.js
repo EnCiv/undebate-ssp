@@ -68,9 +68,11 @@ export default function Submissions({ className, style, electionOM }) {
         deadlineMissed: classes.errorText,
         declined: classes.errorText,
     }
-    const candidates = Object.values(electionObj.candidates).map(candidate => {
-        const status = getStatus(candidate, electionObj.timeline.candidateSubmissionDeadline[0].date)
-        console.error(status)
+    const rawCandidateValues = Object.values(electionObj.candidates ?? {})
+    const candidateValues =
+        rawCandidateValues.length === 0 ? [{ name: ' ', office: ' ', status: ' ' }] : rawCandidateValues
+    const candidates = candidateValues.map(candidate => {
+        const status = getStatus(candidate, electionObj?.timeline?.candidateSubmissionDeadline[0]?.date)
         return {
             status,
             rowClass: statusClasses[status] ?? '',
@@ -81,27 +83,29 @@ export default function Submissions({ className, style, electionOM }) {
     const officeItems = [...new Set(candidates.map(v => v.office))]
     const statusItems = [...new Set(candidates.map(v => v.status))]
 
-    const lastRowIndex = candidates.length - 1
+    const filterDisabled = rawCandidateValues.length === 0
 
-    const calcCornerClass = (columnId, rowIndex) => {
+    const calcCornerClass = (columnId, rowIndex, lastRowIndex) => {
+        const cornerClasses = []
         if (columnId === 'name') {
             if (rowIndex === 0) {
-                return classes.topLeftCell
+                cornerClasses.push(classes.topLeftCell)
             }
             if (rowIndex === lastRowIndex) {
-                return classes.bottomLeftCell
+                cornerClasses.push(classes.bottomLeftCell)
             }
-        }
-        if (columnId === 'status') {
+        } else if (columnId === 'status') {
             if (rowIndex === 0) {
-                return classes.topRightCell
+                cornerClasses.push(classes.topRightCell)
             }
             if (rowIndex === lastRowIndex) {
-                return classes.bottomRightCell
+                cornerClasses.push(classes.bottomRightCell)
             }
         }
-        return ''
+        return cornerClasses.join(' ')
     }
+
+    const lastRowIndex = candidates.length - 1
 
     const TableCell = useCallback(
         ({ value, column, row }) => {
@@ -111,7 +115,7 @@ export default function Submissions({ className, style, electionOM }) {
             const normalValue = value.charAt(0).toLowerCase() + value.slice(1)
             const status = normalValue in statusInfoEnum ? normalValue : ''
             const categoryName = status ? '' : value
-            const cornerClass = calcCornerClass(column.id, row.index)
+            const cornerClass = calcCornerClass(column.id, row.index, lastRowIndex)
 
             return (
                 <ElectionCategory
@@ -121,7 +125,7 @@ export default function Submissions({ className, style, electionOM }) {
                 />
             )
         },
-        [classes, lastRowIndex, calcCornerClass]
+        [classes, calcCornerClass, lastRowIndex]
     )
 
     return (
@@ -137,7 +141,11 @@ export default function Submissions({ className, style, electionOM }) {
                         Cell: TableCell,
                     },
                     {
-                        Header: <Header toggleFilter={() => setOfficeFilterVisible(v => !v)}>Office</Header>,
+                        Header: (
+                            <Header disabled={filterDisabled} toggleFilter={() => setOfficeFilterVisible(v => !v)}>
+                                Office
+                            </Header>
+                        ),
                         accessor: 'office',
                         Cell: TableCell,
                         filter: 'includes',
@@ -145,7 +153,11 @@ export default function Submissions({ className, style, electionOM }) {
                         filterVisible: officeFilterVisible,
                     },
                     {
-                        Header: <Header toggleFilter={() => setStatusFilterVisible(v => !v)}>Submission Status</Header>,
+                        Header: (
+                            <Header disabled={filterDisabled} toggleFilter={() => setStatusFilterVisible(v => !v)}>
+                                Submission Status
+                            </Header>
+                        ),
                         accessor: 'status',
                         Cell: TableCell,
                         filter: 'includes',
@@ -153,7 +165,7 @@ export default function Submissions({ className, style, electionOM }) {
                         filterVisible: statusFilterVisible,
                     },
                 ]}
-                memoizedColumnVars={[statusFilterVisible, officeFilterVisible]}
+                memoizedColumnVars={[statusFilterVisible, officeFilterVisible, lastRowIndex]}
                 onDone={() => {}}
             />
         </div>

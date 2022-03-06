@@ -26,27 +26,33 @@ const statusIconUseStyles = createUseStyles(theme => ({
     }),
 }))
 
-// function BarComponent({ statusPercentages, themeColorName }) {}
-// const barComponentUseStyles = createUseStyles(theme => {
-
-// })
-
 const sumArray = arr => arr.reduce((prev, v) => prev + v, 0)
 
 export default function InviteMeter({ electionOM, className, style }) {
     const [electionObj, electionMethods] = electionOM
-    const deadline = electionObj.timeline.candidateSubmissionDeadline[0].date
+    electionObj.candidates ??= {}
+
+    const deadline = electionObj?.timeline?.candidateSubmissionDeadline?.[0].date
+
     const defaultStatusCounts = Object.fromEntries(validStatuses.map(k => [k, 0]))
     const statusCounts = Object.values(electionObj.candidates).reduce(
         (prev, v) => ({ ...prev, [getStatus(v, deadline)]: prev[getStatus(v, deadline)] + 1 }),
         defaultStatusCounts
     )
     const orderedStatusCounts = validStatuses.map(k => statusCounts[k])
+
     const meterCandidateCount = sumArray(Object.values(orderedStatusCounts))
     const candidateCount = Object.values(electionObj.candidates).length
     const statusPercentages = orderedStatusCounts
-        .map(v => (v * 100) / meterCandidateCount)
+        .map(v => {
+            const percent = (v * 100) / meterCandidateCount
+            return Number.isNaN(percent) ? 0 : percent
+        })
         .map((v, i, arr) => `${sumArray(arr.slice(0, i)) + v}% 100%`)
+    if (meterCandidateCount === 0) {
+        statusPercentages[statusPercentages.length - 1] = '100% 100%'
+    }
+
     const classes = useStyles({ statusPercentages })
     return (
         <div className={className} style={style}>

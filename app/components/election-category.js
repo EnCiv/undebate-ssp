@@ -173,6 +173,7 @@ const useStyles = createUseStyles(theme => ({
                 : 'transparent'
         }`,
         alignItems: 'center',
+        minHeight: '1.5rem',
     }),
     categoryText: {
         flex: 1,
