@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/56
 
-import React, { useState, useCallback, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import { useClickAway } from 'react-use'
 import { getStatus } from './lib/get-candidate-invite-status'
@@ -8,6 +8,26 @@ import CandidateTableInput from './candidate-table-input'
 import ElectionCategory, { statusInfoEnum } from './election-category'
 import InviteMeter from './invite-meter'
 import { SvgCheckMark, SvgChevronDown } from './lib/svg'
+
+const calcCornerClass = (columnId, rowIndex, lastRowIndex, classes) => {
+    const cornerClasses = []
+    if (columnId === 'name') {
+        if (rowIndex === 0) {
+            cornerClasses.push(classes.topLeftCell)
+        }
+        if (rowIndex === lastRowIndex) {
+            cornerClasses.push(classes.bottomLeftCell)
+        }
+    } else if (columnId === 'status') {
+        if (rowIndex === 0) {
+            cornerClasses.push(classes.topRightCell)
+        }
+        if (rowIndex === lastRowIndex) {
+            cornerClasses.push(classes.bottomRightCell)
+        }
+    }
+    return cornerClasses.join(' ')
+}
 
 function StatusText({ value }) {
     const classes = statusTextUseStyles()
@@ -36,14 +56,37 @@ const createFilterList = (items, closeFilter) =>
         return (
             <ul className={classes.filterList} ref={ref}>
                 {items.map(item => (
-                    <li className={classes.filterItem}>
+                    <li>
                         <button onClick={handleItemClick(item)} type='button' className={classes.filterButton}>
                             <StatusText value={item} />
+                            <SvgCheckMark className={filterValue !== item ? classes.invisible : ''} />
                         </button>
-                        <SvgCheckMark className={filterValue !== item ? classes.invisible : ''} />
                     </li>
                 ))}
             </ul>
+        )
+    }
+
+const createTableCell = classes =>
+    function TableCell({ value, column, row }) {
+        if (!value) {
+            return null
+        }
+
+        const lastRowIndex = column.filteredRows.length - 1
+        const rowIndex = column.filteredRows.map(filterRow => filterRow.values).indexOf(row.values)
+
+        const normalValue = value.charAt(0).toLowerCase() + value.slice(1)
+        const status = normalValue in statusInfoEnum ? normalValue : ''
+        const categoryName = status ? '' : value
+        const cornerClass = calcCornerClass(column.id, rowIndex, lastRowIndex, classes)
+
+        return (
+            <ElectionCategory
+                categoryName={categoryName}
+                statusObjs={status}
+                className={`${classes.tableCell} ${row.original.rowClass} ${cornerClass}`}
+            />
         )
     }
 
@@ -89,49 +132,6 @@ export default function Submissions({ className, style, electionOM }) {
 
     const filterDisabled = rawCandidateValues.length === 0
 
-    const calcCornerClass = (columnId, rowIndex, lastRowIndex) => {
-        const cornerClasses = []
-        if (columnId === 'name') {
-            if (rowIndex === 0) {
-                cornerClasses.push(classes.topLeftCell)
-            }
-            if (rowIndex === lastRowIndex) {
-                cornerClasses.push(classes.bottomLeftCell)
-            }
-        } else if (columnId === 'status') {
-            if (rowIndex === 0) {
-                cornerClasses.push(classes.topRightCell)
-            }
-            if (rowIndex === lastRowIndex) {
-                cornerClasses.push(classes.bottomRightCell)
-            }
-        }
-        return cornerClasses.join(' ')
-    }
-
-    const lastRowIndex = candidates.length - 1
-
-    const TableCell = useCallback(
-        ({ value, column, row }) => {
-            if (!value) {
-                return null
-            }
-            const normalValue = value.charAt(0).toLowerCase() + value.slice(1)
-            const status = normalValue in statusInfoEnum ? normalValue : ''
-            const categoryName = status ? '' : value
-            const cornerClass = calcCornerClass(column.id, row.index, lastRowIndex)
-
-            return (
-                <ElectionCategory
-                    categoryName={categoryName}
-                    statusObjs={status}
-                    className={`${classes.tableCell} ${row.original.rowClass} ${cornerClass}`}
-                />
-            )
-        },
-        [classes, calcCornerClass, lastRowIndex]
-    )
-
     const toggleOfficeFilter = () => {
         closeStatusFilter()
         setOfficeFilterVisible(v => !v)
@@ -153,7 +153,7 @@ export default function Submissions({ className, style, electionOM }) {
                     {
                         Header: <Header disabled>Candidate Name</Header>,
                         accessor: 'name',
-                        Cell: TableCell,
+                        Cell: createTableCell(classes),
                     },
                     {
                         Header: (
@@ -162,7 +162,7 @@ export default function Submissions({ className, style, electionOM }) {
                             </Header>
                         ),
                         accessor: 'office',
-                        Cell: TableCell,
+                        Cell: createTableCell(classes),
                         filter: 'includes',
                         Filter: createFilterList(officeItems, closeOfficeFilter),
                         filterVisible: officeFilterVisible,
@@ -174,13 +174,21 @@ export default function Submissions({ className, style, electionOM }) {
                             </Header>
                         ),
                         accessor: 'status',
-                        Cell: TableCell,
+                        Cell: createTableCell(classes),
                         filter: 'includes',
                         Filter: createFilterList(statusItems, closeStatusFilter),
                         filterVisible: statusFilterVisible,
                     },
                 ]}
-                memoizedColumnVars={[statusFilterVisible, officeFilterVisible, lastRowIndex]}
+                memoizedColumnVars={[
+                    statusFilterVisible,
+                    officeFilterVisible,
+                    closeStatusFilter,
+                    closeOfficeFilter,
+                    createFilterList,
+                    Header,
+                    filterDisabled,
+                ]}
                 onDone={() => {}}
             />
         </div>
@@ -227,11 +235,10 @@ const filterListUseStyles = createUseStyles(theme => ({
         listStyleType: 'none',
         padding: '0.75rem',
     },
-    filterItem: {
-        display: 'flex',
-        justifyContent: 'space-between',
-    },
     filterButton: {
+        display: 'flex',
+        width: '100%',
+        justifyContent: 'space-between',
         backgroundColor: theme.colorSecondary,
         border: 'none',
         color: 'white',
