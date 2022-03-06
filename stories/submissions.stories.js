@@ -12,13 +12,13 @@ export default {
 const today = new Date()
 
 const Template = (args, context) => {
-    const { onDone, electionOM } = context
+    const { electionOM } = context
     const [electionObj, electionMethods] = electionOM
     const { defaultElectionObj, customMethods = {}, ...otherArgs } = args
     Object.assign(electionMethods, customMethods)
 
     useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
-    return <Submissions electionOM={electionOM} onDone={onDone} {...otherArgs} />
+    return <Submissions electionOM={electionOM} {...otherArgs} />
 }
 
 export const Default = Template.bind({})

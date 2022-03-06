@@ -194,7 +194,7 @@ const storyDefaultElectionObj = {
 }
 
 const Template = (args, context) => {
-    const { onDone, electionOM } = context
+    const { electionOM } = context
     const [electionObj, electionMethods] = electionOM
     const { defaultElectionObj, customMethods = {}, ...otherArgs } = args
     Object.assign(electionMethods, customMethods)
@@ -203,7 +203,7 @@ const Template = (args, context) => {
 
     return (
         <div>
-            <InviteMeter electionOM={electionOM} onDone={onDone} {...otherArgs} />
+            <InviteMeter electionOM={electionOM} {...otherArgs} />
         </div>
     )
 }
