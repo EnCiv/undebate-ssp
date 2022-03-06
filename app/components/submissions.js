@@ -1,7 +1,8 @@
 // https://github.com/EnCiv/undebate-ssp/issues/56
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
+import { useClickAway } from 'react-use'
 import { getStatus } from './lib/get-candidate-invite-status'
 import CandidateTableInput from './candidate-table-input'
 import ElectionCategory, { statusInfoEnum } from './election-category'
@@ -19,8 +20,11 @@ function StatusText({ value }) {
     )
 }
 
-const createFilterList = items =>
+const createFilterList = (items, closeFilter) =>
     function FilterList({ column: { setFilter, filterVisible, filterValue } }) {
+        const ref = useRef(null)
+        useClickAway(ref, closeFilter, ['click'])
+
         if (!filterVisible) {
             return null
         }
@@ -30,7 +34,7 @@ const createFilterList = items =>
             setFilter(item === filterValue ? undefined : item)
         }
         return (
-            <ul className={classes.filterList}>
+            <ul className={classes.filterList} ref={ref}>
                 {items.map(item => (
                     <li className={classes.filterItem}>
                         <button onClick={handleItemClick(item)} type='button' className={classes.filterButton}>
@@ -128,6 +132,17 @@ export default function Submissions({ className, style, electionOM }) {
         [classes, calcCornerClass, lastRowIndex]
     )
 
+    const toggleOfficeFilter = () => {
+        closeStatusFilter()
+        setOfficeFilterVisible(v => !v)
+    }
+    const toggleStatusFilter = () => {
+        closeOfficeFilter()
+        setStatusFilterVisible(v => !v)
+    }
+    const closeOfficeFilter = () => setOfficeFilterVisible(false)
+    const closeStatusFilter = () => setStatusFilterVisible(false)
+
     return (
         <div className={`${className} ${classes.wrapper}`} style={style}>
             <InviteMeter electionOM={electionOM} className={classes.inviteMeter} />
@@ -142,26 +157,26 @@ export default function Submissions({ className, style, electionOM }) {
                     },
                     {
                         Header: (
-                            <Header disabled={filterDisabled} toggleFilter={() => setOfficeFilterVisible(v => !v)}>
+                            <Header disabled={filterDisabled} toggleFilter={toggleOfficeFilter}>
                                 Office
                             </Header>
                         ),
                         accessor: 'office',
                         Cell: TableCell,
                         filter: 'includes',
-                        Filter: createFilterList(officeItems),
+                        Filter: createFilterList(officeItems, closeOfficeFilter),
                         filterVisible: officeFilterVisible,
                     },
                     {
                         Header: (
-                            <Header disabled={filterDisabled} toggleFilter={() => setStatusFilterVisible(v => !v)}>
+                            <Header disabled={filterDisabled} toggleFilter={toggleStatusFilter}>
                                 Submission Status
                             </Header>
                         ),
                         accessor: 'status',
                         Cell: TableCell,
                         filter: 'includes',
-                        Filter: createFilterList(statusItems),
+                        Filter: createFilterList(statusItems, closeStatusFilter),
                         filterVisible: statusFilterVisible,
                     },
                 ]}
