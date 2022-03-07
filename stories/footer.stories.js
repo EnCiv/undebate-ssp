@@ -12,3 +12,5 @@ const Template = args => <Footer {...args} />
 
 export const FooterTest = Template.bind({})
 FooterTest.args = {}
+
+//Edit by Gluay
