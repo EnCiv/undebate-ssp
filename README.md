@@ -66,7 +66,7 @@ fi
 ```
 cd back to the directory with your this repo and from the command line do
 ```
-source ./bashsetup.sh
+source ./bashrcsetup.sh
 ```
 This will initialize the .bashrc file for this project with a few simple things. But don't do this more than once (as it would create redundant entries in the file).
 Then everytime you work on this project, the environment variable will be set for this project. If you setup a .bashrc file for another repo, when you work on that repo it will use those environment variables. 
