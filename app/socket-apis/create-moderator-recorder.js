@@ -1,6 +1,8 @@
 // https://github.com/EnCiv/undebate-ssp/issues/106
 
-import { Iota, undebatesFromTemplateAndRows } from 'civil-server'
+import { Iota } from 'civil-server'
+import { undebatesFromTemplateAndRows } from 'undebate'
+
 import moderatorViewerRecorder from '../components/lib/moderator-viewer-recorder'
 
 const introAndPlaceHolder =
@@ -24,13 +26,20 @@ const listening =
 const enCivModeratorName = 'David Fridley, EnCiv'
 
 export default async function createModeratorRecorder(id, cb) {
+    console.info('createModeratorRecorder', id)
     if (!this.synuser) {
         if (cb) cb() // no user
         console.info('no user')
         return
     }
     try {
-        const electionObj = await Iota.findOne({ _id: Iota.ObjectId(id) })
+        const iota = await Iota.findOne({ _id: Iota.ObjectId(id) })
+        if (!iota) {
+            console.info('iota not found')
+            if (cb) cb()
+            return
+        }
+        const electionObj = iota.webComponent
         let msgs
         if ((msgs = reasonsNotReadyForModeratorRecorder(electionObj)).length) {
             if (cb) cb()
@@ -40,8 +49,9 @@ export default async function createModeratorRecorder(id, cb) {
         const sortedQuestionPairs = Object.entries(electionObj.questions).sort(
             ([aKey, aObj], [bKey, bObj]) => aKey - bKey
         )
-        const agenda = sortedQuestionPairs.map(([key, Obj]) => [Obj.text]).push('Make your closing - to the audience')
-        const timeLimits = sortedQuetsionPars.map(([key, Obj]) => Obj.time)
+        const agenda = sortedQuestionPairs.map(([key, Obj]) => [Obj.text])
+
+        const timeLimits = sortedQuestionPairs.map(([key, Obj]) => Obj.time)
 
         // the sequence of videos of the EnCiv moderator instucting the election moderator goes like this
         // always make the intro and instruct to record a placeholder
@@ -50,7 +60,7 @@ export default async function createModeratorRecorder(id, cb) {
         if (agenda.length >= 1) speaking.push(firstQuestion)
         // then alternate between superNextQuestion and awesomeNowAnother until, but not including the last question
         let speakingCount = 1
-        for (let speakingCount = 1; speakingCount < agenda.length - 1; speakingCount++)
+        for (; speakingCount < agenda.length - 1; speakingCount++)
             speaking.push(speakingCount.length % 2 ? superNextQuestion : awesomeNowAnother)
         // then instruct to ask the last question, but not if there was only one question
         if (speakingCount < agenda.length) speaking.push(splendidLastQuestion)
@@ -62,39 +72,48 @@ export default async function createModeratorRecorder(id, cb) {
         moderatorViewerRecorder.candidateRecorder.component.participants.moderator.speaking = speaking
         moderatorViewerRecorder.candidateRecorder.component.participants.moderator.listening = listening
 
-        const recorderAgenda = [['How this works', 'Placeholder']].concat(agenda).push(['Thank you'])
-        const recorderTimeLimits = [15].concat(timeLimits.map((t, i) => 60)) // moderater gets 15 seconds for placeholder, 60 seconds to ask every question
+        agenda.unshift(['How this works', 'Placeholder'])
+        agenda.push(['Make your closing - to the audience'])
+        agenda.push(['Thank you'])
 
-        moderatorViewerRecorder.candidateRecorder.component.participants.moderator.agenda = recorderAgenda
+        const recorderTimeLimits = [15].concat(timeLimits.map((t, i) => 60)).concat(60) // moderater gets 15 seconds for placeholder, 60 seconds to ask every question and 60 seconds for the closing
+
+        moderatorViewerRecorder.candidateRecorder.component.participants.moderator.agenda = agenda
         moderatorViewerRecorder.candidateRecorder.component.participants.moderator.timeLimits = recorderTimeLimits
         moderatorViewerRecorder.candidateRecorder.component.participants.human.name = electionObj.moderator.name
 
         moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.name = enCivModeratorName
-        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking.slice(1, -1)
-        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.agenda = agenda
-        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.timeLimts = timeLimits
+        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking.slice(1)
+        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.listening = listening
+        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.agenda = agenda.slice(1)
+        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.timeLimits = timeLimits
         moderatorViewerRecorder.candidateViewer.parentId = id
 
-        const rowObjs = [{ Seat: 'Moderator', Name: electionObj.moderator.name, Email: electionObj.moderator.email }]
-        const messages = await undebatesFromTemplateAndRows(moderatorViewerRecorder, rowObjs)
-
+        const inRowObjs = [{ Seat: 'Moderator', Name: electionObj.moderator.name, Email: electionObj.moderator.email }]
+        const { rowObjs, messages } = await undebatesFromTemplateAndRows(moderatorViewerRecorder, inRowObjs)
+        if (!rowObjs) {
+            console.info('no rowObjs')
+            if (cb) cb()
+            return
+        }
         if (messages.length) {
             console.info(messages)
-            if (cb) cb()
-        } else cb(rowObjs)
+        }
+        if (cb) cb({ rowObjs, messages })
     } catch (err) {
+        logger.error('err', err)
         if (cb) cb()
-        console.info('err', err)
     }
 }
 
 function reasonsNotReadyForModeratorRecorder(electionObj) {
     const errorMsgs = []
 
-    ;[('electionName', 'electionDate', 'organizationName', 'questions', 'script', 'moderator')].forEach(prop => {
+    ;['electionName', 'electionDate', 'organizationName', 'questions', 'script', 'moderator'].forEach(prop => {
         if (!electionObj[prop]) errorMsgs.push(`${prop} required`)
     })
     if (errorMsgs.length) return errorMsgs
+    const { script, questions } = electionObj
     const sLength = Object.keys(script || {}).length
     const qLength = Object.keys(questions || {}).length
     if (Object.keys(qLength + 1) !== Object.keys(sLength).length) {

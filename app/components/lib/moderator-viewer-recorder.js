@@ -38,12 +38,12 @@ function date_dash(date) {
     return date
 }
 
-var viewer_recorder_pair = {
+const moderatorViewerRecorder = {
     electionList: [],
     setup: function (csvRowObjList) {
         // make a list of all the elections in the table, so each viewer can navigate to other ones
-        viewer_recorder_pair.electionList = csvRowObjList.reduce((acc, rowObj) => {
-            let viewer_path = viewer_recorder_pair.viewerPath(rowObj)
+        this.electionList = csvRowObjList.reduce((acc, rowObj) => {
+            let viewer_path = this.viewerPath(rowObj)
             if (!acc.includes(viewer_path)) acc.push(viewer_path)
             return acc
         }, [])
@@ -63,8 +63,8 @@ var viewer_recorder_pair = {
         newViewer.path = this.viewerPath(csvRowObj)
         newViewer.subject = getIotaPropertyFromCSVColumn.office(csvRowObj)
         newViewer.description = 'A Candidate Conversation for: ' + getIotaPropertyFromCSVColumn.office(csvRowObj)
-        newViewer.bp_info.electionList = viewer_recorder_pair.electionList
-        let nextPrev = viewer_recorder_pair.electionList.reduce((acc, viewerPath) => {
+        newViewer.bp_info.electionList = this.electionList
+        let nextPrev = this.electionList.reduce((acc, viewerPath) => {
             if (acc.nextElection);
             else if (acc.found)
                 // after this is set there's nothing to do
@@ -128,10 +128,10 @@ var viewer_recorder_pair = {
             getIotaPropertyFromCSVColumn.set.unique_id(csvRowObj, recorderObj.bp_info.unique_id)
     },
     getViewer: function (csvRowObj) {
-        return viewer_recorder_pair['candidateViewer']
+        return this['candidateViewer']
     },
     getRecorder: function (csvRowObj) {
-        return viewer_recorder_pair['candidateRecorder']
+        return this['candidateRecorder']
     },
     candidateViewer: {
         // properties that are commented out so prevent messages about their are being changed when they are overwriten by whats in the CSV file
@@ -248,3 +248,5 @@ var viewer_recorder_pair = {
         //        "parentId": ""
     },
 }
+
+export default moderatorViewerRecorder

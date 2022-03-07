@@ -34,7 +34,8 @@ beforeAll(async () => {
     apisThis.synuser.id = MongoModels.ObjectID(user._id).toString()
 
     testDoc.userId = apisThis.synuser.id
-    testDoc._id = ObjectID(testDoc._id)
+    debugger
+    testDoc._id = ObjectID(testDoc._id.$oid || testDoc._id)
     await Iota.create(testDoc)
 })
 
@@ -42,16 +43,203 @@ afterAll(async () => {
     MongoModels.disconnect()
 })
 
+let viewerId
+
 test('it should create a viewer', done => {
-    async function callback(rowObjs) {
+    async function callback({ rowObjs, messages }) {
         try {
             expect(rowObjs).toBeTruthy()
-            const iotas = Iota.find({ parentId: 'testDoc._id', 'webComponent.webComponent': 'CandidateConvesration' })
-            console.info('viewer', iotas[0])
+            const iotas = await Iota.find({
+                parentId: ObjectID(testDoc._id).toString(),
+                'webComponent.webComponent': 'CandidateConversation',
+            })
+            expect(iotas).toHaveLength(1)
+            viewerId = ObjectID(iotas[0]._id).toString
+            expect(iotas[0]).toMatchInlineSnapshot(
+                {
+                    _id: expect.any(ObjectID),
+                },
+                `
+                Object {
+                  "_id": Any<ObjectID>,
+                  "bp_info": Object {
+                    "electionList": Array [
+                      "/country:us/organization:cfa/office:moderator/2021-03-21",
+                    ],
+                    "election_source": "CodeForAmerica.NAC",
+                  },
+                  "component": Object {
+                    "component": "MergeParticipants",
+                  },
+                  "description": "A Candidate Conversation for: Moderator",
+                  "parentId": "62196fd6b2eff30b70ba36e0",
+                  "path": "/country:us/organization:cfa/office:moderator/2021-03-21",
+                  "subject": "Moderator",
+                  "webComponent": Object {
+                    "closing": Object {
+                      "iframe": Object {
+                        "height": "4900",
+                        "src": "https://docs.google.com/forms/d/e/1FAIpQLSdDJIcMltkYr5_KRTS9q1-eQd3g79n0yym9yCmTkKpR61uPLA/viewform?embedded=true",
+                        "width": "640",
+                      },
+                      "thanks": "Thank You.",
+                    },
+                    "instructionLink": "",
+                    "logo": "undebate",
+                    "participants": Object {
+                      "moderator": Object {
+                        "agenda": Array [
+                          Array [
+                            "What is your favorite color?",
+                          ],
+                          Array [
+                            "Do you have a pet?",
+                          ],
+                          Array [
+                            "Should we try to fix income inequality?",
+                          ],
+                          Array [
+                            "Make your closing - to the audience",
+                          ],
+                          Array [
+                            "Thank you",
+                          ],
+                        ],
+                        "listening": "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893720/5d5b74751e3b194174cd9b94-0-listening20210304T213518628Z.mp4",
+                        "name": "David Fridley, EnCiv",
+                        "speaking": Array [
+                          "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893717/5d5b74751e3b194174cd9b94-3-speaking20210304T213516602Z.mp4",
+                          "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893718/5d5b74751e3b194174cd9b94-5-speaking20210304T213517487Z.mp4",
+                          "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893719/5d5b74751e3b194174cd9b94-6-speaking20210304T213517927Z.mp4",
+                          "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614894042/5d5b74751e3b194174cd9b94-1-speaking20210304T214041075Z.mp4",
+                          "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614894043/5d5b74751e3b194174cd9b94-2-speaking20210304T214041861Z.mp4",
+                        ],
+                        "timeLimits": Array [
+                          "30",
+                          "60",
+                          "90",
+                        ],
+                      },
+                    },
+                    "shuffle": true,
+                    "webComponent": "CandidateConversation",
+                  },
+                }
+            `
+            )
             done()
         } catch (error) {
             done(error)
         }
     }
-    createModeratorRecorder.call(apisThis, testDoc._id, callback)
+    createModeratorRecorder.call(apisThis, ObjectID(testDoc._id).toString(), callback)
+})
+const OBJECTID = /^[0-9a-fA-F]{24}$/
+
+test('it should create a recorder', async () => {
+    const iotas = await Iota.find({ 'webComponent.webComponent': 'Undebate', parentId: viewerId })
+    expect(iotas).toHaveLength(1)
+    expect(iotas[0]).toMatchInlineSnapshot(
+        {
+            _id: expect.any(ObjectID),
+            bp_info: {
+                unique_id: expect.stringMatching(OBJECTID),
+            },
+
+            parentId: expect.stringMatching(OBJECTID),
+            path: expect.stringMatching(
+                /\/country:us\/organization:cfa\/office:moderator\/2021-03-21-recorder-[0-9a-fA-F]{24}$/
+            ),
+        },
+        `
+        Object {
+          "_id": Any<ObjectID>,
+          "bp_info": Object {
+            "candidate_emails": Array [
+              "billsmith@gmail.com",
+            ],
+            "candidate_name": "Bill Smith",
+            "election_date": "03/21/2021",
+            "election_source": "CodeForAmerica.NAC",
+            "last_name": "Smith",
+            "office": "Moderator",
+            "party": "",
+            "unique_id": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
+          },
+          "component": Object {
+            "component": "UndebateCreator",
+            "participants": Object {
+              "human": Object {
+                "listening": Object {
+                  "round": 0,
+                  "seat": "speaking",
+                },
+                "name": "Bill Smith",
+              },
+              "moderator": Object {
+                "agenda": Array [
+                  Array [
+                    "How this works",
+                    "Placeholder",
+                  ],
+                  Array [
+                    "What is your favorite color?",
+                  ],
+                  Array [
+                    "Do you have a pet?",
+                  ],
+                  Array [
+                    "Should we try to fix income inequality?",
+                  ],
+                  Array [
+                    "Make your closing - to the audience",
+                  ],
+                  Array [
+                    "Thank you",
+                  ],
+                ],
+                "listening": "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893720/5d5b74751e3b194174cd9b94-0-listening20210304T213518628Z.mp4",
+                "name": "David Fridley, EnCiv",
+                "speaking": Array [
+                  "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893716/5d5b74751e3b194174cd9b94-1-speaking20210304T213504684Z.mp4",
+                  "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893717/5d5b74751e3b194174cd9b94-3-speaking20210304T213516602Z.mp4",
+                  "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893718/5d5b74751e3b194174cd9b94-5-speaking20210304T213517487Z.mp4",
+                  "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893719/5d5b74751e3b194174cd9b94-6-speaking20210304T213517927Z.mp4",
+                  "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614894042/5d5b74751e3b194174cd9b94-1-speaking20210304T214041075Z.mp4",
+                  "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614894043/5d5b74751e3b194174cd9b94-2-speaking20210304T214041861Z.mp4",
+                ],
+                "timeLimits": Array [
+                  15,
+                  60,
+                  60,
+                  60,
+                  60,
+                ],
+              },
+            },
+          },
+          "description": "A Candidate Recorder for the undebate: Moderator",
+          "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
+          "path": StringMatching /\\\\/country:us\\\\/organization:cfa\\\\/office:moderator\\\\/2021-03-21-recorder-\\[0-9a-fA-F\\]\\{24\\}\\$/,
+          "subject": "Moderator-Candidate Recorder",
+          "webComponent": Object {
+            "closing": Object {
+              "iframe": Object {
+                "height": 1550,
+                "src": "https://docs.google.com/forms/d/e/1FAIpQLSchcQjvnbpwEcOl9ysmZ4-KwDyK7RynwJvxPqRTWhdq8SN02g/viewform?embedded=true",
+                "width": 640,
+              },
+              "thanks": "Thank You.",
+            },
+            "instructionLink": "",
+            "logo": "undebate",
+            "opening": Object {
+              "noPreamble": false,
+            },
+            "participants": Object {},
+            "webComponent": "Undebate",
+          },
+        }
+    `
+    )
 })
