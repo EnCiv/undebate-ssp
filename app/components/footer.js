@@ -1,5 +1,6 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
+import './footer.css'
 
 const useStyles = createUseStyles({
     footer: {
@@ -21,10 +22,25 @@ const useStyles = createUseStyles({
 export default function Footer() {
     const classes = useStyles()
     return (
-        <div className={classes.footer}>
-            <a href='https://enciv.org/terms' target='_blank' rel='noreferrer'>
-                Terms
-            </a>
+        <div className={classes.footer} id='footer-container'>
+            <div>
+                <a href='#'>Unpoll</a>
+                <p>Text for Unpoll goes here!</p>
+            </div>
+
+            <div>
+                <a href='https://enciv.org/terms' target='_blank' rel='noreferrer'>
+                    EnCiv
+                </a>
+                <p>Text for EnCiv goes here!</p>
+            </div>
+
+            <div>
+                <p>amet elementtum euismod molestie facilisie varius</p>
+                <button>Donate</button>
+            </div>
+
+            <p>Copyright &copy; 2022 EnCiv, Inc</p>
         </div>
     )
 }

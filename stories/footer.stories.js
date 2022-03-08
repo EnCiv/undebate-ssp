@@ -1,5 +1,4 @@
 import React from 'react'
-
 import Footer from '../app/components/footer'
 
 export default {
@@ -11,6 +10,6 @@ export default {
 const Template = args => <Footer {...args} />
 
 export const FooterTest = Template.bind({})
-FooterTest.args = {}
-
-//Edit by Gluay
+FooterTest.args = {
+    backgroundColor: '#7470FF',
+}
