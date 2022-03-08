@@ -1,6 +1,7 @@
 import React from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
 import theme from '../theme'
+import ExternalLink from './external-link.svg'
 
 const useStyles = createUseStyles({
     footer: {
@@ -43,7 +44,7 @@ const useStyles = createUseStyles({
     },
     pText: {
         fontSize: '1em',
-        lineHeight: '0.3em',
+        lineHeight: '1em',
     },
     pDonate: {
         fontSize: '3em',
@@ -69,7 +70,7 @@ const useStyles = createUseStyles({
         width: '65%',
         marginTop: '-3%',
     },
-    '@media screen and (max-width: 1000px)': {
+    '@media screen and (max-width: 1100px)': {
         footer: {
             flexDirection: 'column',
         },
@@ -103,22 +104,33 @@ export default function Footer() {
                 <div className={classes.footerUnpoll}>
                     <a href='#' target='_blank' className={classes.aLink}>
                         Unpoll
+                        <img src={ExternalLink} alt='ExternalLink' style={{ marginLeft: '1%' }} />
                     </a>
-                    <p className={classes.pText}>Text for Unpoll goes here!</p>
+
+                    <p className={classes.pText}>Vestibulum massa id donec gravida purus in tellus aliquam arcu?</p>
                 </div>
                 <div className={classes.footerEnCiv}>
-                    <a href='https://enciv.org/terms' target='_blank' className={classes.aLink}>
+                    <a href='https://enciv.org/' target='_blank' className={classes.aLink}>
                         EnCiv
+                        <img src={ExternalLink} alt='ExternalLink' style={{ marginLeft: '1%' }} />
                     </a>
-                    <p className={classes.pText}>Text for EnCiv goes here!</p>
+                    <p className={classes.pText}>Vestibulum massa id donec gravida purus in tellus aliquam arcu?</p>
                 </div>
             </div>
             <div className={classes.donateContainer}>
                 <div>
-                    <p className={classes.pDonate}>amet elementtum euismod molestie facilisie varius</p>
+                    <p className={classes.pDonate}>amet elementum euismod molestie facilisis varius</p>
                     <button className={classes.btn}> Donate</button>
                 </div>
                 <div className={classes.footerCopyRight}>
+                    <a
+                        href='https://enciv.org/terms'
+                        target='_blank'
+                        className={classes.aLink}
+                        style={{ fontSize: '1.25em' }}
+                    >
+                        Terms of service
+                    </a>
                     <p className={classes.pText}>Copyright &copy; 2022 EnCiv, Inc</p>
                 </div>
             </div>
