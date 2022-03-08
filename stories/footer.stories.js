@@ -10,6 +10,4 @@ export default {
 const Template = args => <Footer {...args} />
 
 export const FooterTest = Template.bind({})
-FooterTest.args = {
-    backgroundColor: '#7470FF',
-}
+FooterTest.args = {}
