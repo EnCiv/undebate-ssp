@@ -23,19 +23,19 @@ export default function Footer() {
     const classes = useStyles()
     return (
         <div className={classes.footer} id='footer-container'>
-            <div>
+            <div id='unpoll-container'>
                 <a href='#'>Unpoll</a>
                 <p>Text for Unpoll goes here!</p>
             </div>
 
-            <div>
+            <div id='enciv-container'>
                 <a href='https://enciv.org/terms' target='_blank' rel='noreferrer'>
                     EnCiv
                 </a>
                 <p>Text for EnCiv goes here!</p>
             </div>
 
-            <div>
+            <div id='button-container'>
                 <p>amet elementtum euismod molestie facilisie varius</p>
                 <button>Donate</button>
             </div>

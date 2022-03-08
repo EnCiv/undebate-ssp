@@ -4,6 +4,7 @@
     background-color: #7470ff;
     color: #fff;
     padding: 2.5%;
+    position: absolute;
 }
 #footer-container a {
     color: #fff;
@@ -15,7 +16,18 @@
     color: #77ff00;
 }
 
-#footer-container button {
+#unpoll-container,
+#enciv-container {
+    width: 100%;
+    height: auto;
+    margin-bottom: 3.5%;
+}
+
+#button-container p {
+    font-size: 2rem;
+}
+
+#button-container button {
     width: 180px;
     height: 50px;
     border-radius: 30px;
@@ -25,7 +37,7 @@
     color: #262d33;
 }
 
-#footer-container button:hover {
+#button-container button:hover {
     background-color: #77ff00;
     cursor: pointer;
 }
