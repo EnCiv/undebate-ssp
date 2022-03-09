@@ -11,8 +11,24 @@ import ElectionTimeInput from './election-time-input'
 export default function Timeline(props) {
     const { className, style, onDone, electionOM } = props
     const [electionObj, electionMethods] = electionOM
+    const [election] = electionObj.elections
+    const { timeline, undebateDate, electionDate } = election
     const classes = useStyles(props)
-    console.log(electionOM)
+
+    const datesToArray = obj => {
+        let arr = Object.entries(obj).sort(function (a, b) {
+            return ('' + Date.parse(b.date)).localeCompare(Date.parse(a.date))
+        })
+        if (!arr.length) {
+            arr.push([])
+        }
+        return arr
+    }
+
+    const moderatorDeadlineReminderEmails = datesToArray(timeline.moderatorDeadlineReminderEmails)
+    const moderatorSubmissionDeadline = datesToArray(timeline.moderatorSubmissionDeadline)
+    const candidateDeadlineReminderEmails = datesToArray(timeline.candidateDeadlineReminderEmails)
+    const candidateSubmissionDeadline = datesToArray(timeline.candidateSubmissionDeadline)
 
     return (
         <div className={cx(className, classes.wrapper)} style={style}>
@@ -21,7 +37,7 @@ export default function Timeline(props) {
                 <Submit onDone={onDone} />
             </header>
 
-            <ElectionCreated electionMetadata={electionObj.elections[0]} />
+            <ElectionCreated electionMetadata={election} />
             <div>
                 <h4>Moderator Deadline Reminder Emails</h4>
                 <p>
@@ -29,18 +45,40 @@ export default function Timeline(props) {
                     deadline.
                 </p>
                 <div className={classes.buttonGrid}>
-                    <ElectionDateInput />
-                    <ElectionTimeInput />
-                    <ElectionDateInput />
-                    <ElectionTimeInput />
+                    {moderatorDeadlineReminderEmails.map(([key, timelineObj]) => {
+                        let date = ''
+                        let time = ''
+                        if (timelineObj) {
+                            date = new Date(timelineObj.date)
+                            time = date.toLocaleTimeString()
+                        }
+                        return (
+                            <>
+                                <ElectionDateInput defaultValue={date} />
+                                <ElectionTimeInput defaultValue={time} />
+                            </>
+                        )
+                    })}
                 </div>
             </div>
             <div>
                 <h4>Moderator Submission Deadline</h4>
                 <p>Moderator won't be able to record after this time.</p>
                 <div className={classes.buttonGrid}>
-                    <ElectionDateInput />
-                    <ElectionTimeInput />
+                    {moderatorSubmissionDeadline.map(([key, timelineObj]) => {
+                        let date = ''
+                        let time = ''
+                        if (timelineObj) {
+                            date = new Date(timelineObj.date)
+                            time = date.toLocaleTimeString()
+                        }
+                        return (
+                            <>
+                                <ElectionDateInput defaultValue={date} />
+                                <ElectionTimeInput defaultValue={time} />
+                            </>
+                        )
+                    })}
                 </div>
             </div>
             <div>
@@ -50,18 +88,40 @@ export default function Timeline(props) {
                     days before the deadline.
                 </p>
                 <div className={classes.buttonGrid}>
-                    <ElectionDateInput />
-                    <ElectionTimeInput />
-                    <ElectionDateInput />
-                    <ElectionTimeInput />
+                    {candidateDeadlineReminderEmails.map(([key, timelineObj]) => {
+                        let date = ''
+                        let time = ''
+                        if (timelineObj) {
+                            date = new Date(timelineObj.date)
+                            time = date.toLocaleTimeString()
+                        }
+                        return (
+                            <>
+                                <ElectionDateInput defaultValue={date} />
+                                <ElectionTimeInput defaultValue={time} />
+                            </>
+                        )
+                    })}
                 </div>
             </div>
             <div>
                 <h4>Candidate Submission Deadline</h4>
                 <p>Candidates won't be able to record after this time.</p>
                 <div className={classes.buttonGrid}>
-                    <ElectionDateInput />
-                    <ElectionTimeInput />
+                    {candidateSubmissionDeadline.map(([key, timelineObj]) => {
+                        let date = ''
+                        let time = ''
+                        if (timelineObj) {
+                            date = new Date(timelineObj.date)
+                            time = date.toLocaleTimeString()
+                        }
+                        return (
+                            <>
+                                <ElectionDateInput defaultValue={date} />
+                                <ElectionTimeInput defaultValue={time} />
+                            </>
+                        )
+                    })}
                 </div>
             </div>
             <div>
@@ -71,16 +131,16 @@ export default function Timeline(props) {
                     date.
                 </p>
                 <div className={classes.buttonGrid}>
-                    <ElectionDateInput />
-                    <ElectionTimeInput />
+                    <ElectionDateInput defaultValue={undebateDate ?? ''} />
+                    <ElectionTimeInput defaultValue={undebateDate && undebateDate.toLocaleTimeString()} />
                 </div>
             </div>
             <div>
                 <h4>Last Day of Election</h4>
                 <p>Undebate gets archived after this time.</p>
                 <div className={classes.buttonGrid}>
-                    <ElectionDateInput />
-                    <ElectionTimeInput />
+                    <ElectionDateInput defaultValue={electionDate ?? ''} />
+                    <ElectionTimeInput defaultValue={electionDate && electionDate.toLocaleTimeString()} />
                 </div>
             </div>
         </div>
