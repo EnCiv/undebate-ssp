@@ -24,7 +24,7 @@ const useStyles = createUseStyles({
         color: '#262D33',
         display: 'block',
         margin: '0 auto',
-        width: '25%',
+        width: '45%',
         textAlign: 'center',
         fontSize: '1.25em',
         '&:hover': {
@@ -70,7 +70,7 @@ const useStyles = createUseStyles({
         width: '65%',
         marginTop: '-3%',
     },
-    '@media screen and (max-width: 1100px)': {
+    '@media (orientation: portrait)': {
         footer: {
             flexDirection: 'column',
         },
@@ -82,7 +82,7 @@ const useStyles = createUseStyles({
             width: '100%',
         },
         btn: {
-            width: '50%',
+            width: '70%',
         },
         footerCopyRight: {
             marginBottom: '6%',
