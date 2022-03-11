@@ -2,15 +2,59 @@ import React from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
 import theme from '../theme'
 
+export default function SignInSignUp() {
+    const classes = useStyles()
+    return (
+        <div className={classes.SignInSignUp}>
+            <div className={classes.links}>
+                <div className={classes.loginLink}>
+                    <a href='#' className={classes.aLink}>
+                        Log In
+                    </a>
+                </div>
+                <div className={classes.signinLink}>
+                    <a href='#' className={classes.aLink}>
+                        Sign In
+                    </a>
+                </div>
+            </div>
+            {/* <div>
+                <a href='#'>Sign Up</a>
+            </div> */}
+            <div className={classes.inputContainer}>
+                <input name='first-name' placeholder='First Name' className={classes.input}></input>
+                <input name='last-name' placeholder='Last Name' className={classes.input}></input>
+                <input name='email' placeholder='Email Address' className={classes.input}></input>
+                <input name='password' type='password' placeholder='Password' className={classes.input}></input>
+                <input name='confirm' type='password' placeholder='Confirm Password' className={classes.input}></input>
+            </div>
+            <div className={classes.btnContainer}>
+                <button className={classes.btn}>Log In</button>
+            </div>
+            <div className={classes.agreeTermContainer}>
+                <div>
+                    <input type='checkbox' />
+                    <label className={classes.agreeTermLabel}>
+                        I agree to the{' '}
+                        <a href='https://enciv.org/terms' target='_blank' className={classes.aLinkTerm}>
+                            Term of Service
+                        </a>
+                    </label>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 const useStyles = createUseStyles({
     SignInSignUp: {
         backgroundColor: theme.colorPrimary,
-        width: '300px',
+        width: '18.75rem',
         margin: '0 auto',
         borderRadius: '5%',
-        height: '380px',
+        height: 'auto',
         padding: '3%',
-        paddingTop: '6%',
+        paddingTop: '4.5%',
         fontFamily: theme.defaultFontFamily,
     },
     aLink: {
@@ -19,6 +63,15 @@ const useStyles = createUseStyles({
         fontSize: '2rem',
         '&:hover': {
             color: '#fec215',
+            cursor: 'pointer',
+        },
+    },
+    aLinkTerm: {
+        color: '#fec215',
+        textDecoration: 'none',
+        fontSize: '0.8rem',
+        '&:hover': {
+            color: '#FFFFFF',
             cursor: 'pointer',
         },
     },
@@ -50,7 +103,7 @@ const useStyles = createUseStyles({
             cursor: 'pointer',
             color: theme.colorPrimary,
         },
-        marginBottom: '18%',
+        marginBottom: '15%',
     },
     inputContainer: {
         width: '100%',
@@ -60,71 +113,21 @@ const useStyles = createUseStyles({
         width: '95%',
         background: 'rgba(255, 255, 255, 0.8)',
         border: 'none',
-        height: '8vh',
+        height: '5vh',
         color: '#FFFFFF',
-        marginBottom: '3vh',
-        borderRadius: '10px',
+        marginBottom: '2vh',
+        borderRadius: '0.5rem',
         paddingLeft: '5%',
     },
-    reminderContainer: {
+    agreeTermContainer: {
         width: '100%',
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
+        paddingBottom: '7%',
     },
-    passwordLink: {
-        color: '#FFFFFF',
-        textDecoration: 'none',
-        '&:hover': {
-            color: '#fec215',
-        },
-        fontSize: '0.8rem',
-        width: '50%',
-    },
-    rememberLabel: {
+    agreeTermLabel: {
         color: '#FFFFFF',
         fontSize: '0.8rem',
-        width: '50%',
+        width: '100%',
     },
 })
-
-export default function SignInSignUp() {
-    const classes = useStyles()
-    return (
-        <div className={classes.SignInSignUp}>
-            <div className={classes.links}>
-                <div className={classes.loginLink}>
-                    <a href='#' className={classes.aLink}>
-                        Log In
-                    </a>
-                </div>
-                <div className={classes.signinLink}>
-                    <a href='#' className={classes.aLink}>
-                        Sign In
-                    </a>
-                </div>
-            </div>
-            {/* <div>
-                <a href='#'>Sign Up</a>
-            </div> */}
-            <div className={classes.inputContainer}>
-                <input placeholder='Email Address' className={classes.input}></input>
-                <input placeholder='Password' className={classes.input}></input>
-            </div>
-            <div className={classes.btnContainer}>
-                <button className={classes.btn}>Log In</button>
-            </div>
-            <div className={classes.reminderContainer}>
-                <div>
-                    <input type='checkbox' />
-                    <label className={classes.rememberLabel}>Remember me</label>
-                </div>
-
-                <div>
-                    <a href='#' className={classes.passwordLink}>
-                        Forget password
-                    </a>
-                </div>
-            </div>
-        </div>
-    )
-}
