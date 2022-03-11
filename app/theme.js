@@ -37,6 +37,7 @@ const theme = {
         fontFamily: 'Poppins',
         lineHeight: '1.25rem', // in figma it's 24/16 but it didn't render the same so this is 20/16
     },
+    buttonHoverBackground: '#fec215',
 
     inputFieldPadding: '1rem 1.25rem',
     inputFieldFontSize: '1.125rem',

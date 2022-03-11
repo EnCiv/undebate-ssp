@@ -1,16 +1,14 @@
 import React from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
 import theme from '../theme'
-import ExternalLink from './external-link.svg'
+import SvgExternalLink from './external-link.svg'
+// import SvgExternalLink from './lib/svg.js'
+// import SvgExternalLink from './assets/svg/external-link'
 
 const useStyles = createUseStyles({
     footer: {
         ...theme.footer,
         fontFamily: theme.defaultFontFamily,
-        position: 'absolute',
-        width: '95%',
-        left: 0,
-        bottom: 0,
         lineHeight: '0.8em',
         overflow: 'hidden',
         backgroundColor: theme.colorPrimary,
@@ -28,7 +26,7 @@ const useStyles = createUseStyles({
         textAlign: 'center',
         fontSize: '1.25em',
         '&:hover': {
-            backgroundColor: '#fec215',
+            backgroundColor: theme.buttonHoverBackground,
             cursor: 'pointer',
             color: theme.colorPrimary,
         },
@@ -38,7 +36,7 @@ const useStyles = createUseStyles({
         fontSize: '2em',
         textDecoration: 'none',
         '&:hover': {
-            color: '#fec215',
+            color: theme.buttonHoverBackground,
             cursor: 'pointer',
         },
     },
@@ -94,46 +92,67 @@ const useStyles = createUseStyles({
             fontSize: '2em',
         },
     },
+    placeHolderContainer: {
+        backgroundColor: '#f1dbff',
+        height: '150vh',
+    },
 })
 
 export default function Footer() {
     const classes = useStyles()
     return (
-        <div className={classes.footer}>
-            <div className={classes.linksContainer}>
-                <div className={classes.footerUnpoll}>
-                    <a href='#' target='_blank' className={classes.aLink}>
-                        Unpoll
-                        <img src={ExternalLink} alt='ExternalLink' style={{ marginLeft: '1%' }} />
-                    </a>
+        <>
+            <div className={classes.placeHolderContainer}></div>
+            <div className={classes.footer}>
+                <div className={classes.linksContainer}>
+                    <div className={classes.footerUnpoll}>
+                        <a href='#' target='_blank' className={classes.aLink}>
+                            Unpoll
+                            <img src={SvgExternalLink} alt='ExternalLink' style={{ marginLeft: '1%' }} />
+                        </a>
 
-                    <p className={classes.pText}>Vestibulum massa id donec gravida purus in tellus aliquam arcu?</p>
+                        <p className={classes.pText}>Vestibulum massa id donec gravida purus in tellus aliquam arcu?</p>
+                    </div>
+                    <div className={classes.footerEnCiv}>
+                        <a href='https://enciv.org/' target='_blank' className={classes.aLink}>
+                            EnCiv
+                            <img src={SvgExternalLink} alt='ExternalLink' style={{ marginLeft: '1%' }} />
+                        </a>
+                        <p className={classes.pText}>Vestibulum massa id donec gravida purus in tellus aliquam arcu?</p>
+                    </div>
                 </div>
-                <div className={classes.footerEnCiv}>
-                    <a href='https://enciv.org/' target='_blank' className={classes.aLink}>
-                        EnCiv
-                        <img src={ExternalLink} alt='ExternalLink' style={{ marginLeft: '1%' }} />
-                    </a>
-                    <p className={classes.pText}>Vestibulum massa id donec gravida purus in tellus aliquam arcu?</p>
+                <div className={classes.donateContainer}>
+                    <div>
+                        <p className={classes.pDonate}>amet elementum euismod molestie facilisis varius</p>
+                        <a
+                            href='https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=H7XBVF5U2C9NJ&source=url%22%7D'
+                            target='_blank'
+                            style={{ textDecoration: 'none' }}
+                        >
+                            <button
+                                className={classes.btn}
+                                // onClick={e =>
+                                //     (location.href =
+                                //         'https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=H7XBVF5U2C9NJ&source=url')
+                                // }
+                            >
+                                Donate
+                            </button>
+                        </a>
+                    </div>
+                    <div className={classes.footerCopyRight}>
+                        <a
+                            href='https://enciv.org/terms'
+                            target='_blank'
+                            className={classes.aLink}
+                            style={{ fontSize: '1.25em' }}
+                        >
+                            Terms of service
+                        </a>
+                        <p className={classes.pText}>Copyright &copy; 2022 EnCiv, Inc</p>
+                    </div>
                 </div>
             </div>
-            <div className={classes.donateContainer}>
-                <div>
-                    <p className={classes.pDonate}>amet elementum euismod molestie facilisis varius</p>
-                    <button className={classes.btn}> Donate</button>
-                </div>
-                <div className={classes.footerCopyRight}>
-                    <a
-                        href='https://enciv.org/terms'
-                        target='_blank'
-                        className={classes.aLink}
-                        style={{ fontSize: '1.25em' }}
-                    >
-                        Terms of service
-                    </a>
-                    <p className={classes.pText}>Copyright &copy; 2022 EnCiv, Inc</p>
-                </div>
-            </div>
-        </div>
+        </>
     )
 }
