@@ -8,6 +8,7 @@ import DateTimeInput from './datetime-input'
 function TimelinePoint(props) {
     const { className, style, electionOM, title, description, onDone = () => {}, timelineObj, addOne, ref } = props
     const [electionObj, electionMethods] = electionOM
+    const key = Object.keys(electionObj.timeline).find(key => electionObj.timeline[key] === timelineObj)
     const classes = useStyles()
     const state = useRef({})
 
@@ -54,9 +55,12 @@ function TimelinePoint(props) {
                             onDone={({ valid, value }) => {
                                 state.current[i] = { valid, value }
                                 const isValid = areAllPairsValid()
-                                console.log(Object.values(state.current).map(dateTimeObj => dateTimeObj.value))
+                                const newValue = Object.values(state.current).map(dateTimeObj => dateTimeObj.value)
+                                sideEffects.push(() => {
+                                    electionMethods.upsert({ timeline: { [key]: { [i]: { date: newValue } } } })
+                                })
                                 onDone({
-                                    value: Object.values(state.current).map(dateTimeObj => dateTimeObj.value),
+                                    value: newValue,
                                     valid: isValid,
                                 })
                             }}
@@ -68,9 +72,6 @@ function TimelinePoint(props) {
                         className={classes.plusButton}
                         onClick={() => {
                             sideEffects.push(() => {
-                                const key = Object.keys(electionObj.timeline).find(key => {
-                                    return electionObj.timeline[key] === timelineObj
-                                })
                                 electionMethods.upsert({
                                     timeline: { [key]: { [Object.keys(timelineObj).length]: { date: '' } } },
                                 })
