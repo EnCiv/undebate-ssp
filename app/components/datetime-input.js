@@ -4,6 +4,7 @@ import { createUseStyles } from 'react-jss'
 
 import ElectionTimeInput from './election-time-input'
 import ElectionDateInput from './election-date-input'
+import moment from 'moment'
 
 function DateTimeInput(props) {
     const { defaultValue, className, style, onDone = () => {}, electionOM } = props
@@ -30,6 +31,10 @@ function DateTimeInput(props) {
         return false
     }
 
+    const getTime = dateString => {
+        return new Date(dateString).toLocaleTimeString()
+    }
+
     useEffect(() => {
         if (!timeObj || !dateObj) return
 
@@ -38,19 +43,19 @@ function DateTimeInput(props) {
         }
 
         const isValid = dateObj.valid && timeObj.valid
-
-        onDone({ value: { date: dateObj.value, time: timeObj.value }, valid: isValid })
+        const newDate = moment(`${dateObj.value} ${timeObj.value}`, 'MM/DD/YYYY HH:mm:ss').toISOString()
+        onDone({ value: newDate, valid: isValid })
     }, [timeObj, dateObj, defaultValue])
 
     return (
         <div className={cx(className, classes.dateTimePair)} style={style}>
             <ElectionDateInput
-                defaultValue={defaultValue.date}
+                defaultValue={new Date(defaultValue)}
                 onDone={({ valid, value }) => setDateObj({ value, valid })}
                 disabled={disabledRef.current}
             />
             <ElectionTimeInput
-                defaultValue={defaultValue.time}
+                defaultValue={getTime(defaultValue)}
                 onDone={({ valid, value }) => setTimeObj({ value, valid })}
                 disabled={disabledRef.current}
             />

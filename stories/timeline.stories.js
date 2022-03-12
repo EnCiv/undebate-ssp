@@ -25,59 +25,55 @@ const addDays = (date, days) => {
 export const TimelineTest = Template.bind({})
 TimelineTest.args = {
     defaultElectionObj: {
-        elections: [
-            {
-                _id: '621aef18cdd5d35c69336ad0',
-                electionName: 'U.S Presidential Election',
-                organizationName: 'United States Federal Government',
-                undebateDate: addDays(new Date(), 3),
-                electionDate: addDays(new Date(), 6),
-                timeline: {
-                    moderatorDeadlineReminderEmails: {
-                        0: {
-                            date: '2022-01-07T22:09:32.952Z',
-                            sent: true,
-                        },
-                        1: {
-                            date: '2022-01-07T22:09:32.952Z',
-                            sent: false,
-                        },
-                    },
-                    moderatorSubmissionDeadline: {
-                        0: {
-                            date: '2022-01-07T22:09:32.952Z',
-                            sent: true,
-                        },
-                    },
-                    candidateDeadlineReminderEmails: {
-                        0: {
-                            date: '2022-01-07T22:09:32.952Z',
-                            sent: true,
-                        },
-                        1: {
-                            date: '2022-01-07T22:09:32.952Z',
-                            sent: false,
-                        },
-                    },
-                    candidateSubmissionDeadline: {
-                        0: {
-                            date: '2022-01-07T22:09:32.952Z',
-                            sent: true,
-                        },
-                    },
-                    moderatorInviteDeadline: {
-                        0: {
-                            date: '2022-01-07T22:09:32.952Z',
-                            sent: true,
-                        },
-                        1: {
-                            date: '2022-01-07T22:09:32.952Z',
-                            sent: false,
-                        },
-                    },
+        _id: '621aef18cdd5d35c69336ad0',
+        electionName: 'U.S Presidential Election',
+        organizationName: 'United States Federal Government',
+        undebateDate: addDays(new Date(), 3),
+        electionDate: addDays(new Date(), 6),
+        timeline: {
+            moderatorDeadlineReminderEmails: {
+                0: {
+                    date: '2022-01-07T22:09:32.952Z',
+                    sent: true,
+                },
+                1: {
+                    date: '2022-01-07T22:09:32.952Z',
+                    sent: false,
                 },
             },
-        ],
+            moderatorSubmissionDeadline: {
+                0: {
+                    date: '2022-01-07T22:09:32.952Z',
+                    sent: true,
+                },
+            },
+            candidateDeadlineReminderEmails: {
+                0: {
+                    date: '2022-01-07T22:09:32.952Z',
+                    sent: true,
+                },
+                1: {
+                    date: '2022-01-07T22:09:32.952Z',
+                    sent: false,
+                },
+            },
+            candidateSubmissionDeadline: {
+                0: {
+                    date: '2022-01-07T22:09:32.952Z',
+                    sent: true,
+                },
+            },
+            moderatorInviteDeadline: {
+                0: {
+                    date: '2022-01-07T22:09:32.952Z',
+                    sent: true,
+                },
+                1: {
+                    date: '2022-01-07T22:09:32.952Z',
+                    sent: false,
+                },
+            },
+        },
     },
 }
 

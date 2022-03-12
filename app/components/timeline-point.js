@@ -1,15 +1,36 @@
 // https://github.com/EnCiv/undebate-ssp/issues/12
 
-import { React, useRef } from 'react'
+import { React, useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
-
+import Plus from '../svgr/plus'
 import DateTimeInput from './datetime-input'
 
 function TimelinePoint(props) {
-    const { className, style, electionOM, title, description, dateTimes = [], onDone = () => {}, ref } = props
+    const { className, style, electionOM, title, description, onDone = () => {}, timelineObj, addOne, ref } = props
+    const [electionObj, electionMethods] = electionOM
     const classes = useStyles()
-
     const state = useRef({})
+
+    const [sideEffects] = useState([])
+    useEffect(() => {
+        while (sideEffects.length) sideEffects.shift()()
+    })
+
+    const datesToArray = obj => {
+        let arr = Object.entries(obj).sort(function (a, b) {
+            return ('' + Date.parse(b.date)).localeCompare(Date.parse(a.date))
+        })
+        if (!arr.length) {
+            arr.push([])
+        }
+        return arr.map(([_, timelineObj]) => {
+            let datetime = ''
+            if (timelineObj) {
+                datetime = new Date(timelineObj.date)
+            }
+            return datetime
+        })
+    }
 
     const areAllPairsValid = () => {
         const dateTimeObjs = Object.values(state.current)
@@ -24,20 +45,42 @@ function TimelinePoint(props) {
         <div ref={ref} className={className} style={style}>
             <div className={classes.title}>{title}</div>
             <div className={classes.description}>{description}</div>
-            {dateTimes.map((dateTime, i) => (
-                <DateTimeInput
-                    className={classes.dateTimeInput}
-                    defaultValue={dateTime}
-                    onDone={({ valid, value }) => {
-                        state.current[i] = { valid, value }
-                        const isValid = areAllPairsValid()
-                        onDone({
-                            value: Object.values(state.current).map(dateTimeObj => dateTimeObj.value),
-                            valid: isValid,
-                        })
-                    }}
-                />
-            ))}
+            <div className={classes.container}>
+                <div className={classes.datetimes}>
+                    {datesToArray(timelineObj).map((dateTime, i) => (
+                        <DateTimeInput
+                            className={classes.dateTimeInput}
+                            defaultValue={dateTime}
+                            onDone={({ valid, value }) => {
+                                state.current[i] = { valid, value }
+                                const isValid = areAllPairsValid()
+                                console.log(Object.values(state.current).map(dateTimeObj => dateTimeObj.value))
+                                onDone({
+                                    value: Object.values(state.current).map(dateTimeObj => dateTimeObj.value),
+                                    valid: isValid,
+                                })
+                            }}
+                        />
+                    ))}
+                </div>
+                {addOne && (
+                    <div
+                        className={classes.plusButton}
+                        onClick={() => {
+                            sideEffects.push(() => {
+                                const key = Object.keys(electionObj.timeline).find(key => {
+                                    return electionObj.timeline[key] === timelineObj
+                                })
+                                electionMethods.upsert({
+                                    timeline: { [key]: { [Object.keys(timelineObj).length]: { date: '' } } },
+                                })
+                            })
+                        }}
+                    >
+                        <Plus className={classes.plusIcon} />
+                    </div>
+                )}
+            </div>
         </div>
     )
 }
@@ -54,8 +97,35 @@ const useStyles = createUseStyles(theme => ({
         fontWeight: '500',
         margin: '5px',
     },
-    dateTimeInput: {
-        padding: '.75rem 0',
+    container: {
+        display: 'flex',
+        marginTop: '1rem',
+        marginBottom: '4rem',
+        gap: '1rem',
+        alignItems: 'flex-end',
+    },
+    datetimes: {
+        display: 'flex',
+        gap: '1rem',
+        flexDirection: 'column',
+        maxWidth: '400px',
+    },
+    plusButton: {
+        opacity: '50%',
+        backgroundColor: theme.colorLightGray,
+        width: '56px',
+        height: '56px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: '10px',
+        '&:hover': {
+            opacity: '100%',
+            cursor: 'pointer',
+        },
+    },
+    plusIcon: {
+        fontSize: '1.5rem',
     },
 }))
 
