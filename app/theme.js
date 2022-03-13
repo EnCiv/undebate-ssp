@@ -50,6 +50,12 @@ const theme = {
     defaultFontFamily: 'Poppins',
 
     gap: '1.875rem',
+
+    colorDeclined: '#EE6055',
+    colorAccepted: '#46941B',
+    colorSubmitted: '#7470FF',
+    colorSent: 'rgba(38, 45, 51, 0.2)',
+    colorDeadlineMissed: '#FCA105',
 }
 
 export default theme

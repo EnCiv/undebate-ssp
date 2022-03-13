@@ -2,7 +2,7 @@
 // example code thanks to https://react-table.tanstack.com/docs/examples/editable-data
 import React, { useRef } from 'react'
 import { createUseStyles } from 'react-jss'
-import { useTable, usePagination } from 'react-table'
+import { useTable, usePagination, useFilters } from 'react-table'
 import ObjectID from 'isomorphic-mongo-objectid'
 
 // Create an editable cell renderer
@@ -73,7 +73,9 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
             // cell renderer!
             updateMyData,
             initialState: { pageSize: 100 },
+            autoResetFilters: false,
         },
+        useFilters,
         usePagination
     )
     const classes = useStyles()
@@ -85,7 +87,10 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                                <th {...column.getHeaderProps()}>
+                                    {column.render('Header')}
+                                    {column.canFilter && column.Filter ? column.render('Filter') : ''}
+                                </th>
                             ))}
                         </tr>
                     ))}
@@ -164,36 +169,8 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
 }
 
 function CandidateTableInput(props) {
-    const { className, style, editable, defaultValue, onDone } = props
-    const columns = React.useMemo(
-        () => [
-            {
-                Header: 'Candidate Name',
-                accessor: 'name',
-            },
-            {
-                Header: 'Email Address',
-                accessor: 'email',
-            },
-            {
-                Header: 'Office',
-                accessor: 'office',
-            },
-            {
-                Header: 'Region',
-                accessor: 'region',
-            },
-            {
-                Header: 'Invite Status',
-                accessor: 'status',
-            },
-            /*            {
-                Header: 'Unique Id',
-                accessor: 'uniqueId',
-            },*/
-        ],
-        []
-    )
+    const { className, style, editable, defaultValue, onDone, columnNames, memoizedColumnVars = [] } = props
+    const columns = React.useMemo(() => columnNames, memoizedColumnVars)
 
     // candidates is an object like
     // candidates: {'uniqueId': {name, ...}, 'uniqueId2': {name, ...}, ...}

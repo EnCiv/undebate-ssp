@@ -12,7 +12,7 @@ const Template = (args, context) => {
     const { onDone } = context
     return (
         <div style={{ width: '50%' }}>
-            // <TimelinePoint onDone={onDone} {...args} />
+            <TimelinePoint onDone={onDone} {...args} />
         </div>
     )
 }

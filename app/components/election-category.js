@@ -1,7 +1,5 @@
 // from issue: https://github.com/EnCiv/undebate-ssp/issues/5
 
-import humanizeString from 'humanize-string'
-
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import {
@@ -15,7 +13,8 @@ import {
     SvgVideoSubmitted,
 } from './lib/svg'
 
-const statusInfoEnum = {
+// TODO: Consider moving
+export const statusInfoEnum = {
     completed: { icon: <SvgCompleted /> },
     pending: { text: 'Pending…' },
     daysLeft: v => ({
@@ -63,8 +62,8 @@ function ElectionCategory(props) {
 
     // What shows up as the status text based on the values in cleanStatusObj:
     // If a value === false, don't show
-    // Else if the key is unknown and its value === true, show humanizeString(key)
-    // Else if the key is unknown, show value + humanizeString(key)
+    // Else if the key is unknown and its value === true, show key
+    // Else if the key is unknown, show value + key
     // Else if a key's value === true, show its icon + text (both found in statusInfoEnum)
     // Else if the key has an icon, show its icon and value in a table
     // Else if the key is known but doesn't have an icon, show text only-- assume that a function in
@@ -78,7 +77,7 @@ function ElectionCategory(props) {
             let content = statusInfoEnum[key]
             if (content == null) {
                 content = {
-                    text: (param !== true ? `${param} ` : '') + humanizeString(key),
+                    text: (param !== true ? `${param} ` : '') + key,
                 }
             } else if (content instanceof Function) {
                 content = content(param)
@@ -174,6 +173,7 @@ const useStyles = createUseStyles(theme => ({
                 : 'transparent'
         }`,
         alignItems: 'center',
+        minHeight: '1.5rem',
     }),
     categoryText: {
         flex: 1,
