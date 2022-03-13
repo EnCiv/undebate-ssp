@@ -5,6 +5,7 @@ import { hot } from 'react-hot-loader'
 import { ErrorBoundary } from 'civil-client'
 import WebComponents from '../web-components'
 import Footer from './footer'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 //import '../../assets/styles/index.css'
 

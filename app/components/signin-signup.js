@@ -1,5 +1,7 @@
 import React from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
+import SignInButton from './sign-in-button'
+import SignUpButton from './sign-up-button'
 import theme from '../theme'
 
 export default function SignInSignUp() {
@@ -9,18 +11,21 @@ export default function SignInSignUp() {
             <div className={classes.links}>
                 <div className={classes.loginLink}>
                     <a href='#' className={classes.aLink}>
-                        Log In
+                        Register
                     </a>
                 </div>
                 <div className={classes.signinLink}>
                     <a href='#' className={classes.aLink}>
-                        Sign In
+                        <SignInButton />
+                    </a>
+                </div>
+                <div className={classes.signinLink} style={{ display: 'none' }}>
+                    <a href='#' className={classes.aLink}>
+                        <SignUpButton />
                     </a>
                 </div>
             </div>
-            {/* <div>
-                <a href='#'>Sign Up</a>
-            </div> */}
+
             <div className={classes.inputContainer}>
                 <input name='first-name' placeholder='First Name' className={classes.input}></input>
                 <input name='last-name' placeholder='Last Name' className={classes.input}></input>
@@ -83,9 +88,7 @@ const useStyles = createUseStyles({
     loginLink: {
         // marginRight: '3%',
     },
-    signinLink: {
-        opacity: '0.5',
-    },
+    signinLink: {},
     btnContainer: {
         width: '100%',
     },

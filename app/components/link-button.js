@@ -28,6 +28,6 @@ const useStyles = createUseStyles(theme => ({
         gap: '0.5rem',
         background: theme.colorPrimary,
         borderRadius: theme.buttonBorderRadius,
-        padding: theme.buttonPadding,
+        // padding: theme.buttonPadding,
     },
 }))
