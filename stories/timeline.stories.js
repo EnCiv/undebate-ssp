@@ -77,22 +77,23 @@ TimelineTest.args = {
     },
 }
 
-export const Empty = Template.bind({})
-Empty.args = {
+export const EmptyTimeline = Template.bind({})
+EmptyTimeline.args = {
     defaultElectionObj: {
-        elections: [
-            {
-                _id: '621aef18cdd5d35c69336ad0',
-                electionName: 'U.S Presidential Election',
-                organizationName: 'United States Federal Government',
-                timeline: {
-                    moderatorDeadlineReminderEmails: {},
-                    moderatorSubmissionDeadline: {},
-                    candidateDeadlineReminderEmails: {},
-                    candidateSubmissionDeadline: {},
-                    moderatorInviteDeadline: {},
-                },
-            },
-        ],
+        _id: '621aef18cdd5d35c69336ad0',
+        electionName: 'U.S Presidential Election',
+        organizationName: 'United States Federal Government',
+        timeline: {
+            moderatorDeadlineReminderEmails: {},
+            moderatorSubmissionDeadline: {},
+            candidateDeadlineReminderEmails: {},
+            candidateSubmissionDeadline: {},
+            moderatorInviteDeadline: {},
+        },
     },
+}
+
+export const EmptyAll = Template.bind({})
+EmptyAll.args = {
+    defaultElectionObj: {},
 }

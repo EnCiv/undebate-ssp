@@ -6,9 +6,19 @@ import Plus from '../svgr/plus'
 import DateTimeInput from './datetime-input'
 
 function TimelinePoint(props) {
-    const { className, style, electionOM, title, description, onDone = () => {}, timelineObj, addOne, ref } = props
-    const [electionObj, electionMethods] = electionOM
-    const key = Object.keys(electionObj.timeline).find(key => electionObj.timeline[key] === timelineObj)
+    const {
+        className,
+        style,
+        electionOM,
+        title,
+        description,
+        onDone = () => {},
+        timelineObj,
+        timelineKey,
+        addOne,
+        ref,
+    } = props
+    const [_, electionMethods] = electionOM
     const classes = useStyles()
     const state = useRef({})
 
@@ -57,7 +67,7 @@ function TimelinePoint(props) {
                                 const isValid = areAllPairsValid()
                                 const newValue = Object.values(state.current).map(dateTimeObj => dateTimeObj.value)
                                 sideEffects.push(() => {
-                                    electionMethods.upsert({ timeline: { [key]: { [i]: { date: newValue } } } })
+                                    electionMethods.upsert({ timeline: { [timelineKey]: { [i]: { date: newValue } } } })
                                 })
                                 onDone({
                                     value: newValue,
@@ -89,14 +99,13 @@ function TimelinePoint(props) {
 const useStyles = createUseStyles(theme => ({
     title: {
         fontWeight: '600',
-        margin: '5px',
+        marginBottom: '3px',
     },
     description: {
         color: theme.colorSecondary,
         fontSize: theme.secondaryTextFontSize,
         opacity: theme.secondaryTextOpacity,
         fontWeight: '500',
-        margin: '5px',
     },
     container: {
         display: 'flex',

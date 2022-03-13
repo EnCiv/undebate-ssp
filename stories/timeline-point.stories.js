@@ -12,20 +12,20 @@ const Template = (args, context) => {
     const { onDone } = context
     return (
         <div style={{ width: '50%' }}>
-            <TimelinePoint onDone={onDone} {...args} />
+            // <TimelinePoint onDone={onDone} {...args} />
         </div>
     )
 }
 
-export const Default = Template.bind({})
-Default.args = {
-    title: 'Moderator Deadline Reminder Emails',
-    description:
-        'Moderator will recieve two emails as a reminder on this date, usually 2 days and 7 days before the deadline.',
-    dateTimes: [
-        { date: '', time: '' },
-        { date: '', time: '' },
-    ],
+const moderatorDeadlineReminderEmails = {
+    0: {
+        date: '2022-01-07T22:09:32.952Z',
+        sent: true,
+    },
+    1: {
+        date: '2022-01-07T22:09:32.952Z',
+        sent: false,
+    },
 }
 
 export const Filled = Template.bind({})
@@ -33,20 +33,28 @@ Filled.args = {
     title: 'Moderator Deadline Reminder Emails',
     description:
         'Moderator will recieve two emails as a reminder on this date, usually 2 days and 7 days before the deadline.',
-    dateTimes: [
-        { date: '11/26/25', time: '14:00' },
-        { date: '11/26/21', time: '14:00' },
-        { date: '11/27/21', time: '02:00' },
-    ],
+    timelineObj: moderatorDeadlineReminderEmails,
+    timelineKey: 'moderatorDeadlineReminderEmails',
+    electionOM,
+    addOne: true,
 }
+
+/* export const Empty = Template.bind({})
+Filled.args = {
+    title: 'Moderator Deadline Reminder Emails',
+    description:
+        'Moderator will recieve two emails as a reminder on this date, usually 2 days and 7 days before the deadline.',
+    timelineObj: {},
+    timelineKey: 'moderatorDeadlineReminderEmails',
+    electionOM,
+}
+
 export const PartiallyFilled = Template.bind({})
 PartiallyFilled.args = {
     title: 'Moderator Deadline Reminder Emails',
     description:
         'Moderator will recieve two emails as a reminder on this date, usually 2 days and 7 days before the deadline.',
-    dateTimes: [
-        { date: '11/26/25', time: '14:00' },
-        { date: '', time: '' },
-        { date: '11/27/21', time: '02:00' },
-    ],
-}
+    timelineObj: { ...moderatorDeadlineReminderEmails, 2: { date: '' } },
+    timelineKey: 'moderatorDeadlineReminderEmails',
+    electionOM,
+} */

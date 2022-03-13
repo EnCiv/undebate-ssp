@@ -20,6 +20,55 @@ export default function Timeline(props) {
         moderatorDeadlineReminderEmails,
     } = timeline
 
+    const pointsData = [
+        {
+            title: 'Moderator Deadline Reminder Emails',
+            description:
+                'Moderator will receive two emails as a reminder on this date, usually 2 days and 7 days before the deadline.',
+            timelineObj: moderatorDeadlineReminderEmails,
+            timelineKey: 'moderatorDeadlineReminderEmails',
+            electionOM,
+            addOne: true,
+        },
+        {
+            title: 'Moderator Submission Deadline',
+            description:
+                'Moderator will receive two emails as a reminder on this date, usually 2 days and 7 days before the deadline.',
+            timelineObj: moderatorSubmissionDeadline,
+            timelineKey: 'moderatorSubmissionDeadline',
+            electionOM,
+        },
+        {
+            title: 'Candidate Deadline Reminder Emails',
+            description:
+                'Candidates who will not have submitted will receive two emails as a reminder on this date, usually 2 days before the deadline.',
+            timelineObj: candidateDeadlineReminderEmails,
+            timelineKey: 'candidateDeadlineReminderEmails',
+            electionOM,
+            addOne: true,
+        },
+        {
+            title: 'Candidate Submission Deadline',
+            description: "Candidates won't be able to record after this time.",
+            timelineObj: candidateSubmissionDeadline,
+            timelineKey: 'candidateSubmissionDeadline',
+            electionOM,
+        },
+        {
+            title: 'Undebate Goes Live',
+            description:
+                'By default, undebate goes live 4 days after candidate submission deadline. But, you can change the date.',
+            timelineObj: { 0: { date: undebateDate } },
+            electionOM,
+        },
+        {
+            title: 'Last Day of Election',
+            description: 'Undebate gets archived after this time.',
+            timelineObj: { 0: { date: electionDate } },
+            electionOM,
+        },
+    ]
+
     return (
         <div className={cx(className, classes.wrapper)} style={style}>
             <header className={classes.heading}>
@@ -27,50 +76,11 @@ export default function Timeline(props) {
                 <Submit onDone={onDone} />
             </header>
             <ElectionCreated electionMetadata={electionObj} />
-            <TimeLinePoint
-                title='Moderator Deadline Reminder Emails'
-                description='Moderator will receive two emails as a reminder on this date, usually 2 days and 7 days before the deadline.'
-                timelineObj={moderatorDeadlineReminderEmails}
-                electionOM={electionOM}
-                addOne={true}
-            />
-            <TimeLinePoint
-                title='Moderator Submission Deadline'
-                description="Moderator won't be able to record after this time."
-                timelineObj={moderatorSubmissionDeadline}
-                electionOM={electionOM}
-            />
-            <TimeLinePoint
-                title='Candidate Deadline Reminder Emails'
-                description='Candidates who will not have submitted will receive two emails as a reminder on this date, usually 2 days before the deadline.'
-                timelineObj={candidateDeadlineReminderEmails}
-                electionOM={electionOM}
-                addOne={true}
-            />
-            <TimeLinePoint
-                title='Candidate Submission Deadline'
-                description="Candidates won't be able to record after this time."
-                timelineObj={candidateSubmissionDeadline}
-                electionOM={electionOM}
-            />
-            <TimeLinePoint
-                title='Candidate Submission Deadline'
-                description="Candidates won't be able to record after this time."
-                timelineObj={candidateSubmissionDeadline}
-                electionOM={electionOM}
-            />
-            <TimeLinePoint
-                title='Undebate Goes Live'
-                description='By default, undebate goes live 4 days after candidate submission deadline. But, you can change the date.'
-                timelineObj={{ 0: { date: undebateDate } }}
-                electionOM={electionOM}
-            />
-            <TimeLinePoint
-                title='Last Day of Election'
-                description='Undebate gets archived after this time.'
-                timelineObj={{ 0: { date: electionDate } }}
-                electionOM={electionOM}
-            />
+            <div className={classes.container}>
+                {pointsData.map(pointData => (
+                    <TimeLinePoint {...pointData} />
+                ))}
+            </div>
         </div>
     )
 }
@@ -83,5 +93,7 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         justifyContent: 'space-between',
     },
-    container: {},
+    container: {
+        marginTop: '1.5rem',
+    },
 }))
