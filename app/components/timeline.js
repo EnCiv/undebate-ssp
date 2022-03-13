@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/45
 
-import React from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import ElectionCreated from './election-created'
@@ -69,16 +69,29 @@ export default function Timeline(props) {
         },
     ]
 
+    const [validInputs, setValidInputs] = useReducer((state, action) => ({ ...state, ...action }), {})
+    const [isValid, setIsValid] = useState(false)
+    const allValid = () => Object.values(validInputs).every(Boolean)
+
+    useEffect(() => {
+        setIsValid(allValid())
+    }, [isValid, validInputs])
+
     return (
         <div className={cx(className, classes.wrapper)} style={style}>
             <header className={classes.heading}>
                 <span>Fill the date and times for following events to automate the undebate.</span>
-                <Submit onDone={onDone} />
+                <Submit onDone={onDone} disabled={!isValid} />
             </header>
             <ElectionCreated electionMetadata={electionObj} />
             <div className={classes.container}>
                 {pointsData.map(pointData => (
-                    <TimeLinePoint {...pointData} />
+                    <TimeLinePoint
+                        {...pointData}
+                        onDone={({ valid }) => {
+                            setValidInputs({ [pointData.timelineKey]: valid })
+                        }}
+                    />
                 ))}
             </div>
         </div>
