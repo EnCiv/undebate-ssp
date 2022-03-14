@@ -37,7 +37,7 @@ export default function SignInSignUp() {
                 <button className={classes.btn}>Log In</button>
             </div>
             <div className={classes.agreeTermContainer}>
-                <div>
+                <div className={classes.checkTerm}>
                     <input type='checkbox' />
                     <label className={classes.agreeTermLabel}>
                         I agree to the{' '}
@@ -54,7 +54,7 @@ export default function SignInSignUp() {
 const useStyles = createUseStyles({
     SignInSignUp: {
         backgroundColor: theme.colorPrimary,
-        width: '18.75rem',
+        width: '22rem',
         margin: '0 auto',
         borderRadius: '5%',
         height: 'auto',
@@ -111,9 +111,10 @@ const useStyles = createUseStyles({
     inputContainer: {
         width: '100%',
         paddingTop: '10%',
+        margin: '0 auto',
     },
     input: {
-        width: '95%',
+        width: '100%',
         background: 'rgba(255, 255, 255, 0.8)',
         border: 'none',
         height: '5vh',
@@ -127,10 +128,16 @@ const useStyles = createUseStyles({
         display: 'flex',
         justifyContent: 'center',
         paddingBottom: '7%',
+        margin: '0 auto',
+    },
+    checkTerm: {
+        width: '100%',
+        margin: '0 auto',
+        textAlign: 'center',
     },
     agreeTermLabel: {
         color: '#FFFFFF',
         fontSize: '0.8rem',
-        width: '100%',
+        marginLeft: '2%',
     },
 })
