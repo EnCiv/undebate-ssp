@@ -1,11 +1,18 @@
-import React from 'react'
+////https://github.com/EnCiv/undebate-ssp/issues/108
+import React, { useState } from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
 import SignInButton from './sign-in-button'
 import SignUpButton from './sign-up-button'
 import theme from '../theme'
+import { useAuth } from 'civil-client'
 
-export default function SignInSignUp() {
+export default function SignInSignUp(props) {
     const classes = useStyles()
+    const [userInfo, setUserInfo] = useState(false)
+    function onChange(userInfo) {
+        setUserInfo(true)
+    }
+    const [state, methods] = useAuth(onChange, {})
     return (
         <div className={classes.SignInSignUp}>
             <div className={classes.links}>
@@ -29,9 +36,26 @@ export default function SignInSignUp() {
             <div className={classes.inputContainer}>
                 <input name='first-name' placeholder='First Name' className={classes.input}></input>
                 <input name='last-name' placeholder='Last Name' className={classes.input}></input>
-                <input name='email' placeholder='Email Address' className={classes.input}></input>
-                <input name='password' type='password' placeholder='Password' className={classes.input}></input>
-                <input name='confirm' type='password' placeholder='Confirm Password' className={classes.input}></input>
+                <input
+                    name='email'
+                    placeholder='Email Address'
+                    className={classes.input}
+                    onChange={e => methods.onChangeEmail(e.target.value)}
+                ></input>
+                <input
+                    name='password'
+                    type='password'
+                    placeholder='Password'
+                    className={classes.input}
+                    onChange={e => methods.onChangePassword(e.target.value)}
+                ></input>
+                <input
+                    name='confirm'
+                    type='password'
+                    placeholder='Confirm Password'
+                    className={classes.input}
+                    onChange={e => methods.onChangeConfirm(e.target.value)}
+                ></input>
             </div>
             <div className={classes.btnContainer}>
                 <button className={classes.btn}>Log In</button>
