@@ -1,10 +1,10 @@
 // https://github.com/EnCiv/undebate-ssp/issue/57
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Undebate from '../app/components/undebate'
 
 export default {
-    title: 'undebate',
+    title: 'Undebate',
     component: Undebate,
     argTypes: {},
 }
@@ -14,7 +14,7 @@ const Template = (args, context) => {
     const { defaultElectionObj, ...otherArgs } = args
     const [electionObj, electionMethods] = electionOM
     useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
-    return <Undebate electionOM={[electionObj, electionOM]} {...args} />
+    return <Undebate style={{ height: '50rem' }} electionOM={[defaultElectionObj, electionOM]} {...args} />
 }
 
 export const Default = Template.bind({})
