@@ -7,6 +7,7 @@ const theme = {
     colorSuccess: '#46941B',
     colorGray: '#7d8084',
     colorLightGray: '#d4d5d6',
+    colorText: '#262D33',
 
     // Can be combined with UI colors to create a 'disabled' version
     disabledOpacity: '0.3',

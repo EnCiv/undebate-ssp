@@ -1,3 +1,4 @@
+//https://github.com/EnCiv/undebate-ssp/issues/110
 import React from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
 import theme from '../theme'
@@ -7,7 +8,6 @@ export default function Footer() {
     const classes = useStyles()
     return (
         <>
-            <div className={classes.placeHolderContainer}></div>
             <div className={classes.footer}>
                 <div className={classes.linksContainer}>
                     <div className={classes.footerUnpoll}>
@@ -67,7 +67,7 @@ const useStyles = createUseStyles({
     btn: {
         ...theme.button,
         backgroundColor: '#FFFFFF',
-        color: '#262D33',
+        color: theme.colorText,
         display: 'block',
         margin: '0 auto',
         width: '45%',
@@ -139,9 +139,5 @@ const useStyles = createUseStyles({
         pDonate: {
             fontSize: '2em',
         },
-    },
-    placeHolderContainer: {
-        backgroundColor: '#f1dbff',
-        height: '150vh',
     },
 })
