@@ -3,15 +3,19 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
-import FitsInsideSVG from '../svgr/fits-inside'
+import SvgFitsInside from '../svgr/fits-inside'
+const icons = {
+    SvgFitsInside: SvgFitsInside,
+}
 
 function IconBox(props) {
-    const { className, style } = props
+    const { className, style, subject, description, iconName } = props
     const classes = useStyles()
+    const Icon = icons[iconName] || SvgFitsInside
 
     return (
         <div className={cx(className, classes.background)} style={style}>
-            <FitsInsideSVG className={classes.userImage} />
+            <Icon className={classes.userImage} />
         </div>
     )
 }
