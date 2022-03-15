@@ -24,7 +24,8 @@
         "_lint": "eslint --config .eslintrc.js --ext js",
         "lint": "npm run _lint -- ./app ./stories",
         "format": "prettier --write \"./**/*.{js,jsx,css,scss,md,json}\" --config ./.prettierrc",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "dbtest": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand --config ./jest-db.config.js --runTestsByPath"
     },
     "repository": {
         "type": "git",
