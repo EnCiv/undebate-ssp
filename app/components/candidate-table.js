@@ -24,6 +24,32 @@ export default function CandidateTable(props) {
     useEffect(() => {
         while (sideEffects.length) sideEffects.shift()()
     })
+    const columns = [
+        {
+            Header: 'Candidate Name',
+            accessor: 'name',
+        },
+        {
+            Header: 'Email Address',
+            accessor: 'email',
+        },
+        {
+            Header: 'Office',
+            accessor: 'office',
+        },
+        {
+            Header: 'Region',
+            accessor: 'region',
+        },
+        {
+            Header: 'Invite Status',
+            accessor: 'status',
+        },
+        /*  {
+                Header: 'Unique Id',
+                accessor: 'uniqueId',
+            },*/
+    ]
     return (
         <div className={cx(className, classes.container)} style={style}>
             <div className={classes.intro}>
@@ -61,6 +87,7 @@ export default function CandidateTable(props) {
                     }}
                     defaultValue={candidatesArray}
                     editable={editable}
+                    columnNames={columns}
                 />
             </div>
         </div>

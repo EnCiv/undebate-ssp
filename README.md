@@ -18,16 +18,18 @@ In 2019 we created [Undebates](https://github.com/EnCiv/undebate) and launched t
 
 ## [Node](https://nodejs.org/en/download/)
 
-[Download](https://nodejs.org/en/download/) the **LTS version** not the Current Version.  This project uses some packages, like bcrypt, that install binary code into node for efficiency.  It takes these packages time to catch up.
+[Download](https://nodejs.org/en/download/) the **LTS version** not the Current Version. This project uses some packages, like bcrypt, that install binary code into node for efficiency. It takes these packages time to catch up.
 
 The following has been tested using node v16.13.0 and npm v8.1.0 on Windows 10 and MacOs. There are known issues using npm < 7. During install, you can ignore the warning about incompatibility with previous versions of node/npm - we need to go back to those packages and update their dependencies. Also, Node version 17 will not work, and in general the odd versions are experimental so we don't try to use those. If you already tried to build this with version 17, you need to install version 16 and then do `npm ci` to start clean.
 
-## GIT 
+## GIT
+
 On PC, install [Git for Windows](https://git-scm.com/download/win)
 On Mac,install [Brew](https://brew.sh/) first, and then `brew install git`
-There are gui and web based systems for doing git and you are welcome to use them, but it is easier to document what to do using a CLI. 
+There are gui and web based systems for doing git and you are welcome to use them, but it is easier to document what to do using a CLI.
 
 ## Install
+
 Below are specific instructions for cloning and running storybook on your local system using your CLI of choice:
 
 ```
@@ -50,48 +52,64 @@ A storybook browser window will open up:
 
 Storybook allows us to create React components independently, test them, and leaves a visual catalog of our components for the next contributer. Also, as soon as you get your new component and story started, you can build/edit them on the fly and the browser will update as you make your changes. (Because Storybook uses Webpack to push updates to the browser).
 
-# .bashrc 
+## .bashrc
+
 This project uses bash on windows or zsh on mac. This models the cloud environment. The .bashrc file in the each project's directory can contain custom environment variables and aliases and such for the project. This is where we put secrets becasue the .bashrc file is ignored by git and won't be put in the repo.
 
-Make sure that in hour home (cd ~) directory you have a **.bash_profile** on PC or a **.profile** on mac file that contains something like: 
+Make sure that in hour home (cd ~) directory you have a **.bash_profile** on PC or a **.profile** on mac file that contains something like:
+
 ```
 test -f ~/.bashrc && . ~/.bashrc
 ```
+
 or
+
 ```
 if [`pwd` != $HOME ] && [[ -f "./.bashrc" ]]; then
     echo running `pwd`/.bashrc
     source ./.bashrc
 fi
 ```
+
 cd back to the directory with your this repo and from the command line do
+
 ```
-source ./bashsetup.sh
+source ./bashrcsetup.sh
 ```
+
 This will initialize the .bashrc file for this project with a few simple things. But don't do this more than once (as it would create redundant entries in the file).
-Then everytime you work on this project, the environment variable will be set for this project. If you setup a .bashrc file for another repo, when you work on that repo it will use those environment variables. 
+Then everytime you work on this project, the environment variable will be set for this project. If you setup a .bashrc file for another repo, when you work on that repo it will use those environment variables.
 
-# MongoDB
-To develope on the server side (not required for storybook above), MongoDB is required.  It's possible to do this with a (free) hosted database or with a localy running one.  The advantage of hosted is that if you move between local development and cloud deployment like on heroku, the hosted database allows you to access the same data from both places.
+## MongoDB
 
-## To setup MongoDB hosted (recommended)
+To develope on the server side (not required for storybook above), MongoDB is required. It's possible to do this with a (free) hosted database or with a localy running one. The advantage of hosted is that if you move between local development and cloud deployment like on heroku, the hosted database allows you to access the same data from both places.
+
+### To setup MongoDB hosted (recommended)
+
 Go to these [slides](https://docs.google.com/presentation/d/1HzXSX_fo0qr8ozC9rLGaWc965vM9IGEpCuIx8jmcUxI/present) to setup a free MongoDB Atlas account and database, and create a MONGODB_URI in your .bashrc file
 
-## To setup MongoDB locally
-- on PC Get the [MongoDb Community Server](https://www.mongodb.com/try/download/community) for your system.
-- on Mac do `brew tap mongodb/brew` and then `brew install mongodb-community@5.0`
+### To setup MongoDB locally
 
-After it has been installed, use `dbup` to bring up the datbase.  It will store the data in a **tmp** directory in your project that is .gitignore'd so it won't get pushed to the repo.
+-   on PC Get the [MongoDb Community Server](https://www.mongodb.com/try/download/community) for your system.
+-   on Mac do `brew tap mongodb/brew` and then `brew install mongodb-community@5.0`
+
+After it has been installed, use `dbup` to bring up the datbase. It will store the data in a **tmp** directory in your project that is .gitignore'd so it won't get pushed to the repo.
 `dbdown` will shut down the database
 
-**Note:** that these scripts for running the database locally will erase the database every time.  If there are database recordes that should be made a permanent part of the project, put them in iotas.json.  
+**Note:** that these scripts for running the database locally will erase the database every time. If there are database recordes that should be made a permanent part of the project, put them in iotas.json.
 
-# Running the Dev server
-After the database is up, you can do `npm run dev` and this will start the server.  There will be warnings about other enviornment variable that aren't setup, but we don't need those.
+## Cloudinary
+
+Videos and images are stored at cloudinary, a content delivery network (CDN) with image and video transform APIs. You won't need this until you start posting recorded videos, so you can set it up now, or later by following these [instructions](https://docs.google.com/presentation/d/14i6XuQ1i5HuM1BS69s4m6FHI0FK9ketSdERvid7LJTo/present)
+
+## Running the Dev server
+
+After the database is up, you can do `npm run dev` and this will start the server. There will be warnings about other enviornment variable that aren't setup, but we don't need those.
 
 ```
 $ npm run dev
 ```
+
 <details>
     <summary>Output</summary>
     
@@ -99,12 +117,17 @@ $ npm run dev
 > undebate-ssp@v0.0.0 dev
 > bash postinstall.sh && echo "these delays need to be kept up to date" && concurrently -k "npm run hot-transpile" "sleep 20 && npm run hot-server" "sleep 15 && npm run hot-client"
 
-*************************************************************************
+---
+
 POSTINSTALL
-*************************************************************************
-***
+
+---
+
+---
+
 Svgr
-***
+
+---
 
 > undebate-ssp@v0.0.0 svgr
 > svgr --icon --filename-case kebab assets/svg --out-dir app/svgr && rm app/svgr/index.js
@@ -134,50 +157,50 @@ assets\svg\video_submitted.svg -> app\svgr\video-submitted.js
 assets\svg\video.svg -> app\svgr\video.js
 No parser and no filepath given, using 'babel' the parser now but this will throw an error in the future. Please specify a parser or a filepath so one can be inferred.
 dirPath [
-  'app/web-components/',
-  'node_modules/civil-server/dist/web-components/',
-  'node_modules/undebate/dist/web-components/'
+'app/web-components/',
+'node_modules/civil-server/dist/web-components/',
+'node_modules/undebate/dist/web-components/'
 ]
 filePath app/web-components/
 filePath node_modules/civil-server/dist/web-components/
 filePath node_modules/undebate/dist/web-components/
 dirPath [
-  'app/data-components/',
-  'node_modules/civil-server/dist/data-components/',
-  'node_modules/undebate/dist/data-components/'
+'app/data-components/',
+'node_modules/civil-server/dist/data-components/',
+'node_modules/undebate/dist/data-components/'
 ]
 filePath app/data-components/
 filePath node_modules/civil-server/dist/data-components/
 filePath node_modules/undebate/dist/data-components/
 
 > undebate-ssp@v0.0.0 transpile
-> babel app --ignore **/__tests__ --out-dir dist --source-maps
+> babel app --ignore \*\*/**tests** --out-dir dist --source-maps
 
 Successfully compiled 72 files with Babel (3755ms).
 transpile ok
-"these delays need to be kept up to date" 
-[0] 
+"these delays need to be kept up to date"
+[0]
 [0] > undebate-ssp@v0.0.0 hot-transpile
-[0] > babel --watch app --ignore **/__tests__ --out-dir dist --source-maps
+[0] > babel --watch app --ignore \*_/**tests** --out-dir dist --source-maps
 [0]
 [0] Successfully compiled 72 files with Babel (1759ms).
-[2] 
+[2]
 [2] > undebate-ssp@v0.0.0 hot-client
 [2] > webpack-dev-server --config webpack-dev.config.js --devtool source-map --host 0.0.0.0
 [2]
-[1] 
+[1]
 [1] > undebate-ssp@v0.0.0 hot-server
 [1] > nodemon --inspect dist/start.js
 [1]
 [1] [nodemon] 2.0.15
 [1] [nodemon] to restart at any time, enter `rs`
-[1] [nodemon] watching path(s): *.*
+[1] [nodemon] watching path(s): _._
 [1] [nodemon] watching extensions: js,mjs,json
 [1] [nodemon] starting `node --inspect dist/start.js`
 [1] Debugger listening on ws://127.0.0.1:9229/938be1cb-8caa-4c69-adf2-0cd72312ed7c
 [1] For help, see: https://nodejs.org/en/docs/inspector
 [2] <w> [webpack-dev-server] "hot: true" automatically applies HMR plugin, you don't have to add it manually to your webpack configuration.
-[2] <i> [webpack-dev-server] [HPM] Proxy created: /  -> http://localhost:3012
+[2] <i> [webpack-dev-server] [HPM] Proxy created: / -> http://localhost:3012
 [2] <i> [webpack-dev-server] Project is running at:
 [2] <i> [webpack-dev-server] Loopback: http://localhost:3011/
 [2] <i> [webpack-dev-server] On Your Network (IPv4): http://192.168.1.22:3011/
@@ -187,31 +210,31 @@ transpile ok
 [2] orphan modules 31.6 KiB [orphan] 42 modules
 [2] runtime modules 54.4 KiB 28 modules
 [2] modules by path ../node_modules/ 4.9 MiB
-[2]   javascript modules 4.83 MiB 985 modules
-[2]   json modules 67 KiB
-[2]     modules by path ../node_modules/react-html-parser/ 62.9 KiB 9 modules
-[2]     ../node_modules/undebate/public.json 447 bytes [built] [code generated]
-[2]     ../node_modules/constants-browserify/constants.json 3.71 KiB [built] [code generated]
+[2] javascript modules 4.83 MiB 985 modules
+[2] json modules 67 KiB
+[2] modules by path ../node_modules/react-html-parser/ 62.9 KiB 9 modules
+[2] ../node_modules/undebate/public.json 447 bytes [built] [code generated]
+[2] ../node_modules/constants-browserify/constants.json 3.71 KiB [built] [code generated]
 [2] modules by path ./ 6.17 KiB
-[2]   modules by path ./components/*.js 2.36 KiB 2 modules
-[2]   modules by path ./web-components/*.js 3.5 KiB 2 modules
-[2]   ./client/main-app.js 308 bytes [built] [code generated]
-[2]   ./util.inspect (ignored) 15 bytes [built] [code generated]
+[2] modules by path ./components/_.js 2.36 KiB 2 modules
+[2] modules by path ./web-components/\*.js 3.5 KiB 2 modules
+[2] ./client/main-app.js 308 bytes [built] [code generated]
+[2] ./util.inspect (ignored) 15 bytes [built] [code generated]
 [2] 11 modules
 [2]
 [2] WARNING in ../node_modules/log4js/lib/appenders/index.js 38:11-30
 [2] Critical dependency: the request of a dependency is an expression
-[2]  @ ../node_modules/log4js/lib/log4js.js 27:18-40
-[2]  @ ../node_modules/civil-client/dist/client/main.js 58:17-34
-[2]  @ ../node_modules/civil-client/dist/index.js 35:35-59
-[2]  @ ./client/main-app.js 1:0-42 5:0-10
+[2] @ ../node_modules/log4js/lib/log4js.js 27:18-40
+[2] @ ../node_modules/civil-client/dist/client/main.js 58:17-34
+[2] @ ../node_modules/civil-client/dist/index.js 35:35-59
+[2] @ ./client/main-app.js 1:0-42 5:0-10
 [2]
 [2] WARNING in ../node_modules/log4js/lib/clustering.js 4:10-28
 [2] Module not found: Error: Can't resolve 'cluster' in 'C:\Users\David Fridley\git\EnCiv\undebate-ssp\node_modules\log4js\lib'
-[2]  @ ../node_modules/log4js/lib/log4js.js 30:19-42
-[2]  @ ../node_modules/civil-client/dist/client/main.js 58:17-34
-[2]  @ ../node_modules/civil-client/dist/index.js 35:35-59
-[2]  @ ./client/main-app.js 1:0-42 5:0-10
+[2] @ ../node_modules/log4js/lib/log4js.js 30:19-42
+[2] @ ../node_modules/civil-client/dist/client/main.js 58:17-34
+[2] @ ../node_modules/civil-client/dist/index.js 35:35-59
+[2] @ ./client/main-app.js 1:0-42 5:0-10
 [2]
 [2] 2 warnings have detailed information that is not shown.
 [2] Use 'stats.errorDetails: true' resp. '--stats-error-details' to show it.
@@ -219,85 +242,85 @@ transpile ok
 [2] webpack 5.65.0 compiled with 2 warnings in 6621 ms
 [1] Log.init creating collection
 [1] [2022-02-27T15:24:09.828] [INFO] node - Iota.init count 0
-[1] [2022-02-27T15:24:09.833] [ERROR] node - Iota._write_load duplicate id found. Replacing:
-[1]  {
-[1]   _id: 621c0819ec1ee607188ac377,
-[1]   path: '/test-election-docs',
-[1]   parentId: '600f2e3d7be64409f0387718',
-[1]   subject: 'Testing get-election-docs socket API',
-[1]   description: 'Testing get-election-docs socket API',
-[1]   webComponent: 'TestElectionDocs'
+[1] [2022-02-27T15:24:09.833] [ERROR] node - Iota.\_write_load duplicate id found. Replacing:
+[1] {
+[1] \_id: 621c0819ec1ee607188ac377,
+[1] path: '/test-election-docs',
+[1] parentId: '600f2e3d7be64409f0387718',
+[1] subject: 'Testing get-election-docs socket API',
+[1] description: 'Testing get-election-docs socket API',
+[1] webComponent: 'TestElectionDocs'
 [1] }
 [1] with
-[1]  {
-[1]   _id: '61edf8791dff058c2a73724d',
-[1]   userId: '61edf83e01fb518ba162fe70',
-[1]   subject: 'Election document',
-[1]   description: 'Election document #1',
-[1]   webComponent: 'ElectionDoc'
+[1] {
+[1] \_id: '61edf8791dff058c2a73724d',
+[1] userId: '61edf83e01fb518ba162fe70',
+[1] subject: 'Election document',
+[1] description: 'Election document #1',
+[1] webComponent: 'ElectionDoc'
 [1] }
-[1] [2022-02-27T15:24:09.834] [ERROR] node - Iota._write_load duplicate id found. Replacing:
-[1]  {
-[1]   _id: 621c0819ec1ee607188ac379,
-[1]   userId: '61edf83e01fb518ba162fe70',
-[1]   subject: 'Election document',
-[1]   description: 'Election document #1',
-[1]   webComponent: 'ElectionDoc'
-[1] }
-[1] with
-[1]  {
-[1]   _id: '61edf96846c0a28ef1ce5d5d',
-[1]   userId: '61edf83e01fb518ba162fe70',
-[1]   subject: 'Election document',
-[1]   description: 'Election document #2',
-[1]   webComponent: 'ElectionDoc'
-[1] }
-[1] [2022-02-27T15:24:09.834] [ERROR] node - Iota._write_load duplicate id found. Replacing:
-[1]  {
-[1]   _id: 621c0819ec1ee607188ac37b,
-[1]   userId: '61edf83e01fb518ba162fe70',
-[1]   subject: 'Election document',
-[1]   description: 'Election document #2',
-[1]   webComponent: 'ElectionDoc'
+[1] [2022-02-27T15:24:09.834] [ERROR] node - Iota.\_write_load duplicate id found. Replacing:
+[1] {
+[1] \_id: 621c0819ec1ee607188ac379,
+[1] userId: '61edf83e01fb518ba162fe70',
+[1] subject: 'Election document',
+[1] description: 'Election document #1',
+[1] webComponent: 'ElectionDoc'
 [1] }
 [1] with
-[1]  {
-[1]   _id: '61edf96be782378f2179622e',
-[1]   userId: '61edf83e01fb518ba162fe70',
-[1]   subject: 'Election document',
-[1]   description: 'Election document #3',
-[1]   webComponent: 'ElectionDoc'
+[1] {
+[1] \_id: '61edf96846c0a28ef1ce5d5d',
+[1] userId: '61edf83e01fb518ba162fe70',
+[1] subject: 'Election document',
+[1] description: 'Election document #2',
+[1] webComponent: 'ElectionDoc'
 [1] }
-[1] [2022-02-27T15:24:09.835] [ERROR] node - Iota._write_load duplicate id found. Replacing:
-[1]  {
-[1]   _id: 621c0819ec1ee607188ac37d,
-[1]   userId: '61edf83e01fb518ba162fe70',
-[1]   subject: 'Election document',
-[1]   description: 'Election document #3',
-[1]   webComponent: 'ElectionDoc'
+[1] [2022-02-27T15:24:09.834] [ERROR] node - Iota.\_write_load duplicate id found. Replacing:
+[1] {
+[1] \_id: 621c0819ec1ee607188ac37b,
+[1] userId: '61edf83e01fb518ba162fe70',
+[1] subject: 'Election document',
+[1] description: 'Election document #2',
+[1] webComponent: 'ElectionDoc'
 [1] }
 [1] with
-[1]  {
-[1]   _id: '61edf96c1d87738f395d12d8',
-[1]   userId: '61edf83e01fb518ba162fe70',
-[1]   subject: 'Election document',
-[1]   description: 'Election document #4',
-[1]   webComponent: 'ElectionDoc'
+[1] {
+[1] \_id: '61edf96be782378f2179622e',
+[1] userId: '61edf83e01fb518ba162fe70',
+[1] subject: 'Election document',
+[1] description: 'Election document #3',
+[1] webComponent: 'ElectionDoc'
+[1] }
+[1] [2022-02-27T15:24:09.835] [ERROR] node - Iota.\_write_load duplicate id found. Replacing:
+[1] {
+[1] \_id: 621c0819ec1ee607188ac37d,
+[1] userId: '61edf83e01fb518ba162fe70',
+[1] subject: 'Election document',
+[1] description: 'Election document #3',
+[1] webComponent: 'ElectionDoc'
+[1] }
+[1] with
+[1] {
+[1] \_id: '61edf96c1d87738f395d12d8',
+[1] userId: '61edf83e01fb518ba162fe70',
+[1] subject: 'Election document',
+[1] description: 'Election document #4',
+[1] webComponent: 'ElectionDoc'
 [1] }
 [1] [2022-02-27T15:24:09.836] [INFO] node - Iota.init updating for development
 [1] dirPath [
-[1]   'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\node_modules\\civil-server\\dist\\routes',
-[1]   'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\node_modules\\undebate\\dist\\routes',
-[1]   'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\dist\\routes'
+[1] 'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\node_modules\\civil-server\\dist\\routes',
+[1] 'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\node_modules\\undebate\\dist\\routes',
+[1] 'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\dist\\routes'
 [1] ]
 [1] filePath C:\Users\David Fridley\git\EnCiv\undebate-ssp\node_modules\civil-server\dist\routes/
 [1] filePath C:\Users\David Fridley\git\EnCiv\undebate-ssp\node_modules\undebate\dist\routes/
 [1] [2022-02-27T15:24:18.698] [WARN] node - fetchHandlers: handler get-iota is being replaced from directory C:\Users\David Fridley\git\EnCiv\undebate-ssp\node_modules\undebate\dist\routes
 [1] filePath C:\Users\David Fridley\git\EnCiv\undebate-ssp\dist\routes/
 [1] dirPath [
-[1]   'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\node_modules\\civil-server\\dist\\socket-apis',
-[1]   'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\node_modules\\undebate\\dist\\socket-apis',
-[1]   'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\dist\\socket-apis'
+[1] 'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\node_modules\\civil-server\\dist\\socket-apis',
+[1] 'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\node_modules\\undebate\\dist\\socket-apis',
+[1] 'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\dist\\socket-apis'
 [1] ]
 [1] filePath C:\Users\David Fridley\git\EnCiv\undebate-ssp\node_modules\civil-server\dist\socket-apis/
 [1] filePath C:\Users\David Fridley\git\EnCiv\undebate-ssp\node_modules\undebate\dist\socket-apis/
@@ -307,30 +330,30 @@ transpile ok
 [1] [2022-02-27T15:24:20.869] [INFO] node - socketIO listening
 [1] SocketAPI started
 [1] dirPath [
-[1]   'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\node_modules\\civil-server\\dist\\events',
-[1]   'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\node_modules\\undebate\\dist\\events',
-[1]   'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\dist\\events'
+[1] 'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\node_modules\\civil-server\\dist\\events',
+[1] 'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\node_modules\\undebate\\dist\\events',
+[1] 'C:\\Users\\David Fridley\\git\\EnCiv\\undebate-ssp\\dist\\events'
 [1] ]
 [1] filePath C:\Users\David Fridley\git\EnCiv\undebate-ssp\node_modules\civil-server\dist\events/
 [1] filePath C:\Users\David Fridley\git\EnCiv\undebate-ssp\node_modules\undebate\dist\events/
-[1] [2022-02-27T15:24:23.055] [ERROR] node - env  SENDINBLUE_API_KEY not set. Notification of New Participants not enabled
-[1] [2022-02-27T15:24:23.056] [ERROR] node - env  SENDINBLUE_TEMPLATE_ID not set. Notification of New Participants not enabled
-[1] [2022-02-27T15:24:23.056] [ERROR] node - env  NOTIFY_OF_NEW_PARTICIPANT_TO not set. Notification of New Participants not enabled
-[1] [2022-02-27T15:24:25.842] [ERROR] node - env  TRANSCRIPTION_CLIENT_EMAIL not set. Transcription not enabled
-[1] [2022-02-27T15:24:25.842] [ERROR] node - env  TRANSCRIPTION_PRIVATE_KEY not set. Transcription not enabled
-[1] [2022-02-27T15:24:25.843] [ERROR] node - env  TRANSCRIPTION_PROJECT_ID not set. Transcription not enabled
+[1] [2022-02-27T15:24:23.055] [ERROR] node - env SENDINBLUE_API_KEY not set. Notification of New Participants not enabled
+[1] [2022-02-27T15:24:23.056] [ERROR] node - env SENDINBLUE_TEMPLATE_ID not set. Notification of New Participants not enabled
+[1] [2022-02-27T15:24:23.056] [ERROR] node - env NOTIFY_OF_NEW_PARTICIPANT_TO not set. Notification of New Participants not enabled
+[1] [2022-02-27T15:24:25.842] [ERROR] node - env TRANSCRIPTION_CLIENT_EMAIL not set. Transcription not enabled
+[1] [2022-02-27T15:24:25.842] [ERROR] node - env TRANSCRIPTION_PRIVATE_KEY not set. Transcription not enabled
+[1] [2022-02-27T15:24:25.843] [ERROR] node - env TRANSCRIPTION_PROJECT_ID not set. Transcription not enabled
 [1] filePath C:\Users\David Fridley\git\EnCiv\undebate-ssp\dist\events/
 [1] [2022-02-27T15:24:25.850] [INFO] node - started
 
-```
+````
 The output may differ from this example.
-    
+
 </details>
-    
-    
+
+
 With the server runing you can browse to `localhost:3011/qa/ccwrapper` and see a candidate conversation. And you can visit `localhost:3011/qa/ccwrapper-recorder' and be a participant.
 
-# See the Github **[Issues](https://github.com/EnCiv/undebate-ssp/issues)** for tasks that need doing
+# Find **[Tasks to work on](https://github.com/EnCiv/undebate-ssp/issues)** for tasks that need doing
 
 -   We are creating React components based on UI design in [figma](https://www.figma.com/proto/IQKPx02pkBErpmhQoECoq9/Undebate?node-id=123%3A1694&scaling=min-zoom&page-id=102%3A2&starting-point-node-id=123%3A1694)
 
@@ -349,8 +372,8 @@ With the server runing you can browse to `localhost:3011/qa/ccwrapper` and see a
 # React Component guidelines and notes:
 <details>
     <summary>General notes on react component boilerplate stuff. Also, we want to state the 'why' for each guideline.</summary>
-    
-These notes are pretty general and always open to reevaluation. 
+
+These notes are pretty general and always open to reevaluation.
 
 **my-component.js**
 ```js
@@ -377,7 +400,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         padding: '1rem',
     },
 }))
-```
+````
 
 1. This project is using React-jss for styles, and they should be at the bottom of the file. -- It's efficient to have all the code and style for a component in one place. We've learned over time that we want to see the code first, and then look for the css, so we put the styles at the bottom. We have also started using a theme.
 
@@ -396,9 +419,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 8. Include a link to the github issue as a comment at the top of the component file and the top of the story to make it easier to go back and reference it. Also, we should add comments to the issues as we make design decisions that change the original direction in the issue. - We end up putting a lot of good info, and pictures, into the issue and its useful to have it handy even after the issue is closed.
 
 9. Components that accept input, or action from the user should accept an `onDone` parameter, which is a function to call with `{valid: bool, value: any}`. Whenever the user leaves the component, typically through onBlur the component should call onDone, and with value set to the value of this input (which could be an object), and valid set to whether or not the value is valid. Empty should - generally - be considered not valid. Higher level components will figure out how the UI reacts to the valid/value returned. This allows more complete logic than just 'required'.
-</details>
+ </details>
 
 # Using Git
+
 <details>
     <summary>We're using git from the command line, because it's easier to document what to do.</summary>
     
@@ -434,9 +458,11 @@ git push
 to update what's on github.
 
 When the code is ready to merge, go to github.com/EnCiv/undebate-ssp and create a pull request for it. When you go there - there will probably a note at the top asking if you want to create a pull request.
+
 </details>
 
 # Testing with Jest
+
 <details>
     <summary>In many cases, like APIs, it is faster to build the API and create a test for it, than it is to test the API by going through the UI.</summary>
 
@@ -461,9 +487,11 @@ Snapshots:   0 total
 Time:        3.309 s, estimated 4 s
 Ran all test suites matching /app\\socket-apis\\__tests__\\get-election-docs.js/i.
 ```
+
 When you got down to writing the tests, expect is what's used to check for success or failure. Here are are the [docs on expect](https://jestjs.io/docs/expect)
 
 ## Debugging Jest
+
 If you are trying to get a test working and need to use a debugger, here's how
 
 ```
@@ -480,7 +508,8 @@ If you haven't already, in Chrome you should do [Filesystem][add folder to works
 
 Note that in the --config of the shell command above, testTimeout is set really large, this is so that tests don't time out while you are trying to debug them. The rest of the config is a copy of what's in jest.config.js
 
-You won't be able to set breakpoint in the jest tests, so you'll need to add a debugger statement to get it to stop.  Then you can single step and things, but breakpoints still may not work.  Remember to take your debugger statements out before checking in. Example:
+You won't be able to set breakpoint in the jest tests, so you'll need to add a debugger statement to get it to stop. Then you can single step and things, but breakpoints still may not work. Remember to take your debugger statements out before checking in. Example:
+
 ```
 test('get election docs should return undefined if user not logged in', done => {
     function callback(docs) {
@@ -496,9 +525,11 @@ test('get election docs should return undefined if user not logged in', done => 
     getElectionDocs.call({}, callback)
 })
 ```
+
 </details>
 
 # Icons, Figma and SVG
+
 <details>
     <summary>You can export svg from figma and paste it into a .svg file in assets/svg to create icons.</summary>
 
@@ -528,20 +559,22 @@ function renderSomething(){
     return <SvgTrashCan />
 }
 ```
+
 </details>
 
 # Prettier
 
 ## If you don't already have [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for VSC installed, go [here](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and click **Install**.
-    
+
 <details>
     <summary>Prettier makes some spacing and the use of quotes and a few other things consistent across the project.</summary>
-    
+
 
 It's really handy when using Visual Studio Code (see below) to be able to just save the file and have the indenting and formatting automatically fixed up. This can help find problems sometimes, and save some of the tedium.
 
 This repo has a .vscode/settings.json file with the basic configuation for using prettier setup for this workspace. It will not override the configuration for other workspaces.
 If you are not using VSC, prettier will also be run on the changed files before you commit, but see if prettier is available for your editor and post instuctions here.
+
 </details>
 
 # ESLint
@@ -552,10 +585,8 @@ If you are not using VSC, prettier will also be run on the changed files before 
 <summary>This project is using ESLint to help prevent bugs. This works really well within the Visual Studio Code environment where it higlights the issues, and can auto fix some of them.
 </summary>
 
-
 There is no requirement to resolve lint issues, and many that are more preference than bug related have been turned off. If there are rules that we should turn off, or add - its worth discussing. The goal is not to enforce a particular coding style to make it "easier to read", many people work on this project who are experienced with different coding styles. The goal is to prevent bugs. The best coding style is the working code style.
 
 One burden is that if we create new input components, we need to push them to the array in .eslintrc.js/module.exports.rules[jsx-a11y/label-has-associated-control][1].controlComponents
+
 </details>
-
-
