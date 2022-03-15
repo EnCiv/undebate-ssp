@@ -86,6 +86,9 @@ const useStyles = createUseStyles({
         '&:hover': {
             color: theme.buttonHoverBackground,
             cursor: 'pointer',
+            '& svg path': {
+                stroke: theme.buttonHoverBackground,
+            },
         },
     },
     pText: {
