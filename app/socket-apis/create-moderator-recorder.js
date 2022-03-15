@@ -27,13 +27,13 @@ const enCivModeratorName = 'David Fridley, EnCiv'
 
 export default async function createModeratorRecorder(id, cb) {
     if (!this.synuser) {
-        if (cb) cb() // no user
         logger.error('createModeratorRecorder called, but no user ', this.synuser)
+        if (cb) cb() // no user
         return
     }
     if (!/^[0-9a-fA-F]{24}$/.test(id)) {
-        if (cb) cb() // no user
         logger.error('createModeratorRecorder called, but bad id:', id)
+        if (cb) cb() // no user
         return
     }
     try {

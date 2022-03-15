@@ -1,5 +1,5 @@
 // https://github.com/EnCiv/undebate-ssp/issues/72
-import { expect, test, beforeAll, afterAll } from '@jest/globals'
+import { expect, test, beforeAll, afterAll, jest } from '@jest/globals'
 import MongoModels from 'mongo-models'
 import { Iota, User } from 'civil-server'
 import iotas from '../../../iotas.json'
@@ -9,9 +9,7 @@ import { merge } from 'lodash'
 const ObjectID = Iota.ObjectId
 
 // dummy out logger for tests
-if (!global.logger) {
-    global.logger = console
-}
+global.logger = { error: jest.fn(e => e) }
 
 const testDoc = iotas.filter(iota => iota.subject === 'Undebate SSP Test Iota')[0]
 
@@ -250,18 +248,25 @@ test('it fails if no user', done => {
     async function callback(result) {
         try {
             expect(result).not.toBeTruthy()
+            expect(global.logger.error.mock.results[0].value).toMatchInlineSnapshot(
+                `"createModeratorRecorder called, but no user "`
+            )
             done()
         } catch (error) {
             done(error)
         }
     }
-    createModeratorRecorder.call({}, '', callback)
+    createModeratorRecorder.call({}, ObjectID(testDoc._id).toString(), callback)
 })
 
 test('it fails if no id', done => {
     async function callback(result) {
         try {
             expect(result).not.toBeTruthy()
+            debugger
+            expect(global.logger.error.mock.results[1].value).toMatchInlineSnapshot(
+                `"createModeratorRecorder called, but bad id:"`
+            )
             done()
         } catch (error) {
             done(error)
@@ -274,6 +279,7 @@ test('it fails if bad id', done => {
     async function callback(result) {
         try {
             expect(result).not.toBeTruthy()
+            expect(global.logger.error.mock.results[2].value).toMatch(/^createModeratorRecorder called, but bad id:/)
             done()
         } catch (error) {
             done(error)
