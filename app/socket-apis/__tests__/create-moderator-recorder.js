@@ -4,6 +4,8 @@ import MongoModels from 'mongo-models'
 import { Iota, User } from 'civil-server'
 import iotas from '../../../iotas.json'
 import createModeratorRecorder from '../create-moderator-recorder'
+import { merge } from 'lodash'
+
 const ObjectID = Iota.ObjectId
 
 // dummy out logger for tests
@@ -242,4 +244,101 @@ test('it should create a recorder', async () => {
         }
     `
     )
+})
+
+test('it fails if no user', done => {
+    async function callback(result) {
+        try {
+            expect(result).not.toBeTruthy()
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    createModeratorRecorder.call({}, '', callback)
+})
+
+test('it fails if no id', done => {
+    async function callback(result) {
+        try {
+            expect(result).not.toBeTruthy()
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    createModeratorRecorder.call(apisThis, '', callback)
+})
+
+test('it fails if bad id', done => {
+    async function callback(result) {
+        try {
+            expect(result).not.toBeTruthy()
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    createModeratorRecorder.call(apisThis, 'abc123', callback)
+})
+
+test('it fails if electionName is missing', done => {
+    async function callback(result) {
+        try {
+            expect(result).not.toBeTruthy()
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    async function doAsync() {
+        const badDoc = {}
+        merge(badDoc, testDoc, { webComponent: { electionName: '' } })
+        badDoc._id = ObjectID() // give it a new objectId
+        await Iota.create(badDoc)
+
+        createModeratorRecorder.call(apisThis, ObjectID(badDoc._id).toString(), callback)
+    }
+    doAsync()
+})
+
+test('it fails if script is missing', done => {
+    async function callback(result) {
+        try {
+            expect(result).not.toBeTruthy()
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    async function doAsync() {
+        const badDoc = {}
+        merge(badDoc, testDoc)
+        badDoc._id = ObjectID() // give it a new objectId
+        badDoc.webComponent.script = undefined
+        await Iota.create(badDoc)
+        createModeratorRecorder.call(apisThis, ObjectID(badDoc._id).toString(), callback)
+    }
+    doAsync()
+})
+
+test('it fails if script is short', done => {
+    async function callback(result) {
+        try {
+            expect(result).not.toBeTruthy()
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    async function doAsync() {
+        const badDoc = {}
+        merge(badDoc, testDoc)
+        badDoc._id = ObjectID() // give it a new objectId
+        const scriptKeys = Object.keys(badDoc.webComponent.script)
+        delete badDoc.webComponent.script[scriptKeys[scriptKeys.length - 1]]
+        await Iota.create(badDoc)
+        createModeratorRecorder.call(apisThis, ObjectID(badDoc._id).toString(), callback)
+    }
+    doAsync()
 })

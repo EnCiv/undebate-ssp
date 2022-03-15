@@ -26,16 +26,19 @@ const listening =
 const enCivModeratorName = 'David Fridley, EnCiv'
 
 export default async function createModeratorRecorder(id, cb) {
-    console.info('createModeratorRecorder', id)
     if (!this.synuser) {
         if (cb) cb() // no user
-        console.info('no user')
+        logger.error('createModeratorRecorder called, but no user ', this.synuser)
+        return
+    }
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+        if (cb) cb() // no user
+        logger.error('createModeratorRecorder called, but bad id:', id)
         return
     }
     try {
         const iota = await Iota.findOne({ _id: Iota.ObjectId(id) })
         if (!iota) {
-            console.info('iota not found')
             if (cb) cb()
             return
         }
@@ -43,7 +46,6 @@ export default async function createModeratorRecorder(id, cb) {
         let msgs
         if ((msgs = reasonsNotReadyForModeratorRecorder(electionObj)).length) {
             if (cb) cb()
-            console.info('msgs', msgs)
             return
         }
         const sortedQuestionPairs = Object.entries(electionObj.questions).sort(
@@ -92,12 +94,8 @@ export default async function createModeratorRecorder(id, cb) {
         const inRowObjs = [{ Seat: 'Moderator', Name: electionObj.moderator.name, Email: electionObj.moderator.email }]
         const { rowObjs, messages } = await undebatesFromTemplateAndRows(moderatorViewerRecorder, inRowObjs)
         if (!rowObjs) {
-            console.info('no rowObjs')
             if (cb) cb()
             return
-        }
-        if (messages.length) {
-            console.info(messages)
         }
         if (cb) cb({ rowObjs, messages })
     } catch (err) {
@@ -112,15 +110,14 @@ function reasonsNotReadyForModeratorRecorder(electionObj) {
     ;['electionName', 'electionDate', 'organizationName', 'questions', 'script', 'moderator'].forEach(prop => {
         if (!electionObj[prop]) errorMsgs.push(`${prop} required`)
     })
-    if (errorMsgs.length) return errorMsgs
-    const { script, questions } = electionObj
-    const sLength = Object.keys(script || {}).length
-    const qLength = Object.keys(questions || {}).length
-    if (Object.keys(qLength + 1) !== Object.keys(sLength).length) {
+    const { script = {}, questions = {} } = electionObj
+    const sLength = Object.keys(script || {}).length // it could be null
+    const qLength = Object.keys(questions || {}).length // it cold be null
+    if (qLength + 1 !== sLength) {
         errorMsgs.push(`length of script ${sLength} was not one more than length of questions ${qLength}.`)
     }
     ;['name', 'email', 'message'].forEach(prop => {
         if (!(electionObj.moderator || {})[prop]) errorMsgs.push(`moderator ${prop} required`)
     })
-    return []
+    return errorMsgs
 }
