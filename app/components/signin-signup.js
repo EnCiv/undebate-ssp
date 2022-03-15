@@ -17,19 +17,14 @@ export default function SignInSignUp(props) {
         <div className={classes.SignInSignUp}>
             <div className={classes.links}>
                 <div className={classes.loginLink}>
-                    <a href='#' className={classes.aLink}>
-                        Register
-                    </a>
+                    <button onClick={e => methods.signup()} className={classes.btnClick}>
+                        Sign Up
+                    </button>{' '}
                 </div>
-                <div className={classes.signinLink}>
-                    <a href='#' className={classes.aLink}>
-                        <SignInButton />
-                    </a>
-                </div>
-                <div className={classes.signinLink} style={{ display: 'none' }}>
-                    <a href='#' className={classes.aLink}>
-                        <SignUpButton />
-                    </a>
+                <div className={classes.loginLink}>
+                    <button onClick={e => methods.login()} className={classes.btnClick}>
+                        Log In
+                    </button>{' '}
                 </div>
             </div>
 
@@ -60,9 +55,14 @@ export default function SignInSignUp(props) {
             <div className={classes.btnContainer}>
                 <button className={classes.btn}>Log In</button>
             </div>
+            <div className={classes.resetPasswordBtn}>
+                <button onClick={e => methods.sendResetPassword()} className={classes.resetBtn}>
+                    Send Reset Password
+                </button>
+            </div>
             <div className={classes.agreeTermContainer}>
                 <div className={classes.checkTerm}>
-                    <input type='checkbox' />
+                    <input type='checkbox' name='agreed' onClick={e => methods.onChangeAgree(e.target.checked)} />
                     <label className={classes.agreeTermLabel}>
                         I agree to the{' '}
                         <a href='https://enciv.org/terms' target='_blank' className={classes.aLinkTerm}>
@@ -90,6 +90,17 @@ const useStyles = createUseStyles({
         color: '#FFFFFF',
         textDecoration: 'none',
         fontSize: '2rem',
+        '&:hover': {
+            color: '#fec215',
+            cursor: 'pointer',
+        },
+    },
+    btnClick: {
+        color: '#FFFFFF',
+        textDecoration: 'none',
+        fontSize: '2rem',
+        background: 'none',
+        border: 'none',
         '&:hover': {
             color: '#fec215',
             cursor: 'pointer',
@@ -146,6 +157,21 @@ const useStyles = createUseStyles({
         marginBottom: '2vh',
         borderRadius: '0.5rem',
         paddingLeft: '5%',
+    },
+    resetPasswordBtn: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        margin: '0 auto',
+    },
+    resetBtn: {
+        background: 'none',
+        border: 'none',
+        fontSize: '0.9rem',
+        color: '#FFFFFF',
+        '&:hover': {
+            color: '#fec215',
+        },
     },
     agreeTermContainer: {
         width: '100%',
