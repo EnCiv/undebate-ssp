@@ -14,11 +14,38 @@ const Template = (args, context) => {
     const [electionObj, electionMethods] = electionOM
     useEffect(() => defaultValue && electionMethods.upsert({ candidates: defaultValue }), [defaultValue])
     const candidateTable = Object.values(electionObj.candidates || {})
+    const columns = [
+        {
+            Header: 'Candidate Name',
+            accessor: 'name',
+        },
+        {
+            Header: 'Email Address',
+            accessor: 'email',
+        },
+        {
+            Header: 'Office',
+            accessor: 'office',
+        },
+        {
+            Header: 'Region',
+            accessor: 'region',
+        },
+        {
+            Header: 'Invite Status',
+            accessor: 'status',
+        },
+        /*  {
+                Header: 'Unique Id',
+                accessor: 'uniqueId',
+            },*/
+    ]
 
     return (
         <CandidateTableInput
             onDone={({ valid, value }) => valid && electionMethods.upsert({ candidates: { [value.uniqueId]: value } })}
             defaultValue={candidateTable}
+            columnNames={columns}
             {...otherArgs}
         />
     )
