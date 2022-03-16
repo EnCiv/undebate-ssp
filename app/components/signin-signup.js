@@ -5,14 +5,12 @@ import theme from '../theme'
 import { useAuth } from 'civil-client'
 
 export default function SignInSignUp(props) {
-    const [state, methods] = useAuth(onChange, {})
     const [userInfo, setUserInfo] = useState(false)
     const classes = useStyles()
-
     function onChange(userInfo) {
         setUserInfo(true)
     }
-
+    const [state, methods] = useAuth(onChange, {})
     return (
         <div className={classes.SignInSignUp}>
             <div className={classes.links}>
@@ -53,7 +51,9 @@ export default function SignInSignUp(props) {
                 ></input>
             </div>
             <div className={classes.btnContainer}>
-                <button className={classes.btn}>Log In</button>
+                <button className={classes.btn} onClick={e => methods.signup()}>
+                    Log In
+                </button>
             </div>
             <div className={classes.resetPasswordBtn}>
                 <button onClick={e => methods.sendResetPassword()} className={classes.resetBtn}>
@@ -70,6 +70,11 @@ export default function SignInSignUp(props) {
                         </a>
                     </label>
                 </div>
+            </div>
+            <div>
+                {state.error && <div style={{ color: 'red' }}>{state.error}</div>}
+                {state.info && <div>{state.info}</div>}
+                {state.success && <div style={{ color: 'green' }}>{state.success}</div>}
             </div>
         </div>
     )
