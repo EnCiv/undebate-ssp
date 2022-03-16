@@ -1,18 +1,18 @@
 ////https://github.com/EnCiv/undebate-ssp/issues/108
 import React, { useState } from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
-import SignInButton from './sign-in-button'
-import SignUpButton from './sign-up-button'
 import theme from '../theme'
 import { useAuth } from 'civil-client'
 
 export default function SignInSignUp(props) {
-    const classes = useStyles()
+    const [state, methods] = useAuth(onChange, {})
     const [userInfo, setUserInfo] = useState(false)
+    const classes = useStyles()
+
     function onChange(userInfo) {
         setUserInfo(true)
     }
-    const [state, methods] = useAuth(onChange, {})
+
     return (
         <div className={classes.SignInSignUp}>
             <div className={classes.links}>
