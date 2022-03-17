@@ -11,9 +11,9 @@ import Clipboard from '../svgr/clipboard'
 export default function Undebate(props) {
     const { className, style, electionOM } = props
     const classes = useStyles(props)
-    const [electionObj] = electionOM
-    const { undebate } = electionObj
-    const { url } = undebate
+    const [electionObj = {}] = electionOM
+    const { undebate = {} } = electionObj
+    const { url = '' } = undebate
     const [copied, setCopied] = useState(false)
     const canvas = useRef(null)
 
@@ -42,16 +42,18 @@ export default function Undebate(props) {
 
     return (
         <div className={cx(className, classes.wrapper)} style={style}>
-            {copied && <CopyNotification Icon={Clipboard} text='Copied to clipboard' />}
-            <div className={classes.qrcode}>
-                <div className={classes.code} ref={canvas}>
-                    <QRCode value={url} size={300} />
+            {url && (
+                <div className={classes.qrcode}>
+                    <div className={classes.code} ref={canvas}>
+                        <QRCode value={url} size={300} />
+                    </div>
+                    <div className={classes.buttons}>
+                        {copied && <CopyNotification Icon={Clipboard} text='Copied to clipboard' />}
+                        <Submit name='Copy Link' onDone={copyNotify} />
+                        <Submit name='Download QR Code' onDone={downloadCode} />
+                    </div>
                 </div>
-                <div className={classes.buttons}>
-                    <Submit name='Copy Link' onDone={copyNotify} />
-                    <Submit name='Download QR Code' onDone={downloadCode} />
-                </div>
-            </div>
+            )}
             <VideoUpload className={classes.upload} />
         </div>
     )
@@ -66,8 +68,8 @@ const useStyles = createUseStyles(theme => ({
     },
     notif: {
         position: 'absolute',
-        top: 0,
-        right: 0,
+        top: '-10rem',
+        left: '-5rem',
         margin: '3rem',
         backgroundColor: theme.colorPrimary,
         color: '#fff',
@@ -83,8 +85,8 @@ const useStyles = createUseStyles(theme => ({
         fontWeight: '500',
     },
     clipIcon: {
-        width: '30px',
-        height: '30px',
+        width: '2rem',
+        height: '2rem',
     },
     qrcode: {
         background: 'rgba(116, 112, 255, 0.25)',
@@ -105,6 +107,7 @@ const useStyles = createUseStyles(theme => ({
         borderRadius: '1rem',
     },
     buttons: {
+        position: 'relative',
         display: 'flex',
         gap: '1rem',
     },

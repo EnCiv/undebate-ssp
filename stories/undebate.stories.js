@@ -25,3 +25,13 @@ Default.args = {
         },
     },
 }
+
+export const Empty = Template.bind({})
+Empty.args = {}
+
+export const NoUrl = Template.bind({})
+NoUrl.args = {
+    defaultElectionObj: {
+        undebate: {},
+    },
+}
