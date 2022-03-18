@@ -43,5 +43,14 @@
         "subject": "Election document",
         "description": "Election document #4",
         "webComponent": "ElectionDoc"
+    },
+    {
+        "_id": {
+            "$oid": "6234b4e9842ffe0d599ad336"
+        },
+        "path": "/qa/signin-signup",
+        "subject": "Civil Server Template",
+        "description": "Civil Server Template Sign In/Up Page",
+        "webComponent": "SignInSignUp"
     }
 ]

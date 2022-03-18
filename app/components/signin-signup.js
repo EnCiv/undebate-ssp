@@ -1,5 +1,5 @@
 ////https://github.com/EnCiv/undebate-ssp/issues/108
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
 import theme from '../theme'
 import { useAuth } from 'civil-client'
@@ -11,6 +11,24 @@ export default function SignInSignUp(props) {
         setUserInfo(true)
     }
     const [state, methods] = useAuth(onChange, {})
+    useEffect(() => {
+        window.socket = {
+            emit: (handle, email, href, cb) => {
+                if (handle !== 'send-password') console.error('emit expected send-password, got:', handle)
+                if (email === 'success@email.com') setTimeout(() => cb({ error: '' }), 1000)
+                else setTimeout(() => cb({ error: 'User not found' }), 1000)
+            },
+            onHandlers: {},
+            on: (handle, handler) => {
+                window.socket.onHandlers[handle] = handler
+            },
+            close: () => {
+                if (window.socket.onHandlers.connect) setTimeout(window.socket.onHandlers.connect, 1000)
+                else console.error('No connect handler registered')
+            },
+            removeListener: () => {},
+        }
+    }, [])
     return (
         <div className={classes.SignInSignUp}>
             <div className={classes.links}>
