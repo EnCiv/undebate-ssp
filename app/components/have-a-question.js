@@ -2,21 +2,20 @@ import React, { useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import TextareaAutosize from 'react-textarea-autosize'
 import cx from 'classnames'
+import Submit from './submit'
 
-const defaultValue = 'Have a question? Ask away....'
-const buttonMessage = 'Submit'
+const placeHoderMessage = 'Have a question? Ask away....'
 const emailMessage = 'Want a reply? Leave your email.'
 export default function HaveAQuestion(props) {
-    const [message, setMessage] = useState(emailMessage)
-
+    const [message, setMessage] = useState('')
     const classes = useStyles()
     const [askEmail, setAskEmail] = useState(false)
     const [response, setResponse] = useState(null)
-    const [subject, setSubject] = useState(defaultValue)
-    // const [submitButton, setSubmitButton] = useState(false)
+    const [email, setEmail] = useState('')
     const { className, style } = props
 
-    useEffect(() => {}, [subject], [message])
+    // this prevents the last character of the string from being removed
+    useEffect(() => {}, [email], [message])
 
     const handleKeyPress = e => {
         if (e.key === 'Enter') {
@@ -40,7 +39,7 @@ export default function HaveAQuestion(props) {
     const contactUs = e => {
         let fname = ''
         let lname = ''
-        let email = ''
+        let subject = 'Have A Question'
 
         window.socket.emit('send-contact-us', email, fname, lname, subject, message, response => {
             if (response && response.error) {
@@ -50,38 +49,33 @@ export default function HaveAQuestion(props) {
                 setResponse('Your question was sucessfully submitted!')
                 setTimeout(() => 1000)
             }
-
-            console.log('subject is,', subject)
-            console.log('message is,', message)
         })
     }
-    console.log('response is,', response)
+
     return (
         <div className={classes.container}>
             <div className={classes.scriptInfo}></div>
 
             <TextareaAutosize
                 className={classes.input}
-                placeholder={defaultValue}
+                placeholder={placeHoderMessage}
                 style={style}
                 onBlur={handelInput}
                 onKeyPress={handleKeyPress}
-                onChange={e => setSubject(e.target.value)}
+                onChange={e => setMessage(e.target.value)}
             />
             <TextareaAutosize
                 onBlur={handelInput2}
                 onKeyPress={handleKeyPress2}
                 className={cx(!askEmail && classes.disabled, askEmail && classes.input)}
                 placeholder={emailMessage}
-                onChange={e => setMessage(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
             ></TextareaAutosize>
-            <button
+            <Submit
                 type='button'
                 className={cx(!askEmail && classes.disabled, askEmail && classes.button)}
-                onClick={contactUs}
-            >
-                {buttonMessage}
-            </button>
+                onDone={contactUs}
+            />
         </div>
     )
 }
@@ -100,12 +94,8 @@ const useStyles = createUseStyles(theme => ({
         resize: 'none',
         border: 'none',
         borderRadius: theme.defaultBorderRadius,
-        height: '90px',
-        width: '880px',
-        left: '0px',
-        top: '737px',
-        marginBottom: '2px',
-        marginTop: '2px',
+        marginBottom: '0.3rem',
+        marginTop: '0.3rem',
     },
     emailMessage: {
         placeholder: 'block',

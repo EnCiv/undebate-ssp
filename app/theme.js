@@ -8,6 +8,7 @@ const theme = {
     colorGray: '#7d8084',
     colorLightGray: '#d4d5d6',
     askQuestionColor: '#FFFFFF',
+    colorText: '#262D33',
 
     // Can be combined with UI colors to create a 'disabled' version
     disabledOpacity: '0.3',
@@ -38,6 +39,7 @@ const theme = {
         fontFamily: 'Poppins',
         lineHeight: '1.25rem', // in figma it's 24/16 but it didn't render the same so this is 20/16
     },
+    buttonHoverBackground: '#fec215',
 
     inputFieldPadding: '1rem 1.25rem',
     inputFieldFontSize: '1.125rem',
@@ -51,6 +53,12 @@ const theme = {
     defaultFontFamily: 'Poppins',
 
     gap: '1.875rem',
+
+    colorDeclined: '#EE6055',
+    colorAccepted: '#46941B',
+    colorSubmitted: '#7470FF',
+    colorSent: 'rgba(38, 45, 51, 0.2)',
+    colorDeadlineMissed: '#FCA105',
 }
 
 export default theme
