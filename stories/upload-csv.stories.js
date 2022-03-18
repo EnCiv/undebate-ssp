@@ -1,5 +1,4 @@
 // https://github.com/EnCiv/undebate-ssp/issues/54
-
 import React, { useEffect } from 'react'
 import UploadCSV from '../app/components/upload-csv'
 
