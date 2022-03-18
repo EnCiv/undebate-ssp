@@ -52,7 +52,7 @@ export default function SignInSignUp(props) {
             </div>
             <div className={classes.btnContainer}>
                 <button className={classes.btn} onClick={e => methods.signup()}>
-                    Log In
+                    Sign Up
                 </button>
             </div>
             <div className={classes.resetPasswordBtn}>
@@ -72,9 +72,9 @@ export default function SignInSignUp(props) {
                 </div>
             </div>
             <div>
-                {state.error && <div style={{ color: 'red' }}>{state.error}</div>}
+                {state.error && <div style={{ color: '#fec215', textAlign: 'center' }}>{state.error}</div>}
                 {state.info && <div>{state.info}</div>}
-                {state.success && <div style={{ color: 'green' }}>{state.success}</div>}
+                {state.success && <div style={{ color: 'green', textAlign: 'center' }}>{state.success}</div>}
             </div>
         </div>
     )
@@ -124,9 +124,6 @@ const useStyles = createUseStyles({
         width: '100%',
         display: 'flex',
         justifyContent: 'space-evenly',
-    },
-    loginLink: {
-        // marginRight: '3%',
     },
     signinLink: {},
     btnContainer: {
