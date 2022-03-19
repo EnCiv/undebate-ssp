@@ -12,6 +12,7 @@ function UploadCSV(props) {
     const { className, style, electionOM } = props
     const [electionObj, electionMethods] = electionOM
     const [selected, setSelected] = useState(false)
+    const [fileSelected, setFileSelected] = useState(false) // todo could also change this to a string of filename instead of a boolean
 
     const handleUploadClick = () => {
         setSelected(!selected)
@@ -45,13 +46,18 @@ function UploadCSV(props) {
                             <div>Upload CSV File</div>
                             <div className={classes.checkSampleText}>
                                 Check Sample &nbsp;
-                                <ExternalLinkSvg />
+                                <ExternalLinkSvg className={classes.externalLinkIcon} />
                             </div>
                         </div>
                         <div className={classes.dropFileBox}>
-                            <FileSvg className={classes.fileIcon} />
-                            <div>Drop file here</div>
-                            <div>or BROWSE</div>
+                            <div className={classes.dropFileDiv}>
+                                <FileSvg className={classes.fileIcon} />
+                                <div className={classes.dropFileText}>Drop file here</div>
+                            </div>
+                            <div className={classes.browseDiv}>
+                                <span className={classes.orText}>or</span>{' '}
+                                <span className={classes.browseText}>BROWSE</span>
+                            </div>
                         </div>
                     </div>
                     <div className={classes.popupButtons}>
@@ -64,7 +70,12 @@ function UploadCSV(props) {
                         </button>
                         <button
                             type='button'
-                            className={cx(classes.btn, classes.extractButton)}
+                            disabled={!fileSelected}
+                            className={cx(
+                                classes.btn,
+                                classes.extractButton,
+                                !fileSelected && classes.disabledExtractButton
+                            )}
                             onClick={handleExtractClick}
                         >
                             Extract Data
@@ -91,7 +102,7 @@ const useStyles = createUseStyles(theme => ({
     fileIcon: {
         width: '4rem',
         height: '4rem',
-        alignSelf: 'center',
+        margin: '20px 0',
     },
     btn: {
         ...theme.button,
@@ -125,7 +136,7 @@ const useStyles = createUseStyles(theme => ({
         height: '41.25rem',
         display: 'flex',
         flexDirection: 'column',
-        /* borderRadius: theme.defaultBorderRadius, */
+        /* borderRadius: theme.defaultBorderRadius, // this is smaller than the radius on figma */
         borderRadius: '1.25rem',
     },
     innerPopup: {
@@ -143,10 +154,9 @@ const useStyles = createUseStyles(theme => ({
     },
     provideText: {
         width: '100%',
-        fontSize: '1.8rem',
+        fontSize: '1.875rem',
         fontWeight: '700',
         lineHeight: '2.8rem',
-        fontFamily: theme.defaultFontFamily,
     },
     checkSampleRow: {
         width: '100%',
@@ -154,26 +164,60 @@ const useStyles = createUseStyles(theme => ({
         '& div': {
             padding: '0.625rem',
         },
-        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '1.5625rem 0',
+        fontWeight: '500',
     },
     checkSampleText: {
-        color: theme.colorGray, // todo fix
-        '& svg path': {
-            stroke: theme.colorGray, // todo fix
+        fontSize: '0.875rem',
+        color: 'white',
+        opacity: '0.5',
+        display: 'flex',
+        alignItems: 'center',
+    },
+    externalLinkIcon: {
+        width: '1rem',
+        height: '1rem',
+        '& path': {
+            strokeWidth: '3',
         },
     },
     dropFileBox: {
         height: '21.6875rem',
         width: '100%',
-        backgroundColor: theme.colorGray, // todo fix
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: theme.defaultBorderRadius,
+    },
+    dropFileDiv: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    dropFileText: {
+        fontSize: '0.875rem',
+        fontWeight: '500',
+        opacity: '0.5',
+    },
+    browseDiv: {
+        padding: '0.625rem',
+        '& span': {
+            padding: '0.375rem',
+        },
+    },
+    orText: {
+        fontWeight: '500',
+        opacity: '0.5',
+    },
+    browseText: {
+        fontSize: '1.125rem',
+        fontWeight: '700',
+        color: 'white',
     },
     popupButtons: {
         width: '100%',
@@ -184,9 +228,7 @@ const useStyles = createUseStyles(theme => ({
         color: 'white',
         width: '11rem',
         justifyContent: 'center',
-        borderStyle: 'solid',
-        borderWidth: '2px',
-        borderColor: theme.colorGray, // todo fix
+        border: '2px solid rgba(255, 255, 255, 0.1)',
         backgroundColor: theme.colorSecondary,
     },
     extractButton: {
@@ -194,5 +236,11 @@ const useStyles = createUseStyles(theme => ({
         width: '11rem',
         justifyContent: 'center',
         backgroundColor: theme.colorPrimary,
+    },
+    disabledExtractButton: {
+        opacity: theme.disabledOpacity,
+        '&:hover': {
+            cursor: 'not-allowed',
+        },
     },
 }))
