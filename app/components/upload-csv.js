@@ -27,7 +27,11 @@ function UploadCSV(props) {
         <div className={cx(className, classes.wrapper)} style={style}>
             <button
                 type='button'
-                className={cx(classes.btn, selected ? classes.btnSelected : classes.btnDeselected)}
+                className={cx(
+                    classes.btn,
+                    classes.uploadButton,
+                    selected ? classes.btnSelected : classes.btnDeselected
+                )}
                 onClick={handleUploadClick}
             >
                 Upload CSV File &nbsp;
@@ -35,19 +39,20 @@ function UploadCSV(props) {
             </button>
             <div className={classes.popup} style={{ visibility: selected ? 'visible' : 'hidden' }}>
                 <div className={classes.innerPopup}>
-                    <span className={classes.provideText}>Provide Election Table</span>
-
-                    <div className={classes.checkSampleRow}>
-                        <div>Upload CSV File</div>
-                        <div className={classes.checkSampleText}>
-                            Check Sample &nbsp;
-                            <ExternalLinkSvg />
+                    <div className={classes.popupTop}>
+                        <span className={classes.provideText}>Provide Election Table</span>
+                        <div className={classes.checkSampleRow}>
+                            <div>Upload CSV File</div>
+                            <div className={classes.checkSampleText}>
+                                Check Sample &nbsp;
+                                <ExternalLinkSvg />
+                            </div>
                         </div>
-                    </div>
-                    <div className={classes.dropFileBox}>
-                        <FileSvg className={classes.fileIcon} />
-                        <div>Drop file here</div>
-                        <div>or BROWSE</div>
+                        <div className={classes.dropFileBox}>
+                            <FileSvg className={classes.fileIcon} />
+                            <div>Drop file here</div>
+                            <div>or BROWSE</div>
+                        </div>
                     </div>
                     <div className={classes.popupButtons}>
                         <button
@@ -97,8 +102,13 @@ const useStyles = createUseStyles(theme => ({
             cursor: 'pointer',
         },
     },
+    uploadButton: {
+        width: '13.5625rem',
+        height: '3.375rem',
+        border: `2px solid ${theme.button.borderColor}`,
+    },
     btnDeselected: {
-        backgroundColor: theme.backgroundColorComponent,
+        backgroundColor: 'transparent',
         color: theme.colorSecondary,
         '& svg path': {
             stroke: theme.colorSecondary,
@@ -111,27 +121,32 @@ const useStyles = createUseStyles(theme => ({
     popup: {
         backgroundColor: theme.colorSecondary,
         color: 'white',
-        width: '30rem',
-        height: '41rem',
-        border: '1px solid black',
+        width: '29.6875rem',
+        height: '41.25rem',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: theme.defaultBorderRadius,
+        /* borderRadius: theme.defaultBorderRadius, */
+        borderRadius: '1.25rem',
     },
     innerPopup: {
-        width: '24rem',
+        width: '100%',
+        height: '100%',
+        boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '2.5rem',
+    },
+    popupTop: {
+        width: '100%',
+        height: '30.375rem',
     },
     provideText: {
         width: '100%',
         fontSize: '1.8rem',
         fontWeight: '700',
         lineHeight: '2.8rem',
+        fontFamily: theme.defaultFontFamily,
     },
     checkSampleRow: {
         width: '100%',
@@ -142,6 +157,7 @@ const useStyles = createUseStyles(theme => ({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        padding: '1.5625rem 0',
     },
     checkSampleText: {
         color: theme.colorGray, // todo fix
@@ -150,9 +166,8 @@ const useStyles = createUseStyles(theme => ({
         },
     },
     dropFileBox: {
-        height: '21rem',
+        height: '21.6875rem',
         width: '100%',
-        margin: '1.25rem 0',
         backgroundColor: theme.colorGray, // todo fix
         display: 'flex',
         flexDirection: 'column',
