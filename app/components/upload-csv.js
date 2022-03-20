@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import ObjectID from 'isomorphic-mongo-objectid'
 import cx from 'classnames'
+import { FileDrop } from 'react-file-drop'
 import FilePlusSvg from '../svgr/file-plus'
 import FileSvg from '../svgr/file'
 import ExternalLinkSvg from '../svgr/external-link'
@@ -12,7 +13,14 @@ function UploadCSV(props) {
     const { className, style, electionOM } = props
     const [electionObj, electionMethods] = electionOM
     const [selected, setSelected] = useState(false)
-    const [fileSelected, setFileSelected] = useState(false) // todo could also change this to a string of filename instead of a boolean
+    const [selectedFile, setSelectedFile] = useState(null)
+
+    const handleTextFile = fileContents => {
+        console.log('file contents: ', fileContents)
+        fileContents.split('\n').forEach(row => {
+            console.log(row)
+        })
+    }
 
     const handleUploadClick = () => {
         setSelected(!selected)
@@ -22,7 +30,21 @@ function UploadCSV(props) {
         setSelected(false)
     }
 
-    const handleExtractClick = () => {}
+    const handleExtractClick = () => {
+        let reader = new FileReader()
+        // todo handle read errors here
+        let fileContents
+        reader.onload = () => {
+            handleTextFile(reader.result)
+        }
+        reader.readAsText(selectedFile)
+    }
+
+    const handleFileDrop = (files, event) => {
+        console.log('onDrop!', files[0], event.target)
+        // todo handle multiple files here
+        setSelectedFile(files[0])
+    }
 
     return (
         <div className={cx(className, classes.wrapper)} style={style}>
@@ -50,14 +72,16 @@ function UploadCSV(props) {
                             </div>
                         </div>
                         <div className={classes.dropFileBox}>
-                            <div className={classes.dropFileDiv}>
-                                <FileSvg className={classes.fileIcon} />
-                                <div className={classes.dropFileText}>Drop file here</div>
-                            </div>
-                            <div className={classes.browseDiv}>
-                                <span className={classes.orText}>or</span>{' '}
-                                <span className={classes.browseText}>BROWSE</span>
-                            </div>
+                            <FileDrop onDrop={handleFileDrop}>
+                                <div className={classes.dropFileDiv}>
+                                    <FileSvg className={classes.fileIcon} />
+                                    <div className={classes.dropFileText}>Drop file here</div>
+                                </div>
+                                <div className={classes.browseDiv}>
+                                    <span className={classes.orText}>or</span>{' '}
+                                    <span className={classes.browseText}>BROWSE</span>
+                                </div>
+                            </FileDrop>
                         </div>
                     </div>
                     <div className={classes.popupButtons}>
@@ -70,11 +94,11 @@ function UploadCSV(props) {
                         </button>
                         <button
                             type='button'
-                            disabled={!fileSelected}
+                            disabled={!selectedFile}
                             className={cx(
                                 classes.btn,
                                 classes.extractButton,
-                                !fileSelected && classes.disabledExtractButton
+                                !selectedFile && classes.disabledExtractButton
                             )}
                             onClick={handleExtractClick}
                         >
@@ -191,7 +215,14 @@ const useStyles = createUseStyles(theme => ({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+        '& .file-drop > .file-drop-target.file-drop-dragging-over-frame': {
+            border: '2px solid blue',
+        },
         borderRadius: theme.defaultBorderRadius,
+        '& .file-drop > .file-drop-target.file-drop-dragging-over-target': {
+            color: '#ff6e40',
+            boxShadow: '0 0 13px 3px #ff6e40',
+        },
     },
     dropFileDiv: {
         display: 'flex',
