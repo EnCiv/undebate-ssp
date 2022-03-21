@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
+import theme from '../theme'
 
 import { AuthForm } from 'civil-client'
 
@@ -15,22 +16,27 @@ function SigninSignup(props) {
     }
 
     return (
-        <div style={{ width: '100vw', height: '100vh', textAlign: 'center', verticalAlign: 'middle' }}>
-            {!userInfo ? (
-                <AuthForm className={classes['join']} onChange={onUserLogin} />
-            ) : (
-                <div className={classes['join']}>
-                    <div>Welcome Aboard</div>
-                    <div>info: {JSON.stringify(userInfo)}</div>
-                    <div>user: {JSON.stringify(props.user)}</div>
-                </div>
-            )}
-        </div>
+        <>
+            <div style={{ width: '100vw', height: '100vh', textAlign: 'center', verticalAlign: 'middle' }}>
+                {!userInfo ? (
+                    <AuthForm className={classes['join']} onChange={onUserLogin} />
+                ) : (
+                    <div className={classes['join']}>
+                        <div>Welcome Aboard</div>
+                        <div>info: {JSON.stringify(userInfo)}</div>
+                        <div>user: {JSON.stringify(props.user)}</div>
+                    </div>
+                )}
+            </div>
+        </>
     )
 }
 
 const useStyles = createUseStyles({
     join: {
+        backgroundColor: theme.colorPrimary,
+        fontFamily: theme.defaultFontFamily,
+        borderRadius: '5%',
         position: 'absolute',
         left: '50%',
         top: '50%',
