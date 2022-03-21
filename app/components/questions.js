@@ -24,16 +24,6 @@ export default function Questions({ className, style, electionOM, onDone }) {
         while (sideEffects.length) sideEffects.shift()()
     })
 
-    const checkEmptyQuestion = () => {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const key in questions) {
-            if (questions[key].text === '') {
-                return false
-            }
-        }
-        return true
-    }
-
     const checkValid = () => {
         // check questions are locked or not
         if (electionMethods.areQuestionsLocked()) {
@@ -62,13 +52,13 @@ export default function Questions({ className, style, electionOM, onDone }) {
     }, [isValid, electionOM])
 
     useEffect(() => {
-        if (checkEmptyQuestion()) {
+        if (electionMethods.checkObjCompleted(questions)) {
             setError('')
         }
     }, [electionOM, error, questions])
 
     const addQuestion = () => {
-        if (checkEmptyQuestion()) {
+        if (electionMethods.checkObjCompleted(questions)) {
             setError('')
             sideEffects.push(() =>
                 electionMethods.upsert({ questions: { [Object.keys(questions).length]: { text: '' } } })
