@@ -10,7 +10,7 @@ import SvgFeelingBlue from '../svgr/feeling-blue'
 
 export default function Submission(props) {
     const { className, style, electionOM } = props
-    const [electionObj] = electionOM
+    const [electionObj, electionMethods] = electionOM
     const classes = useStyles(props)
     const emptySubmission = {
         moderator: {
@@ -33,39 +33,15 @@ export default function Submission(props) {
     }
 
     const submission = getSubmission()
-
-    const checkReminderSent = () => {
-        const reminder = electionObj?.timeline?.moderatorDeadlineReminderEmails
-        for (const key in reminder) {
-            if (reminder[key]?.sent) {
-                return true
-            }
-        }
-        return false
-    }
-
     const checkVideoSubmitted = () => {
         return submission !== undefined && submission.url !== ''
     }
 
-    const checkSubmissionBeforeDeadline = () => {
-        const msubmission = electionObj?.timeline?.moderatorSubmissionDeadline
-        if (msubmission === true) {
-            return true
-        }
-        for (const key in msubmission) {
-            if (msubmission[key]?.date && msubmission[key]?.sent) {
-                return true
-            }
-        }
-        return false
-    }
-
     const getSubmissionStatus = () => {
         if (submission === emptySubmission) return 'empty'
-        if (!checkSubmissionBeforeDeadline()) return 'missed'
+        if (!electionMethods.checkSubmissionBeforeDeadline()) return 'missed'
         if (checkVideoSubmitted()) return 'submitted'
-        if (checkReminderSent()) return 'sent'
+        if (electionMethods.checkReminderSent()) return 'sent'
         return 'default'
     }
 
@@ -78,7 +54,6 @@ export default function Submission(props) {
     const getSubmissionDaysAgo = () => {
         const sentDate = Date.parse(submission.date)
         const currDate = Date.now()
-        console.log(currDate, sentDate)
         return Math.round((currDate - sentDate) / 86400000)
     }
 
