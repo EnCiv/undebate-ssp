@@ -1,5 +1,5 @@
 // https://github.com/EnCiv/undebate-ssp/issues/54
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import ObjectID from 'isomorphic-mongo-objectid'
 import cx from 'classnames'
@@ -9,6 +9,7 @@ import ExternalLinkSvg from '../svgr/external-link'
 
 function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visible }) {
     const classes = useStyles()
+    const fileInputEl = useRef(null)
     const [selectedFile, setSelectedFile] = useState(null)
 
     const handleTextFile = fileContents => {
@@ -28,9 +29,45 @@ function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visib
     }
 
     const handleFileDrop = (files, event) => {
+        event.preventDefault()
         console.log('onDrop', files[0], event.target)
-        // todo handle multiple files here
+        // todo handle multiple files here, don't set selectedFile
         setSelectedFile(files[0])
+        fileInputEl.current.files = files
+        console.log(fileInputEl.current.files)
+    }
+
+    // todo handle change of file input itself
+
+    const handleRemoveFile = () => {
+        setSelectedFile(null)
+    }
+
+    const renderDropFile = () => {
+        return (
+            <label htmlFor='file-select'>
+                <FileDrop onDrop={handleFileDrop} className={cx(classes.fileBox, classes.dropFileBox)}>
+                    <div className={classes.dropFileDiv}>
+                        <FileSvg className={classes.fileIcon} />
+                        <div className={classes.dropFileText}>Drop file here</div>
+                    </div>
+                    <div className={classes.browseDiv}>
+                        <span className={classes.orText}>or</span> <span className={classes.browseText}>BROWSE</span>
+                    </div>
+                </FileDrop>
+            </label>
+        )
+    }
+
+    const renderSelectedFileBox = () => {
+        return (
+            <div className={classes.fileBox}>
+                <div className={classes.selectedFileText}>{selectedFile.name}</div>
+                <button type='button' onClick={handleRemoveFile}>
+                    Remove File
+                </button>
+            </div>
+        )
     }
 
     return (
@@ -45,18 +82,8 @@ function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visib
                             <ExternalLinkSvg className={classes.externalLinkIcon} />
                         </div>
                     </div>
-                    <div className={classes.dropFileBox}>
-                        <FileDrop onDrop={handleFileDrop}>
-                            <div className={classes.dropFileDiv}>
-                                <FileSvg className={classes.fileIcon} />
-                                <div className={classes.dropFileText}>Drop file here</div>
-                            </div>
-                            <div className={classes.browseDiv}>
-                                <span className={classes.orText}>or</span>{' '}
-                                <span className={classes.browseText}>BROWSE</span>
-                            </div>
-                        </FileDrop>
-                    </div>
+                    {selectedFile ? renderSelectedFileBox() : renderDropFile()}
+                    <input type='file' id='file-select' style={{ display: 'none' }} ref={fileInputEl} />
                 </div>
                 <div className={classes.popupButtons}>
                     <button type='button' className={cx(classes.btn, classes.cancelButton)} onClick={handleCancelClick}>
@@ -151,7 +178,7 @@ const useStyles = createUseStyles(theme => ({
             strokeWidth: '3',
         },
     },
-    dropFileBox: {
+    fileBox: {
         height: '21.6875rem',
         width: '100%',
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -159,13 +186,29 @@ const useStyles = createUseStyles(theme => ({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        '& .file-drop > .file-drop-target.file-drop-dragging-over-frame': {
-            border: '2px solid blue',
-        },
         borderRadius: theme.defaultBorderRadius,
-        '& .file-drop > .file-drop-target.file-drop-dragging-over-target': {
+    },
+    dropFileBox: {
+        cursor: 'pointer',
+        '& > .file-drop-target': {
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        '& > .file-drop-target.file-drop-dragging-over-frame': {
+            border: `2px solid ${theme.colorPrimary}`,
+            borderRadius: theme.defaultBorderRadius,
+        },
+        '& > .file-drop-target.file-drop-dragging-over-target': {
             color: '#ff6e40',
-            boxShadow: '0 0 13px 3px #ff6e40',
+            boxShadow: `0 0 13px 3px ${theme.colorWarning}`,
+            '& svg path': {
+                stroke: theme.colorWarning,
+                fill: theme.colorWarning,
+            },
         },
     },
     dropFileDiv: {
@@ -179,6 +222,7 @@ const useStyles = createUseStyles(theme => ({
         fontWeight: '500',
         opacity: '0.5',
     },
+    selectedFileText: {},
     browseDiv: {
         padding: '0.625rem',
         '& span': {
@@ -192,7 +236,6 @@ const useStyles = createUseStyles(theme => ({
     browseText: {
         fontSize: '1.125rem',
         fontWeight: '700',
-        color: 'white',
     },
     popupButtons: {
         width: '100%',
