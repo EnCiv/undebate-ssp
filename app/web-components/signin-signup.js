@@ -5,7 +5,7 @@ import { createUseStyles } from 'react-jss'
 
 import { AuthForm } from 'civil-client'
 
-function SignInSignUp(props) {
+function SigninSignup(props) {
     const classes = useStyles()
     const [userInfo, setUserInfo] = useState(null)
 
@@ -53,4 +53,4 @@ const useStyles = createUseStyles({
     },
 })
 
-export default SignInSignUp
+export default SigninSignup

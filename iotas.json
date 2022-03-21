@@ -51,6 +51,6 @@
         "path": "/qa/signin-signup",
         "subject": "Civil Server Template",
         "description": "Civil Server Template Sign In/Up Page",
-        "webComponent": "SignInSignUp"
+        "webComponent": "SigninSignup"
     }
 ]
