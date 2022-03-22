@@ -11,4 +11,3 @@ export { default as SvgLock } from '../../svgr/lock'
 export { default as SvgExternalLink } from '../../svgr/external-link'
 export { default as SvgCheckMark } from '../../svgr/check-mark'
 export { default as SvgChevronDown } from '../../svgr/chevron-down'
-

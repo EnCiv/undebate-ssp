@@ -25,7 +25,8 @@
         "_lint": "eslint --config .eslintrc.js --ext js",
         "lint": "npm run _lint -- ./app ./stories",
         "format": "prettier --write \"./**/*.{js,jsx,css,scss,md,json}\" --config ./.prettierrc",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "dbtest": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand --config ./jest-db.config.js --runTestsByPath"
     },
     "repository": {
         "type": "git",
@@ -105,6 +106,7 @@
         "lodash": "^4.17.21",
         "moment": "^2.29.1",
         "mongo-models": "^3.0.4",
+        "qrcode.react": "^2.0.0",
         "react": "^16.13.1",
         "react-calendar": "^3.5.0",
         "react-dom": "^16.13.1",
