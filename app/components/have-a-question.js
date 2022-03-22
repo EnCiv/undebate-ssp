@@ -11,7 +11,9 @@ export default function HaveAQuestion(props) {
     const classes = useStyles()
     const [askEmail, setAskEmail] = useState(false)
     const [response, setResponse] = useState(null)
+    const [responseMessage, setResponseMessage] = useState(true)
     const [email, setEmail] = useState('')
+
     const { className, style } = props
 
     // this prevents the last character of the string from being removed
@@ -48,6 +50,7 @@ export default function HaveAQuestion(props) {
             } else {
                 setResponse('Your question was sucessfully submitted!')
                 setTimeout(() => 1000)
+                setResponseMessage(false)
             }
         })
     }
@@ -57,7 +60,7 @@ export default function HaveAQuestion(props) {
             <div className={classes.scriptInfo}></div>
 
             <TextareaAutosize
-                className={classes.input}
+                className={cx(responseMessage && classes.input, !responseMessage && classes.disabled)}
                 placeholder={placeHoderMessage}
                 style={style}
                 onBlur={handelInput}
@@ -67,15 +70,27 @@ export default function HaveAQuestion(props) {
             <TextareaAutosize
                 onBlur={handelInput2}
                 onKeyPress={handleKeyPress2}
-                className={cx(!askEmail && classes.disabled, askEmail && classes.input)}
+                className={cx(
+                    !askEmail && classes.disabled,
+                    !responseMessage && classes.disabled,
+                    askEmail && classes.input
+                )}
                 placeholder={emailMessage}
                 onChange={e => setEmail(e.target.value)}
             ></TextareaAutosize>
             <Submit
                 type='button'
-                className={cx(!askEmail && classes.disabled, askEmail && classes.button)}
+                className={cx(
+                    !askEmail && classes.disabled,
+                    !responseMessage && classes.disabled,
+
+                    askEmail && classes.button
+                )}
                 onDone={contactUs}
             />
+            <div className={cx(responseMessage && classes.disabled, !responseMessage && classes.response)}>
+                {response}
+            </div>
         </div>
     )
 }
@@ -96,6 +111,7 @@ const useStyles = createUseStyles(theme => ({
         borderRadius: theme.defaultBorderRadius,
         marginBottom: '0.3rem',
         marginTop: '0.3rem',
+        overflow: 'hidden',
     },
     emailMessage: {
         placeholder: 'block',
@@ -115,7 +131,15 @@ const useStyles = createUseStyles(theme => ({
         borderRadius: theme.buttonBorderRadius,
         padding: theme.buttonPadding,
     },
-    buttonMessage: {
-        display: 'block',
+
+    response: {
+        fontFamily: theme.defaultFontFamily,
+        fontSize: '1.25rem',
+        marginTop: '0.3rem',
+        width: '9.4rem',
+        padding: '1.25rem',
+        border: '0.3rem solid #0088dd',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 }))

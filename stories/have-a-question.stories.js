@@ -11,11 +11,12 @@ export default {
 }
 
 const Template = (args, context) => {
+    const { onDone } = context
     useEffect(() => {
         if (typeof window.socket === 'undefined') {
             window.socket = {
                 emit: (handle, email, fname, lname, subject, message, cb) => {
-                    cb('success')
+                    cb(onDone)
                 },
             }
         }
