@@ -6,11 +6,12 @@ import { useAuth } from 'civil-client'
 
 export default function SignInSignUp(props) {
     const [userInfo, setUserInfo] = useState(false)
+    const { destination } = props
     const classes = useStyles()
     function onChange(userInfo) {
         setUserInfo(true)
     }
-    const [state, methods] = useAuth(onChange, {})
+    const [state, methods] = useAuth(destination, {})
     useEffect(() => {
         window.socket = {
             emit: (handle, email, href, cb) => {
@@ -37,11 +38,11 @@ export default function SignInSignUp(props) {
                         Sign Up
                     </button>{' '}
                 </div>
-                {/* <div className={classes.loginLink}>
+                <div className={classes.loginLink}>
                     <button onClick={e => methods.login()} className={classes.btnClick}>
                         Log In
                     </button>{' '}
-                </div> */}
+                </div>
             </div>
 
             <div className={classes.inputContainer}>
@@ -103,7 +104,7 @@ const useStyles = createUseStyles({
         backgroundColor: theme.colorPrimary,
         width: '22rem',
         margin: '0 auto',
-        borderRadius: '5%',
+        borderRadius: '2rem',
         height: 'auto',
         padding: '3%',
         paddingTop: '4.5%',
@@ -187,12 +188,15 @@ const useStyles = createUseStyles({
         display: 'flex',
         justifyContent: 'center',
         margin: '0 auto',
+        cursor: 'pointer',
     },
     resetBtn: {
         background: 'none',
         border: 'none',
-        fontSize: '0.9rem',
+        fontSize: '1.15rem',
         color: '#FFFFFF',
+        paddingBottom: '10%',
+        cursor: 'pointer',
         '&:hover': {
             color: '#fec215',
         },
@@ -208,6 +212,8 @@ const useStyles = createUseStyles({
         width: '100%',
         margin: '0 auto',
         textAlign: 'center',
+        display: 'flex',
+        alignItems: 'center',
     },
     agreeTermLabel: {
         color: '#FFFFFF',

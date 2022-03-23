@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import theme from '../theme'
 
-// import { AuthForm } from 'civil-client'
 import SigninSignupCom from '../components/signin-signup'
 
 function SigninSignup(props) {
@@ -18,21 +17,9 @@ function SigninSignup(props) {
 
     return (
         <>
-            {/* <div style={{ width: '100vw', height: '100vh', textAlign: 'center', verticalAlign: 'middle' }}>
-                {!userInfo ? (
-                    <AuthForm className={classes['join']} onChange={onUserLogin} />
-                ) : (
-                    <div className={classes['join']}>
-                        <div>Welcome Aboard</div>
-                        <div>info: {JSON.stringify(userInfo)}</div>
-                        <div>user: {JSON.stringify(props.user)}</div>
-                    </div>
-                )}
-            </div> */}
-
             <div style={{ width: '100vw', height: '100vh', textAlign: 'center', verticalAlign: 'middle' }}>
                 {!userInfo ? (
-                    <SigninSignupCom className={classes['join']} onChange={onUserLogin} />
+                    <SigninSignupCom className={classes['join']} onChange={onUserLogin} destination={'/home'} />
                 ) : (
                     <div className={classes['join']}>
                         <div>Welcome Aboard</div>
@@ -56,22 +43,6 @@ const useStyles = createUseStyles({
         top: '50%',
         transform: 'translate(-50%,-50%)',
         fontSize: '1.5rem',
-
-        // 'button&': {
-        //     'margin-left': '1em',
-        //     'padding-top': '0.5em',
-        //     'padding-bottom': '0.5em',
-        //     '&:disabled': {
-        //         'text-decoration': 'none',
-        //         background: 'lightgray',
-        //     },
-        // },
-        // 'a&': {
-        //     'margin-right': '0.25em',
-        // },
-        // 'i&': {
-        //     'margin-right': 0,
-        // },
     },
 })
 
