@@ -37,11 +37,11 @@ export default function SignInSignUp(props) {
                         Sign Up
                     </button>{' '}
                 </div>
-                <div className={classes.loginLink}>
+                {/* <div className={classes.loginLink}>
                     <button onClick={e => methods.login()} className={classes.btnClick}>
                         Log In
                     </button>{' '}
-                </div>
+                </div> */}
             </div>
 
             <div className={classes.inputContainer}>
@@ -92,7 +92,7 @@ export default function SignInSignUp(props) {
             <div>
                 {state.error && <div style={{ color: '#fec215', textAlign: 'center' }}>{state.error}</div>}
                 {state.info && <div>{state.info}</div>}
-                {state.success && <div style={{ color: 'green', textAlign: 'center' }}>{state.success}</div>}
+                {state.success && <div style={{ color: '#fec215', textAlign: 'center' }}>{state.success}</div>}
             </div>
         </div>
     )
@@ -108,6 +108,10 @@ const useStyles = createUseStyles({
         padding: '3%',
         paddingTop: '4.5%',
         fontFamily: theme.defaultFontFamily,
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%,-50%)',
     },
     aLink: {
         color: '#FFFFFF',
@@ -169,7 +173,7 @@ const useStyles = createUseStyles({
         margin: '0 auto',
     },
     input: {
-        width: '100%',
+        width: '95%',
         background: 'rgba(255, 255, 255, 0.8)',
         border: 'none',
         height: '5vh',

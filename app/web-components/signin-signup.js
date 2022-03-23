@@ -4,7 +4,8 @@ import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import theme from '../theme'
 
-import { AuthForm } from 'civil-client'
+// import { AuthForm } from 'civil-client'
+import SigninSignupCom from '../components/signin-signup'
 
 function SigninSignup(props) {
     const classes = useStyles()
@@ -17,9 +18,21 @@ function SigninSignup(props) {
 
     return (
         <>
-            <div style={{ width: '100vw', height: '100vh', textAlign: 'center', verticalAlign: 'middle' }}>
+            {/* <div style={{ width: '100vw', height: '100vh', textAlign: 'center', verticalAlign: 'middle' }}>
                 {!userInfo ? (
                     <AuthForm className={classes['join']} onChange={onUserLogin} />
+                ) : (
+                    <div className={classes['join']}>
+                        <div>Welcome Aboard</div>
+                        <div>info: {JSON.stringify(userInfo)}</div>
+                        <div>user: {JSON.stringify(props.user)}</div>
+                    </div>
+                )}
+            </div> */}
+
+            <div style={{ width: '100vw', height: '100vh', textAlign: 'center', verticalAlign: 'middle' }}>
+                {!userInfo ? (
+                    <SigninSignupCom className={classes['join']} onChange={onUserLogin} />
                 ) : (
                     <div className={classes['join']}>
                         <div>Welcome Aboard</div>
@@ -37,25 +50,28 @@ const useStyles = createUseStyles({
         backgroundColor: theme.colorPrimary,
         fontFamily: theme.defaultFontFamily,
         borderRadius: '5%',
+        border: 'none',
         position: 'absolute',
         left: '50%',
         top: '50%',
         transform: 'translate(-50%,-50%)',
-        'button&': {
-            'margin-left': '1em',
-            'padding-top': '0.5em',
-            'padding-bottom': '0.5em',
-            '&:disabled': {
-                'text-decoration': 'none',
-                background: 'lightgray',
-            },
-        },
-        'a&': {
-            'margin-right': '0.25em',
-        },
-        'i&': {
-            'margin-right': 0,
-        },
+        fontSize: '1.5rem',
+
+        // 'button&': {
+        //     'margin-left': '1em',
+        //     'padding-top': '0.5em',
+        //     'padding-bottom': '0.5em',
+        //     '&:disabled': {
+        //         'text-decoration': 'none',
+        //         background: 'lightgray',
+        //     },
+        // },
+        // 'a&': {
+        //     'margin-right': '0.25em',
+        // },
+        // 'i&': {
+        //     'margin-right': 0,
+        // },
     },
 })
 
