@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
+import Opener from './opener'
 
 export default function FrequentlyAskedQuestions(props) {
     const [active, setActive] = useState(false)
@@ -36,23 +37,7 @@ export default function FrequentlyAskedQuestions(props) {
                                 </p>
                             )}
                         </div>
-                        <div
-                            style={{
-                                overflow: active !== value.question ? 'hidden' : 'auto',
-                                maxHeight: active === value.question ? '500px' : '0px',
-                                transition: 'all 1s cubic-bezier(1,0,0,1)',
-                            }}
-                        >
-                            <p
-                                className={cx(className, classes.answerStyle)}
-                                style={style}
-
-                                // had conditional styling based on whether the answer is displayed or not. need to find out how to do proper transition effects.
-                                // style={active === value.question ? answerStyle : answerHidden}
-                            >
-                                {value.answer}
-                            </p>
-                        </div>
+                        <Opener classes={classes} answer={value.answer} active={active === value.question} />
                         <hr></hr>
                     </div>
                 ))}
@@ -66,11 +51,12 @@ const useStyles = createUseStyles({
     headerStyle: { textAlign: 'center', paddingTop: '1rem' },
 
     answerStyle: {
+        whiteSpace: 'pre-wrap',
         paddingLeft: '1rem',
         paddingRight: '2rem',
         fontWeight: '500',
         // used px here to maintain a minimum distance from the bottom of the page for ease of visibility
-        paddingBottom: 'max(15px, .2rem)',
+        paddingBottom: 'max(1rem, .2rem)',
         // transition: 'all, .5s, ease-in-out, .1s',
     },
 
