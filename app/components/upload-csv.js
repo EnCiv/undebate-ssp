@@ -59,7 +59,6 @@ const useStyles = createUseStyles(theme => ({
         ...theme.button,
         display: 'flex',
         justifyContent: 'space-between',
-        border: 'none',
         '&:hover': {
             cursor: 'pointer',
         },

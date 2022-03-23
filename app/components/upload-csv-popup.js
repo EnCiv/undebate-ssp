@@ -37,7 +37,12 @@ function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visib
         console.log(fileInputEl.current.files)
     }
 
-    // todo handle change of file input itself
+    const onFileChange = event => {
+        event.preventDefault()
+        console.log('onInput', event.target.files)
+        console.log(fileInputEl.current.files)
+        setSelectedFile(fileInputEl.current.files[0])
+    }
 
     const handleRemoveFile = () => {
         setSelectedFile(null)
@@ -63,7 +68,7 @@ function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visib
         return (
             <div className={classes.fileBox}>
                 <div className={classes.selectedFileText}>{selectedFile.name}</div>
-                <button type='button' onClick={handleRemoveFile}>
+                <button type='button' className={classes.removeFileButton} onClick={handleRemoveFile}>
                     Remove File
                 </button>
             </div>
@@ -83,7 +88,14 @@ function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visib
                         </div>
                     </div>
                     {selectedFile ? renderSelectedFileBox() : renderDropFile()}
-                    <input type='file' id='file-select' style={{ display: 'none' }} ref={fileInputEl} />
+                    <input
+                        type='file'
+                        id='file-select'
+                        data-testid='file-select-input'
+                        style={{ display: 'none' }}
+                        ref={fileInputEl}
+                        onInput={onFileChange}
+                    />
                 </div>
                 <div className={classes.popupButtons}>
                     <button type='button' className={cx(classes.btn, classes.cancelButton)} onClick={handleCancelClick}>
@@ -222,7 +234,6 @@ const useStyles = createUseStyles(theme => ({
         fontWeight: '500',
         opacity: '0.5',
     },
-    selectedFileText: {},
     browseDiv: {
         padding: '0.625rem',
         '& span': {
@@ -236,6 +247,23 @@ const useStyles = createUseStyles(theme => ({
     browseText: {
         fontSize: '1.125rem',
         fontWeight: '700',
+    },
+    selectedFileText: {
+        width: '100%',
+        fontSize: '2rem',
+        textAlign: 'center',
+        padding: '1rem',
+        boxSizing: 'border-box',
+        overflowWrap: 'break-word',
+    },
+    removeFileButton: {
+        ...theme.button,
+        borderRadius: theme.defaultBorderRadius,
+        padding: '0.5rem',
+        /* color: 'white', */
+        /* backgroundColor: theme.colorSecondary, */
+        /* backgroundColor: 'rgba(255, 255, 255, 0)', */
+        /* border: '2px solid rgba(255, 255, 255, 0.1)', */
     },
     popupButtons: {
         width: '100%',
