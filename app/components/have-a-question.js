@@ -12,6 +12,7 @@ export default function HaveAQuestion(props) {
     const [askEmail, setAskEmail] = useState(false)
     const [response, setResponse] = useState(null)
     const [responseMessage, setResponseMessage] = useState(true)
+    const [submittedQuestion, setSubmittedQuestion] = useState(true)
     const [email, setEmail] = useState('')
 
     const { className, style } = props
@@ -49,12 +50,12 @@ export default function HaveAQuestion(props) {
                 setResponse(error)
             } else {
                 setResponse('Your question was sucessfully submitted!')
-                setTimeout(() => 1000)
-                setResponseMessage(false)
             }
+            setSubmittedQuestion(false)
+            setResponseMessage(false)
+            setAskEmail(false)
         })
     }
-
     return (
         <div className={classes.container}>
             <div className={classes.scriptInfo}></div>
@@ -83,12 +84,21 @@ export default function HaveAQuestion(props) {
                 className={cx(
                     !askEmail && classes.disabled,
                     !responseMessage && classes.disabled,
-
                     askEmail && classes.button
                 )}
                 onDone={contactUs}
             />
-            <div className={cx(responseMessage && classes.disabled, !responseMessage && classes.response)}>
+            <TextareaAutosize
+                className={cx(submittedQuestion && classes.disabled, !submittedQuestion && classes.input)}
+                defaultValue={message}
+            ></TextareaAutosize>
+            <div
+                className={cx(
+                    responseMessage && classes.disabled,
+                    submittedQuestion && classes.disabled,
+                    !responseMessage && classes.response
+                )}
+            >
                 {response}
             </div>
         </div>

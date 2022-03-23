@@ -16,7 +16,11 @@ const Template = (args, context) => {
         if (typeof window.socket === 'undefined') {
             window.socket = {
                 emit: (handle, email, fname, lname, subject, message, cb) => {
-                    cb(onDone)
+                    setTimeout(() => {
+                        if (email === 'fail@fail.com') cb({ error: 'Sorry, there was an error.' })
+                        else cb('success')
+                    }, 1000)
+                    onDone({ valid: true, value: { handle, email, fname, lname, subject, message } })
                 },
             }
         }
