@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import TextareaAutosize from 'react-textarea-autosize'
 import cx from 'classnames'
@@ -17,9 +17,6 @@ export default function HaveAQuestion(props) {
 
     const { className, style } = props
 
-    // this prevents the last character of the string from being removed
-    useEffect(() => {}, [email], [message])
-
     const handleKeyPress = e => {
         if (e.key === 'Enter') {
             setAskEmail(true)
@@ -27,6 +24,7 @@ export default function HaveAQuestion(props) {
         }
     }
     const handelInput = e => {
+        setMessage(e.target.value)
         setAskEmail(true)
     }
 
@@ -36,7 +34,7 @@ export default function HaveAQuestion(props) {
         }
     }
     const handelInput2 = e => {
-        setAskEmail(true)
+        setEmail(e.target.value)
     }
 
     const contactUs = e => {
@@ -57,16 +55,14 @@ export default function HaveAQuestion(props) {
         })
     }
     return (
-        <div className={classes.container}>
+        <div className={cx(className, classes.container)} style={style}>
             <div className={classes.scriptInfo}></div>
 
             <TextareaAutosize
                 className={cx(responseMessage && classes.input, !responseMessage && classes.disabled)}
                 placeholder={placeHoderMessage}
-                style={style}
                 onBlur={handelInput}
                 onKeyPress={handleKeyPress}
-                onChange={e => setMessage(e.target.value)}
             />
             <TextareaAutosize
                 onBlur={handelInput2}
@@ -77,7 +73,6 @@ export default function HaveAQuestion(props) {
                     askEmail && classes.input
                 )}
                 placeholder={emailMessage}
-                onChange={e => setEmail(e.target.value)}
             ></TextareaAutosize>
             <Submit
                 type='button'
@@ -146,7 +141,6 @@ const useStyles = createUseStyles(theme => ({
         fontFamily: theme.defaultFontFamily,
         fontSize: '1.25rem',
         marginTop: '0.3rem',
-        width: '9.4rem',
         padding: '1.25rem',
         border: '0.3rem solid #0088dd',
         alignItems: 'center',
