@@ -21,7 +21,7 @@ export default function LandscapePortraitSlider(props) {
                     className={cx(isLandscape && classes.landscape, !isLandscape && classes.portrait)}
                 ></iframe>
             </div>
-            <div>
+            <div className={classes.iconContainer}>
                 <SvgDesktop className={classes.icon} /> <SvgPortrait className={classes.icon} />{' '}
             </div>
         </>
@@ -39,6 +39,9 @@ const useStyles = createUseStyles(theme => ({
     icon: {
         height: theme.iconSize,
         width: theme.iconSize,
+    },
+    iconContainer: {
+        position: 'fixed',
         left: '50%',
     },
     landscape: {
