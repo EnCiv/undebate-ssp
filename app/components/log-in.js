@@ -1,15 +1,16 @@
 ////https://github.com/EnCiv/undebate-ssp/issues/108
 import React, { useState, useEffect } from 'react'
-import cx from 'classnames'
 import { createUseStyles, ThemeProvider } from 'react-jss'
 import theme from '../theme'
 import { useAuth } from 'civil-client'
 
-export default function SignInSignUp(props) {
+export default function LogIn(props) {
     const [userInfo, setUserInfo] = useState(false)
-    const [isLogIn, setIsLogIn] = useState(true)
     const { destination } = props
     const classes = useStyles()
+    function onChange(userInfo) {
+        setUserInfo(true)
+    }
     const [state, methods] = useAuth(destination, {})
     useEffect(() => {
         window.socket = {
@@ -33,28 +34,13 @@ export default function SignInSignUp(props) {
         <div className={classes.SignInSignUp}>
             <div className={classes.links}>
                 <div className={classes.loginLink}>
-                    <button onClick={e => setIsLogIn(false)} className={classes.btnClick}>
-                        Sign Up
-                    </button>
-                </div>
-                <div className={classes.loginLink}>
-                    <button onClick={e => setIsLogIn(true)} className={classes.btnClick}>
+                    <button onClick={e => methods.login()} className={classes.btnClick}>
                         Log In
-                    </button>
+                    </button>{' '}
                 </div>
             </div>
 
             <div className={classes.inputContainer}>
-                <input
-                    name='first-name'
-                    placeholder='First Name'
-                    className={cx(classes.input, isLogIn && classes.disabled)}
-                ></input>
-                <input
-                    name='last-name'
-                    placeholder='Last Name'
-                    className={cx(classes.input, isLogIn && classes.disabled)}
-                ></input>
                 <input
                     name='email'
                     placeholder='Email Address'
@@ -68,19 +54,9 @@ export default function SignInSignUp(props) {
                     className={classes.input}
                     onChange={e => methods.onChangePassword(e.target.value)}
                 ></input>
-                <input
-                    name='confirm'
-                    type='password'
-                    placeholder='Confirm Password'
-                    className={cx(classes.input, isLogIn && classes.disabled)}
-                    onChange={e => methods.onChangeConfirm(e.target.value)}
-                ></input>
             </div>
             <div className={classes.btnContainer}>
-                <button className={cx(classes.btn, isLogIn && classes.disabled)} onClick={e => methods.signup()}>
-                    Sign Up
-                </button>
-                <button className={cx(classes.btn, !isLogIn && classes.disabled)} onClick={e => methods.signup()}>
+                <button className={classes.btn} onClick={e => methods.login()}>
                     Log In
                 </button>
             </div>
@@ -90,7 +66,7 @@ export default function SignInSignUp(props) {
                     Send Reset Password
                 </button>
             </div>
-            <div className={cx(classes.agreeTermContainer, isLogIn && classes.disabled)}>
+            <div className={classes.agreeTermContainer}>
                 <div className={classes.checkTerm}>
                     <input type='checkbox' name='agreed' onClick={e => methods.onChangeAgree(e.target.checked)} />
                     <label className={classes.agreeTermLabel}>
@@ -230,8 +206,5 @@ const useStyles = createUseStyles({
         color: '#FFFFFF',
         fontSize: '0.8rem',
         marginLeft: '2%',
-    },
-    disabled: {
-        display: 'none',
     },
 })
