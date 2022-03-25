@@ -104,7 +104,13 @@ export default function ElectionDateInput(props) {
         }
     }
     const onDatePickerChange = date => {
-        setError(null)
+        const value = dateToMdy(date)
+        const valid = isMdyValid(value)
+        if (!valid) {
+            setError('Please enter a valid date')
+        } else setError(null)
+        setDatePickerOpen(false)
+        propOnDone({ valid, value })
     }
 
     const datePickerButtonOnClick = () => {
