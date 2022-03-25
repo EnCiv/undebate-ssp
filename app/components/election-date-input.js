@@ -58,10 +58,10 @@ export default function ElectionDateInput(props) {
 
     const defaultDate = defaultValue instanceof Date ? dateToMdy(defaultValue) : defaultValue
 
-    const [textDate, setTextDate] = useState(defaultDate)
     const [error, setError] = useState(null)
     const [datePickerOpen, setDatePickerOpen] = useState(false)
     const parentEl = useRef(null)
+    const inputRef = useRef(null)
 
     const classes = useStyles({
         ...props,
@@ -69,11 +69,17 @@ export default function ElectionDateInput(props) {
         datePickerOpen,
     })
 
+    const textDate = () => {
+        if (!inputRef.current) return new Date(defaultDate)
+        const date = new Date(inputRef.current.value)
+        return dateToMdy(date)
+    }
+
     useEffect(() => {
         const onNonDatepickerClick = e => {
             if (!parentEl.current.contains(e.target) && !e.target.className.includes(classes.datePickerPart)) {
                 if (datePickerOpen) {
-                    blurDateInput(textDate)
+                    blurDateInput(textDate())
                 }
                 setDatePickerOpen(false)
             }
@@ -82,12 +88,12 @@ export default function ElectionDateInput(props) {
         return () => {
             document.removeEventListener('click', onNonDatepickerClick)
         }
-    }, [textDate, datePickerOpen])
+    }, [textDate(), datePickerOpen])
 
     // Calls onDone/validation for initial defaultValue
     useEffect(() => {
-        propOnDone({ valid: isMdyValid(textDate), value: textDate })
-    }, [])
+        propOnDone({ valid: isMdyValid(textDate()), value: textDate() })
+    }, [defaultValue])
 
     const onInputChange = e => {
         const { value } = e.target
@@ -96,23 +102,22 @@ export default function ElectionDateInput(props) {
         } else {
             setError(null)
         }
-        setTextDate(value)
     }
     const onDatePickerChange = date => {
         setError(null)
-        setTextDate(dateToMdy(date))
     }
 
     const datePickerButtonOnClick = () => {
-        blurDateInput(textDate, datePickerOpen ? null : true)
+        blurDateInput(textDate(), datePickerOpen ? null : true)
         setDatePickerOpen(!datePickerOpen)
     }
+
     const blurDateInput = _valid => {
-        const valid = _valid === null ? isMdyValid(textDate) : _valid
+        const valid = _valid === null ? isMdyValid(textDate()) : _valid
         if (!valid) {
             setError('Please enter a valid date')
         }
-        propOnDone({ valid: isMdyValid(textDate), value: textDate })
+        propOnDone({ valid: isMdyValid(textDate()), value: textDate() })
     }
     return (
         <div ref={parentEl}>
@@ -124,11 +129,12 @@ export default function ElectionDateInput(props) {
                         type='text'
                         maxLength='10'
                         required
-                        value={textDate}
                         disabled={disabled}
                         onChange={onInputChange}
+                        ref={inputRef}
                         onBlur={e => blurDateInput(e.target.value)}
                         placeholder='mm/dd/yyyy'
+                        defaultValue={defaultValue}
                     />
                     <button
                         disabled={disabled}
@@ -145,7 +151,7 @@ export default function ElectionDateInput(props) {
                 <Calendar
                     className={classes.datePicker}
                     tileClassName={[classes.datePickerTile, classes.datePickerPart]}
-                    value={isMdyValid(textDate) ? mdyToDate(textDate) : today}
+                    value={isMdyValid(textDate()) ? mdyToDate(textDate()) : today}
                     onChange={onDatePickerChange}
                 />
             )}

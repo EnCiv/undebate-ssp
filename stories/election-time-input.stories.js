@@ -8,11 +8,14 @@ export default {
     component: ElectionTimeInput,
 }
 
-const Template = args => (
-    <div style={{ width: '50%' }}>
-        <ElectionTimeInput {...args} />
-    </div>
-)
+const Template = (args, context) => {
+    const { onDone } = context
+    return (
+        <div style={{ width: '50%' }}>
+            <ElectionTimeInput onDone={onDone} {...args} />
+        </div>
+    )
+}
 
 export const Default = Template.bind({})
 Default.args = {
