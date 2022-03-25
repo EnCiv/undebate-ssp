@@ -46,7 +46,7 @@ export default function FrequentlyAskedQuestions(props) {
 }
 
 const useStyles = createUseStyles({
-    caret: { display: 'inline-block', float: 'right', paddingRight: '2rem' },
+    caret: { display: 'inline-block', float: 'right', paddingRight: '2rem', cursor: 'pointer' },
 
     headerStyle: { textAlign: 'center', paddingTop: '1rem' },
 
@@ -62,5 +62,5 @@ const useStyles = createUseStyles({
 
     questionLine: { display: 'inline' },
 
-    questionStyle: { paddingLeft: '1rem', fontWeight: '300', display: 'inline-block' },
+    questionStyle: { paddingLeft: '1rem', fontWeight: '300', display: 'inline-block', cursor: 'pointer' },
 })
