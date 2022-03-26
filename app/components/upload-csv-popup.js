@@ -8,28 +8,41 @@ import FileSvg from '../svgr/file'
 import ExternalLinkSvg from '../svgr/external-link'
 
 function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visible }) {
+    const UNABLE_TO_READ_FILE = 'Unable to read file. Please confirm this is a csv file.'
     const classes = useStyles()
     const fileInputEl = useRef(null)
     const [selectedFile, setSelectedFile] = useState(null)
+    const [fileError, setFileError] = useState(null)
 
     const handleTextFile = fileContents => {
         console.log('file contents: ', fileContents)
-        fileContents.split('\n').forEach(row => {
-            console.log(row)
-        })
+        if (fileContents === 'non text string') {
+            console.log('setting unable to read')
+            setFileError(UNABLE_TO_READ_FILE)
+        } else {
+            fileContents.split('\n').forEach(row => {
+                console.log(row)
+            })
+        }
     }
 
     const handleExtractClick = () => {
         const reader = new FileReader()
         // todo handle read errors here
         reader.onload = () => {
+            setFileError(null)
             handleTextFile(reader.result)
+        }
+        reader.onerror = () => {
+            console.error('error', reader.error)
+            setFileError(UNABLE_TO_READ_FILE)
         }
         reader.readAsText(selectedFile)
     }
 
     const handleFileDrop = (files, event) => {
         event.preventDefault()
+        setFileError(null)
         console.log('onDrop', files[0], event.target)
         // todo handle multiple files here, don't set selectedFile
         setSelectedFile(files[0])
@@ -42,10 +55,20 @@ function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visib
         console.log('onInput', event.target.files)
         console.log(fileInputEl.current.files)
         setSelectedFile(fileInputEl.current.files[0])
+        setFileError(null)
     }
 
     const handleRemoveFile = () => {
         setSelectedFile(null)
+        setFileError(null)
+    }
+
+    const renderErrors = () => {
+        return (
+            <div className={classes.errorsRow} style={{ visibility: fileError ? 'visible' : 'hidden' }}>
+                {fileError}
+            </div>
+        )
     }
 
     const renderDropFile = () => {
@@ -87,6 +110,7 @@ function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visib
                             <ExternalLinkSvg className={classes.externalLinkIcon} />
                         </div>
                     </div>
+                    {renderErrors()}
                     {selectedFile ? renderSelectedFileBox() : renderDropFile()}
                     <input
                         type='file'
@@ -173,7 +197,9 @@ const useStyles = createUseStyles(theme => ({
         },
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '1.5625rem 0',
+        /* padding: '1.5625rem 0', */
+        /* padding: '0.75rem 0 2.375rem 0', */
+        paddingTop: '0.5rem',
         fontWeight: '500',
     },
     checkSampleText: {
@@ -189,6 +215,14 @@ const useStyles = createUseStyles(theme => ({
         '& path': {
             strokeWidth: '3',
         },
+    },
+    errorsRow: {
+        color: 'red',
+        display: 'flex',
+        alignItems: 'center',
+        /* textAlign: 'center', */
+        height: '2.375rem',
+        padding: '0 0.25rem 0.25rem 0.25rem',
     },
     fileBox: {
         height: '21.6875rem',
@@ -215,11 +249,11 @@ const useStyles = createUseStyles(theme => ({
             borderRadius: theme.defaultBorderRadius,
         },
         '& > .file-drop-target.file-drop-dragging-over-target': {
-            color: '#ff6e40',
-            boxShadow: `0 0 13px 3px ${theme.colorWarning}`,
+            color: theme.colorSuccess,
+            boxShadow: `0 0 13px 3px ${theme.colorSuccess}`,
             '& svg path': {
-                stroke: theme.colorWarning,
-                fill: theme.colorWarning,
+                stroke: theme.colorSuccess,
+                fill: theme.colorSuccess,
             },
         },
     },

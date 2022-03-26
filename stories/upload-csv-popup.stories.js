@@ -22,6 +22,7 @@ export const Default = Template.bind({})
 export const WithFile = Template.bind({})
 WithFile.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+
     const file = new File(['hello world'], 'hello.csv')
 
     await userEvent.upload(canvas.getByTestId('file-select-input'), file)
@@ -44,18 +45,21 @@ WithLongSpacesFile.play = async ({ canvasElement }) => {
 }
 
 // todo
-/* export const BadFileType = Template.bind({})
- * BadFileType.play = async ({ canvasElement }) => {
- *     const canvas = within(canvasElement)
- *     const file = new File(['hello'], 'hello.png', { type: 'image/png' })
- *
- *     await userEvent.upload(canvas.getByTestId('file-select-input'), file)
- *     await userEvent.click(canvas.getByText('Extract Data'))
- * } */
+export const BadFileType = Template.bind({})
+BadFileType.play = async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const content = 'non text string'
+    const file = new File([new Uint8Array(content.split('').map(char => char.charCodeAt(0)))], 'hello.png', {
+        type: 'image/png',
+    })
+
+    await userEvent.upload(canvas.getByTestId('file-select-input'), file)
+    await userEvent.click(canvas.getByText('Extract Data'))
+}
 
 // todo
-/* export const MultipleFiles = Template.bind({})
- * MultipleFiles.play = async ({ canvasElement }) => {
+/* export const MultipleFilesNotAllowed = Template.bind({})
+ * MultipleFilesNotAllowed.play = async ({ canvasElement }) => {
  *     const canvas = within(canvasElement)
  *     const files = [new File(['hello world'], 'hello.csv'), new File(['foo bar'], 'foobar.csv')]
  *
