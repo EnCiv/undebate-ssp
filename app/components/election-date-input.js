@@ -145,12 +145,14 @@ export default function ElectionDateInput(props) {
                         onBlur={e => blurDateInput(e.target.value)}
                         placeholder='mm/dd/yyyy'
                         defaultValue={defaultValue}
+                        key='input'
                     />
                     <button
                         disabled={disabled}
                         type='button'
                         className={classes.datePickerButton}
                         onClick={datePickerButtonOnClick}
+                        key='button'
                     >
                         <SvgCalendar className={classes.icon} />
                     </button>
