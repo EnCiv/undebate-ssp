@@ -4,58 +4,125 @@ import { createUseStyles } from 'react-jss'
 import ObjectID from 'isomorphic-mongo-objectid'
 import cx from 'classnames'
 import { FileDrop } from 'react-file-drop'
+import _ from 'lodash'
 import FileSvg from '../svgr/file'
 import ExternalLinkSvg from '../svgr/external-link'
 
 function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visible }) {
-    const UNABLE_TO_READ_FILE = 'Unable to read file. Please confirm this is a csv file.'
+    const GENERAL_ERROR = 'Unable to extract data from file. Please compare this file with the sample file.'
+    const UNABLE_TO_READ_FILE_ERROR = 'Unable to read file. Please confirm this is a csv file.'
+    const TOO_MANY_FILES_ERROR = 'Too many files, please only upload one file at a time.'
+    const MISSING_HEADERS_ERROR = 'File is missing required headers. Please include name, email, office, and region.'
+    const REQUIRED_COLUMNS = ['name', 'email', 'office']
+
     const classes = useStyles()
     const fileInputEl = useRef(null)
     const [selectedFile, setSelectedFile] = useState(null)
     const [fileError, setFileError] = useState(null)
 
-    const handleTextFile = fileContents => {
-        console.log('file contents: ', fileContents)
-        if (fileContents === 'non text string') {
-            console.log('setting unable to read')
-            setFileError(UNABLE_TO_READ_FILE)
-        } else {
-            fileContents.split('\n').forEach(row => {
-                console.log(row)
+    const extractCsvData = fileContents => {
+        const rows = fileContents.split('\n')
+        const headers = rows
+            .shift()
+            .split(',')
+            .map(val => _.camelCase(val))
+
+        const data = []
+        if (validateHeaders(headers)) {
+            rows.forEach(row => {
+                data.push(
+                    row.split(',').reduce((rowObj, item, idx) => {
+                        rowObj[headers[idx]] = item
+                        return rowObj
+                    }, {})
+                )
             })
+        } else {
+            setFileError(MISSING_HEADERS_ERROR)
+        }
+        console.log(data)
+        return data
+    }
+
+    const validateHeaders = headers => {
+        let valid = true
+        REQUIRED_COLUMNS.forEach(reqCol => {
+            if (!headers.includes(reqCol)) {
+                console.log(reqCol, headers)
+                valid = false
+            }
+        })
+        return valid
+    }
+
+    const handleEmptyElectionTable = csvData => {
+        console.log(electionObj)
+        csvData.forEach(rowObj => {
+            if (!Object.keys(rowObj).includes('uniqueId')) {
+                rowObj.uniqueId = ObjectID().toString()
+            }
+
+            electionMethods.upsert({ candidates: { [rowObj.uniqueId]: rowObj } })
+        })
+    }
+
+    const handleTextFile = fileContents => {
+        if (fileContents === 'non text string') {
+            setFileError(UNABLE_TO_READ_FILE_ERROR)
+        } else {
+            // todo reset file here too
+            const csvData = extractCsvData(fileContents)
+            // todo handle diff election tables here
+            handleEmptyElectionTable(csvData)
         }
     }
 
-    const handleExtractClick = () => {
+    const handleExtractClick = event => {
+        event.preventDefault()
+        setFileError(null)
         const reader = new FileReader()
-        // todo handle read errors here
         reader.onload = () => {
-            setFileError(null)
-            handleTextFile(reader.result)
+            try {
+                handleTextFile(reader.result)
+            } catch (exc) {
+                setFileError(GENERAL_ERROR)
+            }
         }
         reader.onerror = () => {
-            console.error('error', reader.error)
-            setFileError(UNABLE_TO_READ_FILE)
+            setFileError(UNABLE_TO_READ_FILE_ERROR)
         }
         reader.readAsText(selectedFile)
     }
 
     const handleFileDrop = (files, event) => {
         event.preventDefault()
-        setFileError(null)
         console.log('onDrop', files[0], event.target)
-        // todo handle multiple files here, don't set selectedFile
-        setSelectedFile(files[0])
         fileInputEl.current.files = files
-        console.log(fileInputEl.current.files)
+        handleFiles()
     }
 
     const onFileChange = event => {
         event.preventDefault()
         console.log('onInput', event.target.files)
         console.log(fileInputEl.current.files)
-        setSelectedFile(fileInputEl.current.files[0])
+        handleFiles()
+    }
+
+    const handleFiles = () => {
         setFileError(null)
+        console.log('filesLength: ', fileInputEl.current.files.length)
+        if (fileInputEl.current.files && fileInputEl.current.files.length > 1) {
+            setFileError(TOO_MANY_FILES_ERROR)
+            setSelectedFile(null)
+            fileInputEl.current.files = null
+        } else if (fileInputEl.current.files && fileInputEl.current.files.length === 0) {
+            setSelectedFile(null)
+            fileInputEl.current.files = null
+        } else {
+            setSelectedFile(fileInputEl.current.files[0])
+            fileInputEl.current.files = selectedFile
+            setFileError(null)
+        }
     }
 
     const handleRemoveFile = () => {

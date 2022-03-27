@@ -12,20 +12,31 @@ const Template = (args, context) => {
     const { electionOM } = context
     const { defaultValue, ...otherArgs } = args
     const [electionObj, electionMethods] = electionOM
-    useEffect(() => defaultValue && electionMethods.upsert(defaultValue), [defaultValue])
+    useEffect(() => defaultValue && electionMethods.upsert({ candidates: defaultValue }), [defaultValue])
 
-    return <UploadCSVPopup visible='true' electionOM={electionOM} {...otherArgs} />
+    return <UploadCSVPopup visible='true' electionObj={electionObj} electionMethods={electionMethods} {...otherArgs} />
 }
 
+// todo fix unique key error on load of storybook
 export const Default = Template.bind({})
 
-export const WithFile = Template.bind({})
-WithFile.play = async ({ canvasElement }) => {
+// todo (maybe copy this into Upload CSV stories in addition to this, to test popup close)
+export const EmptyTableNoUniqueIds = Template.bind({})
+EmptyTableNoUniqueIds.args = { defaultValue: {} }
+EmptyTableNoUniqueIds.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    const file = new File(['hello world'], 'hello.csv')
+    await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)
+    await userEvent.click(canvas.getByText('Extract Data'))
+}
 
-    await userEvent.upload(canvas.getByTestId('file-select-input'), file)
+export const EmptyTableWithUniqueIds = Template.bind({})
+EmptyTableWithUniqueIds.args = { defaultValue: {} }
+EmptyTableWithUniqueIds.play = async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await userEvent.upload(canvas.getByTestId('file-select-input'), withUniqueIdsFile)
+    await userEvent.click(canvas.getByText('Extract Data'))
 }
 
 export const WithLongFileName = Template.bind({})
@@ -44,7 +55,14 @@ WithLongSpacesFile.play = async ({ canvasElement }) => {
     await userEvent.upload(canvas.getByTestId('file-select-input'), file)
 }
 
-// todo
+export const FileMissingHeaders = Template.bind({})
+FileMissingHeaders.play = async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await userEvent.upload(canvas.getByTestId('file-select-input'), missingHeaders)
+    await userEvent.click(canvas.getByText('Extract Data'))
+}
+
 export const BadFileType = Template.bind({})
 BadFileType.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -57,21 +75,28 @@ BadFileType.play = async ({ canvasElement }) => {
     await userEvent.click(canvas.getByText('Extract Data'))
 }
 
-// todo
-/* export const MultipleFilesNotAllowed = Template.bind({})
- * MultipleFilesNotAllowed.play = async ({ canvasElement }) => {
- *     const canvas = within(canvasElement)
- *     const files = [new File(['hello world'], 'hello.csv'), new File(['foo bar'], 'foobar.csv')]
- *
- *     await userEvent.upload(canvas.getByTestId('file-select-input'), files)
- * } */
+const noUniqueIdsFile = new File(
+    [
+        `Name,Email,Office
+Diana Russel,felicia.reid@example.com,Posuere sed
+Jacob Jones,navaeh.simmons@example.com,Eu at`,
+    ],
+    'no unique ids.csv'
+)
 
-// todo
-/* export const HappyPathExport = Template.bind({})
- * HappyPathExport.play = async ({ canvasElement }) => {
- *     const canvas = within(canvasElement)
- *     const file = new File(['hello world'], 'happy path.csv')
- *
- *     await userEvent.upload(canvas.getByTestId('file-select-input'), file)
- *     await userEvent.click(canvas.getByText('Extract Data'))
- * } */
+const withUniqueIdsFile = new File(
+    [
+        `UniqueId,Name,Email,Office
+61e34ba4dd28d45f2c6c66be,Diana Russel,felicia.reid@example.com,Posuere sed
+61e34bb17ad05c2b9003f600,Jacob Jones,navaeh.simmons@example.com,Eu at`,
+    ],
+    'with unique ids.csv'
+)
+
+const missingHeaders = new File(
+    [
+        `Diana Russel,felicia.reid@example.com,Posuere sed
+Jacob Jones,navaeh.simmons@example.com,Eu at`,
+    ],
+    'missing headers.csv'
+)
