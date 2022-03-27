@@ -80,7 +80,7 @@ export default function SignInSignUp(props) {
                 <button className={cx(classes.btn, isLogIn && classes.disabled)} onClick={e => methods.signup()}>
                     Sign Up
                 </button>
-                <button className={cx(classes.btn, !isLogIn && classes.disabled)} onClick={e => methods.signup()}>
+                <button className={cx(classes.btn, !isLogIn && classes.disabled)} onClick={e => methods.login()}>
                     Log In
                 </button>
             </div>
@@ -94,7 +94,7 @@ export default function SignInSignUp(props) {
                 <div className={classes.checkTerm}>
                     <input type='checkbox' name='agreed' onClick={e => methods.onChangeAgree(e.target.checked)} />
                     <label className={classes.agreeTermLabel}>
-                        I agree to the{' '}
+                        I agree to the
                         <a href='https://enciv.org/terms' target='_blank' className={classes.aLinkTerm}>
                             Term of Service
                         </a>
@@ -103,7 +103,7 @@ export default function SignInSignUp(props) {
             </div>
             <div>
                 {state.error && <div style={{ color: '#fec215', textAlign: 'center' }}>{state.error}</div>}
-                {state.info && <div>{state.info}</div>}
+                {state.info && <div style={{ color: '#fec215', textAlign: 'center' }}>{state.info}</div>}
                 {state.success && <div style={{ color: '#fec215', textAlign: 'center' }}>{state.success}</div>}
             </div>
         </div>
@@ -147,8 +147,9 @@ const useStyles = createUseStyles({
     },
     aLinkTerm: {
         color: '#fec215',
+        marginLeft: '2%',
         textDecoration: 'none',
-        fontSize: '0.8rem',
+        fontSize: '1rem',
         '&:hover': {
             color: '#FFFFFF',
             cursor: 'pointer',
@@ -189,7 +190,6 @@ const useStyles = createUseStyles({
         background: 'rgba(255, 255, 255, 0.8)',
         border: 'none',
         height: '5vh',
-        color: '#FFFFFF',
         marginBottom: '2vh',
         borderRadius: '0.5rem',
         paddingLeft: '5%',
@@ -223,12 +223,12 @@ const useStyles = createUseStyles({
         width: '100%',
         margin: '0 auto',
         textAlign: 'center',
-        display: 'flex',
         alignItems: 'center',
     },
     agreeTermLabel: {
+        width: '100%',
         color: '#FFFFFF',
-        fontSize: '0.8rem',
+        fontSize: '1rem',
         marginLeft: '2%',
     },
     disabled: {

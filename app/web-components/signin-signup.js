@@ -1,8 +1,8 @@
+////https://github.com/EnCiv/undebate-ssp/issues/108
 'use strict'
 
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
-import theme from '../theme'
 
 import SigninSignupCom from '../components/signin-signup'
 
@@ -34,10 +34,6 @@ function SigninSignup(props) {
 
 const useStyles = createUseStyles({
     join: {
-        backgroundColor: theme.colorPrimary,
-        fontFamily: theme.defaultFontFamily,
-        borderRadius: '5%',
-        border: 'none',
         position: 'absolute',
         left: '50%',
         top: '50%',
