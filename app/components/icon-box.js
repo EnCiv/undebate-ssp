@@ -6,6 +6,7 @@ import cx from 'classnames'
 import SvgFitsInside from '../svgr/fits-inside'
 import SvgAutomate from '../svgr/automate'
 import SvgShortFormat from '../svgr/short-format'
+import { size } from 'lodash'
 const icons = {
     SvgFitsInside: SvgFitsInside,
     SvgAutomate: SvgAutomate,
@@ -20,33 +21,46 @@ function IconBox(props) {
     const Icon3 = icons[iconName] || SvgShortFormat
     return (
         <>
-            <div className='iconBox'>
+            <div className={classes.iconBox}>
                 <div className={cx(className, classes.background)} style={style}>
-                    <Icon />
+                    <Icon className={classes.userImage} />
                 </div>
-                <div>
+                <div className={classes.text}>
                     <h2>{subject}</h2>
                     <p>{description}</p>
                 </div>
             </div>
+            {/* </div> */}
         </>
     )
 }
 
 const useStyles = createUseStyles({
+    iconBox: {
+        width: '21rem',
+    },
     userImage: {
-        height: '70%',
-        width: '70%',
+        height: '100%',
+        width: '100%',
+        display: 'block',
     },
     background: {
-        background: 'white',
-        borderRadius: '2rem',
+        background: '#FFFFFF',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '3.25rem',
-        width: '3.25rem',
+        height: '21rem',
+        width: '21rem',
+        borderRadius: '1rem',
+        padding: '1rem',
     },
+    text: {
+        color: 'black',
+        '& h2': {
+            fontSize: '2rem',
+        },
+    },
+    /* Frame 875694 */
 })
 
 export default IconBox
