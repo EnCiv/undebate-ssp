@@ -14,7 +14,15 @@ const Template = (args, context) => {
     const [electionObj, electionMethods] = electionOM
     useEffect(() => defaultValue && electionMethods.upsert({ candidates: defaultValue }), [defaultValue])
 
-    return <UploadCSVPopup visible='true' electionObj={electionObj} electionMethods={electionMethods} {...otherArgs} />
+    return (
+        <UploadCSVPopup
+            visible='true'
+            electionObj={electionObj}
+            electionMethods={electionMethods}
+            closePopup={() => console.log('close popup called')}
+            {...otherArgs}
+        />
+    )
 }
 
 // todo fix unique key error on load of storybook
