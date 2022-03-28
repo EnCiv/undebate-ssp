@@ -569,7 +569,6 @@ function renderSomething(){
 <details>
     <summary>Prettier makes some spacing and the use of quotes and a few other things consistent across the project.</summary>
 
-
 It's really handy when using Visual Studio Code (see below) to be able to just save the file and have the indenting and formatting automatically fixed up. This can help find problems sometimes, and save some of the tedium.
 
 This repo has a .vscode/settings.json file with the basic configuation for using prettier setup for this workspace. It will not override the configuration for other workspaces.
