@@ -5,6 +5,7 @@ import cx from 'classnames'
 import FilePlusSvg from '../svgr/file-plus'
 import UploadCSVPopup from './upload-csv-popup'
 
+// todo handle close of popup after extract
 function UploadCSV(props) {
     const classes = useStyles()
     const { className, style, electionOM } = props
@@ -38,6 +39,7 @@ function UploadCSV(props) {
                 electionMethods={electionMethods}
                 handleCancelClick={handleCancelClick}
                 visible={selected}
+                className={classes.popup}
             />
         </div>
     )
@@ -50,6 +52,7 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
+        position: 'relative',
     },
     filePlusIcon: {
         height: theme.iconSize,
@@ -78,5 +81,10 @@ const useStyles = createUseStyles(theme => ({
     btnSelected: {
         backgroundColor: theme.colorSecondary,
         color: 'white',
+    },
+    popup: {
+        position: 'absolute',
+        top: 'calc(100% + 0.75rem)',
+        transform: 'translateX(-25%)',
     },
 }))

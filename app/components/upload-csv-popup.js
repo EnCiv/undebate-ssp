@@ -8,7 +8,7 @@ import _ from 'lodash'
 import FileSvg from '../svgr/file'
 import ExternalLinkSvg from '../svgr/external-link'
 
-function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visible }) {
+function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visible, className, style = {} }) {
     const GENERAL_ERROR = 'Unable to extract data from file. Please compare this file with the sample file.'
     const UNABLE_TO_READ_FILE_ERROR = 'Unable to read file. Please confirm this is a csv file.'
     const TOO_MANY_FILES_ERROR = 'Too many files, please only upload one file at a time.'
@@ -166,7 +166,7 @@ function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visib
     }
 
     return (
-        <div className={classes.popup} style={{ visibility: visible ? 'visible' : 'hidden' }}>
+        <div className={cx(className, classes.popup)} style={{ visibility: visible ? 'visible' : 'hidden', ...style }}>
             <div className={classes.innerPopup}>
                 <div className={classes.popupTop}>
                     <span className={classes.provideText}>Provide Election Table</span>
