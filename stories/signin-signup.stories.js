@@ -1,4 +1,3 @@
-//https://github.com/EnCiv/undebate-ssp/issues/108
 import React from 'react'
 import SignInSignUp from '../app/components/signin-signup'
 
