@@ -8,7 +8,7 @@ import _ from 'lodash'
 import FileSvg from '../svgr/file'
 import ExternalLinkSvg from '../svgr/external-link'
 
-function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visible, className, style = {} }) {
+function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, className, style = {} }) {
     const GENERAL_ERROR = 'Unable to extract data from file. Please compare this file with the sample file.'
     const UNABLE_TO_READ_FILE_ERROR = 'Unable to read file. Please confirm this is a csv file.'
     const TOO_MANY_FILES_ERROR = 'Too many files, please only upload one file at a time.'
@@ -70,11 +70,16 @@ function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visib
         if (fileContents === 'non text string') {
             setFileError(UNABLE_TO_READ_FILE_ERROR)
         } else {
-            // todo reset file here too
             const csvData = extractCsvData(fileContents)
             // todo handle diff election tables here
             handleEmptyElectionTable(csvData)
+            handleSuccessfulExtraction()
         }
+    }
+
+    const handleSuccessfulExtraction = () => {
+        handleRemoveFile()
+        closePopup()
     }
 
     const handleExtractClick = event => {
@@ -189,7 +194,7 @@ function UploadCSVPopup({ electionObj, electionMethods, handleCancelClick, visib
                     />
                 </div>
                 <div className={classes.popupButtons}>
-                    <button type='button' className={cx(classes.btn, classes.cancelButton)} onClick={handleCancelClick}>
+                    <button type='button' className={cx(classes.btn, classes.cancelButton)} onClick={closePopup}>
                         Cancel
                     </button>
                     <button

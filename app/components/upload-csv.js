@@ -5,7 +5,6 @@ import cx from 'classnames'
 import FilePlusSvg from '../svgr/file-plus'
 import UploadCSVPopup from './upload-csv-popup'
 
-// todo handle close of popup after extract
 function UploadCSV(props) {
     const classes = useStyles()
     const { className, style, electionOM } = props
@@ -16,7 +15,7 @@ function UploadCSV(props) {
         setSelected(!selected)
     }
 
-    const handleCancelClick = () => {
+    const closePopup = () => {
         setSelected(false)
     }
 
@@ -37,7 +36,7 @@ function UploadCSV(props) {
             <UploadCSVPopup
                 electionObj={electionObj}
                 electionMethods={electionMethods}
-                handleCancelClick={handleCancelClick}
+                closePopup={closePopup}
                 visible={selected}
                 className={classes.popup}
             />
