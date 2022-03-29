@@ -26,9 +26,6 @@ export const decorators = [
                 upsert(obj) {
                     dispatch(merge({}, state, obj, { _count: state._count + 1 }))
                 },
-                areQuestionsLocked() {
-                    return state._electionsLocked
-                },
                 sendInvitation() {
                     dispatch(
                         merge(
