@@ -55,11 +55,49 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
         return valid
     }
 
+    const isEmptyTable = () => {
+        console.log('electionObj', electionObj)
+        return !(electionObj && electionObj.candidates !== undefined && Object.keys(electionObj.candidates).length > 0)
+    }
+
     const handleEmptyElectionTable = csvData => {
-        console.log(electionObj)
         csvData.forEach(rowObj => {
             if (!Object.keys(rowObj).includes('uniqueId')) {
                 rowObj.uniqueId = ObjectID().toString()
+            }
+
+            electionMethods.upsert({ candidates: { [rowObj.uniqueId]: rowObj } })
+        })
+    }
+
+    const handleExistingTable = csvData => {
+        // at this point assume electionObj and candidates exist
+        csvData.forEach(rowObj => {
+            if (!Object.keys(rowObj).includes('uniqueId')) {
+                let matchingCandidateId = null
+                Object.values(electionObj.candidates).every(cand => {
+                    if (cand.email === rowObj.email) {
+                        matchingCandidateId = cand.uniqueId
+                        return false
+                    }
+                    return true
+                })
+                if (!matchingCandidateId) {
+                    // have to do this as a separate loop so that we don't incorrectly merge two candidates with the same name
+                    Object.values(electionObj.candidates).every(cand => {
+                        if (cand.name === rowObj.name && cand.office === rowObj.office) {
+                            // note that this could produce unexpected behavior if two people with the same name are running for office and one of them changes their email
+                            matchingCandidateId = cand.uniqueId
+                            return false
+                        }
+                        return true
+                    })
+                }
+                if (matchingCandidateId) {
+                    rowObj.uniqueId = matchingCandidateId
+                } else {
+                    rowObj.uniqueId = ObjectID().toString()
+                }
             }
 
             electionMethods.upsert({ candidates: { [rowObj.uniqueId]: rowObj } })
@@ -71,8 +109,11 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
             setFileError(UNABLE_TO_READ_FILE_ERROR)
         } else {
             const csvData = extractCsvData(fileContents)
-            // todo handle diff election tables here
-            handleEmptyElectionTable(csvData)
+            if (isEmptyTable()) {
+                handleEmptyElectionTable(csvData)
+            } else {
+                handleExistingTable(csvData)
+            }
             handleSuccessfulExtraction()
         }
     }
