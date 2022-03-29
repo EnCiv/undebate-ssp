@@ -210,5 +210,14 @@
             "webComponent": "QaCreateModeratorRecorder",
             "id": "62196fd6b2eff30b70ba36e0"
         }
+    },
+    {
+        "_id": {
+            "$oid": "6241e5e5fbfee826a8715f03"
+        },
+        "path": "/undebates",
+        "subject": "Civil Server Template",
+        "description": "Civil Server Template Undebates Page",
+        "webComponent": "Undebates"
     }
 ]
