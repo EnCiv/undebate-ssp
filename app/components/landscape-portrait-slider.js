@@ -8,40 +8,45 @@ import SvgPortrait from '../svgr/portrait'
 import SvgRectangle from '../svgr/rectangle'
 import SvgHorizontalRectangle from '../svgr/horizontalrectangle'
 
+const daLink = (
+    <a
+        style={{
+            textDecorationLine: 'none',
+            color: 'grey',
+            fontFamily: 'poppins',
+        }}
+        href={'https://cc.enciv.org/country:us/organization:ucla-student-accociation/office:usac-president/2021-05-07'}
+    >
+        District Attorney Election
+    </a>
+)
 export default function LandscapePortraitSlider(props) {
     const classes = useStyles()
     const [isLandscape, setIsLandscape] = useState(true)
     const { className, style, linkObj, portraitStatement } = props
     const handelInputDesktop = () => {
         setIsLandscape(true)
-        console.log('i am working')
     }
     const handelInputPortrait = () => {
         setIsLandscape(false)
-        console.log('i am working')
     }
     return (
         <>
-            <div className={cx(isLandscape && classes.container, !isLandscape && classes.portraitContainer)}>
+            <div className={cx(isLandscape && classes.landscapeContainer, !isLandscape && classes.portraitContainer)}>
                 <iframe
                     src='https://cc.enciv.org/country:us/organization:ucla-student-accociation/office:usac-president/2021-05-07'
                     className={cx(isLandscape && classes.landscape, !isLandscape && classes.portrait)}
                 ></iframe>
             </div>
             <div className={classes.body}>
-                <div className={cx(isLandscape && classes.daContainer, !isLandscape && classes.iconContainer)}>
+                <div className={cx(isLandscape && classes.daContainer, !isLandscape && classes.iconContainerP)}>
                     <SvgRectangle className={classes.iconda} />
-                    <p
-                        href='https://cc.enciv.org/country:us/organization:ucla-student-accociation/office:usac-president/2021-05-07'
-                        className={classes.iconda}
-                    >
-                        {' '}
-                        District Attorney Election
-                    </p>{' '}
+                    <p className={classes.iconda}> {daLink}</p>
+                    <p className={classes.icondaPerson}> Windspotter, Rabiechel</p>
                 </div>
                 <div className={classes.iconContainer}>
                     <i onClick={handelInputDesktop} style={{ cursor: 'pointer' }}>
-                        <SvgDesktop className={classes.icon} />{' '}
+                        <SvgDesktop style={{ borderBottomWidth: '6px' }} className={classes.icon} />{' '}
                     </i>
                     <i onClick={handelInputPortrait} style={{ cursor: 'pointer' }}>
                         <SvgPortrait className={classes.icon} /> <SvgHorizontalRectangle />
@@ -67,37 +72,11 @@ const useStyles = createUseStyles(theme => ({
     disabled: {
         display: 'none',
     },
-    container: {
+    landscapeContainer: {
         position: 'relative',
         overflow: 'hidden',
         width: '100%',
         paddingTop: '56.25%',
-    },
-    portraitContainer: {
-        position: 'relative',
-        overflow: 'hidden',
-        width: '322 px',
-        height: '697.16px',
-        justifyContent: 'center',
-    },
-    icon: {
-        height: theme.iconSize,
-        width: theme.iconSize,
-    },
-    iconda: {
-        display: 'inline-block',
-        fontFamily: theme.defaultFontFamily,
-        fontSize: '1rem',
-        overflow: 'hidden',
-        lineHeight: '30px',
-        marginLeft: '0.5rem',
-    },
-    daContainer: {
-        position: 'relative',
-    },
-    iconContainer: {
-        position: 'relative',
-        left: '50%',
     },
     landscape: {
         position: 'absolute',
@@ -110,12 +89,58 @@ const useStyles = createUseStyles(theme => ({
     },
     portrait: {
         position: 'relative',
+        margin: 'auto',
         flex: 'auto',
+        alignSelf: 'center',
         justifyContent: 'center',
         alignContent: 'center',
         alignItems: 'center',
         verticalAlign: 'center',
         width: '322 px',
         height: '697.16px',
+    },
+    portraitContainer: {
+        position: 'relative',
+        overflow: 'hidden',
+        alignSelf: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
+        verticalAlign: 'center',
+        width: '322 px',
+        height: '697.16px',
+        justifyContent: 'center',
+        margin: 'auto',
+        left: '35%',
+    },
+    icon: {
+        height: theme.iconSize,
+        width: theme.iconSize,
+    },
+    iconda: {
+        display: 'inline-block',
+        position: 'relative',
+        fontSize: '1rem',
+        overflow: 'hidden',
+        lineHeight: '30px',
+        marginLeft: '0.5rem',
+    },
+    icondaPerson: {
+        position: 'relative',
+        fontSize: '1rem',
+        overflow: 'hidden',
+        lineHeight: '30px',
+        marginLeft: '0.5rem',
+        marginTop: '.2rem',
+    },
+    daContainer: {
+        position: 'relative',
+    },
+    iconContainer: {
+        position: 'relative',
+        left: '50%',
+    },
+    iconContainerP: {
+        position: 'relative',
+        left: '35%',
     },
 }))
