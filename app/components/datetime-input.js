@@ -6,7 +6,7 @@ import ElectionTimeInput from './election-time-input'
 import ElectionDateInput from './election-date-input'
 
 function DateTimeInput(props) {
-    const { defaultValue, className, style, onDone = () => {}, electionOM } = props
+    const { defaultValue = {}, className, style, onDone = () => {}, electionOM } = props
     const classes = useStyles()
 
     const [timeObj, setTimeObj] = useState()
