@@ -125,8 +125,10 @@ function getElectionStatusMethods(dispatch, state) {
 
     const areQuestionsLocked = () => {
         const invites = state?.moderator?.invitations
-        for (const inv of invites) {
-            if (inv.sentDate) return true
+        if (invites) {
+            for (const inv of invites) {
+                if (inv.sentDate) return true
+            }
         }
         return false
     }

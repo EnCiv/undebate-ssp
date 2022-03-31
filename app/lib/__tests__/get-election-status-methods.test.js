@@ -1178,5 +1178,10 @@ describe('election status methods', () => {
             state = {}
             expect(areQuestionsLocked()).toBe(false)
         })
+        it('should not be locked since empty obj', () => {
+            let state = {}
+            const { areQuestionsLocked } = getElectionStatusMethods(null, state)
+            expect(areQuestionsLocked()).toBe(false)
+        })
     })
 })
