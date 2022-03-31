@@ -123,6 +123,16 @@ function getElectionStatusMethods(dispatch, state) {
         return result
     }
 
+    const areQuestionsLocked = () => {
+        const invites = state?.moderator?.invitations
+        if (invites) {
+            for (const inv of invites) {
+                if (inv.sentDate) return true
+            }
+        }
+        return false
+    }
+
     const getQuestionsStatus = () => {
         if (getTimelineStatus() === 'completed' && !checkObjCompleted(state?.questions)) return countDayLeft()
         if (getTimelineStatus() === 'completed' && checkObjCompleted(state?.questions)) return 'completed'
@@ -189,6 +199,7 @@ function getElectionStatusMethods(dispatch, state) {
         getElectionTableStatus,
         getSubmissionsStatus,
         checkReminderSent,
+        areQuestionsLocked,
     }
 }
 

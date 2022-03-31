@@ -9,12 +9,11 @@ function DateTimeInput(props) {
     const { defaultValue = {}, className, style, onDone = () => {}, electionOM } = props
     const classes = useStyles()
 
-    const [timeObj, setTimeObj] = useState()
-    const [dateObj, setDateObj] = useState()
+    const [dateTimeObj] = useState({ time: { valid: false, value: '' }, date: { valid: false, value: '' } })
     const disabledRef = useRef(false)
 
     const isDateTimePassed = () => {
-        const date = new Date(`${dateObj.value} ${timeObj.value}`)
+        const date = new Date(`${dateTimeObj.date.value} ${dateTimeObj.time.value}`)
         if (Date.now() > date) {
             return true
         }
@@ -24,34 +23,37 @@ function DateTimeInput(props) {
     // Checks whether dateObj/timeObj states are: 1. valid,
     // 2. were set by the defaultValue, 3. are in the past
     const shouldBeDisabled = () => {
-        if (isDateTimePassed() && defaultValue.date === dateObj.value && defaultValue.time === timeObj.value) {
+        if (
+            isDateTimePassed() &&
+            defaultValue.date === dateTimeObj.date.value &&
+            defaultValue.time === dateTimeObj.time.value
+        ) {
             return true
         }
         return false
     }
 
     useEffect(() => {
-        if (!timeObj || !dateObj) return
+        if (!dateTimeObj.date || !dateTimeObj.time) return
 
         if (shouldBeDisabled()) {
             disabledRef.current = true
         }
 
-        const isValid = dateObj.valid && timeObj.valid
-
-        onDone({ value: { date: dateObj.value, time: timeObj.value }, valid: isValid })
-    }, [timeObj, dateObj, defaultValue])
+        const isValid = dateTimeObj.date.valid && dateTimeObj.time.valid
+        onDone({ value: { date: dateTimeObj.date.value, time: dateTimeObj.time.value }, valid: isValid })
+    }, [dateTimeObj, defaultValue])
 
     return (
         <div className={cx(className, classes.dateTimePair)} style={style}>
             <ElectionDateInput
                 defaultValue={defaultValue.date}
-                onDone={({ valid, value }) => setDateObj({ value, valid })}
+                onDone={({ valid, value }) => (dateTimeObj.date = { value, valid })}
                 disabled={disabledRef.current}
             />
             <ElectionTimeInput
                 defaultValue={defaultValue.time}
-                onDone={({ valid, value }) => setTimeObj({ value, valid })}
+                onDone={({ valid, value }) => (dateTimeObj.time = { value, valid })}
                 disabled={disabledRef.current}
             />
         </div>
