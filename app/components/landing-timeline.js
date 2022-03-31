@@ -39,14 +39,14 @@ function TemplateElectionTimeLine({
                     // used instead of useStyles to prevent jss from "collapsing"
                     // all the itemPosition classes into one
                     const itemPosition = useCss({
+                        display: 'block',
+                        position: 'relative',
                         '@media (orientation: landscape)': {
-                            position: 'relative',
                             width: 0,
                             height: 0,
                             left: `${percent}%`,
                         },
                         '@media (orientation: portrait)': {
-                            position: 'relative',
                             width: 0,
                             height: 0,
                             top: `${percent}%`,
