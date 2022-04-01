@@ -16,6 +16,15 @@ export default {
     ],
 }
 
+const noUniqueIdsFile = new File(
+    [
+        `Name,Email,Office
+Diana Russel,my.new.email@example.com,New Office
+John Smith,john.smith@example.com,Foo bar`,
+    ],
+    'no unique ids.csv'
+)
+
 const Template = (args, context) => {
     const { electionOM } = context
     const { defaultValue, ...otherArgs } = args
@@ -32,4 +41,18 @@ Clicked.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
     await userEvent.click(canvas.getByRole('button'))
+}
+
+export const SuccessfulExtractionAndClose = Template.bind({})
+SuccessfulExtractionAndClose.play = async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await new Promise(r => setTimeout(r, 1000))
+
+    await userEvent.click(canvas.getByRole('button'))
+    await new Promise(r => setTimeout(r, 1000))
+
+    await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)
+    await new Promise(r => setTimeout(r, 1000))
+
+    await userEvent.click(canvas.getByText('Extract Data'))
 }

@@ -190,6 +190,7 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
     }
 
     const renderDropFile = () => {
+        // todo add keyboard event for this
         return (
             <label htmlFor='file-select' onClick={fileSelectClick}>
                 <FileDrop onDrop={handleFileDrop} className={cx(classes.fileBox, classes.dropFileBox)}>
@@ -223,10 +224,10 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
                     <span className={classes.provideText}>Provide Election Table</span>
                     <div className={classes.checkSampleRow}>
                         <div>Upload CSV File</div>
-                        <div className={classes.checkSampleText}>
+                        <a href='/assets/csv/sample-candidate-table.csv' className={classes.checkSampleText}>
                             Check Sample &nbsp;
                             <ExternalLinkSvg className={classes.externalLinkIcon} />
-                        </div>
+                        </a>
                     </div>
                     {renderErrors()}
                     {selectedFile ? renderSelectedFileBox() : renderDropFile()}

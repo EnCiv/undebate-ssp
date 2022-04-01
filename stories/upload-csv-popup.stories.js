@@ -90,56 +90,48 @@ export const EmptyTableNoUniqueIds = Template.bind({})
 EmptyTableNoUniqueIds.args = { defaultValue: {} }
 EmptyTableNoUniqueIds.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    await new Promise(r => setTimeout(r, 1000))
 
-    setTimeout(async () => {
-        await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)
+    await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)
+    await new Promise(r => setTimeout(r, 1000))
 
-        setTimeout(async () => {
-            await userEvent.click(canvas.getByText('Extract Data'))
-        }, 1000)
-    }, 1000)
+    await userEvent.click(canvas.getByText('Extract Data'))
 }
 
 export const EmptyTableWithUniqueIds = Template.bind({})
 EmptyTableWithUniqueIds.args = { defaultValue: {} }
 EmptyTableWithUniqueIds.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    await new Promise(r => setTimeout(r, 1000))
 
-    setTimeout(async () => {
-        await userEvent.upload(canvas.getByTestId('file-select-input'), withUniqueIdsFile)
+    await userEvent.upload(canvas.getByTestId('file-select-input'), withUniqueIdsFile)
+    await new Promise(r => setTimeout(r, 1000))
 
-        setTimeout(async () => {
-            await userEvent.click(canvas.getByText('Extract Data'))
-        }, 1000)
-    }, 1000)
+    await userEvent.click(canvas.getByText('Extract Data'))
 }
 
 export const ExistingTableWithUniqueIds = Template.bind({})
 ExistingTableWithUniqueIds.args = { ...existingTableOldEmailArgs }
 ExistingTableWithUniqueIds.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    await new Promise(r => setTimeout(r, 1000))
 
-    setTimeout(async () => {
-        await userEvent.upload(canvas.getByTestId('file-select-input'), withUniqueIdsFile)
+    await userEvent.upload(canvas.getByTestId('file-select-input'), withUniqueIdsFile)
+    await new Promise(r => setTimeout(r, 1000))
 
-        setTimeout(async () => {
-            await userEvent.click(canvas.getByText('Extract Data'))
-        }, 1000)
-    }, 1000)
+    await userEvent.click(canvas.getByText('Extract Data'))
 }
 
 export const ExistingTableMatchEmail = Template.bind({})
 ExistingTableMatchEmail.args = { ...existingTableNewEmailArgs }
 ExistingTableMatchEmail.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    await new Promise(r => setTimeout(r, 1000))
 
-    setTimeout(async () => {
-        await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)
+    await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)
+    await new Promise(r => setTimeout(r, 1000))
 
-        setTimeout(async () => {
-            await userEvent.click(canvas.getByText('Extract Data'))
-        }, 1000)
-    }, 1000)
+    await userEvent.click(canvas.getByText('Extract Data'))
 }
 
 export const ExistingTableMatchNameOffice = Template.bind({})
@@ -147,76 +139,83 @@ ExistingTableMatchNameOffice.args = { ...existingTableOldEmailArgs }
 ExistingTableMatchNameOffice.args.defaultValue['61e34ba4dd28d45f2c6c66be'].office = 'New Office'
 ExistingTableMatchNameOffice.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    await new Promise(r => setTimeout(r, 1000))
 
-    setTimeout(async () => {
-        await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)
+    await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)
+    await new Promise(r => setTimeout(r, 1000))
 
-        setTimeout(async () => {
-            await userEvent.click(canvas.getByText('Extract Data'))
-        }, 1000)
-    }, 1000)
+    await userEvent.click(canvas.getByText('Extract Data'))
 }
 
 export const ExistingTableNewData = Template.bind({})
 ExistingTableNewData.args = { ...existingTableOldEmailArgs }
 ExistingTableNewData.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    await new Promise(r => setTimeout(r, 1000))
 
-    setTimeout(async () => {
-        await userEvent.upload(canvas.getByTestId('file-select-input'), allNewDataFile)
+    await userEvent.upload(canvas.getByTestId('file-select-input'), allNewDataFile)
+    await new Promise(r => setTimeout(r, 1000))
 
-        setTimeout(async () => {
-            await userEvent.click(canvas.getByText('Extract Data'))
-        }, 1000)
-    }, 1000)
+    await userEvent.click(canvas.getByText('Extract Data'))
 }
 
 export const WithLongFileName = Template.bind({})
 WithLongFileName.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    await new Promise(r => setTimeout(r, 1000))
     const file = new File(['hello world'], 'ThisIsARatherLongFileNameWithNoSpacesInIt.csv')
 
-    setTimeout(async () => {
-        await userEvent.upload(canvas.getByTestId('file-select-input'), file)
-    }, 1000)
+    await userEvent.upload(canvas.getByTestId('file-select-input'), file)
 }
 
 export const WithLongSpacesFile = Template.bind({})
 WithLongSpacesFile.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    await new Promise(r => setTimeout(r, 1000))
     const file = new File(['hello world'], 'This is a long file name with spaces.csv')
 
-    setTimeout(async () => {
-        await userEvent.upload(canvas.getByTestId('file-select-input'), file)
-    }, 1000)
+    await userEvent.upload(canvas.getByTestId('file-select-input'), file)
 }
 
 export const FileMissingHeaders = Template.bind({})
 FileMissingHeaders.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    await new Promise(r => setTimeout(r, 1000))
 
-    setTimeout(async () => {
-        await userEvent.upload(canvas.getByTestId('file-select-input'), missingHeaders)
+    await userEvent.upload(canvas.getByTestId('file-select-input'), missingHeaders)
+    await new Promise(r => setTimeout(r, 1000))
 
-        setTimeout(async () => {
-            await userEvent.click(canvas.getByText('Extract Data'))
-        }, 1000)
-    }, 1000)
+    await userEvent.click(canvas.getByText('Extract Data'))
 }
 
 export const BadFileType = Template.bind({})
 BadFileType.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    await new Promise(r => setTimeout(r, 1000))
     const content = 'non text string'
     const file = new File([new Uint8Array(content.split('').map(char => char.charCodeAt(0)))], 'hello.png', {
         type: 'image/png',
     })
 
-    setTimeout(async () => {
-        await userEvent.upload(canvas.getByTestId('file-select-input'), file)
+    await userEvent.upload(canvas.getByTestId('file-select-input'), file)
 
-        setTimeout(async () => {
-            await userEvent.click(canvas.getByText('Extract Data'))
-        }, 1000)
-    }, 1000)
+    await userEvent.click(canvas.getByText('Extract Data'))
+}
+
+export const UploadMultipleFiles = Template.bind({})
+UploadMultipleFiles.args = { defaultValue: {} }
+UploadMultipleFiles.play = async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await new Promise(r => setTimeout(r, 1000))
+
+    await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)
+    await new Promise(r => setTimeout(r, 1000))
+
+    await userEvent.click(canvas.getByText('Extract Data'))
+    await new Promise(r => setTimeout(r, 1000))
+
+    await userEvent.upload(canvas.getByTestId('file-select-input'), withUniqueIdsFile)
+    await new Promise(r => setTimeout(r, 1000))
+
+    await userEvent.click(canvas.getByText('Extract Data'))
 }
