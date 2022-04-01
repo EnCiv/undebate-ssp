@@ -43,11 +43,12 @@ const Template2 = (args, context) => {
     Object.assign(electionMethods, customMethods)
     useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
     return (
-        <div className={useStyles().dateInput}>
+        <div style={{ width: '15rem' }}>
             <DateTimeInput
                 {...args}
                 defaultValue={electionObj.electionDateTimeStory}
                 onDone={({ valid, value }) => {
+                    console.log(value)
                     electionMethods.upsert({ electionDateTimeStory: value })
                     onDone({ valid, value })
                 }}
@@ -65,7 +66,3 @@ WithDefaultValue2.args = {
         electionDateTimeStory: { date: '11/12/2022', time: '12:00 AM' },
     },
 }
-
-const useStyles = createUseStyles({
-    dateInput: { width: '15rem' },
-})
