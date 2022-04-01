@@ -7,16 +7,12 @@ export default {
     component: DateTimeInput,
 }
 
-const Template = args => {
-    const [doneState, setDoneState] = useState({ valid: false, value: { time: '', date: '' } })
+const Template = (args, context) => {
+    const { onDone } = context
 
     return (
         <div style={{ width: '50%' }}>
-            <DateTimeInput onDone={done => setDoneState(done)} {...args} />
-            <h3>OnDone Values:</h3>
-            <div style={{ margin: '10px' }}>Is valid datetime: {`${doneState.valid}`}</div>
-            <div style={{ margin: '10px' }}>Date: {`${doneState.value.date}`}</div>
-            <div style={{ margin: '10px' }}>Time: {`${doneState.value.time}`}</div>
+            <DateTimeInput onDone={onDone} {...args} />
         </div>
     )
 }
