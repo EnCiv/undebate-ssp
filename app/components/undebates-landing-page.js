@@ -1,7 +1,6 @@
 import React from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
 // import HaveAQuestion from './have-a-question'
-// import Footer from './footer'
 
 export default function UndebatesLandingPage() {
     const classes = useStyles()
