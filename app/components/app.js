@@ -3,6 +3,8 @@
 import React from 'react'
 import { hot } from 'react-hot-loader'
 import { ErrorBoundary } from 'civil-client'
+import { ThemeProvider } from 'react-jss'
+import theme from '../theme'
 import WebComponents from '../web-components'
 import Footer from './footer'
 
@@ -17,12 +19,14 @@ class App extends React.Component {
             let { iota, ...newProps } = this.props
             Object.assign(newProps, iota)
             return (
-                <ErrorBoundary>
-                    <div style={{ position: 'relative' }}>
-                        <WebComponents key='web-component' webComponent={iota.webComponent} {...newProps} />
-                        <Footer key='footer' />
-                    </div>
-                </ErrorBoundary>
+                <ThemeProvider theme={theme}>
+                    <ErrorBoundary>
+                        <div style={{ position: 'relative' }}>
+                            <WebComponents key='web-component' webComponent={iota.webComponent} {...newProps} />
+                            <Footer key='footer' />
+                        </div>
+                    </ErrorBoundary>
+                </ThemeProvider>
             )
         } else
             return (

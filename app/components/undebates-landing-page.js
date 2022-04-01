@@ -1,6 +1,6 @@
 import React from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
-// import HaveAQuestion from './have-a-question'
+import HaveAQuestion from './have-a-question'
 
 export default function UndebatesLandingPage() {
     const classes = useStyles()
@@ -18,7 +18,7 @@ export default function UndebatesLandingPage() {
                 <div className={classes.iconDiv}>Icon 2</div>
                 <div className={classes.iconDivLast}>Icon 3</div>
             </div>
-            {/* <HaveAQuestion style={{ marginBotton: '2rem' }} /> */}
+            <HaveAQuestion />
         </div>
     )
 }
