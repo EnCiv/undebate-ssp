@@ -38,10 +38,10 @@ function IconBox(props) {
 
 const useStyles = createUseStyles({
     iconBox: {
-        width: '21rem',
+        width: '100%',
     },
     userImage: {
-        height: '100%',
+        height: 'auto',
         width: '100%',
         display: 'block',
     },
@@ -51,11 +51,12 @@ const useStyles = createUseStyles({
         justifyContent: 'center',
         alignItems: 'center',
         height: 'auto',
-        width: '19rem',
+        width: '100%',
         borderRadius: '1rem',
-        padding: '3rem',
+        padding: '1rem',
         position: 'relative',
         zIndex: '2',
+        boxSizing: 'border-box',
     },
     text: {
         color: 'black',
@@ -63,15 +64,21 @@ const useStyles = createUseStyles({
             fontSize: '2rem',
         },
         textAlign: 'center',
+        padding: '1rem',
+        boxSizing: 'border-box',
         lineHeight: '3rem',
         paddingTop: '2rem',
-        marginLeft: '0.5rem',
         backgroundColor: 'rgba(116, 112, 255, 0.1)',
-        width: '23rem',
+        width: '90%',
         borderRadius: '1rem',
         position: 'relative',
         bottom: '2.5rem',
         zIndex: '1',
+        left: '5%',
+
+        '& p': {
+            opacity: '50%',
+        },
     },
     /* Frame 875694 */
 })

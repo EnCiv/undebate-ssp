@@ -8,7 +8,11 @@ export default {
     component: IconBox,
 }
 
-const Template = args => <IconBox {...args} />
+const Template = args => (
+    <div style={{ width: '25rem' }}>
+        <IconBox {...args} />
+    </div>
+)
 
 export const Default = Template.bind({})
 Default.args = {}
