@@ -40,7 +40,6 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
         } else {
             setFileError(MISSING_HEADERS_ERROR)
         }
-        console.log(data)
         return data
     }
 
@@ -48,7 +47,6 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
         let valid = true
         REQUIRED_COLUMNS.forEach(reqCol => {
             if (!headers.includes(reqCol)) {
-                console.log(reqCol, headers)
                 valid = false
             }
         })
@@ -56,7 +54,6 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
     }
 
     const isEmptyTable = () => {
-        console.log('electionObj', electionObj)
         return !(electionObj && electionObj.candidates !== undefined && Object.keys(electionObj.candidates).length > 0)
     }
 
@@ -143,22 +140,18 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
 
     const handleFileDrop = (files, event) => {
         event.preventDefault()
-        console.log('onDrop', files[0], event.target)
         fileInputEl.current.files = files
         handleFiles()
     }
 
     const onFileChange = event => {
         event.preventDefault()
-        console.log('onFileChange', event.target.files)
-        console.log(fileInputEl.current.files)
         handleFiles()
         return false
     }
 
     const handleFiles = () => {
         setFileError(null)
-        console.log('filesLength: ', fileInputEl.current.files.length)
         if (fileInputEl.current.files && fileInputEl.current.files.length > 1) {
             handleRemoveFile(TOO_MANY_FILES_ERROR)
         } else if (fileInputEl.current.files && fileInputEl.current.files.length === 0) {
@@ -173,12 +166,7 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
     const handleRemoveFile = newFileError => {
         setSelectedFile(null)
         setFileError(newFileError)
-        fileInputEl.current.files = null
-    }
-
-    const fileSelectClick = event => {
-        event.preventDefault()
-        fileInputEl.current.click()
+        fileInputEl.current.value = null
     }
 
     const renderErrors = () => {
@@ -192,7 +180,7 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
     const renderDropFile = () => {
         // todo add keyboard event for this
         return (
-            <label htmlFor='file-select' onClick={fileSelectClick}>
+            <label htmlFor='file-select'>
                 <FileDrop onDrop={handleFileDrop} className={cx(classes.fileBox, classes.dropFileBox)}>
                     <div className={classes.dropFileDiv}>
                         <FileSvg className={classes.fileIcon} />
