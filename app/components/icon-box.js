@@ -22,7 +22,7 @@ function IconBox(props) {
     return (
         <>
             <div className={classes.iconBox}>
-                <div className={cx(className, classes.background)} style={style}>
+                <div className={cx(className, classes.iconWrapper)} style={style}>
                     <Icon className={classes.userImage} />
                 </div>
                 <div className={classes.text}>
@@ -30,6 +30,7 @@ function IconBox(props) {
                     <p>{description}</p>
                 </div>
             </div>
+
             {/* </div> */}
         </>
     )
@@ -44,21 +45,33 @@ const useStyles = createUseStyles({
         width: '100%',
         display: 'block',
     },
-    background: {
+    iconWrapper: {
         background: '#FFFFFF',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '21rem',
-        width: '21rem',
+        height: 'auto',
+        width: '19rem',
         borderRadius: '1rem',
-        padding: '1rem',
+        padding: '3rem',
+        position: 'relative',
+        zIndex: '2',
     },
     text: {
         color: 'black',
         '& h2': {
             fontSize: '2rem',
         },
+        textAlign: 'center',
+        lineHeight: '3rem',
+        paddingTop: '2rem',
+        marginLeft: '0.5rem',
+        backgroundColor: 'rgba(116, 112, 255, 0.1)',
+        width: '23rem',
+        borderRadius: '1rem',
+        position: 'relative',
+        bottom: '2.5rem',
+        zIndex: '1',
     },
     /* Frame 875694 */
 })
