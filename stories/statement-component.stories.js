@@ -1,5 +1,6 @@
 import React from 'react'
 import StatementComponent from '../app/components/statement-component'
+import { createUseStyles } from 'react-jss'
 
 export default {
     title: 'StatementComponent',
