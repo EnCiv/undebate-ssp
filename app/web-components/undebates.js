@@ -3,15 +3,13 @@
 
 import React from 'react'
 
-import UndebatesCom from '../components/undebates'
+import UndebatesCom from '../components/undebates-landing-page'
 
 function Undebates(props) {
     return (
-        <>
-            <div>
-                <UndebatesCom />
-            </div>
-        </>
+        <div>
+            <UndebatesCom />
+        </div>
     )
 }
 

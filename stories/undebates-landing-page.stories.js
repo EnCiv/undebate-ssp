@@ -1,5 +1,5 @@
 import React from 'react'
-import Undebates from '../app/components/undebates'
+import Undebates from '../app/components/undebates-landing-page'
 
 export default {
     title: 'Undebates',
