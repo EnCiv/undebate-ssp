@@ -221,6 +221,7 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
                     <input
                         type='file'
                         id='file-select'
+                        key='1'
                         data-testid='file-select-input'
                         style={{ display: 'none' }}
                         ref={fileInputEl}

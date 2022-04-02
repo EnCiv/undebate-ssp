@@ -82,10 +82,8 @@ const Template = (args, context) => {
     )
 }
 
-// todo fix unique key error on load of storybook
 export const Default = Template.bind({})
 
-// todo (maybe copy this into Upload CSV stories in addition to this, to test popup close)
 export const EmptyTableNoUniqueIds = Template.bind({})
 EmptyTableNoUniqueIds.args = { defaultValue: {} }
 EmptyTableNoUniqueIds.play = async ({ canvasElement }) => {
