@@ -8,7 +8,7 @@ import UndebatesCom from '../components/undebates-landing-page'
 function Undebates(props) {
     return (
         <div>
-            <UndebatesCom />
+            <UndebatesCom {...props} />
         </div>
     )
 }

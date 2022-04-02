@@ -1,8 +1,13 @@
 import React from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
 import HaveAQuestion from './have-a-question'
+import Statement from './statement-component'
 
-export default function UndebatesLandingPage() {
+// function Statement() {
+//     return <div></div>
+// }
+
+export default function UndebatesLandingPage(props) {
     const classes = useStyles()
     return (
         <div>
@@ -18,6 +23,7 @@ export default function UndebatesLandingPage() {
                 <div className={classes.iconDiv}>Icon 2</div>
                 <div className={classes.iconDivLast}>Icon 3</div>
             </div>
+            <Statement {...props.statement[0]} />
             <HaveAQuestion />
         </div>
     )
