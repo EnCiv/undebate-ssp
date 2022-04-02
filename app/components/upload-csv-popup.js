@@ -178,7 +178,6 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
     }
 
     const renderDropFile = () => {
-        // todo add keyboard event for this
         return (
             <label htmlFor='file-select'>
                 <FileDrop onDrop={handleFileDrop} className={cx(classes.fileBox, classes.dropFileBox)}>

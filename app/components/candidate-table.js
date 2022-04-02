@@ -5,6 +5,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import Submit from './submit'
 import CandidateTableInput from './candidate-table-input'
+import UploadCSV from './upload-csv'
 
 export default function CandidateTable(props) {
     const classes = useStyles()
@@ -60,6 +61,7 @@ export default function CandidateTable(props) {
                     </p>
                     <p>Choose one of these formats to porivide the Candidate Table:</p>
                     <div className={classes.actionButtons}>
+                        <UploadCSV electionOM={electionOM} />
                         <Submit
                             name='Edit Manually'
                             className={cx(classes.opButton, editable && classes.editable)}
@@ -126,5 +128,12 @@ const useStyles = createUseStyles(theme => ({
     editable: {
         backgroundColor: theme.inputFieldBackgroundColor,
     },
-    actionButtons: {},
+    actionButtons: {
+        display: 'flex',
+        alignItems: 'center',
+        boxSizing: 'border-box',
+        '& div': {
+            paddingRight: '0.625rem',
+        },
+    },
 }))
