@@ -8,7 +8,7 @@ import theme from '../theme'
 import WebComponents from '../web-components'
 import Footer from './footer'
 
-//import '../../assets/styles/index.css'
+// import '../../assets/styles/index.css'
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends React.Component {

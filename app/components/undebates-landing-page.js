@@ -2,16 +2,15 @@ import React from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
 import HaveAQuestion from './have-a-question'
 import Statement from './statement-component'
-
-// function Statement() {
-//     return <div></div>
-// }
+import theme from '../theme'
 
 export default function UndebatesLandingPage(props) {
     const classes = useStyles()
     return (
         <div>
-            <h1 style={{ textAlign: 'center', padding: '2% 0' }}>Debates Landing Page (Component)</h1>
+            <h1 style={{ textAlign: 'center', padding: '2% 0', fontFamily: theme.defaultFontFamily }}>
+                Debates Landing Page (Component)
+            </h1>
             <div className={classes.iconbox}>
                 <h2>Landscape Portrait Slider (Component)</h2>
             </div>
@@ -37,6 +36,7 @@ const useStyles = createUseStyles({
         textAlign: 'center',
         color: 'purple',
         marginBottom: '2%',
+        fontFamily: theme.defaultFontFamily,
     },
     iconbox: {
         width: '100%',
@@ -48,6 +48,7 @@ const useStyles = createUseStyles({
         display: 'flex',
         justifyContent: 'center',
         padding: '3% 0',
+        fontFamily: theme.defaultFontFamily,
     },
     iconDiv: {
         width: '18.75rem',

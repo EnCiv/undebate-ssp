@@ -213,23 +213,6 @@
     },
     {
         "_id": {
-            "$oid": "6244c31ed2347d8172a23d40"
-        },
-        "path": "/undebates",
-        "subject": "Civil Server Template",
-        "description": "Civil Server Template Undebates Page",
-        "webComponent": {
-            "webComponent": "Undebates",
-            "statement": [
-                {
-                    "subject": "Subject goes here",
-                    "description": "Description goes here"
-                }
-            ]
-        }
-    },
-    {
-        "_id": {
             "$oid": "6244c31ed2347d8172a23d41"
         },
         "path": "/undebates-new",
