@@ -3,17 +3,17 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import {
-    SvgSolidTriangleArrow,
-    SvgElectionCreated,
-    SvgElectionPaper,
-    SvgAccepted,
-    SvgVideoSubmitted,
-    SvgReminderSent,
-    SvgXCircle,
-    SvgElectionGrid,
-    SvgElectionLive,
-    SvgContainer,
-} from './lib/svg.js'
+    SolidTriangleArrow as SvgSolidTriangleArrow,
+    ElectionCreated as SvgElectionCreated,
+    ElectionPaper as SvgElectionPaper,
+    Accepted as SvgAccepted,
+    VideoSubmitted as SvgVideoSubmitted,
+    ReminderSent as SvgReminderSent,
+    XCircle as SvgXCircle,
+    ElectionGrid as SvgElectionGrid,
+    ElectionLive as SvgElectionLive,
+    Container as SvgContainer,
+} from '../../dist/svgr/index'
 
 import cx from 'classnames'
 import { useCss } from 'react-use'
