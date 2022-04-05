@@ -68,6 +68,7 @@ function DateTimeInput(props) {
                 defaultValue={dateTimeObj.time.value}
                 onDone={({ valid, value }) => {
                     dateTimeObj.time = { value, valid }
+                    console.log(valid, value)
                     onDone({
                         value: { date: dateTimeObj.date.value, time: dateTimeObj.time.value },
                         valid: dateTimeObj.date.valid && dateTimeObj.time.valid,

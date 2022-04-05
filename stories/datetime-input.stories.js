@@ -37,6 +37,7 @@ const Template2 = (args, context) => {
     const { defaultElectionObj, customMethods = {}, ...otherArgs } = args
     const [electionObj, electionMethods] = electionOM
     Object.assign(electionMethods, customMethods)
+    console.log(defaultElectionObj)
     useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
     return (
         <div style={{ width: '15rem' }}>
@@ -44,7 +45,6 @@ const Template2 = (args, context) => {
                 {...args}
                 defaultValue={electionObj.electionDateTimeStory}
                 onDone={({ valid, value }) => {
-                    console.log(value)
                     electionMethods.upsert({ electionDateTimeStory: value })
                     onDone({ valid, value })
                 }}
@@ -59,6 +59,6 @@ Default2.args = {}
 export const WithDefaultValue2 = Template2.bind({})
 WithDefaultValue2.args = {
     defaultElectionObj: {
-        electionDateTimeStory: { date: '11/12/2022', time: '12:00 AM' },
+        electionDateTimeStory: { date: '11/12/2022', time: '12:00' },
     },
 }
