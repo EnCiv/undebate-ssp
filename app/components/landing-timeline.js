@@ -13,7 +13,7 @@ import {
     ElectionGrid as SvgElectionGrid,
     ElectionLive as SvgElectionLive,
     Container as SvgContainer,
-} from '../../dist/svgr/index'
+} from '../svgr'
 
 import cx from 'classnames'
 import { useCss } from 'react-use'
