@@ -18,7 +18,8 @@ import {
 import cx from 'classnames'
 import { useCss } from 'react-use'
 
-const templateItemTextWidth = '10.75rem'
+const portraitWidth = '45rem'
+const smallScreenWidth = '102rem'
 
 // TODO: Use when implementing issue #19
 function TemplateElectionTimeLine({
@@ -28,28 +29,42 @@ function TemplateElectionTimeLine({
     Meter, // component
 }) {
     const classes = useStyles()
-    const minWidth = `calc(${positions.reduce(
-        (prev, { text }) => prev + (text != null ? 1 : 0),
-        0
-    )} * ${templateItemTextWidth} * 1.625)`
+
+    const onSecondRow = []
+    const percentTextPosition = positions.filter(({ text }) => text).map(({ percent }) => percent)
+    const getIncTextPercent = (percent, inc) =>
+        percentTextPosition[percentTextPosition.findIndex(v => v === percent) + inc]
+
     return (
         <div className={cx(className, classes.templateBar)} style={style}>
-            <Meter minWidth={minWidth}>
+            <Meter>
                 {positions.map(({ svg, text, percent }, i) => {
+                    const textTooClose =
+                        text &&
+                        (Math.abs(getIncTextPercent(percent, -1) - percent) < 32 ||
+                            Math.abs(getIncTextPercent(percent, 1) - percent) < 32)
+                    const secondRow = i != 0 && textTooClose && !onSecondRow.includes(getIncTextPercent(percent, -1))
+                    if (secondRow && percent != null) {
+                        onSecondRow.push(percent)
+                    }
                     // used instead of useStyles to prevent jss from "collapsing"
                     // all the itemPosition classes into one
                     const itemPosition = useCss({
                         display: 'block',
                         position: 'relative',
-                        '@media (orientation: landscape)': {
-                            width: 0,
-                            height: 0,
+                        width: 0,
+                        height: 0,
+                        [`@media (min-width: ${portraitWidth})`]: {
                             left: `${percent}%`,
                         },
-                        '@media (orientation: portrait)': {
-                            width: 0,
-                            height: 0,
+                        [`@media (max-width: ${portraitWidth})`]: {
                             top: `${percent}%`,
+                        },
+                    })
+                    const templateTextMargin = useCss({
+                        marginTop: '1rem',
+                        [`@media (min-width: ${portraitWidth}) and (max-width: ${smallScreenWidth})`]: {
+                            marginTop: secondRow ? '8rem' : '1rem',
                         },
                     })
                     return (
@@ -57,7 +72,7 @@ function TemplateElectionTimeLine({
                             <div className={classes.templateItem}>
                                 <div className={classes.templateIcon}>{svg}</div>
                                 {text ? <SvgSolidTriangleArrow className={classes.arrow} /> : ''}
-                                <div className={classes.templateText}>{text}</div>
+                                <div className={cx(templateTextMargin, classes.templateText)}>{text}</div>
                             </div>
                         </span>
                     )
@@ -70,12 +85,12 @@ function TemplateElectionTimeLine({
 function TimelineText({ className, primaryText, secondaryText, position, align = 'center' }) {
     const classes = timelineTextUseStyles({ position, align })
     const alignmentTransform = useCss({
-        '@media (orientation: landscape)': {
+        [`@media (min-width: ${portraitWidth})`]: {
             transform: { right: 'translateX(-90%)', left: 'initial', center: 'translateX(-45%)' }[align],
             textAlign: align,
         },
-        '@media (orientation: portrait)': {
-            transform: 'translate(30%, -100%)',
+        [`@media (max-width: ${portraitWidth})`]: {
+            transform: 'translate(35%, -80%)',
             textAlign: 'center',
         },
     })
@@ -91,8 +106,8 @@ function TimelineText({ className, primaryText, secondaryText, position, align =
     )
 }
 
-function LandingTimelineBar({ children, minWidth }) {
-    const classes = landingbarUseStyles({ minWidth })
+function LandingTimelineBar({ children }) {
+    const classes = landingbarUseStyles()
     return <div className={classes.landingBar}> {children} </div>
 }
 
@@ -132,7 +147,7 @@ export default function LandingTimeline({ className, style }) {
                     percent: 30,
                 },
                 { svg: <SvgVideoSubmitted />, percent: 36 },
-                { svg: <SvgElectionGrid />, percent: 50 },
+                { svg: <SvgElectionGrid />, percent: 46 },
                 { svg: <SvgReminderSent />, percent: 53 },
                 {
                     svg: <SvgXCircle />,
@@ -174,6 +189,12 @@ const useStyles = createUseStyles(theme => ({
     templateBar: {
         margin: '1rem',
         height: '11rem',
+        [`@media (min-width: ${portraitWidth}) and (max-width: ${smallScreenWidth})`]: {
+            height: '18rem',
+        },
+        [`@media (max-width: ${portraitWidth})`]: {
+            height: '100rem',
+        },
     },
 
     templateIcon: {
@@ -182,10 +203,15 @@ const useStyles = createUseStyles(theme => ({
         justifyContent: 'center',
         alignItems: 'center',
 
-        '@media (orientation: landscape)': {
+        '& svg': {
+            width: '3rem',
+            height: 'auto',
+        },
+
+        [`@media (min-width: ${portraitWidth})`]: {
             transform: 'translateX(-30%)',
         },
-        '@media (orientation: portrait)': {
+        [`@media (max-width: ${portraitWidth})`]: {
             transform: 'translateX(-20%)',
         },
 
@@ -193,16 +219,16 @@ const useStyles = createUseStyles(theme => ({
         backgroundColor: 'white',
         width: '2.5rem',
         height: '2.5rem',
-        padding: '0.2rem',
+        padding: '0.25rem',
     },
-    templateText: { position: 'absolute', width: templateItemTextWidth, marginTop: '1rem' },
+    templateText: { position: 'absolute', width: '10.75rem' },
     templateItem: {
         position: 'absolute',
         transform: 'translateY(-20%)',
     },
     arrow: {
         position: 'absolute',
-        '@media (orientation: portrait)': {
+        [`@media (max-width: ${portraitWidth})`]: {
             transform: 'rotate(90deg)',
             left: '80%',
             bottom: '25%',
@@ -211,17 +237,15 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const landingbarUseStyles = createUseStyles(theme => ({
-    landingBar: ({ minWidth }) => ({
-        '@media (orientation: landscape)': {
-            height: '1.875rem',
-            minWidth: minWidth,
-        },
-        '@media (orientation: portrait)': {
-            width: '1.875rem',
+    landingBar: {
+        height: '1.875rem',
+        [`@media (max-width: ${portraitWidth})`]: {
             height: '100rem',
+            width: '1.875rem',
         },
+        width: '100%',
         backgroundColor: theme.colorPrimary,
-    }),
+    },
 }))
 
 const timelineTextUseStyles = createUseStyles(theme => ({
