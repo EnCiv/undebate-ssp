@@ -22,6 +22,8 @@ function UploadCSV(props) {
     return (
         <div className={cx(className, classes.wrapper)} style={style}>
             <button
+                id='upload-csv-button'
+                data-testid='upload-csv-button'
                 type='button'
                 className={cx(
                     classes.btn,
@@ -82,8 +84,8 @@ const useStyles = createUseStyles(theme => ({
         color: 'white',
     },
     popup: {
-        position: 'absolute',
-        top: 'calc(100% + 0.75rem)',
-        transform: 'translateX(-25%)',
+        position: 'fixed',
+        top: `calc((100vh - ${theme.csvPopupHeight}) / 2)`,
+        left: `calc((100vw - ${theme.csvPopupWidth}) / 2)`,
     },
 }))

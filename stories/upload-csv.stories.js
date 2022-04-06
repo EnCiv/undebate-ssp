@@ -8,8 +8,15 @@ export default {
     component: UploadCSV,
     decorators: [
         Story => (
-            <div style={{ marginLeft: '15rem' }}>
-                {/* marginLeft so that popup doesn't move button to the right when clicked */}
+            <div>
+                There is a defect with storybook interactions that causes the select file dialog to show up when the
+                interactions upload a file to the input. The story still works, but you will have to press escape or
+                click cancel to close the dialog and see the rest of the story. See this issue on github see if they
+                have fixed this yet:
+                <br />
+                <a href='https://github.com/storybookjs/storybook/issues/17882'>
+                    https://github.com/storybookjs/storybook/issues/17882
+                </a>
                 <Story />
             </div>
         ),
@@ -40,7 +47,7 @@ export const Clicked = Template.bind({})
 Clicked.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    await userEvent.click(canvas.getByRole('button'))
+    await userEvent.click(canvas.getByTestId('upload-csv-button'))
 }
 
 export const SuccessfulExtractionAndClose = Template.bind({})
@@ -48,7 +55,7 @@ SuccessfulExtractionAndClose.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await new Promise(r => setTimeout(r, 1000))
 
-    await userEvent.click(canvas.getByRole('button'))
+    await userEvent.click(canvas.getByTestId('upload-csv-button'))
     await new Promise(r => setTimeout(r, 1000))
 
     await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)

@@ -205,7 +205,11 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
     }
 
     return (
-        <div className={cx(className, classes.popup)} style={{ visibility: visible ? 'visible' : 'hidden', ...style }}>
+        <div
+            id='upload-csv-popup'
+            className={cx(className, classes.popup)}
+            style={{ visibility: visible ? 'visible' : 'hidden', ...style }}
+        >
             <div className={classes.innerPopup}>
                 <div className={classes.popupTop}>
                     <span className={classes.provideText}>Provide Election Table</span>
@@ -233,6 +237,7 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
                         Cancel
                     </button>
                     <button
+                        id='extract-csv-button'
                         type='button'
                         disabled={!selectedFile}
                         className={cx(
@@ -270,8 +275,8 @@ const useStyles = createUseStyles(theme => ({
     popup: {
         backgroundColor: theme.colorSecondary,
         color: 'white',
-        width: '29.6875rem',
-        height: '41.25rem',
+        width: theme.csvPopupWidth,
+        height: theme.csvPopupHeight,
         display: 'flex',
         flexDirection: 'column',
         /* borderRadius: theme.defaultBorderRadius, // this is smaller than the radius on figma */
@@ -304,8 +309,6 @@ const useStyles = createUseStyles(theme => ({
         },
         justifyContent: 'space-between',
         alignItems: 'center',
-        /* padding: '1.5625rem 0', */
-        /* padding: '0.75rem 0 2.375rem 0', */
         paddingTop: '0.5rem',
         fontWeight: '500',
     },
@@ -327,7 +330,6 @@ const useStyles = createUseStyles(theme => ({
         color: 'red',
         display: 'flex',
         alignItems: 'center',
-        /* textAlign: 'center', */
         height: '2.375rem',
         padding: '0 0.25rem 0.25rem 0.25rem',
     },
@@ -401,10 +403,6 @@ const useStyles = createUseStyles(theme => ({
         ...theme.button,
         borderRadius: theme.defaultBorderRadius,
         padding: '0.5rem',
-        /* color: 'white', */
-        /* backgroundColor: theme.colorSecondary, */
-        /* backgroundColor: 'rgba(255, 255, 255, 0)', */
-        /* border: '2px solid rgba(255, 255, 255, 0.1)', */
     },
     popupButtons: {
         width: '100%',

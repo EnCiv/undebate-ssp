@@ -4,9 +4,6 @@
     "description": "Undebate Self Service Portal",
     "main": "index.js",
     "scripts": {
-        "db-up": "start /b mongod --quiet --dbpath ./tmp/db --port 27017",
-        "db-up-linux": "sudo mongod --quiet --dbpath ./tmp/db --port 27017 &",
-        "db-down": "mongo --eval \"db.getSiblingDB('admin').shutdownServer(); quit()\"",
         "dev": "bash postinstall.sh && echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"sleep 20 && npm run hot-server\" \"sleep 15 && npm run hot-client\"",
         "hot-client": "webpack-dev-server --config webpack-dev.config.js --devtool source-map --host 0.0.0.0",
         "hot-server": "nodemon --inspect dist/start.js",

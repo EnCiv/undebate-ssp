@@ -6,6 +6,21 @@ import UploadCSVPopup from '../app/components/upload-csv-popup'
 export default {
     title: 'Upload CSV Popup',
     component: UploadCSVPopup,
+    decorators: [
+        Story => (
+            <div>
+                There is a defect with storybook interactions that causes the select file dialog to show up when the
+                interactions upload a file to the input. The story still works, but you will have to press escape or
+                click cancel to close the dialog and see the rest of the story. See this issue on github see if they
+                have fixed this yet:
+                <br />
+                <a href='https://github.com/storybookjs/storybook/issues/17882'>
+                    https://github.com/storybookjs/storybook/issues/17882
+                </a>
+                <Story />
+            </div>
+        ),
+    ],
 }
 
 const noUniqueIdsFile = new File(

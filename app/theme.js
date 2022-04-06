@@ -58,6 +58,9 @@ const theme = {
     colorSubmitted: '#7470FF',
     colorSent: 'rgba(38, 45, 51, 0.2)',
     colorDeadlineMissed: '#FCA105',
+
+    csvPopupHeight: '41.25rem',
+    csvPopupWidth: '29.6875rem',
 }
 
 export default theme

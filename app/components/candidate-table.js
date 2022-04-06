@@ -132,7 +132,7 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         boxSizing: 'border-box',
-        '& div': {
+        '& > div': {
             paddingRight: '0.625rem',
         },
     },
