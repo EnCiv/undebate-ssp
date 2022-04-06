@@ -22,7 +22,8 @@ export default function UndebatesLandingPage(props) {
                 <div className={classes.iconDiv}>Icon 2</div>
                 <div className={classes.iconDivLast}>Icon 3</div>
             </div>
-            <Statement {...props.statement[0]} />
+
+            <Statement {...props.statement[0]} className={classes.statement} />
             <HaveAQuestion />
         </div>
     )
@@ -69,6 +70,11 @@ const useStyles = createUseStyles({
         fontSize: '1.5rem',
         color: 'purple',
         marginRight: 'none',
+    },
+    statement: {
+        width: '48rem',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
     '@media (orientation: portrait)': {
         iconbox: {
