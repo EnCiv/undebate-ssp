@@ -1,2 +1,0 @@
-kFZH7ebgmeVznzpA
-export MONGODB="mongodb+srv://undebate-jams-version:kFZH7ebgmeVznzpA@cluster0.ozlh5.mongodb.net/dev?retryWrites=true&w=majority"
