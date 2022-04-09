@@ -35,7 +35,7 @@ export default function makeChapter(Component) {
             Object.assign(electionMethods, customMethods)
             useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
 
-            return <Component onDone={onDone} electionOM={electionOM} {...args} />
+            return <Component onDone={onDone} electionOM={electionOM} {...otherArgs} />
         }
         test.args = args
         return test
