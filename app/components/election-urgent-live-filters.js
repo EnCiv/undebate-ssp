@@ -48,7 +48,7 @@ function ElectionUrgentLiveFilters(props) {
     }
 
     return (
-        <div>
+        <div className={classes.electionUrgentLiveFilter}>
             <div className={classes.circleContainer}>
                 <div className={classes.tooltip}>
                     <SvgElectionUrgentFilter
@@ -73,6 +73,9 @@ function ElectionUrgentLiveFilters(props) {
 }
 
 const useStyles = createUseStyles(theme => ({
+    electionUrgentLiveFilter: {
+        width: '2em',
+    },
     circle: {
         margin: 'auto',
         width: '1em',
@@ -109,11 +112,11 @@ const useStyles = createUseStyles(theme => ({
         zIndex: '1',
     },
     circleContainer: {
-        display: 'flex',
+        display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '1.5em',
-        width: '1.5em',
+        height: '2em',
+        width: '2em',
     },
 }))
 
