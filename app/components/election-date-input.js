@@ -194,6 +194,7 @@ const useStyles = createUseStyles(theme => ({
         fontFamily: theme.defaultFontFamily,
         color: props.disabled ? 'grey' : 'black',
         cursor: props.disabled ? 'not-allowed' : 'pointer',
+        width: '100%',
     }),
     datePicker: {
         position: 'absolute',
