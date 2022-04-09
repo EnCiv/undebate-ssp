@@ -13,18 +13,23 @@ export const Template = (args, context) => {
     return <ElectionUrgentLiveFilters onDone={onDone} {...args} />
 }
 
-// export const ElectionUrgentFilterAfterClick = Template.bind({})
-// ElectionUrgentFilterAfterClick.args = {
-//     name: 'Urgent filter selected',
-// }
+export const ElectionUrgentFilterAfterClick = Template.bind({})
+ElectionUrgentFilterAfterClick.args = {
+    name: 'Urgent filter selected',
+    urgentFilter: true,
+    liveFilter: false,
+}
 
-// export const ElectionLiveFilterAfterClick = Template.bind({})
-// ElectionLiveFilterAfterClick.args = {
-//     name: 'Live filter selected',
+export const ElectionLiveFilterAfterClick = Template.bind({})
+ElectionLiveFilterAfterClick.args = {
+    name: 'Live filter selected',
+    liveFilter: true,
+    urgentFilter: false,
+}
 
-// }
-
-// export const ElectionNoFiltersClicked = Template.bind({})
-// ElectionNoFiltersClicked.args = {
-//     name: 'No filter selected'
-// }
+export const ElectionNoFiltersClicked = Template.bind({})
+ElectionNoFiltersClicked.args = {
+    name: 'No filter selected',
+    urgentFilter: false,
+    liveFilter: false,
+}
