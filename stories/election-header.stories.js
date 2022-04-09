@@ -1,24 +1,19 @@
 // https://github.com/EnCiv/undebate-ssp/issues/18
-
-import React, { useState } from 'react'
-import ElectionHeader from '../app/components/election-header'
+import UnitUnderTest from '../app/components/election-header'
+import makeChapter from './make-chapter'
+const mC = makeChapter(UnitUnderTest)
 
 export default {
     title: 'Election Header',
-    component: ElectionHeader,
+    component: UnitUnderTest,
 }
 
-const Template = (args, context) => {
-    const { onDone } = context
-    return (
-        <div>
-            <ElectionHeader {...context} {...args} onDone={onDone} />
-        </div>
-    )
-}
-
-export const ElectionHeaderTest = Template.bind({})
-ElectionHeaderTest.args = {
+export const Normal = mC({
     defaultValue: 2,
     elections: ['District Attorney Election 1', 'District Attorney Election 2', 'District Attorney Election 3'],
-}
+})
+
+export const Different = mC({
+    defaultValue: 0,
+    elections: ['President', 'Vice President', 'King'],
+})
