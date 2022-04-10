@@ -12,7 +12,7 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
     const GENERAL_ERROR = 'Unable to extract data from file. Please compare this file with the sample file.'
     const UNABLE_TO_READ_FILE_ERROR = 'Unable to read file. Please confirm this is a csv file.'
     const TOO_MANY_FILES_ERROR = 'Too many files, please only upload one file at a time.'
-    const MISSING_HEADERS_ERROR = 'File is missing required headers. Please include name, email, office, and region.'
+    const MISSING_HEADERS_ERROR = "File is missing required headers. Please include 'name', 'email', and 'office'."
     const REQUIRED_COLUMNS = ['name', 'email', 'office']
 
     const classes = useStyles()
@@ -39,18 +39,13 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
             })
         } else {
             setFileError(MISSING_HEADERS_ERROR)
+            return null
         }
         return data
     }
 
     const validateHeaders = headers => {
-        let valid = true
-        REQUIRED_COLUMNS.forEach(reqCol => {
-            if (!headers.includes(reqCol)) {
-                valid = false
-            }
-        })
-        return valid
+        return REQUIRED_COLUMNS.every(reqCol => headers.includes(reqCol))
     }
 
     const isEmptyTable = () => {
@@ -106,12 +101,14 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
             setFileError(UNABLE_TO_READ_FILE_ERROR)
         } else {
             const csvData = extractCsvData(fileContents)
-            if (isEmptyTable()) {
-                handleEmptyElectionTable(csvData)
-            } else {
-                handleExistingTable(csvData)
+            if (csvData) {
+                if (isEmptyTable()) {
+                    handleEmptyElectionTable(csvData)
+                } else {
+                    handleExistingTable(csvData)
+                }
+                handleSuccessfulExtraction()
             }
-            handleSuccessfulExtraction()
         }
     }
 
@@ -261,7 +258,7 @@ const useStyles = createUseStyles(theme => ({
     fileIcon: {
         width: '4rem',
         height: '4rem',
-        margin: '20px 0',
+        margin: '1.25rem 0',
     },
     btn: {
         ...theme.button,

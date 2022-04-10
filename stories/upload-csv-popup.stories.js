@@ -58,6 +58,15 @@ Leja Arroyo,leja.arroyo@random.com,Random Office`,
     'all new data file.csv'
 )
 
+const otherDataFile = new File(
+    [
+        `Ballot Name,Office,Slate,Email Address,Type,unique_id,recorder_url,recorder_url_updated,viewer_url,viewer_url_updated
+Breeze Velazquez,Academic Affairs Commission,For the People,breezey06@fake.enciv.org,candidate,5e99f99a4cc6803ba8c1864f,,,,
+Alice Naland,Campus Events Commission,Independent,alicenaland@fake.enciv.org,candidate,5e99f99a4cc6803ba8c18651,,,,`,
+    ],
+    'other data file.csv'
+)
+
 const existingTableOldEmailArgs = {
     defaultValue: {
         '61e34ba4dd28d45f2c6c66be': {
@@ -228,6 +237,18 @@ UploadMultipleFiles.play = async ({ canvasElement }) => {
     await new Promise(r => setTimeout(r, 1000))
 
     await userEvent.upload(canvas.getByTestId('file-select-input'), withUniqueIdsFile)
+    await new Promise(r => setTimeout(r, 1000))
+
+    await userEvent.click(canvas.getByText('Extract Data'))
+}
+
+export const OtherDataFile = Template.bind({})
+OtherDataFile.play = async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await new Promise(r => setTimeout(r, 1000))
+
+    await userEvent.upload(canvas.getByTestId('file-select-input'), otherDataFile)
+
     await new Promise(r => setTimeout(r, 1000))
 
     await userEvent.click(canvas.getByText('Extract Data'))
