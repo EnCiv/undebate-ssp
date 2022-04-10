@@ -166,6 +166,11 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
         fileInputEl.current.value = null
     }
 
+    const close = () => {
+        setFileError(null)
+        closePopup()
+    }
+
     const renderErrors = () => {
         return (
             <div className={classes.errorsRow} style={{ visibility: fileError ? 'visible' : 'hidden' }}>
@@ -230,7 +235,7 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
                     />
                 </div>
                 <div className={classes.popupButtons}>
-                    <button type='button' className={cx(classes.btn, classes.cancelButton)} onClick={closePopup}>
+                    <button type='button' className={cx(classes.btn, classes.cancelButton)} onClick={close}>
                         Cancel
                     </button>
                     <button
