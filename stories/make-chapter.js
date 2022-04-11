@@ -1,3 +1,4 @@
+// the makeChapter concept is posted as an issue at: https://github.com/storybookjs/storybook/issues/17936
 import React, { useEffect } from 'react'
 
 export default function makeChapter(Component) {

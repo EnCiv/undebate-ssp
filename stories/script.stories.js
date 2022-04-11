@@ -1,16 +1,14 @@
 // https://github.com/EnCiv/undebate-ssp/issues/49
 
+// do not change 'component', do change the name of the file to import from to be tested. It must export default the function
+import component from '../app/components/script'
 import makeChapter from './make-chapter'
-
-// do not change UnitUnderTest, do change the name of the file to import from to be tested. It must export default the function
-import UnitUnderTest from '../app/components/script'
-
-const mC = makeChapter(UnitUnderTest)
+const mC = makeChapter(component)
 
 export default {
     title: 'Script Page', // name that shows up in left column list of stories
-    component: UnitUnderTest, // do not change
-    argTypes: { electionOM: { type: 'object' } }, // change as appropriate
+    argTypes: {}, // change as appropriate
+    component, // do not change
 }
 
 // exported is the name of the chapter of testing under the story
