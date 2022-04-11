@@ -1,12 +1,12 @@
 // https://github.com/EnCiv/undebate-ssp/issue/57
 
-import UnitUnderTest from '../app/components/undebate'
+import component from '../app/components/undebate'
 import makeChapter from './make-chapter'
-const mC = makeChapter(UnitUnderTest)
+const mC = makeChapter(component)
 
 export default {
     title: 'Undebate',
-    component: UnitUnderTest,
+    component,
     argTypes: {},
 }
 
