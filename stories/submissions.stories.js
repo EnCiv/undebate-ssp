@@ -1,28 +1,17 @@
 // https://github.com/EnCiv/undebate-ssp/issues/56
 
-import React, { useEffect } from 'react'
-import Submissions from '../app/components/submissions'
-
+import UnitUnderTest from '../app/components/submissions'
+import makeChapter from './make-chapter'
+const mC = makeChapter(UnitUnderTest)
 export default {
     title: 'Submissions',
-    component: Submissions,
+    component: UnitUnderTest,
     argTypes: {},
 }
 
 const today = new Date()
 
-const Template = (args, context) => {
-    const { electionOM } = context
-    const [electionObj, electionMethods] = electionOM
-    const { defaultElectionObj, customMethods = {}, ...otherArgs } = args
-    Object.assign(electionMethods, customMethods)
-
-    useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
-    return <Submissions electionOM={electionOM} {...otherArgs} />
-}
-
-export const Default = Template.bind({})
-Default.args = {
+export const Default = mC({
     defaultElectionObj: {
         candidates: {
             '61e76bbefeaa4a25840d85d0': {
@@ -171,15 +160,13 @@ Default.args = {
             },
         },
     },
-}
+})
 
-export const DeadlineMissed = Template.bind({})
-DeadlineMissed.args = {
+export const DeadlineMissed = mC({
     defaultElectionObj: {
         ...Default.args.defaultElectionObj,
         timeline: { candidateSubmissionDeadline: { 0: { date: '2022-01-07T22:09:32.952Z', sent: true } } },
     },
-}
+})
 
-export const Empty = Template.bind({})
-Empty.args = {}
+export const Empty = mC({})
