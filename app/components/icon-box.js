@@ -30,8 +30,6 @@ function IconBox(props) {
                     <p>{description}</p>
                 </div>
             </div>
-
-            {/* </div> */}
         </>
     )
 }

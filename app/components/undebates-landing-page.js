@@ -1,7 +1,10 @@
 import React from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
-import HaveAQuestion from './have-a-question'
+import IconBox from './icon-box'
 import Statement from './statement-component'
+// import LandingTimeline from './landing-timeline'
+import FrequentlyAskedQuestions from './frequently-asked-questions'
+import HaveAQuestion from './have-a-question'
 import theme from '../theme'
 
 export default function UndebatesLandingPage(props) {
@@ -17,13 +20,18 @@ export default function UndebatesLandingPage(props) {
             <div className={classes.undebates}>
                 <h2>What are Undebates? (Component)</h2>
             </div>
+
             <div className={classes.iconbox}>
-                <div className={classes.iconDiv}>Icon 1</div>
+                <div className={classes.iconDiv}>
+                    <IconBox />
+                </div>
                 <div className={classes.iconDiv}>Icon 2</div>
                 <div className={classes.iconDivLast}>Icon 3</div>
             </div>
 
             <Statement {...props.statement[0]} className={classes.statement} />
+            {/* <LandingTimeline /> */}
+            <FrequentlyAskedQuestions />
             <HaveAQuestion />
         </div>
     )
