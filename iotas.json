@@ -222,8 +222,20 @@
             "webComponent": "Undebates",
             "statement": [
                 {
-                    "subject": "Subject goes here",
-                    "description": "Description goes here"
+                    "subject": "Statement subject goes here",
+                    "description": "Statement description goes here"
+                }
+            ],
+            "iconBox": [
+                {
+                    "subject": "iconBox subject goes here",
+                    "description": "iconBox description goes here"
+                }
+            ],
+            "fag": [
+                {
+                    "subject": "iconBox subject goes here",
+                    "description": "iconBox description goes here"
                 }
             ]
         }

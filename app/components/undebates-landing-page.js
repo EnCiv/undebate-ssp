@@ -3,14 +3,14 @@ import { createUseStyles, ThemeProvider } from 'react-jss'
 import IconBox from './icon-box'
 import Statement from './statement-component'
 // import LandingTimeline from './landing-timeline'
-import FrequentlyAskedQuestions from './frequently-asked-questions'
+import FAQ from './frequently-asked-questions'
 import HaveAQuestion from './have-a-question'
 import theme from '../theme'
 
 export default function UndebatesLandingPage(props) {
     const classes = useStyles()
     return (
-        <div>
+        <div style={{ backgroundColor: '#e9eaeb' }}>
             <h1 style={{ textAlign: 'center', padding: '2% 0', fontFamily: theme.defaultFontFamily }}>
                 Debates Landing Page (Component)
             </h1>
@@ -23,15 +23,15 @@ export default function UndebatesLandingPage(props) {
 
             <div className={classes.iconbox}>
                 <div className={classes.iconDiv}>
-                    <IconBox />
+                    <IconBox {...props.iconBox[0]} className={classes.iconBox} />
                 </div>
-                <div className={classes.iconDiv}>Icon 2</div>
-                <div className={classes.iconDivLast}>Icon 3</div>
+                {/* <div className={classes.iconDiv}>Icon 2</div>
+                <div className={classes.iconDivLast}>Icon 3</div> */}
             </div>
 
             <Statement {...props.statement[0]} className={classes.statement} />
             {/* <LandingTimeline /> */}
-            <FrequentlyAskedQuestions />
+            <FAQ {...props.faq} />
             <HaveAQuestion />
         </div>
     )
@@ -50,35 +50,33 @@ const useStyles = createUseStyles({
     iconbox: {
         width: '100%',
         height: 'auto',
-        backgroundColor: 'purple',
         textAlign: 'center',
-        color: '#FFFFFF',
         marginBottom: '2%',
         display: 'flex',
         justifyContent: 'center',
         padding: '3% 0',
         fontFamily: theme.defaultFontFamily,
     },
-    iconDiv: {
-        width: '18.75rem',
-        height: '30.625rem',
-        backgroundColor: 'pink',
-        borderRadius: '1.25rem',
-        paddingTop: '3%',
-        fontSize: '1.5rem',
-        color: 'purple',
-        marginRight: '5%',
-    },
-    iconDivLast: {
-        width: '18.75rem',
-        height: '30.625rem',
-        backgroundColor: 'pink',
-        borderRadius: '1.25rem',
-        paddingTop: '3%',
-        fontSize: '1.5rem',
-        color: 'purple',
-        marginRight: 'none',
-    },
+    // iconDiv: {
+    //     // width: '18.75rem',
+    //     // height: '30.625rem',
+    //     // backgroundColor: 'pink',
+    //     borderRadius: '1.25rem',
+    //     paddingTop: '3%',
+    //     fontSize: '1.5rem',
+    //     color: 'purple',
+    //     marginRight: '5%',
+    // },
+    // iconDivLast: {
+    //     width: '18.75rem',
+    //     height: '30.625rem',
+    //     backgroundColor: 'pink',
+    //     borderRadius: '1.25rem',
+    //     paddingTop: '3%',
+    //     fontSize: '1.5rem',
+    //     color: 'purple',
+    //     marginRight: 'none',
+    // },
     statement: {
         width: '48rem',
         marginLeft: 'auto',
