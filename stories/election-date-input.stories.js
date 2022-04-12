@@ -1,5 +1,5 @@
 // From issue: https://github.com/EnCiv/undebate-ssp/issues/7
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import ElectionDateInput from '../app/components/election-date-input'
 
@@ -12,22 +12,22 @@ const useStyles = createUseStyles({
     dateInput: { width: '15rem' },
 })
 
-const Template = args => {
-    const [doneMessage, setDoneMessage] = useState('')
-    const [validValue, setValid] = useState('')
-
+const Template = (args, context) => {
+    const { electionOM, onDone } = context
+    const { defaultElectionObj, customMethods = {}, ...otherArgs } = args
+    const [electionObj, electionMethods] = electionOM
+    Object.assign(electionMethods, customMethods)
+    useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
     return (
         <div className={useStyles().dateInput}>
             <ElectionDateInput
                 {...args}
+                defaultValue={electionObj.electionDateStory}
                 onDone={({ valid, value }) => {
-                    setValid(valid.toString())
-                    setDoneMessage(value.toString().substring(0, 15))
+                    electionMethods.upsert({ electionDateStory: value })
+                    onDone({ valid, value })
                 }}
             />
-            Valid: {validValue}
-            <br />
-            onDone Value: {doneMessage}
         </div>
     )
 }
@@ -36,4 +36,8 @@ export const Default = Template.bind({})
 Default.args = {}
 
 export const WithDefaultValue = Template.bind({})
-WithDefaultValue.args = { defaultValue: '11/10/2021' }
+WithDefaultValue.args = {
+    defaultElectionObj: {
+        electionDateStory: '11/12/2022',
+    },
+}
