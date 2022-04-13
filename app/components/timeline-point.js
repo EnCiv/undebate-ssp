@@ -1,11 +1,11 @@
 // https://github.com/EnCiv/undebate-ssp/issues/12
 
-import { React, useState, useEffect, useRef } from 'react'
+import { React, forwardRef, useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import Plus from '../svgr/plus'
 import DateTimeInput from './datetime-input'
 
-function TimelinePoint(props) {
+const TimelinePoint = forwardRef((props, ref) => {
     const {
         className,
         style,
@@ -16,7 +16,6 @@ function TimelinePoint(props) {
         timelineObj,
         timelineKey,
         addOne,
-        ref,
     } = props
     const [_, electionMethods] = electionOM
     const classes = useStyles()
@@ -94,7 +93,7 @@ function TimelinePoint(props) {
             </div>
         </div>
     )
-}
+})
 
 const useStyles = createUseStyles(theme => ({
     title: {

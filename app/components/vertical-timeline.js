@@ -10,9 +10,17 @@ export default function VerticalTimeline(props) {
 
     return (
         <div className={cx(className, classes.verticalBar)} style={style}>
-            {refs.map(ref => {
+            {refs.map((ref, i) => {
                 const { top, bottom } = ref.getBoundingClientRect()
-                return <div className={classes.dot} style={(top, bottom)} />
+                if (i === 0) {
+                    return (
+                        <>
+                            <div className={classes.dot} style={{ top: top + 4, bottom: bottom }} />
+                            <span className={classes.line} />
+                        </>
+                    )
+                }
+                return <div className={classes.dot} style={{ top: top + 4, bottom: bottom }} />
             })}
         </div>
     )
@@ -24,13 +32,14 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        height: '100%',
+        paddingLeft: '2rem',
+        paddingRight: '1.5rem',
     },
     line: {
         opacity: '.2',
         border: '1px solid #262D33',
-        height: '100%',
         width: '0',
+        height: '100%',
     },
     dot: {
         border: '1px solid rgba(0, 0, 0, 0.25);',

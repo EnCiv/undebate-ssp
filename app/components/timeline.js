@@ -1,17 +1,19 @@
 // https://github.com/EnCiv/undebate-ssp/issues/45
 
-import React, { useEffect, useReducer, useState } from 'react'
+import React, { useEffect, useRef, useReducer, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import ElectionCreated from './election-created'
 import Submit from './submit'
 import TimeLinePoint from './timeline-point'
+import VerticalTimeline from './vertical-timeline'
 
 export default function Timeline(props) {
     const { className, style, onDone, electionOM } = props
     const [electionObj, electionMethods] = electionOM
     const { timeline, undebateDate, electionDate } = electionObj
     const classes = useStyles(props)
+    const timelinePointRefs = useRef([])
 
     const {
         candidateDeadlineReminderEmails,
@@ -78,27 +80,37 @@ export default function Timeline(props) {
     }, [isValid, validInputs])
 
     return (
-        <div className={cx(className, classes.wrapper)} style={style}>
-            <header className={classes.heading}>
-                <span>Fill the date and times for following events to automate the undebate.</span>
-                <Submit onDone={onDone} disabled={!isValid} />
-            </header>
-            <ElectionCreated electionMetadata={electionObj} />
-            <div className={classes.container}>
-                {pointsData.map(pointData => (
-                    <TimeLinePoint
-                        {...pointData}
-                        onDone={({ valid }) => {
-                            setValidInputs({ [pointData.timelineKey]: valid })
-                        }}
-                    />
-                ))}
+        <div className={classes.timeline}>
+            <VerticalTimeline refs={timelinePointRefs.current} />
+            <div className={cx(className, classes.wrapper)} style={style}>
+                <header className={classes.heading}>
+                    <span>Fill the date and times for following events to automate the undebate.</span>
+                    <Submit onDone={onDone} disabled={!isValid} />
+                </header>
+                <ElectionCreated electionMetadata={electionObj} />
+                <div className={classes.container}>
+                    {pointsData.map((pointData, i) => (
+                        <TimeLinePoint
+                            key={i}
+                            onDone={({ valid }) => {
+                                setValidInputs({ [pointData.timelineKey]: valid })
+                            }}
+                            {...pointData}
+                            ref={el => {
+                                timelinePointRefs.current[i] = el
+                            }}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     )
 }
 
 const useStyles = createUseStyles(theme => ({
+    timeline: {
+        display: 'flex',
+    },
     wrapper: {
         padding: '1rem',
     },
