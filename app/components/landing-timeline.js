@@ -110,80 +110,82 @@ function LandingTimelineBar({ children }) {
     const classes = landingbarUseStyles()
     return <div className={classes.landingBar}> {children} </div>
 }
-
-export default function LandingTimeline({ className, style }) {
-    return (
-        <TemplateElectionTimeLine
-            className={className}
-            style={style}
-            Meter={LandingTimelineBar}
-            positions={[
-                {
-                    svg: <SvgElectionCreated />,
-                    text: <TimelineText primaryText='Election Created' align='left' />,
-                    percent: 0,
-                },
-                { svg: <SvgElectionPaper />, percent: 6 },
-                { svg: <SvgAccepted />, percent: 12 },
-                {
-                    svg: <SvgVideoSubmitted />,
-                    text: (
-                        <TimelineText
-                            primaryText='Moderator Records and Submits Video'
-                            secondaryText='Link is provided in the invite email'
-                        />
-                    ),
-                    percent: 18,
-                },
-                { svg: <SvgReminderSent />, percent: 24 },
-                {
-                    svg: <SvgXCircle />,
-                    text: (
-                        <TimelineText
-                            primaryText='Moderator Submission Deadline'
-                            secondaryText='Last date for the moderator to make'
-                        />
-                    ),
-                    percent: 30,
-                },
-                { svg: <SvgVideoSubmitted />, percent: 36 },
-                { svg: <SvgElectionGrid />, percent: 46 },
-                { svg: <SvgReminderSent />, percent: 53 },
-                {
-                    svg: <SvgXCircle />,
-                    text: (
-                        <TimelineText
-                            primaryText='Candidate Submission Deadline'
-                            secondaryText='Last date for candidates to submit their video answers'
-                        />
-                    ),
-                    percent: 59,
-                },
-                {
-                    svg: <SvgElectionLive />,
-                    text: (
-                        <TimelineText
-                            primaryText='Candidate Submission Deadline'
-                            secondaryText='Last date for candidates to submit their video answers'
-                        />
-                    ),
-                    percent: 70,
-                },
-                {
-                    svg: <SvgContainer />,
-                    percent: 100,
-                    text: (
-                        <TimelineText
-                            primaryText='Candidate Submission Deadline'
-                            secondaryText='Last date for candidates to submit their video answers'
-                            align='right'
-                        />
-                    ),
-                },
-            ]}
-        />
-    )
+export default function LandingTimeline() {
+    return <div>Hi there!</div>
 }
+// export default function LandingTimeline({ className, style }) {
+//     return (
+//         <TemplateElectionTimeLine
+//             className={className}
+//             style={style}
+//             Meter={LandingTimelineBar}
+//             positions={[
+//                 {
+//                     svg: <SvgElectionCreated />,
+//                     text: <TimelineText primaryText='Election Created' align='left' />,
+//                     percent: 0,
+//                 },
+//                 { svg: <SvgElectionPaper />, percent: 6 },
+//                 { svg: <SvgAccepted />, percent: 12 },
+//                 {
+//                     svg: <SvgVideoSubmitted />,
+//                     text: (
+//                         <TimelineText
+//                             primaryText='Moderator Records and Submits Video'
+//                             secondaryText='Link is provided in the invite email'
+//                         />
+//                     ),
+//                     percent: 18,
+//                 },
+//                 { svg: <SvgReminderSent />, percent: 24 },
+//                 {
+//                     svg: <SvgXCircle />,
+//                     text: (
+//                         <TimelineText
+//                             primaryText='Moderator Submission Deadline'
+//                             secondaryText='Last date for the moderator to make'
+//                         />
+//                     ),
+//                     percent: 30,
+//                 },
+//                 { svg: <SvgVideoSubmitted />, percent: 36 },
+//                 { svg: <SvgElectionGrid />, percent: 46 },
+//                 { svg: <SvgReminderSent />, percent: 53 },
+//                 {
+//                     svg: <SvgXCircle />,
+//                     text: (
+//                         <TimelineText
+//                             primaryText='Candidate Submission Deadline'
+//                             secondaryText='Last date for candidates to submit their video answers'
+//                         />
+//                     ),
+//                     percent: 59,
+//                 },
+//                 {
+//                     svg: <SvgElectionLive />,
+//                     text: (
+//                         <TimelineText
+//                             primaryText='Candidate Submission Deadline'
+//                             secondaryText='Last date for candidates to submit their video answers'
+//                         />
+//                     ),
+//                     percent: 70,
+//                 },
+//                 {
+//                     svg: <SvgContainer />,
+//                     percent: 100,
+//                     text: (
+//                         <TimelineText
+//                             primaryText='Candidate Submission Deadline'
+//                             secondaryText='Last date for candidates to submit their video answers'
+//                             align='right'
+//                         />
+//                     ),
+//                 },
+//             ]}
+//         />
+//     )
+// }
 
 const useStyles = createUseStyles(theme => ({
     templateBar: {

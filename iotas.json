@@ -228,14 +228,23 @@
             ],
             "iconBox": [
                 {
-                    "subject": "iconBox subject goes here",
-                    "description": "iconBox description goes here"
+                    "iconName": "SvgFitsInside",
+                    "subject": "iconBox 1",
+                    "description": "1 Description goes here"
                 }
             ],
-            "fag": [
+            "iconBox1": [
                 {
-                    "subject": "iconBox subject goes here",
-                    "description": "iconBox description goes here"
+                    "iconName": "SvgAutomate",
+                    "subject": "iconBox 2",
+                    "description": "2 Description goes here"
+                }
+            ],
+            "iconBox2": [
+                {
+                    "iconName": "SvgShortFormat",
+                    "subject": "iconBox 3",
+                    "description": "3 escription goes here"
                 }
             ]
         }

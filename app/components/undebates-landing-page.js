@@ -2,9 +2,9 @@ import React from 'react'
 import { createUseStyles, ThemeProvider } from 'react-jss'
 import IconBox from './icon-box'
 import Statement from './statement-component'
-// import LandingTimeline from './landing-timeline'
 import FAQ from './frequently-asked-questions'
 import HaveAQuestion from './have-a-question'
+import LandingTimeline from './landing-timeline'
 import theme from '../theme'
 
 export default function UndebatesLandingPage(props) {
@@ -12,7 +12,7 @@ export default function UndebatesLandingPage(props) {
     return (
         <div style={{ backgroundColor: '#e9eaeb' }}>
             <h1 style={{ textAlign: 'center', padding: '2% 0', fontFamily: theme.defaultFontFamily }}>
-                Debates Landing Page (Component)
+                Undebates Landing Page (Component)
             </h1>
             <div className={classes.iconbox}>
                 <h2>Landscape Portrait Slider (Component)</h2>
@@ -20,17 +20,20 @@ export default function UndebatesLandingPage(props) {
             <div className={classes.undebates}>
                 <h2>What are Undebates? (Component)</h2>
             </div>
-
+            <LandingTimeline />
             <div className={classes.iconbox}>
                 <div className={classes.iconDiv}>
                     <IconBox {...props.iconBox[0]} className={classes.iconBox} />
                 </div>
-                {/* <div className={classes.iconDiv}>Icon 2</div>
-                <div className={classes.iconDivLast}>Icon 3</div> */}
+                <div className={classes.iconDiv}>
+                    <IconBox {...props.iconBox1[0]} className={classes.iconBox} />
+                </div>
+                <div className={classes.iconDivLast}>
+                    <IconBox {...props.iconBox2[0]} className={classes.iconBox} />
+                </div>
             </div>
 
             <Statement {...props.statement[0]} className={classes.statement} />
-            {/* <LandingTimeline /> */}
             <FAQ {...props.faq} />
             <HaveAQuestion />
         </div>
@@ -41,9 +44,7 @@ const useStyles = createUseStyles({
     undebates: {
         width: '100%',
         height: '15.625rem',
-        backgroundColor: 'pink',
         textAlign: 'center',
-        color: 'purple',
         marginBottom: '2%',
         fontFamily: theme.defaultFontFamily,
     },
@@ -57,26 +58,22 @@ const useStyles = createUseStyles({
         padding: '3% 0',
         fontFamily: theme.defaultFontFamily,
     },
-    // iconDiv: {
-    //     // width: '18.75rem',
-    //     // height: '30.625rem',
-    //     // backgroundColor: 'pink',
-    //     borderRadius: '1.25rem',
-    //     paddingTop: '3%',
-    //     fontSize: '1.5rem',
-    //     color: 'purple',
-    //     marginRight: '5%',
-    // },
-    // iconDivLast: {
-    //     width: '18.75rem',
-    //     height: '30.625rem',
-    //     backgroundColor: 'pink',
-    //     borderRadius: '1.25rem',
-    //     paddingTop: '3%',
-    //     fontSize: '1.5rem',
-    //     color: 'purple',
-    //     marginRight: 'none',
-    // },
+    iconDiv: {
+        width: '20rem',
+        height: 'auto',
+        paddingTop: '3%',
+        fontSize: '1.5rem',
+        color: 'purple',
+        marginRight: '5%',
+    },
+    iconDivLast: {
+        width: '20rem',
+        height: 'auto',
+        paddingTop: '3%',
+        fontSize: '1.5rem',
+        color: 'purple',
+        marginRight: 'none',
+    },
     statement: {
         width: '48rem',
         marginLeft: 'auto',
