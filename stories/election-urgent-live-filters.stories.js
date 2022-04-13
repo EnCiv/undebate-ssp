@@ -8,28 +8,15 @@ export default {
     argTypes: {},
 }
 
-export const Template = (args, context) => {
+const Template = (args, context) => {
     const { onDone } = context
     return <ElectionUrgentLiveFilters onDone={onDone} {...args} />
 }
 
-export const ElectionUrgentFilterAfterClick = Template.bind({})
-ElectionUrgentFilterAfterClick.args = {
-    name: 'Urgent filter selected',
-    urgentFilter: true,
-    liveFilter: false,
-}
+export const ElectionFilterDefault = Template.bind({})
+ElectionFilterDefault.args = {}
 
-export const ElectionLiveFilterAfterClick = Template.bind({})
-ElectionLiveFilterAfterClick.args = {
-    name: 'Live filter selected',
-    liveFilter: true,
-    urgentFilter: false,
-}
-
-export const ElectionNoFiltersClicked = Template.bind({})
-ElectionNoFiltersClicked.args = {
-    name: 'No filter selected',
-    urgentFilter: false,
-    liveFilter: false,
+export const ElectionFilterLargeFontSize = Template.bind({})
+ElectionFilterLargeFontSize.args = {
+    style: { fontSize: '300%' },
 }
