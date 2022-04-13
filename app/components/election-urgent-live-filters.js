@@ -54,18 +54,19 @@ const useStyles = createUseStyles(theme => ({
     electionUrgentLiveFilter: {
         display: 'inline-flex',
         flexDirection: 'column',
+        minHeight: '2.25em',
     },
     circle: {
         transition: '0.5s',
         '&:hover': {
-            width: '1.5em',
-            height: '1.5em',
+            width: '1.3em',
+            height: '1.3em',
             cursor: 'pointer',
         },
     },
     selected: {
-        width: '1.5em',
-        height: '1.5em',
+        width: '1.3em',
+        height: '1.3em',
     },
     tooltip: {
         position: 'relative',
@@ -89,8 +90,7 @@ const useStyles = createUseStyles(theme => ({
     circleContainer: {
         display: 'flex',
         justifyContent: 'center',
-        height: '1.5em',
-        width: '1.5em',
+        height: '1.1em',
     },
 }))
 
