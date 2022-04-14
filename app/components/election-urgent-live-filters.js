@@ -8,7 +8,6 @@ import { createUseStyles } from 'react-jss'
 
 import SvgElectionUrgentFilter from '../svgr/election-urgent-filter'
 import SvgElectionLiveFilter from '../svgr/election-live-filter'
-import { useColumnOrder } from 'react-table'
 
 function ElectionUrgentLiveFilters(props) {
     const { onDone, style, className, filterState = '' } = props
@@ -29,22 +28,18 @@ function ElectionUrgentLiveFilters(props) {
     return (
         <div className={cx(className, classes.electionUrgentLiveFilter)} style={style}>
             <div className={classes.circleContainer}>
-                <div className={classes.tooltip}>
-                    <SvgElectionUrgentFilter
-                        className={cx(className, classes.circle, filter === 'urgent' && classes.selected)}
-                        onClick={handleUrgentFilterSelection}
-                    />
-                    <span className={classes.tooltiptext}>Urgent</span>
-                </div>
+                <SvgElectionUrgentFilter
+                    className={cx(className, classes.circle, filter === 'urgent' && classes.selected)}
+                    onClick={handleUrgentFilterSelection}
+                />
+                <span className={classes.tooltiptext}>Urgent</span>
             </div>
-            <div className={classes.circleContainer}>
-                <div className={classes.tooltip}>
-                    <SvgElectionLiveFilter
-                        className={cx(className, classes.circle, filter === 'live' && classes.selected)}
-                        onClick={handleLiveFilterSelection}
-                    />
-                    <span className={classes.tooltiptext}>Live</span>
-                </div>
+            <div className={classes.circleContainer} title='live'>
+                <SvgElectionLiveFilter
+                    className={cx(className, classes.circle, filter === 'live' && classes.selected)}
+                    onClick={handleLiveFilterSelection}
+                />
+                <span className={classes.tooltiptext}>Live</span>
             </div>
         </div>
     )
@@ -54,32 +49,29 @@ const useStyles = createUseStyles(theme => ({
     electionUrgentLiveFilter: {
         display: 'inline-flex',
         flexDirection: 'column',
-        minHeight: '2.25em',
+        padding: 0,
+        margin: 0,
     },
     circle: {
         transition: '0.5s',
+        padding: '.15em',
         '&:hover': {
+            padding: 0,
             width: '1.3em',
             height: '1.3em',
             cursor: 'pointer',
         },
     },
     selected: {
+        padding: 0,
         width: '1.3em',
         height: '1.3em',
     },
-    tooltip: {
-        position: 'relative',
-        '&:hover $tooltiptext': {
-            visibility: 'visible',
-        },
-    },
-
     tooltiptext: {
-        visibility: 'hidden',
-        marginLeft: '5%',
         fontSize: '.75em',
-        width: '4.5em',
+        marginTop: '.125em',
+        paddingLeft: '.5em',
+        paddingRight: '.5em',
         backgroundColor: 'black',
         color: '#fff',
         textAlign: 'center',
@@ -90,7 +82,14 @@ const useStyles = createUseStyles(theme => ({
     circleContainer: {
         display: 'flex',
         justifyContent: 'center',
-        height: '1.1em',
+        position: 'relative',
+        '& span': {
+            display: 'none',
+        },
+        '&:hover span': {
+            display: 'block',
+            left: '1.75em',
+        },
     },
 }))
 
