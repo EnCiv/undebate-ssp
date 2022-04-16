@@ -173,7 +173,11 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
 
     const renderErrors = () => {
         return (
-            <div className={classes.errorsRow} style={{ visibility: fileError ? 'visible' : 'hidden' }}>
+            <div
+                data-testid='upload-csv-error'
+                className={classes.errorsRow}
+                style={{ visibility: fileError ? 'visible' : 'hidden' }}
+            >
                 {fileError}
             </div>
         )
