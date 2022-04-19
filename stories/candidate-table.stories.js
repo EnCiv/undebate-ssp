@@ -1,12 +1,14 @@
 // https://github.com/EnCiv/undebate-ssp/issues/88
 import React, { useEffect } from 'react'
-import { within, userEvent } from '@storybook/testing-library'
+import { expect } from '@storybook/jest'
+import { within, userEvent, waitFor } from '@storybook/testing-library'
+import { getElectionCandidates } from './story-helpers'
 import CandidateTable from '../app/components/candidate-table'
 
 const noUniqueIdsFile = new File(
     [
         `Name,Email,Office
-Diana Russel,my.new.email@example.com,New Office
+Cathy Gonzales,my.new.email@example.com,New Office
 John Smith,john.smith@example.com,Foo bar`,
     ],
     'no unique ids.csv'
@@ -81,6 +83,7 @@ UploadCsvUsage.args = {
 UploadCsvUsage.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await new Promise(r => setTimeout(r, 1000))
+    await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(2))
 
     await userEvent.click(canvas.getByTestId('upload-csv-button'))
     await new Promise(r => setTimeout(r, 1000))
@@ -89,4 +92,5 @@ UploadCsvUsage.play = async ({ canvasElement }) => {
     await new Promise(r => setTimeout(r, 1000))
 
     await userEvent.click(canvas.getByText('Extract Data'))
+    await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(4))
 }

@@ -110,6 +110,12 @@ const Template = (args, context) => {
 
 export const Default = Template.bind({})
 Default.args = { defaultValue: {} }
+Default.play = async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // ensure button is disabled by default:
+    await waitFor(() => expect(canvas.getByText('Extract Data').getAttribute('disabled')).toBe(''))
+}
 
 export const EmptyTableNoUniqueIds = Template.bind({})
 EmptyTableNoUniqueIds.args = { defaultValue: {} }
@@ -119,6 +125,8 @@ EmptyTableNoUniqueIds.play = async ({ canvasElement }) => {
     await new Promise(r => setTimeout(r, 1000))
 
     await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)
+    // ensure button is enabled after file added:
+    await waitFor(() => expect(canvas.getByText('Extract Data').getAttribute('disabled')).toBeNull())
     await new Promise(r => setTimeout(r, 1000))
 
     await userEvent.click(canvas.getByText('Extract Data'))
