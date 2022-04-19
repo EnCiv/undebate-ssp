@@ -109,6 +109,7 @@ const Template = (args, context) => {
 }
 
 export const Default = Template.bind({})
+Default.args = { defaultValue: {} }
 
 export const EmptyTableNoUniqueIds = Template.bind({})
 EmptyTableNoUniqueIds.args = { defaultValue: {} }
