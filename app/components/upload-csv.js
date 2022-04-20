@@ -8,7 +8,6 @@ import UploadCSVPopup from './upload-csv-popup'
 function UploadCSV(props) {
     const classes = useStyles()
     const { className, style, electionOM } = props
-    const [electionObj, electionMethods] = electionOM
     const [selected, setSelected] = useState(false)
 
     const handleUploadClick = () => {
@@ -36,8 +35,7 @@ function UploadCSV(props) {
                 <FilePlusSvg className={classes.filePlusIcon} />
             </button>
             <UploadCSVPopup
-                electionObj={electionObj}
-                electionMethods={electionMethods}
+                electionOM={electionOM}
                 closePopup={closePopup}
                 visible={selected}
                 className={classes.popup}

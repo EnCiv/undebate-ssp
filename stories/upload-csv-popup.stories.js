@@ -100,8 +100,7 @@ const Template = (args, context) => {
     return (
         <UploadCSVPopup
             visible='true'
-            electionObj={electionObj}
-            electionMethods={electionMethods}
+            electionOM={electionOM}
             closePopup={() => console.log('close popup called')}
             {...otherArgs}
         />
