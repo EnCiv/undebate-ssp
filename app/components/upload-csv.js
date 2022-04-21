@@ -84,6 +84,6 @@ const useStyles = createUseStyles(theme => ({
     popup: {
         position: 'fixed',
         top: `calc((100vh - ${theme.csvPopupHeight}) / 2)`,
-        left: `calc((100vw - ${theme.csvPopupWidth}) / 2)`,
+        left: `calc((100vw - ${theme.uploadPopupWidth}) / 2)`,
     },
 }))

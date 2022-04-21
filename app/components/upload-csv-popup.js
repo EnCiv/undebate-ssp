@@ -229,7 +229,7 @@ const useStyles = createUseStyles(theme => ({
     popup: {
         backgroundColor: theme.colorSecondary,
         color: 'white',
-        width: theme.csvPopupWidth,
+        width: theme.uploadPopupWidth,
         height: theme.csvPopupHeight,
         display: 'flex',
         flexDirection: 'column',

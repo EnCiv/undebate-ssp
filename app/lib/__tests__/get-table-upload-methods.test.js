@@ -1,6 +1,5 @@
 import { handleTableData } from '../get-table-upload-methods'
 import { merge } from 'lodash'
-import useMethods from 'use-methods'
 
 describe('table upload methods', () => {
     describe('empty table', () => {

@@ -1,20 +1,35 @@
 // https://github.com/EnCiv/undebate-ssp/issues/55
 import React, { useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
-import ObjectID from 'isomorphic-mongo-objectid'
 import cx from 'classnames'
 import _ from 'lodash'
 import ExternalLinkSvg from '../svgr/external-link'
+import LinkSvg from '../svgr/link'
 
 function PasteGoogleSheetsPopup({ electionObj, electionMethods, closePopup, visible, className, style = {} }) {
     const classes = useStyles()
-    const [pastedLink, setPastedLink] = useState(null)
+    const [inputLink, setInputLink] = useState('')
     const [fileError, setFileError] = useState(null)
+
+    const onInputChange = event => {
+        event.preventDefault()
+        setInputLink(event.target.value)
+        setFileError(null)
+    }
 
     const renderErrors = () => {
         return (
             <div className={classes.errorsRow} style={{ visibility: fileError ? 'visible' : 'hidden' }}>
                 {fileError}
+            </div>
+        )
+    }
+
+    const renderPasteLink = () => {
+        return (
+            <div className={classes.inputLinkBox}>
+                <input className={classes.inputLink} type='text' value={inputLink} onChange={onInputChange} />
+                <LinkSvg className={classes.linkIcon} />
             </div>
         )
     }
@@ -40,6 +55,7 @@ function PasteGoogleSheetsPopup({ electionObj, electionMethods, closePopup, visi
                         </a>
                     </div>
                     {renderErrors()}
+                    {renderPasteLink()}
                 </div>
                 <div className={classes.popupButtons}>
                     <button type='button' className={cx(classes.btn, classes.cancelButton)} onClick={close}>
@@ -48,8 +64,8 @@ function PasteGoogleSheetsPopup({ electionObj, electionMethods, closePopup, visi
                     <button
                         id='extract-data-button'
                         type='button'
-                        disabled={!pastedLink}
-                        className={cx(classes.btn, classes.extractButton, !pastedLink && classes.disabledExtractButton)}
+                        disabled={!inputLink}
+                        className={cx(classes.btn, classes.extractButton, !inputLink && classes.disabledExtractButton)}
                         onClick={handleExtractClick}
                     >
                         Extract Data
@@ -80,8 +96,8 @@ const useStyles = createUseStyles(theme => ({
     popup: {
         backgroundColor: theme.colorSecondary,
         color: 'white',
-        width: theme.csvPopupWidth,
-        height: theme.csvPopupHeight,
+        width: theme.uploadPopupWidth,
+        height: theme.pastePopupHeight,
         display: 'flex',
         flexDirection: 'column',
         /* borderRadius: theme.defaultBorderRadius, // this is smaller than the radius on figma */
@@ -208,6 +224,35 @@ const useStyles = createUseStyles(theme => ({
         ...theme.button,
         borderRadius: theme.defaultBorderRadius,
         padding: '0.5rem',
+    },
+    linkIcon: {
+        height: '1.5rem',
+        width: '1.5rem',
+        paddingRight: '1.15rem',
+    },
+    inputLinkBox: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderRadius: theme.defaultBorderRadius,
+        borderStyle: 'none',
+        width: '100%',
+        height: '3.5625rem',
+        padding: '0',
+        backgroundColor: 'white',
+        '& svg path': {
+            stroke: theme.colorSecondary,
+        },
+    },
+    inputLink: {
+        borderRadius: theme.defaultBorderRadius,
+        width: '20.625rem',
+        height: '100%',
+        fontWeight: '500',
+        fontSize: '1.125rem',
+        lineHeight: '1.6875rem',
+        padding: '0 1.25rem',
+        boxSizing: 'border-box',
     },
     popupButtons: {
         width: '100%',

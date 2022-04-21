@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import PasteGoogleSheetsPopup from './paste-google-sheets-popup'
+import LinkSvg from '../svgr/link'
 
 function PasteGoogleSheetsLink(props) {
     const classes = useStyles()
@@ -31,7 +32,7 @@ function PasteGoogleSheetsLink(props) {
                 )}
                 onClick={handleButtonClick}
             >
-                Paste Google Sheets Link &nbsp; /* <FilePlusSvg className={classes.filePlusIcon} /> */
+                Paste Google Sheets Link &nbsp; &nbsp; <LinkSvg className={classes.linkIcon} />
             </button>
             <PasteGoogleSheetsPopup
                 electionObj={electionObj}
@@ -53,7 +54,7 @@ const useStyles = createUseStyles(theme => ({
         alignItems: 'flex-start',
         position: 'relative',
     },
-    filePlusIcon: {
+    linkIcon: {
         height: theme.iconSize,
         width: theme.iconSize,
     },
@@ -66,7 +67,7 @@ const useStyles = createUseStyles(theme => ({
         },
     },
     pasteSheetsButton: {
-        width: '13.5625rem',
+        width: '18.25rem',
         height: '3.375rem',
         border: `2px solid ${theme.button.borderColor}`,
     },
@@ -83,7 +84,7 @@ const useStyles = createUseStyles(theme => ({
     },
     popup: {
         position: 'fixed',
-        top: `calc((100vh - ${theme.csvPopupHeight}) / 2)`,
-        left: `calc((100vw - ${theme.csvPopupWidth}) / 2)`,
+        top: `calc((100vh - ${theme.pastePopupHeight}) / 2)`,
+        left: `calc((100vw - ${theme.uploadPopupWidth}) / 2)`,
     },
 }))

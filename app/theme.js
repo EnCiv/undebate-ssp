@@ -61,7 +61,8 @@ const theme = {
     colorDeadlineMissed: '#FCA105',
 
     csvPopupHeight: '41.25rem',
-    csvPopupWidth: '29.6875rem',
+    pastePopupHeight: '23.125rem',
+    uploadPopupWidth: '29.6875rem',
 }
 
 export default theme
