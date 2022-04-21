@@ -3,7 +3,6 @@
 import ObjectID from 'isomorphic-mongo-objectid'
 
 // helper methods used for upload csv and paste google sheets components
-/* function getTableUploadMethods(dispatch, state) { */
 const isEmptyTable = electionObj => {
     return !(electionObj && electionObj.candidates !== undefined && Object.keys(electionObj.candidates).length > 0)
 }
@@ -61,10 +60,3 @@ export const handleTableData = (tableData, electionOM) => {
         handleExistingTable(tableData, electionObj, electionMethods)
     }
 }
-
-/* return { */
-/* handleTableData, */
-/* } */
-/* } */
-
-/* export default getTableUploadMethods */
