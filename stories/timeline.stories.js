@@ -13,9 +13,9 @@ const Template = (args, context) => {
     const { electionOM, onDone } = context
     const { defaultElectionObj, customMethods = {}, ...otherArgs } = args
     const [electionObj, electionMethods] = electionOM
-    /* Object.assign(electionMethods, customMethods)
-    useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj]) */
-    return <Timeline electionOM={[defaultElectionObj, electionMethods]} onDone={onDone} {...args} />
+    Object.assign(electionMethods, customMethods)
+    useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
+    return <Timeline electionOM={electionOM} onDone={onDone} {...args} />
 }
 
 const addDays = (date, days) => {

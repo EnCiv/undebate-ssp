@@ -13,13 +13,15 @@ const TimelinePoint = forwardRef((props, ref) => {
         title,
         description,
         onDone = () => {},
-        timelineObj,
         timelineKey,
         addOne,
+        electionObjKey,
     } = props
-    const [_, electionMethods] = electionOM
+    const [electionObj, electionMethods] = electionOM
     const classes = useStyles()
-    const state = useRef({})
+    const [validValues] = useState([])
+    const { timeline = {} } = electionObj
+    const timelineObj = timelineKey ? timeline[timelineKey] || {} : { 0: electionObj[electionObjKey] || '' }
 
     const [sideEffects] = useState([])
     useEffect(() => {
@@ -31,24 +33,13 @@ const TimelinePoint = forwardRef((props, ref) => {
             return ('' + Date.parse(b.date)).localeCompare(Date.parse(a.date))
         })
         if (!arr.length) {
-            arr.push([])
+            return ['']
         }
-        return arr.map(([_, timelineObj]) => {
-            let datetime = ''
-            if (timelineObj) {
-                datetime = new Date(timelineObj.date)
-            }
-            return datetime
-        })
+        return arr.map(([_, timelineObj]) => timelineObj?.date || '')
     }
 
     const areAllPairsValid = () => {
-        const dateTimeObjs = Object.values(state.current)
-        if (!dateTimeObjs.length) return false
-        for (let i = 0; i < dateTimeObjs.length; i += 1) {
-            if (!dateTimeObjs[i].valid) return false
-        }
-        return true
+        return validValues.length && validValues.every(({ valid, value }) => !!valid)
     }
 
     return (
@@ -62,14 +53,17 @@ const TimelinePoint = forwardRef((props, ref) => {
                             className={classes.dateTimeInput}
                             defaultValue={dateTime}
                             onDone={({ valid, value }) => {
-                                state.current[i] = { valid, value }
+                                validValues[i] = { valid, value }
                                 const isValid = areAllPairsValid()
-                                const newValue = Object.values(state.current).map(dateTimeObj => dateTimeObj.value)
                                 sideEffects.push(() => {
-                                    electionMethods.upsert({ timeline: { [timelineKey]: { [i]: { date: newValue } } } })
+                                    if (timelineKey)
+                                        electionMethods.upsert({
+                                            timeline: { [timelineKey]: { [i]: { date: value } } },
+                                        })
+                                    else electionMethods.upsert({ [electionObjKey]: value })
                                 })
                                 onDone({
-                                    value: newValue,
+                                    value: value,
                                     valid: isValid,
                                 })
                             }}
@@ -82,7 +76,7 @@ const TimelinePoint = forwardRef((props, ref) => {
                         onClick={() => {
                             sideEffects.push(() => {
                                 electionMethods.upsert({
-                                    timeline: { [key]: { [Object.keys(timelineObj).length]: { date: '' } } },
+                                    timeline: { [timelineKey]: { [Object.keys(timelineObj).length]: { date: '' } } },
                                 })
                             })
                         }}
