@@ -1,26 +1,18 @@
 // https://github.com/EnCiv/undebate-ssp/issues/49
 
-import React, { useEffect } from 'react'
-
-import Script from '../app/components/script'
+// do not change 'component', do change the name of the file to import from to be tested. It must export default the function
+import component from '../app/components/script'
+import makeChapter from './make-chapter'
+const mC = makeChapter(component)
 
 export default {
-    title: 'Script Page',
-    component: Script,
-    argTypes: { electionOM: { type: 'object' } },
+    title: 'Script Page', // name that shows up in left column list of stories
+    argTypes: {}, // change as appropriate
+    component, // do not change
 }
 
-const Template = (args, context) => {
-    const { electionOM } = context
-    const { defaultElectionObj, customMethods = {}, ...otherArgs } = args
-    const [electionObj, electionMethods] = electionOM
-    Object.assign(electionMethods, customMethods)
-    useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
-    return <Script {...otherArgs} electionOM={electionOM} />
-}
-
-export const Default = Template.bind({})
-Default.args = {
+// exported is the name of the chapter of testing under the story
+export const Default = mC({
     defaultElectionObj: {
         questions: {
             0: {
@@ -39,23 +31,20 @@ Default.args = {
         script: {},
         moderator: { name: 'Bill Smith' },
     },
-}
+})
 
-export const Empty = Template.bind({})
+export const Empty = mC({})
 
-export const Locked = Template.bind({})
-Locked.args = {
+export const Locked = mC({
     defaultElectionObj: Default.args.defaultElectionObj,
     customMethods: { areQuestionsLocked: () => true },
-}
+})
 
-export const Edit = Template.bind({})
-Edit.args = {
+export const Edit = mC({
     defaultElectionObj: { ...Default.args.defaultElectionObj, script: { 0: { text: 'Lorem Ipsum Dolor Amet' } } },
-}
+})
 
-export const GivenQA = Template.bind({})
-GivenQA.args = {
+export const GivenQA = mC({
     defaultElectionObj: {
         ...Default.args.defaultElectionObj,
         questions: {
@@ -69,14 +58,13 @@ GivenQA.args = {
             3: { text: 'Sed do eiusmod tempor' },
         },
     },
-}
+})
 
-export const Error = Template.bind({})
-Error.args = {
+export const Error = mC({
     defaultElectionObj: {
         ...Default.args.defaultElectionObj,
         script: {
             0: { text: 'Lorem Ipsum Dolor Amet '.repeat(160) },
         },
     },
-}
+})
