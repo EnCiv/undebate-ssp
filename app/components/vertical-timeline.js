@@ -7,21 +7,19 @@ export default function VerticalTimeline(props) {
     // refs: an array of all the refs of the TimePoint components to get their position and height
     const { className, style, refs } = props
     const classes = useStyles(props)
-
+    let first
+    let last
     return (
         <div className={cx(className, classes.verticalBar)} style={style}>
             {refs.map((ref, i) => {
                 const { top, bottom } = ref.getBoundingClientRect()
-                if (i === 0) {
-                    return (
-                        <>
-                            <div className={classes.dot} style={{ top: top + 4, bottom: bottom }} />
-                            <span className={classes.line} />
-                        </>
-                    )
-                }
-                return <div className={classes.dot} style={{ top: top + 4, bottom: bottom }} />
+                const center = (bottom - top) / 2 + top
+                if (i === 0) first = center
+                else last = center
+
+                return <div className={classes.dot} style={{ top: center }} />
             })}
+            <div className={classes.line} style={{ top: first, height: last - first }}></div>
         </div>
     )
 }
@@ -36,10 +34,10 @@ const useStyles = createUseStyles(theme => ({
         paddingRight: '1.5rem',
     },
     line: {
+        position: 'absolute',
         opacity: '.2',
         border: '1px solid #262D33',
         width: '0',
-        height: '100%',
     },
     dot: {
         border: '1px solid rgba(0, 0, 0, 0.25);',

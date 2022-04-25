@@ -87,7 +87,12 @@ export default function Timeline(props) {
                     <span>Fill the date and times for following events to automate the undebate.</span>
                     <Submit onDone={onDone} disabled={!isValid} />
                 </header>
-                <ElectionCreated electionMetadata={electionObj} />
+                <ElectionCreated
+                    electionOM={electionOM}
+                    ref={el => {
+                        timelinePointRefs.current[0] = el
+                    }}
+                />
                 <div className={classes.container}>
                     {pointsData.map((pointData, i) => (
                         <TimeLinePoint
@@ -97,7 +102,7 @@ export default function Timeline(props) {
                             }}
                             {...pointData}
                             ref={el => {
-                                timelinePointRefs.current[i] = el
+                                timelinePointRefs.current[i + 1] = el
                             }}
                         />
                     ))}
