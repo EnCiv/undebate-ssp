@@ -110,8 +110,12 @@ function LandingTimelineBar({ children }) {
     const classes = landingbarUseStyles()
     return <div className={classes.landingBar}> {children} </div>
 }
-export default function LandingTimeline() {
-    return <div>Hi there!</div>
+export default function LandingTimeline({ className, style }) {
+    return (
+        <div>
+            <h1>LandingTimeLine Component</h1>
+        </div>
+    )
 }
 // export default function LandingTimeline({ className, style }) {
 //     return (

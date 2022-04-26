@@ -246,6 +246,12 @@
                     "subject": "iconBox 3",
                     "description": "3 escription goes here"
                 }
+            ],
+            "faq": [
+                {
+                    "q": "FAQ subject goes here",
+                    "a": "FAQ description goes here"
+                }
             ]
         }
     }

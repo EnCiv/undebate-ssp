@@ -32,7 +32,6 @@ export default function UndebatesLandingPage(props) {
                     <IconBox {...props.iconBox2[0]} className={classes.iconBox} />
                 </div>
             </div>
-
             <Statement {...props.statement[0]} className={classes.statement} />
             <FAQ {...props.faq} />
             <HaveAQuestion />
