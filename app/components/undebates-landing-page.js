@@ -4,7 +4,7 @@ import IconBox from './icon-box'
 import Statement from './statement-component'
 import FAQ from './frequently-asked-questions'
 import HaveAQuestion from './have-a-question'
-// import LandingTimeline from './landing-timeline'
+import LandingTimeline from './landing-timeline'
 import theme from '../theme'
 
 export default function UndebatesLandingPage(props) {
@@ -20,7 +20,7 @@ export default function UndebatesLandingPage(props) {
             <div className={classes.undebates}>
                 <h2>What are Undebates? (Component)</h2>
             </div>
-            {/* <LandingTimeline /> */}
+            <LandingTimeline />
             <div className={classes.iconbox}>
                 <div className={classes.iconDiv}>
                     <IconBox {...props.iconBox[0]} className={classes.iconBox} />
