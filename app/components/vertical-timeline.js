@@ -12,8 +12,7 @@ export default function VerticalTimeline(props) {
     return (
         <div className={cx(className, classes.verticalBar)} style={style}>
             {refs.map((ref, i) => {
-                const { top, bottom } = ref.getBoundingClientRect()
-                const center = (bottom - top) / 2 + top
+                const center = ref.offsetHeight / 2 + ref.offsetTop
                 if (i === 0) first = center
                 else last = center
 

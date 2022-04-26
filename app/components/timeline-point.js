@@ -74,10 +74,9 @@ const TimelinePoint = forwardRef((props, ref) => {
                     <div
                         className={classes.plusButton}
                         onClick={() => {
-                            sideEffects.push(() => {
-                                electionMethods.upsert({
-                                    timeline: { [timelineKey]: { [Object.keys(timelineObj).length]: { date: '' } } },
-                                })
+                            // no side effect from within an event because a rerender won't happen
+                            electionMethods.upsert({
+                                timeline: { [timelineKey]: { [Object.keys(timelineObj).length]: { date: '' } } },
                             })
                         }}
                     >
@@ -92,7 +91,7 @@ const TimelinePoint = forwardRef((props, ref) => {
 const useStyles = createUseStyles(theme => ({
     title: {
         fontWeight: '600',
-        marginBottom: '3px',
+        marginBottom: '.1875rem',
     },
     description: {
         color: theme.colorSecondary,
@@ -111,17 +110,17 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         gap: '1rem',
         flexDirection: 'column',
-        maxWidth: '400px',
+        maxWidth: '25rem',
     },
     plusButton: {
         opacity: '50%',
         backgroundColor: theme.colorLightGray,
-        width: '56px',
-        height: '56px',
+        width: '3.8125rem',
+        height: '3.8125rem',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: '10px',
+        borderRadius: '0.625rem',
         '&:hover': {
             opacity: '100%',
             cursor: 'pointer',
