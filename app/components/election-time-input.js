@@ -26,6 +26,7 @@ function ElectionTimeInput(props) {
     return (
         <div className={cx(className, classes.electionTimeInput)} style={style}>
             <input
+                key='input'
                 className={classes.input}
                 type='time'
                 defaultValue={defaultValue}
@@ -36,7 +37,7 @@ function ElectionTimeInput(props) {
                 }}
                 ref={inputRef}
             />
-            <ClockSolidSVG className={classes.clockIcon} />
+            <ClockSolidSVG className={classes.clockIcon} key='icon' />
         </div>
     )
 }

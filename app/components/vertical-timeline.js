@@ -7,8 +7,8 @@ export default function VerticalTimeline(props) {
     // refs: an array of all the refs of the TimePoint components to get their position and height
     const { className, style, refs } = props
     const classes = useStyles(props)
-    let first
-    let last
+    let first = 0
+    let last = 0
     return (
         <div className={cx(className, classes.verticalBar)} style={style}>
             {refs.map((ref, i) => {

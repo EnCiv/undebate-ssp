@@ -10,9 +10,10 @@ import VerticalTimeline from './vertical-timeline'
 
 export default function Timeline(props) {
     const { className, style, onDone, electionOM } = props
-    const [electionObj, electionMethods] = electionOM
     const classes = useStyles(props)
-    const timelinePointRefs = useRef([])
+    const [timelinePointRefs] = useState([])
+    const [_this] = useState({ renderCount: 0 })
+    _this.renderCount++ // VerticalTimline needs to update when this component updates
 
     const pointsData = [
         {
@@ -63,19 +64,20 @@ export default function Timeline(props) {
 
     return (
         <div className={cx(className, classes.wrapper)} style={style}>
-            <VerticalTimeline refs={timelinePointRefs.current} />
-            <header className={classes.heading}>
-                <span>Fill the date and times for following events to automate the undebate.</span>
-                <Submit onDone={onDone} disabled={!isValid} />
-            </header>
-            <ElectionCreated
-                key='created'
-                electionOM={electionOM}
-                ref={el => {
-                    timelinePointRefs.current[0] = el
-                }}
-            />
-            <div className={classes.container}>
+            <VerticalTimeline refs={timelinePointRefs} renderEveryTime={_this.renderCount} />
+            <div className={classes.timeline}>
+                <header className={classes.heading} key='header'>
+                    <span>Fill the date and times for following events to automate the undebate.</span>
+                    <Submit onDone={onDone} disabled={!isValid} />
+                </header>
+                <ElectionCreated
+                    key='created'
+                    electionOM={electionOM}
+                    className={classes.created}
+                    ref={el => {
+                        timelinePointRefs[0] = el
+                    }}
+                />
                 {pointsData.map((pointData, i) => (
                     <TimeLinePoint
                         key={i}
@@ -85,7 +87,7 @@ export default function Timeline(props) {
                             setValidInputs({ [pointData.timelineKey]: valid })
                         }}
                         ref={el => {
-                            timelinePointRefs.current[i + 1] = el
+                            timelinePointRefs[i + 1] = el
                         }}
                     />
                 ))}
@@ -98,11 +100,15 @@ const useStyles = createUseStyles(theme => ({
     wrapper: {
         display: 'flex',
     },
+    timeline: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    created: {
+        marginBottom: '1.5rem',
+    },
     heading: {
         display: 'flex',
         justifyContent: 'space-between',
-    },
-    container: {
-        marginTop: '1.5rem',
     },
 }))
