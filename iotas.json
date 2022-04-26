@@ -247,10 +247,10 @@
                     "description": "3 escription goes here"
                 }
             ],
-            "faq": [
+            "faqs": [
                 {
-                    "q": "FAQ subject goes here",
-                    "a": "FAQ description goes here"
+                    "question": "FAQ subject goes here",
+                    "answer": "FAQ description goes here"
                 }
             ]
         }

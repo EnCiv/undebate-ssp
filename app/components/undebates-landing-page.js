@@ -33,7 +33,7 @@ export default function UndebatesLandingPage(props) {
                 </div>
             </div>
             <Statement {...props.statement[0]} className={classes.statement} />
-            <FAQ {...props.faq} />
+            <FAQ faqs={props.faqs} className={classes.faqCom} />
             <HaveAQuestion />
         </div>
     )
@@ -77,6 +77,12 @@ const useStyles = createUseStyles({
         width: '48rem',
         marginLeft: 'auto',
         marginRight: 'auto',
+    },
+    faqCom: {
+        width: '48rem',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        fontFamily: theme.defaultFontFamily,
     },
     '@media (orientation: portrait)': {
         iconbox: {

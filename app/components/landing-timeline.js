@@ -16,7 +16,7 @@ import {
 } from '../svgr'
 
 import cx from 'classnames'
-import { useCss } from 'react-use'
+// import { useCss } from 'react-use'
 
 const portraitWidth = '45rem'
 const smallScreenWidth = '102rem'
@@ -49,24 +49,26 @@ function TemplateElectionTimeLine({
                     }
                     // used instead of useStyles to prevent jss from "collapsing"
                     // all the itemPosition classes into one
-                    const itemPosition = useCss({
-                        display: 'block',
-                        position: 'relative',
-                        width: 0,
-                        height: 0,
-                        [`@media (min-width: ${portraitWidth})`]: {
-                            left: `${percent}%`,
-                        },
-                        [`@media (max-width: ${portraitWidth})`]: {
-                            top: `${percent}%`,
-                        },
-                    })
-                    const templateTextMargin = useCss({
-                        marginTop: '1rem',
-                        [`@media (min-width: ${portraitWidth}) and (max-width: ${smallScreenWidth})`]: {
-                            marginTop: secondRow ? '8rem' : '1rem',
-                        },
-                    })
+                    const itemPosition = 'itemPosition'
+                    // ({
+                    //     display: 'block',
+                    //     position: 'relative',
+                    //     width: 0,
+                    //     height: 0,
+                    //     [`@media (min-width: ${portraitWidth})`]: {
+                    //         left: `${percent}%`,
+                    //     },
+                    //     [`@media (max-width: ${portraitWidth})`]: {
+                    //         top: `${percent}%`,
+                    //     },
+                    // })
+                    const templateTextMargin = 'templateTextMargin'
+                    // ({
+                    //     marginTop: '1rem',
+                    //     [`@media (min-width: ${portraitWidth}) and (max-width: ${smallScreenWidth})`]: {
+                    //         marginTop: secondRow ? '8rem' : '1rem',
+                    //     },
+                    // })
                     return (
                         <span className={itemPosition}>
                             <div className={classes.templateItem}>
@@ -84,16 +86,17 @@ function TemplateElectionTimeLine({
 // align: "right" | "left" | "center"
 function TimelineText({ className, primaryText, secondaryText, position, align = 'center' }) {
     const classes = timelineTextUseStyles({ position, align })
-    const alignmentTransform = useCss({
-        [`@media (min-width: ${portraitWidth})`]: {
-            transform: { right: 'translateX(-90%)', left: 'initial', center: 'translateX(-45%)' }[align],
-            textAlign: align,
-        },
-        [`@media (max-width: ${portraitWidth})`]: {
-            transform: 'translate(35%, -80%)',
-            textAlign: 'center',
-        },
-    })
+    const alignmentTransform = 'alignmentTransform'
+    // ({
+    //     [`@media (min-width: ${portraitWidth})`]: {
+    //         transform: { right: 'translateX(-90%)', left: 'initial', center: 'translateX(-45%)' }[align],
+    //         textAlign: align,
+    //     },
+    //     [`@media (max-width: ${portraitWidth})`]: {
+    //         transform: 'translate(35%, -80%)',
+    //         textAlign: 'center',
+    //     },
+    // })
     return (
         <>
             <div className={cx(className, alignmentTransform, classes.timelineTextContainer)}>
@@ -110,86 +113,86 @@ function LandingTimelineBar({ children }) {
     const classes = landingbarUseStyles()
     return <div className={classes.landingBar}> {children} </div>
 }
-export default function LandingTimeline({ className, style }) {
-    return (
-        <div>
-            <h1>LandingTimeLine Component</h1>
-        </div>
-    )
-}
 // export default function LandingTimeline({ className, style }) {
 //     return (
-//         <TemplateElectionTimeLine
-//             className={className}
-//             style={style}
-//             Meter={LandingTimelineBar}
-//             positions={[
-//                 {
-//                     svg: <SvgElectionCreated />,
-//                     text: <TimelineText primaryText='Election Created' align='left' />,
-//                     percent: 0,
-//                 },
-//                 { svg: <SvgElectionPaper />, percent: 6 },
-//                 { svg: <SvgAccepted />, percent: 12 },
-//                 {
-//                     svg: <SvgVideoSubmitted />,
-//                     text: (
-//                         <TimelineText
-//                             primaryText='Moderator Records and Submits Video'
-//                             secondaryText='Link is provided in the invite email'
-//                         />
-//                     ),
-//                     percent: 18,
-//                 },
-//                 { svg: <SvgReminderSent />, percent: 24 },
-//                 {
-//                     svg: <SvgXCircle />,
-//                     text: (
-//                         <TimelineText
-//                             primaryText='Moderator Submission Deadline'
-//                             secondaryText='Last date for the moderator to make'
-//                         />
-//                     ),
-//                     percent: 30,
-//                 },
-//                 { svg: <SvgVideoSubmitted />, percent: 36 },
-//                 { svg: <SvgElectionGrid />, percent: 46 },
-//                 { svg: <SvgReminderSent />, percent: 53 },
-//                 {
-//                     svg: <SvgXCircle />,
-//                     text: (
-//                         <TimelineText
-//                             primaryText='Candidate Submission Deadline'
-//                             secondaryText='Last date for candidates to submit their video answers'
-//                         />
-//                     ),
-//                     percent: 59,
-//                 },
-//                 {
-//                     svg: <SvgElectionLive />,
-//                     text: (
-//                         <TimelineText
-//                             primaryText='Candidate Submission Deadline'
-//                             secondaryText='Last date for candidates to submit their video answers'
-//                         />
-//                     ),
-//                     percent: 70,
-//                 },
-//                 {
-//                     svg: <SvgContainer />,
-//                     percent: 100,
-//                     text: (
-//                         <TimelineText
-//                             primaryText='Candidate Submission Deadline'
-//                             secondaryText='Last date for candidates to submit their video answers'
-//                             align='right'
-//                         />
-//                     ),
-//                 },
-//             ]}
-//         />
+//         <div>
+//             <h1 style={{ textAlign: 'center' }}>LandingTimeLine Component</h1>
+//         </div>
 //     )
 // }
+export default function LandingTimeline({ className, style }) {
+    return (
+        <TemplateElectionTimeLine
+            className={className}
+            style={style}
+            Meter={LandingTimelineBar}
+            positions={[
+                {
+                    svg: <SvgElectionCreated />,
+                    text: <TimelineText primaryText='Election Created' align='left' />,
+                    percent: 0,
+                },
+                { svg: <SvgElectionPaper />, percent: 6 },
+                { svg: <SvgAccepted />, percent: 12 },
+                {
+                    svg: <SvgVideoSubmitted />,
+                    text: (
+                        <TimelineText
+                            primaryText='Moderator Records and Submits Video'
+                            secondaryText='Link is provided in the invite email'
+                        />
+                    ),
+                    percent: 18,
+                },
+                { svg: <SvgReminderSent />, percent: 24 },
+                {
+                    svg: <SvgXCircle />,
+                    text: (
+                        <TimelineText
+                            primaryText='Moderator Submission Deadline'
+                            secondaryText='Last date for the moderator to make'
+                        />
+                    ),
+                    percent: 30,
+                },
+                { svg: <SvgVideoSubmitted />, percent: 36 },
+                { svg: <SvgElectionGrid />, percent: 46 },
+                { svg: <SvgReminderSent />, percent: 53 },
+                {
+                    svg: <SvgXCircle />,
+                    text: (
+                        <TimelineText
+                            primaryText='Candidate Submission Deadline'
+                            secondaryText='Last date for candidates to submit their video answers'
+                        />
+                    ),
+                    percent: 59,
+                },
+                {
+                    svg: <SvgElectionLive />,
+                    text: (
+                        <TimelineText
+                            primaryText='Candidate Submission Deadline'
+                            secondaryText='Last date for candidates to submit their video answers'
+                        />
+                    ),
+                    percent: 70,
+                },
+                {
+                    svg: <SvgContainer />,
+                    percent: 100,
+                    text: (
+                        <TimelineText
+                            primaryText='Candidate Submission Deadline'
+                            secondaryText='Last date for candidates to submit their video answers'
+                            align='right'
+                        />
+                    ),
+                },
+            ]}
+        />
+    )
+}
 
 const useStyles = createUseStyles(theme => ({
     templateBar: {

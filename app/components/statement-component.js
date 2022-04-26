@@ -21,13 +21,14 @@ const useStyles = createUseStyles(theme => ({
         lineHeight: '2rem',
         paddingBottom: '.5rem',
         width: '100%',
-        fontFamily: 'Gilroy-Bold',
+        fontFamily: theme.defaultFontFamily,
     },
     description: {
         display: 'flex',
         color: 'rgba(38, 45, 51, 0.5)',
-        fontFamily: 'Poppins',
         fontStyle: 'normal',
+        fontSize: '1.5rem',
         fontWeight: 400,
+        fontFamily: theme.defaultFontFamily,
     },
 }))
