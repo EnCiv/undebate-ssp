@@ -251,6 +251,7 @@ const landingbarUseStyles = createUseStyles(theme => ({
         width: '90%',
         backgroundColor: theme.colorPrimary,
         margin: '0 auto',
+        fontFamily: theme.defaultFontFamily,
     },
 }))
 
