@@ -20,7 +20,7 @@ export default function UndebatesLandingPage(props) {
             <div className={classes.undebates}>
                 <h2>What are Undebates? (Component)</h2>
             </div>
-            <LandingTimeline />
+
             <div className={classes.iconbox}>
                 <div className={classes.iconDiv}>
                     <IconBox {...props.iconBox[0]} className={classes.iconBox} />
@@ -33,8 +33,9 @@ export default function UndebatesLandingPage(props) {
                 </div>
             </div>
             <Statement {...props.statement[0]} className={classes.statement} />
+            <LandingTimeline style={{ marginBottom: '7rem' }} />
             <FAQ faqs={props.faqs} className={classes.faqCom} />
-            <HaveAQuestion />
+            <HaveAQuestion style={{ paddingBottom: '10rem' }} />
         </div>
     )
 }
@@ -77,11 +78,13 @@ const useStyles = createUseStyles({
         width: '48rem',
         marginLeft: 'auto',
         marginRight: 'auto',
+        marginBottom: '10rem',
     },
     faqCom: {
         width: '48rem',
         marginLeft: 'auto',
         marginRight: 'auto',
+        marginBottom: '10rem',
         fontFamily: theme.defaultFontFamily,
     },
     '@media (orientation: portrait)': {

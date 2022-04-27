@@ -104,6 +104,8 @@ const useStyles = createUseStyles(theme => ({
     container: {
         display: 'flex',
         flexDirection: 'column',
+        width: '45%',
+        margin: '0 auto',
     },
 
     input: {
