@@ -70,7 +70,7 @@ const useStyles = createUseStyles({
         color: theme.colorText,
         display: 'block',
         margin: '0 auto',
-        width: '45%',
+        width: '25%',
         textAlign: 'center',
         fontSize: '1.25em',
         '&:hover': {
@@ -131,7 +131,7 @@ const useStyles = createUseStyles({
             width: '100%',
         },
         btn: {
-            width: '70%',
+            width: '40%',
         },
         footerCopyRight: {
             marginBottom: '6%',

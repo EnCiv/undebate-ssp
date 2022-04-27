@@ -33,7 +33,7 @@ export default function UndebatesLandingPage(props) {
                 </div>
             </div>
             <Statement {...props.statement[0]} className={classes.statement} />
-            <LandingTimeline style={{ marginBottom: '7rem' }} />
+            <LandingTimeline className={classes.landingTimeline} />
             <FAQ faqs={props.faqs} className={classes.faqCom} />
             <HaveAQuestion style={{ paddingBottom: '10rem' }} />
         </div>
@@ -75,23 +75,27 @@ const useStyles = createUseStyles({
         marginRight: 'none',
     },
     statement: {
-        width: '48rem',
+        width: '55rem',
         marginLeft: 'auto',
         marginRight: 'auto',
         marginBottom: '10rem',
     },
     faqCom: {
-        width: '48rem',
+        width: '55rem',
         marginLeft: 'auto',
         marginRight: 'auto',
         marginBottom: '10rem',
         fontFamily: theme.defaultFontFamily,
+    },
+    landingTimeline: {
+        marginBottom: '10rem',
     },
     '@media (orientation: portrait)': {
         iconbox: {
             flexDirection: 'column',
             width: '100%',
             margin: '0 auto',
+            display: 'inline-flex',
         },
         iconDiv: {
             textAlign: 'center',
@@ -99,7 +103,7 @@ const useStyles = createUseStyles({
             height: '30.625rem',
             display: 'flex-box',
             margin: '0 auto',
-            marginBottom: '6%',
+            marginBottom: '70%',
         },
         iconDivLast: {
             textAlign: 'center',
@@ -107,7 +111,13 @@ const useStyles = createUseStyles({
             height: '30.625rem',
             display: 'flex-box',
             margin: '0 auto',
-            marginBottom: '6%',
+            marginBottom: '70%',
+        },
+        landingTimeline: {
+            marginBottom: '12rem',
+            display: 'table',
+            justifyContent: 'left',
+            marginLeft: '10rem',
         },
     },
 })
