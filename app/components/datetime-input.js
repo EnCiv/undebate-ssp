@@ -15,25 +15,23 @@ function getDateTimeFromDateString(str = '') {
         const parts = str.split('T')
         const date = parts[0] || ''
         const time = (parts[1] || '').split('Z')[0] || ''
-        return [date, time]
+        return [date, time, true, true]
     } else {
         const dd = d.toLocaleDateString()
         let mm = d.getMinutes() // becasue toLocaleTimeString() has AM/PM that the input won't accept
         if (mm < 10) mm = '0' + mm
         let hh = d.getHours()
         if (hh < 10) hh = '0' + hh
-        return [dd, hh + ':' + mm]
+        return [dd, hh + ':' + mm, false, false]
     }
 }
 
 function dateTimeStringFromObj(dateTimeObj) {
-    if (dateTimeObj.date.valid && dateTimeObj.time.valid) {
-        const date = new Date(dateTimeObj.date.value + ', ' + dateTimeObj.time.value)
-        if (date.toLocaleString() !== 'Invalid Date') return date.toISOString() // because toISOString thows error if date is not valid
-    }
+    const date = new Date(dateTimeObj.date.value + ', ' + dateTimeObj.time.value)
+    if (date.toLocaleString() !== 'Invalid Date') return date.toISOString() // because toISOString thows error if date is not valid
     let str = ''
     if (dateTimeObj.date.value) str += dateTimeObj.date.value
-    if (dateTimeObj.time.value) str += 'T' + dateTimeObj.time.value + 'Z'
+    if (dateTimeObj.time.value) str += 'T' + dateTimeObj.time.value + ':00.000Z'
     return str
 }
 
@@ -43,16 +41,18 @@ function DateTimeInput(props) {
 
     const [dateTimeObj] = useState({ time: { valid: false, value: null }, date: { valid: false, value: null } })
     const [prev] = useState({ defaultValue })
+
+    const [date, time, validDate, validTime] = getDateTimeFromDateString(defaultValue)
+
     if (prev.defaultValue != defaultValue) {
         prev.defaultValue = defaultValue
-        const [date, time] = getDateTimeFromDateString(defaultValue)
         if (dateTimeObj.time.value !== time) {
             dateTimeObj.time.value = time
-            dateTimeObj.time.valid = false // the subcomponent to validate
+            dateTimeObj.time.valid = validTime
         }
         if (dateTimeObj.date.value !== date) {
             dateTimeObj.date.value = date
-            dateTimeObj.date.valid = false // subcomponent to validate
+            dateTimeObj.date.valid = validDate
         }
     }
     const disabledRef = useRef(false)
@@ -67,7 +67,6 @@ function DateTimeInput(props) {
 
     // Checks whether dateObj/timeObj states are: 1. valid,
     // 2. were set by the defaultValue, 3. are in the past
-    const [date, time] = getDateTimeFromDateString(defaultValue)
     const shouldBeDisabled = () => {
         if (isDateTimePassed() && date === dateTimeObj.date.value && time === dateTimeObj.time.value) {
             return true
