@@ -1,37 +1,27 @@
 // https://github.com/EnCiv/undebate-ssp/issue/57
 
-import React, { useEffect } from 'react'
-import Undebate from '../app/components/undebate'
+import component from '../app/components/undebate'
+import makeChapter from './make-chapter'
+const mC = makeChapter(component)
 
 export default {
     title: 'Undebate',
-    component: Undebate,
+    component,
     argTypes: {},
 }
 
-const Template = (args, context) => {
-    const { electionOM } = context
-    const { defaultElectionObj, ...otherArgs } = args
-    const [electionObj, electionMethods] = electionOM
-    useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
-    return <Undebate style={{ height: '50rem' }} electionOM={[defaultElectionObj, electionOM]} {...args} />
-}
-
-export const Default = Template.bind({})
-Default.args = {
+export const Default = mC({
     defaultElectionObj: {
         undebate: {
             url: 'https://github.com',
         },
     },
-}
+})
 
-export const Empty = Template.bind({})
-Empty.args = {}
+export const Empty = mC({})
 
-export const NoUrl = Template.bind({})
-NoUrl.args = {
+export const NoUrl = mC({
     defaultElectionObj: {
         undebate: {},
     },
-}
+})

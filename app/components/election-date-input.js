@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import Calendar from 'react-calendar'
-import { SvgCalendar } from './lib/svg'
+import { Calendar as SvgCalendar } from '../svgr'
 import 'react-calendar/dist/Calendar.css'
 
 const splitDate = mdy => {
@@ -28,18 +28,8 @@ const mdyToDate = mdy => {
 }
 
 const isMdyValid = mdy => {
-    const [month, day, year] = splitDate(mdy)
-    const date = new Date(year, month - 1, day)
-    const yearLength = year?.toString().length
-    if (
-        !(yearLength === 2 || yearLength === 4) ||
-        year !== date.getFullYear() ||
-        date.getMonth() !== month - 1 ||
-        date.getDate() !== day
-    ) {
-        return false
-    }
-    return true
+    const str = new Date(mdy).toLocaleDateString()
+    return str !== 'Invalid Date'
 }
 
 const dateToMdy = date => {
@@ -47,6 +37,18 @@ const dateToMdy = date => {
     const day = date.getDate()
     const year = date.getFullYear()
     return `${month}/${day}/${year}`
+}
+
+function toLocaleDateStr(str) {
+    const localeDate = new Date(str).toLocaleDateString()
+    return localeDate !== 'Invalid Date' ? localeDate : str
+}
+
+function toISODateValidValue(str) {
+    // .toISOString throws an error if date is invalid so we check the date first
+    const locale = new Date(str).toLocaleDateString()
+    if (locale == 'Invalid Date') return { valid: false, value: str }
+    else return { valid: true, value: new Date(str).toISOString().split('T')[0] }
 }
 
 export default function ElectionDateInput(props) {
@@ -59,6 +61,8 @@ export default function ElectionDateInput(props) {
     const parentEl = useRef(null)
     const inputRef = useRef(null)
 
+    const localeDefaultValue = toLocaleDateStr(defaultValue)
+
     // side effects are functions that should be executed after the render has completed
     const [sideEffects] = useState([])
     useEffect(() => {
@@ -70,9 +74,9 @@ export default function ElectionDateInput(props) {
     // so it is pushed as a side effect
     if (!inputRef.current) {
         // first time through
-        sideEffects.push(() => propOnDone({ valid: isMdyValid(defaultValue), value: defaultValue }))
-    } else if (inputRef.current.value !== defaultValue) {
-        sideEffects.push(() => propOnDone({ valid: isMdyValid(getInputValue()), value: getInputValue() }))
+        sideEffects.push(() => propOnDone(toISODateValidValue(defaultValue)))
+    } else if (inputRef.current.value !== localeDefaultValue) {
+        sideEffects.push(() => propOnDone(toISODateValidValue(getInputValue())))
     }
 
     const classes = useStyles({
@@ -87,7 +91,10 @@ export default function ElectionDateInput(props) {
 
     useEffect(() => {
         const onNonDatepickerClick = e => {
-            if (!parentEl.current.contains(e.target) && !e.target.className.includes(classes.datePickerPart)) {
+            if (
+                !parentEl.current.contains(e.target) &&
+                !(e.target.className.includes && e.target.className.includes(classes.datePickerPart))
+            ) {
                 if (datePickerOpen) {
                     blurDateInput(getInputValue())
                 }
@@ -109,7 +116,7 @@ export default function ElectionDateInput(props) {
         }
     }
     const onDatePickerChange = date => {
-        const value = dateToMdy(date)
+        const value = date.toLocaleDateStr()
         const valid = isMdyValid(value)
         if (!valid) setError('Please enter a valid date')
         else setError(null)
@@ -126,7 +133,7 @@ export default function ElectionDateInput(props) {
         if (!valid) {
             setError('Please enter a valid date')
         }
-        propOnDone({ valid: isMdyValid(getInputValue()), value: getInputValue() })
+        propOnDone(toISODateValidValue(getInputValue()))
     }
 
     return (
@@ -144,7 +151,7 @@ export default function ElectionDateInput(props) {
                         ref={inputRef}
                         onBlur={e => blurDateInput(e.target.value)}
                         placeholder='mm/dd/yyyy'
-                        defaultValue={defaultValue}
+                        defaultValue={localeDefaultValue}
                         key='input'
                     />
                     <button
@@ -194,6 +201,7 @@ const useStyles = createUseStyles(theme => ({
         fontFamily: theme.defaultFontFamily,
         color: props.disabled ? 'grey' : 'black',
         cursor: props.disabled ? 'not-allowed' : 'pointer',
+        width: '100%',
     }),
     datePicker: {
         position: 'absolute',
