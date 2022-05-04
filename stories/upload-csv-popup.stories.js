@@ -4,6 +4,9 @@ import { expect } from '@storybook/jest'
 import { within, userEvent, waitFor } from '@storybook/testing-library'
 import { getElectionCandidates } from './story-helpers'
 import UploadCSVPopup from '../app/components/upload-csv-popup'
+import makeChapter from './make-chapter'
+
+const mC = makeChapter(UploadCSVPopup)
 
 export default {
     title: 'Upload CSV Popup',
@@ -70,7 +73,7 @@ Alice Naland,Campus Events Commission,Independent,alicenaland@fake.enciv.org,can
 )
 
 const existingTableOldEmailArgs = {
-    defaultValue: {
+    candidates: {
         '61e34ba4dd28d45f2c6c66be': {
             uniqueId: '61e34ba4dd28d45f2c6c66be',
             name: 'Diana Russel',
@@ -81,7 +84,7 @@ const existingTableOldEmailArgs = {
 }
 
 const existingTableNewEmailArgs = {
-    defaultValue: {
+    candidates: {
         '61e34ba4dd28d45f2c6c66be': {
             uniqueId: '61e34ba4dd28d45f2c6c66be',
             name: 'Diana Russel',
@@ -91,34 +94,20 @@ const existingTableNewEmailArgs = {
     },
 }
 
-const Template = (args, context) => {
-    const { electionOM } = context
-    const { defaultValue, ...otherArgs } = args
-    const [electionObj, electionMethods] = electionOM
-    useEffect(() => defaultValue && electionMethods.upsert({ candidates: defaultValue }), [defaultValue])
-
-    return (
-        <UploadCSVPopup
-            visible='true'
-            electionOM={electionOM}
-            closePopup={() => console.log('close popup called')}
-            {...otherArgs}
-        />
-    )
+const chapterTemplateArgs = {
+    defaultElectionObj: { candidates: {} },
+    visible: 'true',
+    closePopup: () => console.log('close popup called'),
 }
 
-export const Default = Template.bind({})
-Default.args = { defaultValue: {} }
-Default.play = async ({ canvasElement }) => {
+export const Default = mC(chapterTemplateArgs, async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
     // ensure button is disabled by default:
     await waitFor(() => expect(canvas.getByText('Extract Data').getAttribute('disabled')).toBe(''))
-}
+})
 
-export const EmptyTableNoUniqueIds = Template.bind({})
-EmptyTableNoUniqueIds.args = { defaultValue: {} }
-EmptyTableNoUniqueIds.play = async ({ canvasElement }) => {
+export const EmptyTableNoUniqueIds = mC(chapterTemplateArgs, async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(0))
     await new Promise(r => setTimeout(r, 1000))
@@ -131,11 +120,9 @@ EmptyTableNoUniqueIds.play = async ({ canvasElement }) => {
     await userEvent.click(canvas.getByText('Extract Data'))
 
     await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(2))
-}
+})
 
-export const EmptyTableWithUniqueIds = Template.bind({})
-EmptyTableWithUniqueIds.args = { defaultValue: {} }
-EmptyTableWithUniqueIds.play = async ({ canvasElement }) => {
+export const EmptyTableWithUniqueIds = mC(chapterTemplateArgs, async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(0))
     await new Promise(r => setTimeout(r, 1000))
@@ -152,51 +139,38 @@ EmptyTableWithUniqueIds.play = async ({ canvasElement }) => {
     await waitFor(() =>
         expect(getElectionCandidates(canvas)['61e34bb17ad05c2b9003f600'].email).toBe('navaeh.simmons@example.com')
     )
+})
+
+export const ExistingTableWithUniqueIds = mC(
+    { ...chapterTemplateArgs, defaultElectionObj: { ...existingTableOldEmailArgs } },
+    async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(1))
+        await new Promise(r => setTimeout(r, 1000))
+
+        await userEvent.upload(canvas.getByTestId('file-select-input'), withUniqueIdsFile)
+        await new Promise(r => setTimeout(r, 1000))
+
+        await userEvent.click(canvas.getByText('Extract Data'))
+
+        await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(2))
+        await waitFor(() =>
+            expect(getElectionCandidates(canvas)['61e34ba4dd28d45f2c6c66be'].email).toBe('my.new.email@example.com')
+        )
+        await waitFor(() =>
+            expect(getElectionCandidates(canvas)['61e34bb17ad05c2b9003f600'].email).toBe('navaeh.simmons@example.com')
+        )
+    }
+)
+
+let testArgs = {
+    ...chapterTemplateArgs,
+    defaultElectionObj: {
+        ...existingTableOldEmailArgs,
+    },
 }
-
-export const ExistingTableWithUniqueIds = Template.bind({})
-ExistingTableWithUniqueIds.args = { ...existingTableOldEmailArgs }
-ExistingTableWithUniqueIds.play = async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(1))
-    await new Promise(r => setTimeout(r, 1000))
-
-    await userEvent.upload(canvas.getByTestId('file-select-input'), withUniqueIdsFile)
-    await new Promise(r => setTimeout(r, 1000))
-
-    await userEvent.click(canvas.getByText('Extract Data'))
-
-    await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(2))
-    await waitFor(() =>
-        expect(getElectionCandidates(canvas)['61e34ba4dd28d45f2c6c66be'].email).toBe('my.new.email@example.com')
-    )
-    await waitFor(() =>
-        expect(getElectionCandidates(canvas)['61e34bb17ad05c2b9003f600'].email).toBe('navaeh.simmons@example.com')
-    )
-}
-
-export const ExistingTableMatchEmail = Template.bind({})
-ExistingTableMatchEmail.args = { ...existingTableNewEmailArgs }
-ExistingTableMatchEmail.play = async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(1))
-    await new Promise(r => setTimeout(r, 1000))
-
-    await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)
-    await new Promise(r => setTimeout(r, 1000))
-
-    await userEvent.click(canvas.getByText('Extract Data'))
-
-    await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(2))
-    await waitFor(() =>
-        expect(getElectionCandidates(canvas)['61e34ba4dd28d45f2c6c66be'].email).toBe('my.new.email@example.com')
-    )
-}
-
-export const ExistingTableMatchNameOffice = Template.bind({})
-ExistingTableMatchNameOffice.args = { ...existingTableOldEmailArgs }
-ExistingTableMatchNameOffice.args.defaultValue['61e34ba4dd28d45f2c6c66be'].office = 'New Office'
-ExistingTableMatchNameOffice.play = async ({ canvasElement }) => {
+testArgs.defaultElectionObj.candidates['61e34ba4dd28d45f2c6c66be'].office = 'New Office'
+export const ExistingTableMatchEmail = mC(testArgs, async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(1))
     await new Promise(r => setTimeout(r, 1000))
@@ -210,46 +184,67 @@ ExistingTableMatchNameOffice.play = async ({ canvasElement }) => {
     await waitFor(() =>
         expect(getElectionCandidates(canvas)['61e34ba4dd28d45f2c6c66be'].email).toBe('my.new.email@example.com')
     )
-}
+})
 
-export const ExistingTableNewData = Template.bind({})
-ExistingTableNewData.args = { ...existingTableOldEmailArgs }
-ExistingTableNewData.play = async ({ canvasElement }) => {
+testArgs = {
+    ...chapterTemplateArgs,
+    defaultElectionObj: {
+        ...existingTableOldEmailArgs,
+    },
+}
+testArgs.defaultElectionObj.candidates['61e34ba4dd28d45f2c6c66be'].office = 'New Office'
+export const ExistingTableMatchNameOffice = mC(testArgs, async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(1))
     await new Promise(r => setTimeout(r, 1000))
 
-    await userEvent.upload(canvas.getByTestId('file-select-input'), allNewDataFile)
+    await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)
     await new Promise(r => setTimeout(r, 1000))
 
     await userEvent.click(canvas.getByText('Extract Data'))
 
-    await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(3))
+    await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(2))
     await waitFor(() =>
-        expect(getElectionCandidates(canvas)['61e34ba4dd28d45f2c6c66be'].email).toBe('my.old.email@example.com')
+        expect(getElectionCandidates(canvas)['61e34ba4dd28d45f2c6c66be'].email).toBe('my.new.email@example.com')
     )
-}
+})
 
-export const WithLongFileName = Template.bind({})
-WithLongFileName.play = async ({ canvasElement }) => {
+export const ExistingTableNewData = mC(
+    { ...chapterTemplateArgs, defaultElectionObj: { ...existingTableOldEmailArgs } },
+    async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(1))
+        await new Promise(r => setTimeout(r, 1000))
+
+        await userEvent.upload(canvas.getByTestId('file-select-input'), allNewDataFile)
+        await new Promise(r => setTimeout(r, 1000))
+
+        await userEvent.click(canvas.getByText('Extract Data'))
+
+        await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(3))
+        await waitFor(() =>
+            expect(getElectionCandidates(canvas)['61e34ba4dd28d45f2c6c66be'].email).toBe('my.old.email@example.com')
+        )
+    }
+)
+
+export const WithLongFileName = mC(chapterTemplateArgs, async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await new Promise(r => setTimeout(r, 1000))
     const file = new File(['hello world'], 'ThisIsARatherLongFileNameWithNoSpacesInIt.csv')
 
     await userEvent.upload(canvas.getByTestId('file-select-input'), file)
-}
+})
 
-export const WithLongSpacesFile = Template.bind({})
-WithLongSpacesFile.play = async ({ canvasElement }) => {
+export const WithLongSpacesFile = mC(chapterTemplateArgs, async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await new Promise(r => setTimeout(r, 1000))
     const file = new File(['hello world'], 'This is a long file name with spaces.csv')
 
     await userEvent.upload(canvas.getByTestId('file-select-input'), file)
-}
+})
 
-export const FileMissingHeaders = Template.bind({})
-FileMissingHeaders.play = async ({ canvasElement }) => {
+export const FileMissingHeaders = mC(chapterTemplateArgs, async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await new Promise(r => setTimeout(r, 1000))
 
@@ -263,10 +258,9 @@ FileMissingHeaders.play = async ({ canvasElement }) => {
             "File is missing required headers. Please include 'name', 'email', and 'office'."
         )
     )
-}
+})
 
-export const BadFileType = Template.bind({})
-BadFileType.play = async ({ canvasElement }) => {
+export const BadFileType = mC(chapterTemplateArgs, async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await new Promise(r => setTimeout(r, 1000))
     const content = 'non text string'
@@ -283,11 +277,9 @@ BadFileType.play = async ({ canvasElement }) => {
             'Unable to read file. Please confirm this is a csv file.'
         )
     )
-}
+})
 
-export const UploadMultipleFiles = Template.bind({})
-UploadMultipleFiles.args = { defaultValue: {} }
-UploadMultipleFiles.play = async ({ canvasElement }) => {
+export const UploadMultipleFiles = mC(chapterTemplateArgs, async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(0))
     await new Promise(r => setTimeout(r, 1000))
@@ -305,10 +297,10 @@ UploadMultipleFiles.play = async ({ canvasElement }) => {
 
     await userEvent.click(canvas.getByText('Extract Data'))
     await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(4))
-}
+})
 
-export const OtherDataFileBadHeaders = Template.bind({})
-OtherDataFileBadHeaders.play = async ({ canvasElement }) => {
+export const OtherDataFileBadHeaders = mC(chapterTemplateArgs, async ({ canvasElement }) => {
+    // test file given by David to ensure proper error messages
     const canvas = within(canvasElement)
     await new Promise(r => setTimeout(r, 1000))
 
@@ -323,4 +315,4 @@ OtherDataFileBadHeaders.play = async ({ canvasElement }) => {
             "File is missing required headers. Please include 'name', 'email', and 'office'."
         )
     )
-}
+})

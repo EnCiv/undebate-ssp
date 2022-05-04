@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react'
 
 export default function makeChapter(Component) {
-    return args => {
+    return (args, play) => {
         const test = (args, context) => {
             // logger is used on the browser by civil-client apis - dummy it out
             if (typeof global.logger === 'undefined') global.logger = console
@@ -39,6 +39,7 @@ export default function makeChapter(Component) {
             return <Component onDone={onDone} electionOM={electionOM} {...otherArgs} />
         }
         test.args = args
+        test.play = play
         return test
     }
 }

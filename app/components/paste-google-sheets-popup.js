@@ -57,7 +57,6 @@ function PasteGoogleSheetsPopup({ electionObj, electionMethods, closePopup, visi
 
     const initGapiClient = () => {
         // todo wait till loaded and inited to enable extract data button
-        console.log('initializing gapi client', GOOGLE_API_KEY)
         gapi.client.init({
             apiKey: GOOGLE_API_KEY,
             clientId: GOOGLE_CLIENT_ID,
@@ -162,6 +161,11 @@ function PasteGoogleSheetsPopup({ electionObj, electionMethods, closePopup, visi
 
     const isExtractButtonEnabled = () => {
         return inputLink && isValidUrl(inputLink)
+    }
+
+    const close = () => {
+        setFileError(null)
+        closePopup()
     }
 
     const renderErrors = () => {
