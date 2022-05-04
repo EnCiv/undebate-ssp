@@ -1,11 +1,11 @@
 // https://github.com/EnCiv/undebate-ssp/issues/12
 
-import { React, useState, useEffect, useRef } from 'react'
+import { React, forwardRef, useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import Plus from '../svgr/plus'
 import DateTimeInput from './datetime-input'
 
-function TimelinePoint(props) {
+const TimelinePoint = forwardRef((props, ref) => {
     const {
         className,
         style,
@@ -15,7 +15,6 @@ function TimelinePoint(props) {
         onDone = () => {},
         timelineKey,
         addOne,
-        ref,
         electionObjKey,
     } = props
     const [electionObj, electionMethods] = electionOM
@@ -75,10 +74,9 @@ function TimelinePoint(props) {
                     <div
                         className={classes.plusButton}
                         onClick={() => {
-                            sideEffects.push(() => {
-                                electionMethods.upsert({
-                                    timeline: { [key]: { [Object.keys(timelineObj).length]: { date: '' } } },
-                                })
+                            // no side effect from within an event because a rerender won't happen
+                            electionMethods.upsert({
+                                timeline: { [timelineKey]: { [Object.keys(timelineObj).length]: { date: '' } } },
                             })
                         }}
                     >
@@ -88,12 +86,12 @@ function TimelinePoint(props) {
             </div>
         </div>
     )
-}
+})
 
 const useStyles = createUseStyles(theme => ({
     title: {
         fontWeight: '600',
-        marginBottom: '3px',
+        marginBottom: '.1875rem',
     },
     description: {
         color: theme.colorSecondary,
@@ -112,17 +110,17 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         gap: '1rem',
         flexDirection: 'column',
-        maxWidth: '400px',
+        maxWidth: '25rem',
     },
     plusButton: {
         opacity: '50%',
         backgroundColor: theme.colorLightGray,
-        width: '56px',
-        height: '56px',
+        width: '3.8125rem',
+        height: '3.8125rem',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: '10px',
+        borderRadius: '0.625rem',
         '&:hover': {
             opacity: '100%',
             cursor: 'pointer',

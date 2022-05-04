@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import Calendar from 'react-calendar'
-import { SvgCalendar } from './lib/svg'
+import { Calendar as SvgCalendar } from '../svgr'
 import 'react-calendar/dist/Calendar.css'
 
 const splitDate = mdy => {
@@ -91,7 +91,10 @@ export default function ElectionDateInput(props) {
 
     useEffect(() => {
         const onNonDatepickerClick = e => {
-            if (!parentEl.current.contains(e.target) && !e.target.className.includes(classes.datePickerPart)) {
+            if (
+                !parentEl.current.contains(e.target) &&
+                !(e.target.className.includes && e.target.className.includes(classes.datePickerPart))
+            ) {
                 if (datePickerOpen) {
                     blurDateInput(getInputValue())
                 }
