@@ -11,11 +11,11 @@ const checkDateCompleted = obj => {
 
 const checkObjCompleted = obj => {
     for (const key in obj) {
-        if (obj[key].text !== '') {
-            return true
+        if (obj[key].text === '') {
+            return false
         }
     }
-    return false
+    return true
 }
 
 function getElectionStatusMethods(dispatch, state) {

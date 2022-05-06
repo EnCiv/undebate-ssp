@@ -58,14 +58,14 @@ export default function Questions({ className, style, electionOM, onDone }) {
     }, [electionOM, error, questions])
 
     const addQuestion = () => {
-        if (electionMethods.checkObjCompleted(questions)) {
+        if (Object.keys(questions).length === 0 || electionMethods.checkObjCompleted(questions)) {
             setError('')
             sideEffects.push(() =>
                 electionMethods.upsert({ questions: { [Object.keys(questions).length]: { text: '' } } })
             )
             setValidInputs({ [Object.keys(questions).length]: { text: '' } })
         } else {
-            setError('Please fill out empty question before add more')
+            setError('Please fill out empty question before adding more')
         }
     }
 
