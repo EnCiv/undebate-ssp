@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import Header from './undebates-header-bar'
+import Header from './election-header'
 import NavigationPanel from './navigation-panel'
 import ElectionComponent from './election-component'
 import Timeline from './timeline'
@@ -25,14 +25,15 @@ const components = {
 }
 
 export default function UndebateHomepage(props) {
-    const { className, style, electionOM } = props
+    const { className, style, electionOM, user } = props
     const classes = useStyles(props)
     const [component, setComponent] = useState('Election')
     const Component = components[component] || ElectionComponent
+    const [electionObj, electionMethods] = electionOM
 
     return (
         <div className={cx(className, classes.wrapper)} style={style}>
-            <Header electionOM={electionOM} className={classes.header} />
+            <Header elections={[electionObj.electionName]} className={classes.header} user={user} />
             <div className={classes.workArea}>
                 <NavigationPanel
                     className={classes.nav}
@@ -61,11 +62,15 @@ const useStyles = createUseStyles(theme => ({
         flexWrap: 'nowrap',
     },
     nav: {
-        width: '25em',
+        width: '25rem',
+        borderTop: `1px solid ${theme.thinBorderColor}`,
+        borderRight: `1px solid ${theme.thinBorderColor}`,
+        paddingTop: '2.5rem',
     },
     comp: {
         width: '100%',
-        padding: '0 1em 1em 1em',
+        borderTop: `1px solid ${theme.thinBorderColor}`,
+        padding: '2.5rem 1rem 1rem 2.5rem',
     },
     inner: {},
 }))

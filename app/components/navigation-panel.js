@@ -246,7 +246,7 @@ const useStyles = createUseStyles(theme => ({
         textTransform: 'uppercase',
         fontWeight: 'bold',
         color: theme.colorSecondary,
-        marginLeft: '1.5625rem',
+        marginLeft: '2.5rem',
     },
     line: {
         border: `1px solid ${theme.colorSecondary}`,
