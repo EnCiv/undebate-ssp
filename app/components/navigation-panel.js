@@ -82,9 +82,9 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                         selected={current?.includes('Questions')}
                     />
                 </div>
-                <div onClick={handleClick} onMouseEnter={onMouseEnterHandler}>
+                {/* <div onClick={handleClick} onMouseEnter={onMouseEnterHandler}>
                     <ElectionCategory categoryName='Danger Zone' selected={current?.includes('Danger Zone')} />
-                </div>
+                </div> */}
             </div>
             <div className={classes.top}>
                 <div className={classes.title}>moderator</div>
@@ -238,6 +238,9 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         paddingTop: '3.125rem',
+        '&:first-child': {
+            paddingTop: '0px',
+        },
     },
     title: {
         textTransform: 'uppercase',

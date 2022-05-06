@@ -63,9 +63,9 @@ export default function Timeline(props) {
     }, [isValid, validInputs])
 
     return (
-        <div className={cx(className, classes.wrapper)} style={style}>
+        <div className={cx(className, classes.timeline)} style={style}>
             <VerticalTimeline refs={timelinePointRefs} renderEveryTime={_this.renderCount} />
-            <div className={classes.timeline}>
+            <div className={classes.content}>
                 <header className={classes.heading} key='header'>
                     <span>Fill the date and times for following events to automate the undebate.</span>
                     <Submit onDone={onDone} disabled={!isValid} />
@@ -97,12 +97,13 @@ export default function Timeline(props) {
 }
 
 const useStyles = createUseStyles(theme => ({
-    wrapper: {
-        display: 'flex',
-    },
     timeline: {
         display: 'flex',
+    },
+    content: {
+        display: 'flex',
         flexDirection: 'column',
+        width: '100%',
     },
     created: {
         marginBottom: '1.5rem',

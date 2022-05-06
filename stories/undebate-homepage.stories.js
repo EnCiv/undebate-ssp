@@ -1,21 +1,17 @@
 // https://github.com/EnCiv/undebate-ssp/issues/20
-import React, { useEffect } from 'react'
-import UndebateHomepage from '../app/components/undebate-homepage'
+import iotas from '../iotas.json'
+import component from '../app/components/undebate-homepage'
+import makeChapter from './make-chapter'
+const mC = makeChapter(component)
 
 export default {
     title: 'Undebate Homepage',
-    component: UndebateHomepage,
+    component,
     argTypes: {},
 }
 
-const Template = (args, context) => {
-    const { electionOM } = context
-    const { defaultElectionObj, ...otherArgs } = args
-    const [electionObj, electionMethods] = electionOM
-    useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
-    return <UndebateHomepage electionOM={electionOM} />
-}
+export const Default = mC({})
 
-export const Default = Template.bind({})
+const defaultElectionObj = iotas.filter(iota => iota.subject === 'Undebate SSP Test Iota')[0].webComponent
 
-Default.args = {}
+export const WithData = mC({ defaultElectionObj })

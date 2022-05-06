@@ -23,6 +23,7 @@ export default function Submission(props) {
     }
 
     const getSubmission = () => {
+        if (!electionObj?.moderator?.submissions) return emptySubmission
         const sortedSubmissions = electionObj.moderator?.submissions.sort(function (a, b) {
             return ('' + b.date).localeCompare(a.date)
         })

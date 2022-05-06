@@ -20,6 +20,7 @@ const checkObjCompleted = obj => {
 
 function getElectionStatusMethods(dispatch, state) {
     const recentInvitationStatus = () => {
+        if (!state?.moderator?.invitations || !state?.moderator?.invitations[0]) return {}
         let recent = state?.moderator?.invitations[0]
         state?.moderator?.invitations.forEach(invitation => {
             if (new Date(invitation?.responseDate).getTime() > new Date(recent?.responseDate).getTime()) {
