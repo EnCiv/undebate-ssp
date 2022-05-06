@@ -11,15 +11,16 @@ const checkDateCompleted = obj => {
 
 const checkObjCompleted = obj => {
     for (const key in obj) {
-        if (obj[key].text !== '') {
-            return true
+        if (obj[key].text === '') {
+            return false
         }
     }
-    return false
+    return true
 }
 
 function getElectionStatusMethods(dispatch, state) {
     const recentInvitationStatus = () => {
+        if (!state?.moderator?.invitations || !state?.moderator?.invitations[0]) return {}
         let recent = state?.moderator?.invitations[0]
         state?.moderator?.invitations.forEach(invitation => {
             if (new Date(invitation?.responseDate).getTime() > new Date(recent?.responseDate).getTime()) {

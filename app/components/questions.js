@@ -58,14 +58,14 @@ export default function Questions({ className, style, electionOM, onDone }) {
     }, [electionOM, error, questions])
 
     const addQuestion = () => {
-        if (electionMethods.checkObjCompleted(questions)) {
+        if (Object.keys(questions).length === 0 || electionMethods.checkObjCompleted(questions)) {
             setError('')
             sideEffects.push(() =>
                 electionMethods.upsert({ questions: { [Object.keys(questions).length]: { text: '' } } })
             )
             setValidInputs({ [Object.keys(questions).length]: { text: '' } })
         } else {
-            setError('Please fill out empty question before add more')
+            setError('Please fill out empty question before adding more')
         }
     }
 
@@ -74,7 +74,11 @@ export default function Questions({ className, style, electionOM, onDone }) {
             <div className={classes.send}>
                 <span>What questions would you like to ask the candidates?</span>
                 <Submit
-                    disabled={!isValid}
+                    disabled={
+                        electionMethods.areQuestionsLocked() ||
+                        Object.keys(questions).length === 0 ||
+                        !electionMethods.checkObjCompleted(questions)
+                    }
                     onDone={() => {
                         onDone({
                             value: questions,
@@ -104,8 +108,8 @@ export default function Questions({ className, style, electionOM, onDone }) {
             <button className={classes.addQuestionBtn} disabled={!isValid} onClick={addQuestion} type='button'>
                 Add question
             </button>
-            <p className={classes.err}>{error}</p>
-            <p className={classes.err}>{lockedMessage}</p>
+            {error && <p className={classes.err}>{error}</p>}
+            {lockedMessage && <p className={classes.err}>{lockedMessage}</p>}
         </div>
     )
 }
