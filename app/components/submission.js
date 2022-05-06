@@ -98,7 +98,7 @@ export default function Submission(props) {
                     <div className={cx(classes.card, { [classes.backgroundRed]: missed })}>
                         <div className={classes.preview}>
                             {submission?.url && getSubmissionStatus() === 'submitted' ? (
-                                <iframe src={submission?.url} frameborder='0'>
+                                <iframe src={submission?.url} frameBorder='0'>
                                     {icon}
                                 </iframe>
                             ) : (

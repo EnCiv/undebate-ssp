@@ -10,8 +10,9 @@ import Questions from './questions'
 import Script from './script'
 import Invitation from './invitation'
 import ElectionTable from './candidate-table'
-import Submissions from './submission'
+import Submissions from './submissions'
 import Submission from './submission'
+import Undebate from './undebate'
 
 const components = {
     Election: ElectionComponent,
@@ -22,6 +23,7 @@ const components = {
     Submission: Submission,
     'Election Table': ElectionTable,
     Submissions: Submissions,
+    Undebate: Undebate,
 }
 
 export default function UndebateHomepage(props) {

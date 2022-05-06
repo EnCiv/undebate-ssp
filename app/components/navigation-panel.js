@@ -205,6 +205,10 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                         classes.underbateSection,
                         electionMethods.getUndebateStatus() === 'archieved' && classes.archieved
                     )}
+                    onClick={e => {
+                        handleClick(e, true, 'Undebate')
+                    }}
+                    onMouseEnter={onMouseEnterHandler}
                 >
                     <div className={classes.left}>
                         <div className={classes.underbate}>
