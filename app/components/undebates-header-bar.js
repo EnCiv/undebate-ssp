@@ -70,7 +70,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         display: 'flex',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        padding: '2.5rem',
+        padding: '1rem 1rem 1rem 1rem',
     },
     buttonGroup: {
         display: 'flex',

@@ -1,61 +1,133 @@
 // https://github.com/EnCiv/undebate-ssp/issues/12
 
-import { React, useRef } from 'react'
+import { React, forwardRef, useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
-
+import Plus from '../svgr/plus'
 import DateTimeInput from './datetime-input'
 
-function TimelinePoint(props) {
-    const { className, style, electionOM, title, description, dateTimes = [], onDone = () => {}, ref } = props
+const TimelinePoint = forwardRef((props, ref) => {
+    const {
+        className,
+        style,
+        electionOM,
+        title,
+        description,
+        onDone = () => {},
+        timelineKey,
+        addOne,
+        electionObjKey,
+    } = props
+    const [electionObj, electionMethods] = electionOM
     const classes = useStyles()
+    const [validValues] = useState([])
+    const { timeline = {} } = electionObj
+    const timelineObj = timelineKey ? timeline[timelineKey] || {} : { 0: electionObj[electionObjKey] || '' }
 
-    const state = useRef({})
+    const [sideEffects] = useState([])
+    useEffect(() => {
+        while (sideEffects.length) sideEffects.shift()()
+    })
+
+    const datesToArray = obj => {
+        let arr = Object.entries(obj).sort(function (a, b) {
+            return ('' + Date.parse(b.date)).localeCompare(Date.parse(a.date))
+        })
+        if (!arr.length) {
+            return ['']
+        }
+        return arr.map(([_, timelineObj]) => timelineObj?.date || '')
+    }
 
     const areAllPairsValid = () => {
-        const dateTimeObjs = Object.values(state.current)
-        if (!dateTimeObjs.length) return false
-        for (let i = 0; i < dateTimeObjs.length; i += 1) {
-            if (!dateTimeObjs[i].valid) return false
-        }
-        return true
+        return validValues.length && validValues.every(({ valid, value }) => !!valid)
     }
 
     return (
         <div ref={ref} className={className} style={style}>
             <div className={classes.title}>{title}</div>
             <div className={classes.description}>{description}</div>
-            {dateTimes.map((dateTime, i) => (
-                <DateTimeInput
-                    className={classes.dateTimeInput}
-                    defaultValue={dateTime}
-                    onDone={({ valid, value }) => {
-                        state.current[i] = { valid, value }
-                        const isValid = areAllPairsValid()
-                        onDone({
-                            value: Object.values(state.current).map(dateTimeObj => dateTimeObj.value),
-                            valid: isValid,
-                        })
-                    }}
-                />
-            ))}
+            <div className={classes.container}>
+                <div className={classes.datetimes}>
+                    {datesToArray(timelineObj).map((dateTime, i) => (
+                        <DateTimeInput
+                            className={classes.dateTimeInput}
+                            defaultValue={dateTime}
+                            onDone={({ valid, value }) => {
+                                validValues[i] = { valid, value }
+                                const isValid = areAllPairsValid()
+                                sideEffects.push(() => {
+                                    if (timelineKey)
+                                        electionMethods.upsert({
+                                            timeline: { [timelineKey]: { [i]: { date: value } } },
+                                        })
+                                    else electionMethods.upsert({ [electionObjKey]: value })
+                                })
+                                onDone({
+                                    value: value,
+                                    valid: isValid,
+                                })
+                            }}
+                        />
+                    ))}
+                </div>
+                {addOne && (
+                    <div
+                        className={classes.plusButton}
+                        onClick={() => {
+                            // no side effect from within an event because a rerender won't happen
+                            electionMethods.upsert({
+                                timeline: { [timelineKey]: { [Object.keys(timelineObj).length]: { date: '' } } },
+                            })
+                        }}
+                    >
+                        <Plus className={classes.plusIcon} />
+                    </div>
+                )}
+            </div>
         </div>
     )
-}
+})
 
 const useStyles = createUseStyles(theme => ({
     title: {
         fontWeight: '600',
-        margin: '5px',
+        marginBottom: '.1875rem',
     },
     description: {
         color: theme.colorSecondary,
         fontSize: theme.secondaryTextFontSize,
         opacity: theme.secondaryTextOpacity,
         fontWeight: '500',
-        margin: '5px',
     },
-    dateTimeInput: {
-        padding: '.75rem 0',
+    container: {
+        display: 'flex',
+        marginTop: '1rem',
+        marginBottom: '4rem',
+        gap: '1rem',
+        alignItems: 'flex-end',
+    },
+    datetimes: {
+        display: 'flex',
+        gap: '1rem',
+        flexDirection: 'column',
+        maxWidth: '25rem',
+    },
+    plusButton: {
+        opacity: '50%',
+        backgroundColor: theme.colorLightGray,
+        width: '3.8125rem',
+        height: '3.8125rem',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: '0.625rem',
+        '&:hover': {
+            opacity: '100%',
+            cursor: 'pointer',
+        },
+    },
+    plusIcon: {
+        fontSize: '1.5rem',
     },
 }))
 
