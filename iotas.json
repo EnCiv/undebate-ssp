@@ -204,11 +204,22 @@
             "$oid": "621e7da7705e8e4fc07f8960"
         },
         "path": "/qa-create-moderator-recorder",
-        "subject": "Create Moderatore Recoarder",
+        "subject": "Create Moderator Recorder",
         "description": "QA Test for creating the moderator recorder",
         "webComponent": {
             "webComponent": "QaCreateModeratorRecorder",
             "id": "62196fd6b2eff30b70ba36e0"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "627833a2ee9d2017eec0a69b"
+        },
+        "path": "/qa-paste-google-sheets-popup",
+        "subject": "Paste Google Sheets Popup",
+        "description": "QA Test for Paste Google Sheets Popup. Needed for testing google auth redirects in conjunction with actual sockets and routes",
+        "webComponent": {
+            "webComponent": "QaPasteGoogleSheetsPopup"
         }
     }
 ]
