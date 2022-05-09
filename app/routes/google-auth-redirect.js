@@ -10,7 +10,8 @@ async function googleAuthRedirect(req, res, next) {
     let { tokens } = await item.oauth2Client.getToken(req.query.code)
     item.oauth2Client.setCredentials(tokens)
     item.callback()
-    // todo respond to browser here, otherwise it gets hung
+    // todo change this to redirect otherwise the client receives the access token?
+    res.sendStatus(200).end()
 }
 
 export default function route() {

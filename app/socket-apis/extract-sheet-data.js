@@ -1,21 +1,20 @@
 import { google } from 'googleapis'
 import { oauth2callbacks } from '../routes/google-auth-redirect'
 
-// todo document these
-// todo fix redirect url
-const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
-    'http://localhost:3011/googleAuthRedirect'
-)
-
-const scope = 'https://www.googleapis.com/auth/spreadsheets.readonly'
-
-function getSheetsData(spreadsheetId, cb) {
-    // todo actual implementation
-    logger.debug('get sheets data', spreadsheetId)
-    // unfortunately, this won't work because the socket has already been responded to so this callback is no longer valid
-    cb('sheetData', JSON.stringify({ stuff: 'things' }))
+async function getSheetsData(spreadsheetId, oauth2Client, cb) {
+    const SHEET_VALUES_RANGE = 'A:ZZ'
+    const sheets = google.sheets({ version: 'v4', auth: oauth2Client })
+    const res = await sheets.spreadsheets.values.get({
+        auth: oauth2Client,
+        spreadsheetId: spreadsheetId,
+        range: SHEET_VALUES_RANGE,
+    })
+    logger.debug('data stuff', res.data.values)
+    if (res && res.data && res.data.values) {
+        cb(JSON.stringify(res.data.values))
+    } else {
+        cb()
+    }
 }
 
 export default async function extractSheetData(uniqueId, spreadsheetId, cb) {
@@ -26,19 +25,9 @@ export default async function extractSheetData(uniqueId, spreadsheetId, cb) {
      *     return
      * } */
     try {
-        oauth2callbacks.push({
-            uniqueId,
-            oauth2Client,
-            callback: () => getSheetsData(spreadsheetId, cb),
-        })
-        // for now assume we are not signed in every time. todo later add actual check
-
-        const authorizationUrl = oauth2Client.generateAuthUrl({
-            scope: scope,
-            include_granted_scopes: true,
-            state: uniqueId,
-        })
-        cb({ status: 'notSignedIn', authUrl: authorizationUrl })
+        // this is the second socket call so we add the callback to the oauth2callbacks list item so that the data gets back to the browser
+        const item = oauth2callbacks.find(obj => obj.uniqueId === uniqueId)
+        item.callback = () => getSheetsData(spreadsheetId, item.oauth2Client, cb)
     } catch (err) {
         logger.error('err', err)
         if (cb) cb()

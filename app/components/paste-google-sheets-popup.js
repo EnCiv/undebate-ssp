@@ -23,6 +23,7 @@ function PasteGoogleSheetsPopup({ electionObj, electionMethods, closePopup, visi
     const classes = useStyles()
     const [inputLink, setInputLink] = useState('')
     const [fileError, setFileError] = useState(null)
+    const uniqueId = ObjectId.toString()
 
     const onInputChange = event => {
         event.preventDefault()
@@ -39,21 +40,15 @@ function PasteGoogleSheetsPopup({ electionObj, electionMethods, closePopup, visi
         // todo
     }
 
-    const extractCallback = responseObj => {
-        console.log('extract callback:', responseObj)
-        // todo handle no obj here
-        if (responseObj.status === 'notSignedIn') {
-            console.log('need to sign in now')
-            window.open(responseObj.authUrl)
-        } else {
-            // todo
-        }
+    const isSignedInResponse = authUrl => {
+        console.log('need to sign in now')
+        window.socket.emit('extract-sheet-data', uniqueId, getSpreadsheetId(), handleSheetData)
+        // todo change to iframe and close after it's done
+        window.open(authUrl)
     }
 
     const handleValidSheetUrl = () => {
-        // todo get unique id here
-        const uniqueId = ObjectId().toString()
-        window.socket.emit('extract-sheet-data', uniqueId, getSpreadsheetId(), extractCallback)
+        window.socket.emit('is-signed-in-for-sheet', uniqueId, getSpreadsheetId(), isSignedInResponse)
     }
 
     const getSpreadsheetId = () => {
