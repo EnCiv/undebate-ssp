@@ -15,7 +15,6 @@ export default async function isSignedInForSheet(uniqueId, spreadsheetId, cb) {
         // so that if google ever changes their auth url we just have to update the googleapis package and
         // don't have to manually update the urls.
 
-        // todo document these
         // todo fix redirect url
         const oauth2Client = new google.auth.OAuth2(
             process.env.GOOGLE_CLIENT_ID,

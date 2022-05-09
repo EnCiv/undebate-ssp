@@ -576,6 +576,21 @@ If you are not using VSC, prettier will also be run on the changed files before 
 
 </details>
 
+<details>
+<summary>Emacs Usage</summary>
+
+Installing the package "prettier" should cause it to just work in emacs.
+
+Example configuration of prettier using use-package (assumes you have already installed the package). You may also want to turn it off for certain modes or projects.
+
+```
+(use-package prettier
+  :init
+  (add-hook 'after-init-hook 'global-prettier-mode))
+```
+
+</details>
+
 # ESLint
 
 ## If you don't already have [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for VSC installed, go [here](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and click **Install**.
@@ -587,5 +602,57 @@ If you are not using VSC, prettier will also be run on the changed files before 
 There is no requirement to resolve lint issues, and many that are more preference than bug related have been turned off. If there are rules that we should turn off, or add - its worth discussing. The goal is not to enforce a particular coding style to make it "easier to read", many people work on this project who are experienced with different coding styles. The goal is to prevent bugs. The best coding style is the working code style.
 
 One burden is that if we create new input components, we need to push them to the array in .eslintrc.js/module.exports.rules[jsx-a11y/label-has-associated-control][1].controlComponents
+
+</details>
+
+<details>
+<summary>Emacs Usage</summary>
+
+Emacs uses flycheck to run eslint. You must first have eslint installed locally, which can be done with `npm install --global eslint`.
+After installing eslint locally, you can test it by running `npm run lint`, and you should see several files with errors and a few warnings.
+If you get an error regarding `except-parens`, you might have to comment out this line (don't commit this)
+`'no-cond-assign': 'except-parens'`
+
+Example configuration of flycheck using use-package (assumes you have already installed the package).
+
+```
+(use-package flycheck
+  :init (global-flycheck-mode)
+  :config
+  ;; use eslint with web-mode for jsx files
+  (flycheck-add-mode 'javascript-eslint 'web-mode))
+```
+
+Note that this was tested on a configuration that had exec-path-from-shell on it, and that flycheck might also need the exec-path variable to include the folder that contains the output for `which eslint`.
+If it is not working, check the variable exec-path first and the documentation for exec-path-from-shell.
+
+</details>
+
+# Google Api Interaction
+
+<details>
+    <summary>If you want to use the paste google sheets component, you have to setup a some things in google first.</summary>
+
+Instructions to get this working:
+
+-   Go to [this link](https://console.cloud.google.com/apis), make sure you are logged in to google, then create a new project.
+-   You can name it something like Undebates-Test, though the name doesn't actually matter.
+-   Location of No Organization is fine.
+-   After saving, select the project from the dropdown at the top.
+-   Configure the consent screen. External user type, whatever name you want, use your email for the emails.
+-   Click Credentials on the left.
+-   Click Create Credentials at the top, then Oauth client ID.
+-   Application Type will be Web application, the name can be something like Undebates Web Client.
+-   Add the following to the Authorized JavaScript origins: http://localhost:3011
+-   Add the following to the Authorized redirect URIs: http://localhost:3011/googleAuthRedirect
+-   Click save.
+-   Using the values from the popup, within your .bashrc file, add the following lines:
+
+```
+export GOOGLE_CLIENT_ID='<your-client-id>'
+export GOOGLE_CLIENT_SECRET='<your-client-secret>'
+```
+
+The paste google sheets component should now work when running in dev (note that it doesn't work in storybook because the routes aren't running)
 
 </details>
