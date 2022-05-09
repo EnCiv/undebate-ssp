@@ -1,14 +1,6 @@
 import { google } from 'googleapis'
 import { oauth2callbacks } from '../routes/google-auth-redirect'
 
-// todo document these
-// todo fix redirect url
-const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
-    'http://localhost:3011/googleAuthRedirect'
-)
-
 const scope = 'https://www.googleapis.com/auth/spreadsheets.readonly'
 
 export default async function isSignedInForSheet(uniqueId, spreadsheetId, cb) {
@@ -19,6 +11,17 @@ export default async function isSignedInForSheet(uniqueId, spreadsheetId, cb) {
      *     return
      * } */
     try {
+        // Decided to put the oauth client in here instead of generating the auth url manually clientside
+        // so that if google ever changes their auth url we just have to update the googleapis package and
+        // don't have to manually update the urls.
+
+        // todo document these
+        // todo fix redirect url
+        const oauth2Client = new google.auth.OAuth2(
+            process.env.GOOGLE_CLIENT_ID,
+            process.env.GOOGLE_CLIENT_SECRET,
+            'http://localhost:3011/googleAuthRedirect'
+        )
         // can't add the callback itself yet as that has to come from the next socket call
         oauth2callbacks.push({
             uniqueId,
