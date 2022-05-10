@@ -14,6 +14,8 @@ const daLink = (
             textDecorationLine: 'none',
             color: 'grey',
             fontFamily: 'poppins',
+            textAlign: 'center',
+            fontSize: '1.5rem',
         }}
         href={'https://cc.enciv.org/country:us/organization:ucla-student-accociation/office:usac-president/2021-05-07'}
     >
