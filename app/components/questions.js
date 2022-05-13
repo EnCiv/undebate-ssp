@@ -24,16 +24,6 @@ export default function Questions({ className, style, electionOM, onDone }) {
         while (sideEffects.length) sideEffects.shift()()
     })
 
-    const checkEmptyQuestion = () => {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const key in questions) {
-            if (questions[key].text === '') {
-                return false
-            }
-        }
-        return true
-    }
-
     const checkValid = () => {
         // check questions are locked or not
         if (electionMethods.areQuestionsLocked()) {
@@ -62,20 +52,20 @@ export default function Questions({ className, style, electionOM, onDone }) {
     }, [isValid, electionOM])
 
     useEffect(() => {
-        if (checkEmptyQuestion()) {
+        if (electionMethods.checkObjCompleted(questions)) {
             setError('')
         }
     }, [electionOM, error, questions])
 
     const addQuestion = () => {
-        if (checkEmptyQuestion()) {
+        if (Object.keys(questions).length === 0 || electionMethods.checkObjCompleted(questions)) {
             setError('')
             sideEffects.push(() =>
                 electionMethods.upsert({ questions: { [Object.keys(questions).length]: { text: '' } } })
             )
             setValidInputs({ [Object.keys(questions).length]: { text: '' } })
         } else {
-            setError('Please fill out empty question before add more')
+            setError('Please fill out empty question before adding more')
         }
     }
 
@@ -84,7 +74,11 @@ export default function Questions({ className, style, electionOM, onDone }) {
             <div className={classes.send}>
                 <span>What questions would you like to ask the candidates?</span>
                 <Submit
-                    disabled={!isValid}
+                    disabled={
+                        electionMethods.areQuestionsLocked() ||
+                        Object.keys(questions).length === 0 ||
+                        !electionMethods.checkObjCompleted(questions)
+                    }
                     onDone={() => {
                         onDone({
                             value: questions,
@@ -114,8 +108,8 @@ export default function Questions({ className, style, electionOM, onDone }) {
             <button className={classes.addQuestionBtn} disabled={!isValid} onClick={addQuestion} type='button'>
                 Add question
             </button>
-            <p className={classes.err}>{error}</p>
-            <p className={classes.err}>{lockedMessage}</p>
+            {error && <p className={classes.err}>{error}</p>}
+            {lockedMessage && <p className={classes.err}>{lockedMessage}</p>}
         </div>
     )
 }

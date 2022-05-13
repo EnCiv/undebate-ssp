@@ -10,190 +10,8 @@ import { SvgRightArrow } from './lib/svg'
 
 export default function NavigationPanel({ className, style, electionOM, onDone }) {
     const classes = useStyles()
-    const [electionObj] = electionOM
+    const [electionObj, electionMethods] = electionOM
     const [current, setCurrent] = useState('')
-
-    const getElectionStatus = () => {
-        if (electionObj?.electionName && electionObj?.organizationName) return 'completed'
-        return 'default'
-    }
-
-    const checkDateCompleted = obj => {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const key in obj) {
-            if (obj[key].date !== '') {
-                return true
-            }
-        }
-        return false
-    }
-
-    const checkTimelineCompleted = () => {
-        return (
-            checkDateCompleted(electionObj?.timeline?.moderatorDeadlineReminderEmails) &&
-            checkDateCompleted(electionObj?.timeline?.moderatorSubmissionDeadline) &&
-            checkDateCompleted(electionObj?.timeline?.candidateDeadlineReminderEmails) &&
-            checkDateCompleted(electionObj?.timeline?.candidateSubmissionDeadline)
-        )
-    }
-
-    const getTimelineStatus = () => {
-        if (getElectionStatus() === 'default') return 'default'
-        if (getElectionStatus() === 'completed' && !checkTimelineCompleted()) return 'pending'
-        return 'completed'
-    }
-
-    const checkObjCompleted = obj => {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const key in obj) {
-            if (obj[key].text !== '') {
-                return true
-            }
-        }
-        return false
-    }
-
-    const countDayLeft = () =>
-        ((new Date(electionObj?.electionDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24)).toFixed()
-
-    const getQuestionsStatus = () => {
-        if (getTimelineStatus() === 'completed' && !checkObjCompleted(electionObj?.questions)) return countDayLeft()
-        if (getTimelineStatus() === 'completed' && checkObjCompleted(electionObj?.questions)) return 'completed'
-        return 'default'
-    }
-
-    const getScriptStatus = () => {
-        if (getQuestionsStatus() === 'completed' && !checkObjCompleted(electionObj?.script)) return countDayLeft()
-        if (getQuestionsStatus() === 'completed' && checkObjCompleted(electionObj?.script)) return 'completed'
-        return 'default'
-    }
-
-    const recentInvitationStatus = () => {
-        let recent = electionObj?.moderator?.invitations[0]
-        electionObj?.moderator?.invitations.forEach(invitation => {
-            if (new Date(invitation?.responseDate).getTime() > new Date(recent?.responseDate).getTime()) {
-                recent = invitation
-            }
-        })
-        return recent
-    }
-
-    const getInvitationStatus = () => {
-        if (getScriptStatus() !== 'completed') return 'default'
-        if (recentInvitationStatus()?.status === 'Accepted') return 'accepted'
-        if (recentInvitationStatus()?.status === 'Declined') return 'declined'
-        if (recentInvitationStatus()?.sentDate) return 'sent'
-        return countDayLeft()
-    }
-
-    const checkReminderSent = () => {
-        let result = false
-        const reminder = electionObj?.timeline?.moderatorDeadlineReminderEmails
-        // eslint-disable-next-line no-restricted-syntax
-        for (const key in reminder) {
-            if (reminder[key]?.sent) {
-                result = true
-            }
-        }
-        return result
-    }
-
-    const checkVideoSubmitted = () => {
-        let result = false
-        // eslint-disable-next-line consistent-return
-        electionObj?.moderator?.submissions?.forEach(submission => {
-            if (submission.url !== '') {
-                result = true
-            }
-        })
-        return result
-    }
-
-    const checkSubmissionBeforeDeadline = () => {
-        let result = false
-        const submission = electionObj?.timeline?.moderatorSubmissionDeadline
-        // eslint-disable-next-line no-restricted-syntax
-        for (const key in submission) {
-            if (submission[key]?.date && submission[key]?.sent) {
-                result = true
-            }
-        }
-        return result
-    }
-
-    const getSubmissionStatus = () => {
-        if (electionObj?.timeline?.moderatorSubmissionDeadline && !checkSubmissionBeforeDeadline()) return 'missed'
-        if (electionObj?.moderator?.submissions && checkVideoSubmitted()) return 'submitted'
-        if (electionObj?.timeline?.moderatorDeadlineReminderEmails && checkReminderSent()) return 'sent'
-        return 'default'
-    }
-
-    const getElectionTableStatus = () => {
-        if (electionObj?.candidates && Object.keys(electionObj?.candidates)?.length >= 1) return 'filled'
-        if (recentInvitationStatus()?.sentDate) return countDayLeft()
-        return 'default'
-    }
-
-    const countSubmissionAccepted = () => {
-        let count = 0
-        electionObj?.moderator?.invitations?.forEach(invitation => {
-            if (invitation?.status === 'Accepted') {
-                count += 1
-            }
-        })
-        return count
-    }
-
-    const countSubmissionDeclined = () => {
-        let count = 0
-        electionObj?.moderator?.invitations?.forEach(invitation => {
-            if (invitation?.status === 'Declined') {
-                count += 1
-            }
-        })
-        return count
-    }
-
-    const countSubmissionReminderSet = () => {
-        let count = 0
-        const reminder = electionObj?.timeline?.moderatorDeadlineReminderEmails
-        // eslint-disable-next-line no-restricted-syntax
-        for (const key in reminder) {
-            if (reminder[key]?.sent) {
-                count += 1
-            }
-        }
-        return count
-    }
-
-    const countSubmissionDeadlineMissed = () => {
-        let count = 0
-        const submission = electionObj?.timeline?.moderatorSubmissionDeadline
-        // eslint-disable-next-line no-restricted-syntax
-        for (const key in submission) {
-            if (!submission[key]?.sent) {
-                count += 1
-            }
-        }
-        return count
-    }
-
-    const getSubmissionsStatus = () => {
-        if (recentInvitationStatus()?.sentDate)
-            return {
-                accepted: countSubmissionAccepted(),
-                declined: countSubmissionDeclined(),
-                reminderSent: countSubmissionReminderSet(),
-                deadlineMissed: countSubmissionDeadlineMissed(),
-            }
-        return 'default'
-    }
-
-    const getUnderbateStatus = () => {
-        if (new Date(electionObj?.electionDate).getTime() < new Date().getTime()) return 'archieved'
-        if (new Date(electionObj?.undebateDate).getTime() < new Date().getTime()) return 'pending'
-        return 'isLive'
-    }
 
     const convertStringDate = date => {
         const d = new Date(date)
@@ -218,28 +36,28 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
             <div className={classes.bottom}>
                 <div
                     onClick={e => {
-                        handleClick(e, getElectionStatus() === 'completed', 'Election')
+                        handleClick(e, electionMethods.getElectionStatus() === 'completed', 'Election')
                     }}
                     onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Election'
-                        statusObjs={getElectionStatus() === 'completed' ? 'completed' : {}}
+                        statusObjs={electionMethods.getElectionStatus() === 'completed' ? 'completed' : {}}
                         selected={current?.includes('Election') && !current?.includes('Table')}
                     />
                 </div>
                 <div
                     onClick={e => {
-                        handleClick(e, getTimelineStatus() === 'completed', 'Timeline')
+                        handleClick(e, electionMethods.getTimelineStatus() === 'completed', 'Timeline')
                     }}
                     onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Timeline'
                         statusObjs={
-                            getTimelineStatus() === 'completed'
+                            electionMethods.getTimelineStatus() === 'completed'
                                 ? 'completed'
-                                : getTimelineStatus() === 'default'
+                                : electionMethods.getTimelineStatus() === 'default'
                                 ? {}
                                 : { pending: true }
                         }
@@ -248,25 +66,25 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                 </div>
                 <div
                     onClick={e => {
-                        handleClick(e, getQuestionsStatus() === 'completed', 'Questions')
+                        handleClick(e, electionMethods.getQuestionsStatus() === 'completed', 'Questions')
                     }}
                     onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Questions'
                         statusObjs={
-                            getQuestionsStatus() === 'completed'
+                            electionMethods.getQuestionsStatus() === 'completed'
                                 ? 'completed'
-                                : getQuestionsStatus() === 'default'
+                                : electionMethods.getQuestionsStatus() === 'default'
                                 ? {}
-                                : { daysLeft: getQuestionsStatus() }
+                                : { daysLeft: electionMethods.getQuestionsStatus() }
                         }
                         selected={current?.includes('Questions')}
                     />
                 </div>
-                <div onClick={handleClick} onMouseEnter={onMouseEnterHandler}>
+                {/* <div onClick={handleClick} onMouseEnter={onMouseEnterHandler}>
                     <ElectionCategory categoryName='Danger Zone' selected={current?.includes('Danger Zone')} />
-                </div>
+                </div> */}
             </div>
             <div className={classes.top}>
                 <div className={classes.title}>moderator</div>
@@ -275,58 +93,58 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
             <div className={classes.bottom}>
                 <div
                     onClick={e => {
-                        handleClick(e, getScriptStatus() === 'completed', 'Script')
+                        handleClick(e, electionMethods.getScriptStatus() === 'completed', 'Script')
                     }}
                     onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Script'
                         statusObjs={
-                            getScriptStatus() === 'completed'
+                            electionMethods.getScriptStatus() === 'completed'
                                 ? 'completed'
-                                : getScriptStatus() === 'default'
+                                : electionMethods.getScriptStatus() === 'default'
                                 ? {}
-                                : { daysLeft: getScriptStatus() }
+                                : { daysLeft: electionMethods.getScriptStatus() }
                         }
                         selected={current?.includes('Script')}
                     />
                 </div>
                 <div
                     onClick={e => {
-                        handleClick(e, getInvitationStatus() === 'completed', 'Invitation')
+                        handleClick(e, electionMethods.getInvitationStatus() === 'completed', 'Invitation')
                     }}
                     onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Invitation'
                         statusObjs={
-                            getInvitationStatus() === 'default'
+                            electionMethods.getInvitationStatus() === 'default'
                                 ? {}
-                                : getInvitationStatus() === 'sent'
+                                : electionMethods.getInvitationStatus() === 'sent'
                                 ? { sent: true }
-                                : getInvitationStatus() === 'accepted'
+                                : electionMethods.getInvitationStatus() === 'accepted'
                                 ? { accepted: true }
-                                : getInvitationStatus() === 'declined'
+                                : electionMethods.getInvitationStatus() === 'declined'
                                 ? { declined: true }
-                                : { daysLeft: getInvitationStatus() }
+                                : { daysLeft: electionMethods.getInvitationStatus() }
                         }
                         selected={current?.includes('Invitation')}
                     />
                 </div>
                 <div
                     onClick={e => {
-                        handleClick(e, getSubmissionStatus() === 'completed', 'Submission')
+                        handleClick(e, electionMethods.getSubmissionStatus() === 'completed', 'Submission')
                     }}
                     onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Submission'
                         statusObjs={
-                            getSubmissionStatus() === 'missed'
+                            electionMethods.getSubmissionStatus() === 'missed'
                                 ? { deadlineMissed: true }
-                                : getSubmissionStatus() === 'submitted'
+                                : electionMethods.getSubmissionStatus() === 'submitted'
                                 ? 'videoSubmitted'
-                                : getSubmissionStatus() === 'sent'
+                                : electionMethods.getSubmissionStatus() === 'sent'
                                 ? { reminderSent: true }
                                 : {}
                         }
@@ -343,38 +161,38 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
             <div className={classes.bottom}>
                 <div
                     onClick={e => {
-                        handleClick(e, getElectionTableStatus() === 'completed', 'Election Table')
+                        handleClick(e, electionMethods.getElectionTableStatus() === 'completed', 'Election Table')
                     }}
                     onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Election Table'
                         statusObjs={
-                            getElectionTableStatus() === 'default'
+                            electionMethods.getElectionTableStatus() === 'default'
                                 ? {}
-                                : getElectionTableStatus() === 'filled'
+                                : electionMethods.getElectionTableStatus() === 'filled'
                                 ? 'completed'
-                                : { daysLeft: getElectionTableStatus() }
+                                : { daysLeft: electionMethods.getElectionTableStatus() }
                         }
                         selected={current?.includes('Election Table')}
                     />
                 </div>
                 <div
                     onClick={e => {
-                        handleClick(e, getSubmissionsStatus() !== 'default', 'Submissions')
+                        handleClick(e, electionMethods.getSubmissionsStatus() !== 'default', 'Submissions')
                     }}
                     onMouseEnter={onMouseEnterHandler}
                 >
                     <ElectionCategory
                         categoryName='Submissions'
                         statusObjs={
-                            getSubmissionsStatus() === 'default'
+                            electionMethods.getSubmissionsStatus() === 'default'
                                 ? {}
                                 : [
-                                      { accepted: getSubmissionsStatus().accepted },
-                                      { declined: getSubmissionsStatus().declined },
-                                      { reminderSent: getSubmissionsStatus().reminderSent },
-                                      { deadlineMissed: getSubmissionsStatus().deadlineMissed },
+                                      { accepted: electionMethods.getSubmissionsStatus().accepted },
+                                      { declined: electionMethods.getSubmissionsStatus().declined },
+                                      { reminderSent: electionMethods.getSubmissionsStatus().reminderSent },
+                                      { deadlineMissed: electionMethods.getSubmissionsStatus().deadlineMissed },
                                   ]
                         }
                         selected={current?.includes('Submissions')}
@@ -383,25 +201,32 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
             </div>
             {electionObj?.electionDate && electionObj?.undebateDate && (
                 <div
-                    className={cx(classes.underbateSection, getUnderbateStatus() === 'archieved' && classes.archieved)}
+                    className={cx(
+                        classes.underbateSection,
+                        electionMethods.getUndebateStatus() === 'archieved' && classes.archieved
+                    )}
+                    onClick={e => {
+                        handleClick(e, true, 'Undebate')
+                    }}
+                    onMouseEnter={onMouseEnterHandler}
                 >
                     <div className={classes.left}>
                         <div className={classes.underbate}>
                             Underbate{' '}
-                            {getUnderbateStatus() === 'pending'
+                            {electionMethods.getUndebateStatus() === 'pending'
                                 ? ''
-                                : getUnderbateStatus() === 'isLive'
+                                : electionMethods.getUndebateStatus() === 'isLive'
                                 ? 'is Live'
                                 : 'Archieved'}
                         </div>
                         <div className={classes.description}>
-                            {getUnderbateStatus() === 'pending'
+                            {electionMethods.getUndebateStatus() === 'pending'
                                 ? `Live on ${convertStringDate(electionObj?.undebateDate)}`
-                                : getUnderbateStatus() === 'isLive'
+                                : electionMethods.getUndebateStatus() === 'isLive'
                                 ? `Live until ${convertStringDate(electionObj?.electionDate)}`
                                 : `Election ended on ${convertStringDate(electionObj?.electionDate)}`}
                         </div>
-                        <div className={classes.dayLeft}>{countDayLeft()} days left</div>
+                        <div className={classes.dayLeft}>{electionMethods.countDayLeft()} days left</div>
                     </div>
                     <div className={classes.arrow}>
                         <SvgRightArrow />
@@ -417,12 +242,15 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         paddingTop: '3.125rem',
+        '&:first-child': {
+            paddingTop: '0px',
+        },
     },
     title: {
         textTransform: 'uppercase',
         fontWeight: 'bold',
         color: theme.colorSecondary,
-        marginLeft: '1.5625rem',
+        marginLeft: '2.5rem',
     },
     line: {
         border: `1px solid ${theme.colorSecondary}`,

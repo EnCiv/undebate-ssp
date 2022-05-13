@@ -4,6 +4,7 @@ import '../assets/styles/index.css'
 import theme from '../app/theme'
 import { merge } from 'lodash'
 import useMethods from 'use-methods'
+import getElectionStatusMethods from '../app/lib/get-election-status-methods'
 
 export const parameters = {
     actions: { argTypesRegex: '^on[A-Z].*' },
@@ -21,11 +22,9 @@ export const decorators = [
         )
         const electionOM = useMethods(
             (dispatch, state) => ({
+                ...getElectionStatusMethods(dispatch, state),
                 upsert(obj) {
                     dispatch(merge({}, state, obj, { _count: state._count + 1 }))
-                },
-                areQuestionsLocked() {
-                    return state._electionsLocked
                 },
                 sendInvitation() {
                     dispatch(

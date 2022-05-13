@@ -7,37 +7,37 @@ import ClockSolidSVG from '../svgr/clock-solid'
 
 function ElectionTimeInput(props) {
     const { className, style, disabled = false, defaultValue = '', onDone = () => {} } = props
-    const [time, setTime] = useState(defaultValue)
-    const classes = useStyles({ time, disabled })
+    const classes = useStyles({ defaultValue, disabled })
     const inputRef = useRef(null)
 
     useEffect(() => {
-        handleDone(time)
-    }, [])
+        handleDone()
+    }, [defaultValue])
 
-    const handleChange = e => {
-        setTime(e.target.value)
+    const getTime = () => {
+        return inputRef.current.value
     }
 
     const handleDone = () => {
+        const time = getTime()
         onDone({ valid: !!time, value: time })
     }
 
     return (
         <div className={cx(className, classes.electionTimeInput)} style={style}>
             <input
+                key='input'
                 className={classes.input}
                 type='time'
-                defaultValue={time}
+                defaultValue={defaultValue}
                 disabled={disabled}
                 onBlur={handleDone}
-                onChange={handleChange}
                 onKeyPress={e => {
                     if (e.key === 'Enter') inputRef.current.blur()
                 }}
                 ref={inputRef}
             />
-            <ClockSolidSVG className={classes.clockIcon} />
+            <ClockSolidSVG className={classes.clockIcon} key='icon' />
         </div>
     )
 }
