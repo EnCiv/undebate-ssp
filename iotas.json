@@ -203,6 +203,15 @@
         "_id": {
             "$oid": "621e7da7705e8e4fc07f8960"
         },
+        "path": "/qa/signin-signup",
+        "subject": "Civil Server Template",
+        "description": "Civil Server Template Sign In/Up Page",
+        "webComponent": "SigninSignup"
+    },
+    {
+        "_id": {
+            "$oid": "621e7da7705e8e4fc07f8960"
+        },
         "path": "/qa-create-moderator-recorder",
         "subject": "Create Moderatore Recoarder",
         "description": "QA Test for creating the moderator recorder",
@@ -210,14 +219,5 @@
             "webComponent": "QaCreateModeratorRecorder",
             "id": "62196fd6b2eff30b70ba36e0"
         }
-    },
-    {
-        "_id": {
-            "$oid": "621e7da7705e8e4fc07f8960"
-        },
-        "path": "/qa/signin-signup",
-        "subject": "Civil Server Template",
-        "description": "Civil Server Template Sign In/Up Page",
-        "webComponent": "SigninSignup"
     }
 ]
