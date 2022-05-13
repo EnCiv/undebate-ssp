@@ -3,6 +3,7 @@ import React, { useState, useMemo } from 'react'
 import { createUseStyles } from 'react-jss'
 import moment from 'moment'
 import ObjectID from 'isomorphic-mongo-objectid'
+import getElectionStatusMethods from '../lib/get-election-status-methods'
 import cx from 'classnames'
 
 import { useTable } from 'react-table'
@@ -43,20 +44,26 @@ function Table({ columns, data }) {
     )
 }
 
-export default function UndebatesList({ className, style, electionObj, electionMethods, onDone }) {
+export default function UndebatesList({ className, style, electionObjs, onDone }) {
     debugger
+
     const classes = useStyles()
     debugger
     // const [electionObj, electionMethods] = electionOM
     // Not sure if this is proper use of useMemo for "data"
-    const data = React.useMemo(() => electionObj, [])
-
+    const data = React.useMemo(() => electionObjs, [])
+    // Eventually need to do electionOMs.map()....right now only doing one.
+    const electionOMs = React.useMemo(
+        () => electionObjs.map(obj => [obj, getElectionStatusMethods(null, obj)]),
+        [electionObjs]
+    )
+    const [electionObj, electionMethods] = electionOMs[0]
     const electionDates = () => {
-        const createDate = moment(ObjectID(electionObj[0]._id).getDate())
+        const createDate = moment(ObjectID(electionObj._id).getDate())
         const formattedCreateDate = createDate.format('DD.MM.YY')
         debugger
-        const endDate = moment(new Date(electionObj[0].electionDate))
-        // const endDate = moment(electionObj[0].electionDate).getDate());
+        const endDate = moment(new Date(electionObj.electionDate))
+        // const endDate = moment(electionObjs[0].electionDate).getDate());
         const formattedEndDate = endDate.format('DD.MM.YY')
         return `${formattedCreateDate} - ${formattedEndDate}`
     }
