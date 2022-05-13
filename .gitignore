@@ -81,6 +81,8 @@ backups/
 _netrc
 .vscode/launch.*
 yarn.lock
+.idea/
+*~
 
 # svgr files are generated from assets/svg using svgr
 app/svgr
@@ -105,8 +107,6 @@ tmp
 #this is used by Jest-mongodb for testing only -
 globalConfig.json
 
-DS_Store
-
-
-
-
+#mac auomatically makes this files
+*/.DS_Store
+.DS_Store
