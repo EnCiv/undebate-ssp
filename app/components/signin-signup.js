@@ -1,138 +1,114 @@
 ////https://github.com/EnCiv/undebate-ssp/issues/108
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
-import { createUseStyles, ThemeProvider } from 'react-jss'
-import theme from '../theme'
+import { createUseStyles } from 'react-jss'
 import { useAuth } from 'civil-client'
+import Color from 'color'
 
 export default function SignInSignUp(props) {
-    const [userInfo, setUserInfo] = useState(false)
-    const [isLogIn, setIsLogIn] = useState(true)
-    const { destination } = props
+    const { className, style, startTab = 'login' } = props
+    const [isLogIn, setIsLogIn] = useState(startTab.toLowerCase().includes('in'))
+    const { destination, userInfo = {} } = props
     const classes = useStyles()
-    const [state, methods] = useAuth(destination, {})
-    useEffect(() => {
-        window.socket = {
-            emit: (handle, email, href, cb) => {
-                if (handle !== 'send-password') console.error('emit expected send-password, got:', handle)
-                if (email === 'success@email.com') setTimeout(() => cb({ error: '' }), 1000)
-                else setTimeout(() => cb({ error: 'User not found' }), 1000)
-            },
-            onHandlers: {},
-            on: (handle, handler) => {
-                window.socket.onHandlers[handle] = handler
-            },
-            close: () => {
-                if (window.socket.onHandlers.connect) setTimeout(window.socket.onHandlers.connect, 1000)
-                else console.error('No connect handler registered')
-            },
-            removeListener: () => {},
-        }
-    }, [])
+    const [state, methods] = useAuth(destination, userInfo)
     return (
-        <div className={classes.SignInSignUp}>
-            <div className={classes.links}>
-                <div className={classes.loginLink}>
+        <div className={cx(className, classes.SignInSignUp)} style={style}>
+            <div className={classes.tabs}>
+                <div className={cx(classes.tab, !isLogIn && classes.tabSelected)}>
+                    <div className={cx(classes.leftTabCorner, !isLogIn && classes.disabled)}>
+                        <div className={classes.leftTabCornerContent} />
+                    </div>
                     <button onClick={e => setIsLogIn(false)} className={classes.btnClick}>
                         Sign Up
                     </button>
                 </div>
-                <div className={classes.loginLink}>
+                <div className={cx(classes.tab, isLogIn && classes.tabSelected)}>
+                    <div className={cx(classes.rightTabCorner, isLogIn && classes.disabled)}>
+                        <div className={classes.rightTabCornerContent} />
+                    </div>
                     <button onClick={e => setIsLogIn(true)} className={classes.btnClick}>
                         Log In
                     </button>
                 </div>
             </div>
-
-            <div className={classes.inputContainer}>
+            <div className={cx(classes.inputContainer, isLogIn ? classes.tabRightSelected : classes.tabLeftSelected)}>
                 <input
                     name='first-name'
                     placeholder='First Name'
                     className={cx(classes.input, isLogIn && classes.disabled)}
-                ></input>
+                />
                 <input
                     name='last-name'
                     placeholder='Last Name'
                     className={cx(classes.input, isLogIn && classes.disabled)}
-                ></input>
+                />
                 <input
                     name='email'
                     placeholder='Email Address'
                     className={classes.input}
                     onChange={e => methods.onChangeEmail(e.target.value)}
-                ></input>
+                />
                 <input
                     name='password'
                     type='password'
                     placeholder='Password'
                     className={classes.input}
                     onChange={e => methods.onChangePassword(e.target.value)}
-                ></input>
+                />
                 <input
                     name='confirm'
                     type='password'
                     placeholder='Confirm Password'
                     className={cx(classes.input, isLogIn && classes.disabled)}
                     onChange={e => methods.onChangeConfirm(e.target.value)}
-                ></input>
-            </div>
-            <div className={classes.btnContainer}>
-                <button className={cx(classes.btn, isLogIn && classes.disabled)} onClick={e => methods.signup()}>
-                    Sign Up
-                </button>
-                <button className={cx(classes.btn, !isLogIn && classes.disabled)} onClick={e => methods.login()}>
-                    Log In
-                </button>
-            </div>
-
-            <div className={classes.resetPasswordBtn}>
-                <button onClick={e => methods.sendResetPassword()} className={classes.resetBtn}>
-                    Send Reset Password
-                </button>
-            </div>
-            <div className={cx(classes.agreeTermContainer, isLogIn && classes.disabled)}>
-                <div className={classes.checkTerm}>
-                    <input type='checkbox' name='agreed' onClick={e => methods.onChangeAgree(e.target.checked)} />
-                    <label className={classes.agreeTermLabel}>
-                        I agree to the
-                        <a href='https://enciv.org/terms' target='_blank' className={classes.aLinkTerm}>
-                            Term of Service
-                        </a>
-                    </label>
+                />
+                <div className={cx(classes.agreeTermContainer, isLogIn && classes.disabled)}>
+                    <div className={classes.checkTerm}>
+                        <input type='checkbox' name='agreed' onClick={e => methods.onChangeAgree(e.target.checked)} />
+                        <label className={classes.agreeTermLabel}>
+                            I agree to the
+                            <a href='https://enciv.org/terms' target='_blank' className={classes.aLinkTerm}>
+                                Term of Service
+                            </a>
+                        </label>
+                    </div>
                 </div>
-            </div>
-            <div>
-                {state.error && <div style={{ color: '#fec215', textAlign: 'center' }}>{state.error}</div>}
-                {state.info && <div style={{ color: '#fec215', textAlign: 'center' }}>{state.info}</div>}
-                {state.success && <div style={{ color: '#fec215', textAlign: 'center' }}>{state.success}</div>}
+                <div className={classes.btnContainer}>
+                    <button className={cx(classes.btn, isLogIn && classes.disabled)} onClick={e => methods.signup()}>
+                        Sign Up
+                    </button>
+                    <button className={cx(classes.btn, !isLogIn && classes.disabled)} onClick={e => methods.login()}>
+                        Log In
+                    </button>
+                </div>
+                <div className={cx(classes.resetPasswordBtn, !isLogIn && classes.disabled)}>
+                    <button onClick={e => methods.sendResetPassword()} className={classes.resetBtn}>
+                        Send Reset Password
+                    </button>
+                </div>
+                <div>
+                    {state.error && <div style={{ color: '#fec215', textAlign: 'center' }}>{state.error}</div>}
+                    {state.info && <div style={{ color: '#fec215', textAlign: 'center' }}>{state.info}</div>}
+                    {state.success && <div style={{ color: '#fec215', textAlign: 'center' }}>{state.success}</div>}
+                </div>
             </div>
         </div>
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     SignInSignUp: {
-        backgroundColor: theme.colorPrimary,
+        backgroundColor: Color(theme.colorPrimary).lighten(0.2).hex(),
         width: '22rem',
-        margin: '0 auto',
-        borderRadius: '2rem',
+        margin: 0,
+        borderRadius: '1rem',
         height: 'auto',
-        padding: '3%',
-        paddingTop: '4.5%',
+        padding: '0',
         fontFamily: theme.defaultFontFamily,
         position: 'absolute',
         left: '50%',
         top: '50%',
         transform: 'translate(-50%,-50%)',
-    },
-    aLink: {
-        color: '#FFFFFF',
-        textDecoration: 'none',
-        fontSize: '2rem',
-        '&:hover': {
-            color: '#fec215',
-            cursor: 'pointer',
-        },
     },
     btnClick: {
         color: '#FFFFFF',
@@ -155,35 +131,54 @@ const useStyles = createUseStyles({
             cursor: 'pointer',
         },
     },
-    links: {
+    tabs: {
         width: '100%',
-        display: 'flex',
-        justifyContent: 'space-evenly',
+        display: 'table',
     },
-    signinLink: {},
+    tabWrapper: {
+        display: 'table-cell',
+    },
+    tab: {
+        display: 'table-cell',
+        textAlign: 'center',
+        paddingTop: '1rem',
+        paddingBottom: '1rem',
+        position: 'relative',
+    },
+    tabSelected: {
+        borderRadius: '1rem 1rem 0 0',
+        backgroundColor: theme.colorPrimary,
+    },
     btnContainer: {
         width: '100%',
     },
     btn: {
         ...theme.button,
+        borderRadius: '.5rem',
         backgroundColor: '#262D33',
         color: '#FFFFFF',
         display: 'block',
-        margin: '0 auto',
-        width: '60%',
+        margin: '1rem auto',
         textAlign: 'center',
         fontSize: '1.25em',
+        width: '100%',
         '&:hover': {
             backgroundColor: '#fec215',
             cursor: 'pointer',
             color: theme.colorPrimary,
         },
-        marginBottom: '15%',
     },
     inputContainer: {
-        width: '100%',
-        paddingTop: '10%',
-        margin: '0 auto',
+        margin: 0,
+        padding: '2rem',
+        borderRadius: '0 0 1rem 1rem',
+        backgroundColor: theme.colorPrimary,
+    },
+    tabLeftSelected: {
+        borderRadius: '0 1rem 1rem 1rem',
+    },
+    tabRightSelected: {
+        borderRadius: '1rem 0 1rem 1rem',
     },
     input: {
         width: '95%',
@@ -196,17 +191,15 @@ const useStyles = createUseStyles({
     },
     resetPasswordBtn: {
         width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        margin: '0 auto',
+        margin: '2rem auto 1rem',
         cursor: 'pointer',
+        textAlign: 'center',
     },
     resetBtn: {
         background: 'none',
         border: 'none',
         fontSize: '1.15rem',
         color: '#FFFFFF',
-        paddingBottom: '10%',
         cursor: 'pointer',
         '&:hover': {
             color: '#fec215',
@@ -234,4 +227,32 @@ const useStyles = createUseStyles({
     disabled: {
         display: 'none',
     },
-})
+    leftTabCornerContent: {
+        height: '100%',
+        width: '100%',
+        backgroundColor: Color(theme.colorPrimary).lighten(0.2).hex(),
+        borderBottomRightRadius: '1rem',
+    },
+    leftTabCorner: {
+        height: '1rem',
+        width: '1rem',
+        position: 'absolute',
+        backgroundColor: theme.colorPrimary,
+        bottom: 0,
+        right: 0,
+    },
+    rightTabCornerContent: {
+        backgroundColor: Color(theme.colorPrimary).lighten(0.2).hex(),
+        borderBottomLeftRadius: '1rem',
+        height: '100%',
+        width: '100%',
+    },
+    rightTabCorner: {
+        height: '1rem',
+        width: '1rem',
+        position: 'absolute',
+        backgroundColor: theme.colorPrimary,
+        bottom: 0,
+        left: 0,
+    },
+}))

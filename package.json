@@ -96,6 +96,7 @@
         "civil-client": "github:EnCiv/civil-client",
         "civil-server": "github:EnCiv/civil-server#main",
         "classnames": "^2.3.1",
+        "color": "^4.2.3",
         "isemail": "^3.2.0",
         "isomorphic-mongo-objectid": "^1.0.9",
         "joi": "^17.5.0",

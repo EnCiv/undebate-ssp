@@ -1,13 +1,13 @@
-import React from 'react'
-import SignInSignUp from '../app/components/signin-signup'
+import makeChapter from './make-chapter'
+import component from '../app/components/signin-signup'
+const mC = makeChapter(component)
 
 export default {
     title: 'SignInSignUp',
-    component: SignInSignUp,
+    component,
     argTypes: {},
 }
 
-const Template = args => <SignInSignUp {...args} />
-
-export const SignInSignUpTest = Template.bind({})
-SignInSignUpTest.args = {}
+export const empty = mC({})
+export const SignUp = mC({ startTab: 'Sign Up' })
+export const LoginIn = mC({ startTab: 'Log In' })
