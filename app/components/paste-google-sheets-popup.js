@@ -319,13 +319,15 @@ const useStyles = createUseStyles(theme => ({
         width: '100%',
         height: '3.5625rem',
         padding: '0',
-        backgroundColor: 'white',
+        backgroundColor: theme.backgroundColorApp,
         '& svg path': {
             stroke: theme.colorSecondary,
         },
     },
     inputLink: {
+        backgroundColor: theme.backgroundColorApp,
         borderRadius: theme.defaultBorderRadius,
+        borderWidth: '0',
         width: '20.625rem',
         height: '100%',
         fontWeight: '500',
