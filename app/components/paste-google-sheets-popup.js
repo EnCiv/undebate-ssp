@@ -6,13 +6,13 @@ import _ from 'lodash'
 import ExternalLinkSvg from '../svgr/external-link'
 import LinkSvg from '../svgr/link'
 import ObjectId from 'isomorphic-mongo-objectid'
+import { handleTableData, validateHeaders } from '../lib/get-table-upload-methods'
 
-function PasteGoogleSheetsPopup({ electionObj, electionMethods, closePopup, visible, className, style = {} }) {
-    const REQUIRED_COLUMNS = ['name', 'email', 'office']
+function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, style = {} }) {
     const SHEETS_API_BASE = 'https://sheets.googleapis.com/v4/spreadsheets/'
     const SHEET_VALUES_RANGE = 'A:ZZ'
     const GOOGLE_AUTH_SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly'
-
+    const MISSING_HEADERS_ERROR = "Sheet is missing required headers. Please include 'name', 'email', and 'office'."
     const GENERAL_ERROR = 'Unable to extract data from link. Please compare your document with the sample document.'
     const LINK_NOT_FOUND_ERROR = 'Unable to find a Google Sheets Document at the below link.'
     const MISSING_AUTH_ERROR = 'Auth missing. Please open all access to your Google doc.'
@@ -35,15 +35,45 @@ function PasteGoogleSheetsPopup({ electionObj, electionMethods, closePopup, visi
         return inputLink.match(/[-\w]{25,}/)
     }
 
-    const handleSheetData = data => {
-        console.log('handleSheetData', data)
-        // todo
+    const extractSheetData = rows => {
+        const headers = rows.shift().map(val => _.camelCase(val))
+
+        const data = []
+        if (validateHeaders(headers)) {
+            if (!rows.length) {
+                setFileError(NO_DATA_FOUND_ERROR)
+                return null
+            }
+            rows.forEach(row => {
+                data.push(row)
+            })
+        } else {
+            setFileError(MISSING_HEADERS_ERROR)
+            return null
+        }
+        return data
+    }
+
+    const handleSheetData = sheetData => {
+        const rows = JSON.parse(sheetData)
+        console.log('handleSheetData', rows)
+        if (!rows.length) {
+            setFileError(NO_DATA_FOUND_ERROR)
+        } else {
+            const tableData = extractSheetData(rows)
+            handleTableData(tableData, electionOM)
+            handleSuccessfulExtraction()
+        }
+    }
+
+    const handleSuccessfulExtraction = () => {
+        setInputLink('')
+        closePopup()
     }
 
     const isSignedInResponse = authUrl => {
-        console.log('need to sign in now')
         window.socket.emit('extract-sheet-data', uniqueId, getSpreadsheetId(), handleSheetData)
-        // todo change to iframe and close after it's done
+        // todo close after it's done
         window.open(authUrl)
     }
 

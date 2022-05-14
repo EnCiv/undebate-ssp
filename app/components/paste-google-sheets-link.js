@@ -8,7 +8,6 @@ import LinkSvg from '../svgr/link'
 function PasteGoogleSheetsLink(props) {
     const classes = useStyles()
     const { className, style, electionOM } = props
-    const [electionObj, electionMethods] = electionOM
     const [selected, setSelected] = useState(false)
 
     const handleButtonClick = () => {
@@ -35,8 +34,7 @@ function PasteGoogleSheetsLink(props) {
                 Paste Google Sheets Link &nbsp; &nbsp; <LinkSvg className={classes.linkIcon} />
             </button>
             <PasteGoogleSheetsPopup
-                electionObj={electionObj}
-                electionMethods={electionMethods}
+                electionOM={electionOM}
                 closePopup={closePopup}
                 visible={selected}
                 className={classes.popup}

@@ -2,6 +2,8 @@
 // https://github.com/EnCiv/undebate-ssp/issues/55
 import ObjectID from 'isomorphic-mongo-objectid'
 
+const REQUIRED_COLUMNS = ['name', 'email', 'office']
+
 // helper methods used for upload csv and paste google sheets components
 const isEmptyTable = electionObj => {
     return !(electionObj && electionObj.candidates !== undefined && Object.keys(electionObj.candidates).length > 0)
@@ -59,4 +61,8 @@ export const handleTableData = (tableData, electionOM) => {
     } else {
         handleExistingTable(tableData, electionObj, electionMethods)
     }
+}
+
+export const validateHeaders = headers => {
+    return REQUIRED_COLUMNS.every(reqCol => headers.includes(reqCol))
 }

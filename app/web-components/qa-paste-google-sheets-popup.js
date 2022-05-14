@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { ThemeProvider } from 'react-jss'
 import useMethods from 'use-methods'
 import theme from '../theme'
+import { merge } from 'lodash'
 import PasteGoogleSheetsPopup from '../components/paste-google-sheets-popup'
 import getElectionStatusMethods from '../lib/get-election-status-methods'
 
@@ -26,12 +27,19 @@ export default function QaPasteGoogleSheetsPopup(props) {
                 <div style={{ textAlign: 'center' }}>Welcome!</div>
                 <div>Current user: {JSON.stringify(user, null, 2)}</div>
                 <PasteGoogleSheetsPopup
-                    electionObj={electionObj}
-                    electionMethods={electionMethods}
+                    electionOM={electionOM}
                     visible={true}
                     closePopup={() => console.log('close popup called')}
                 />
             </div>
+            {electionObj._count > 0 && (
+                <div>
+                    electionObj:{' '}
+                    <span id='electionObj' data-testid='electionObj' style={{ whitespace: 'pre-wrap' }}>
+                        {JSON.stringify(electionObj, null, 4)}
+                    </span>
+                </div>
+            )}
         </ThemeProvider>
     )
 }

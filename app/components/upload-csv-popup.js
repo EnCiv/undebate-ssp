@@ -6,14 +6,13 @@ import { FileDrop } from 'react-file-drop'
 import _ from 'lodash'
 import FileSvg from '../svgr/file'
 import ExternalLinkSvg from '../svgr/external-link'
-import { handleTableData } from '../lib/get-table-upload-methods'
+import { handleTableData, validateHeaders } from '../lib/get-table-upload-methods'
 
 function UploadCSVPopup({ electionOM, closePopup, visible, className, style = {} }) {
     const GENERAL_ERROR = 'Unable to extract data from file. Please compare this file with the sample file.'
     const UNABLE_TO_READ_FILE_ERROR = 'Unable to read file. Please confirm this is a csv file.'
     const TOO_MANY_FILES_ERROR = 'Too many files, please only upload one file at a time.'
     const MISSING_HEADERS_ERROR = "File is missing required headers. Please include 'name', 'email', and 'office'."
-    const REQUIRED_COLUMNS = ['name', 'email', 'office']
 
     const classes = useStyles()
     const fileInputEl = useRef(null)
@@ -42,10 +41,6 @@ function UploadCSVPopup({ electionOM, closePopup, visible, className, style = {}
             return null
         }
         return data
-    }
-
-    const validateHeaders = headers => {
-        return REQUIRED_COLUMNS.every(reqCol => headers.includes(reqCol))
     }
 
     const handleTextFile = fileContents => {

@@ -1,4 +1,4 @@
-import { handleTableData } from '../get-table-upload-methods'
+import { handleTableData, validateHeaders } from '../get-table-upload-methods'
 import { merge } from 'lodash'
 
 describe('table upload methods', () => {
@@ -245,6 +245,28 @@ describe('table upload methods', () => {
                     },
                 })
             })
+        })
+    })
+
+    describe('validate headers', () => {
+        it('empty list', () => {
+            expect(validateHeaders([])).toBeFalsy()
+        })
+
+        it('missing all headers', () => {
+            expect(validateHeaders(['stuff', 'things', 'foo'])).toBeFalsy()
+        })
+
+        it('missing one header', () => {
+            expect(validateHeaders(['name', 'email'])).toBeFalsy()
+        })
+
+        it('none missing', () => {
+            expect(validateHeaders(['name', 'email', 'office'])).toBeTruthy()
+        })
+
+        it('extra columns', () => {
+            expect(validateHeaders(['name', 'stuff', 'email', 'things', 'foo', 'office', 'uniqueId'])).toBeTruthy()
         })
     })
 })
