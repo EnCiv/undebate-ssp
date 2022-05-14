@@ -135,9 +135,6 @@ const useStyles = createUseStyles(theme => ({
         width: '100%',
         display: 'table',
     },
-    tabWrapper: {
-        display: 'table-cell',
-    },
     tab: {
         display: 'table-cell',
         textAlign: 'center',
