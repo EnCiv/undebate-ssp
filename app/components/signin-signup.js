@@ -68,7 +68,7 @@ export default function SignInSignUp(props) {
                         <label className={classes.agreeTermLabel}>
                             I agree to the
                             <a href='https://enciv.org/terms' target='_blank' className={classes.aLinkTerm}>
-                                Term of Service
+                                Terms of Service
                             </a>
                         </label>
                     </div>
