@@ -13,7 +13,7 @@ const Template = (args, context) => {
 
     return (
         <div>
-            <UndebatesList onDone={onDone} {...args} />
+            <UndebatesList {...args} onDone={onDone} />
         </div>
     )
 }
@@ -136,6 +136,18 @@ const defaultElectionObject = {
 }
 let defaultElectionObject1 = cloneDeep(defaultElectionObject)
 defaultElectionObject1._id = '627e9dbd9ec85b0e440b6a3d'
-defaultElectionObject1.electionName = 'Supervisor Elections'
+;(defaultElectionObject1.organizationName = 'San Diego Government Elections'),
+    (defaultElectionObject1.electionName = 'SD County Supervisor')
+
+let defaultElectionObject2 = cloneDeep(defaultElectionObject)
+defaultElectionObject2._id = '627ecafe4c12b659a8b954de'
+;(defaultElectionObject2.organizationName = 'San Diego Government Elections'),
+    (defaultElectionObject2.electionName = 'SD City Council')
+
+let defaultElectionObject3 = cloneDeep(defaultElectionObject)
+defaultElectionObject3._id = '627ecafe4c12b659a8b954de'
+;(defaultElectionObject3.organizationName = 'San Diego Government Elections'),
+    (defaultElectionObject3.electionName = 'SD City Council')
+
 export const UndebatesListDefault = Template.bind({})
-UndebatesListDefault.args = { electionObjs: [defaultElectionObject, defaultElectionObject1] }
+UndebatesListDefault.args = { electionObjs: [defaultElectionObject, defaultElectionObject1, defaultElectionObject2] }

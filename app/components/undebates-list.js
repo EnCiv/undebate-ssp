@@ -8,8 +8,7 @@ import cx from 'classnames'
 
 import { useTable } from 'react-table'
 
-function Table({ columns, data }) {
-    debugger
+function Table({ columns, data, onRowClicked }) {
     // Use the state and functions returned from useTable to build your UI
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
         columns,
@@ -32,7 +31,11 @@ function Table({ columns, data }) {
                 {rows.map((row, i) => {
                     prepareRow(row)
                     return (
-                        <tr {...row.getRowProps()}>
+                        <tr
+                            {...row.getRowProps({
+                                onClick: e => onRowClicked && onRowClicked(row, e),
+                            })}
+                        >
                             {row.cells.map(cell => {
                                 return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                             })}
@@ -45,11 +48,13 @@ function Table({ columns, data }) {
 }
 
 export default function UndebatesList({ className, style, electionObjs, onDone }) {
-    debugger
-
     const classes = useStyles()
-    debugger
-    // const [electionObj, electionMethods] = electionOM
+
+    const onRowClicked = (row, e) => {
+        debugger
+        onDone({ value: row.original._id, valid: true })
+    }
+
     // Not sure if this is proper use of useMemo for "data"
     const data = React.useMemo(() => electionObjs, [])
     // Eventually need to do electionOMs.map()....right now only doing one.
@@ -61,7 +66,6 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     const electionDates = () => {
         const createDate = moment(ObjectID(electionObj._id).getDate())
         const formattedCreateDate = createDate.format('DD.MM.YY')
-        debugger
         const endDate = moment(new Date(electionObj.electionDate))
         // const endDate = moment(electionObjs[0].electionDate).getDate());
         const formattedEndDate = endDate.format('DD.MM.YY')
@@ -69,12 +73,19 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     }
 
     const moderatorStatus = () => {
-        debugger
         if (electionMethods.checkTimelineCompleted() && electionMethods.getScriptStatus() !== 'completed') {
             return 'Script pending'
         } else {
             return 'Script not completed'
         }
+    }
+
+    const candidates = () => {
+        return ''
+    }
+
+    const status = () => {
+        return ''
     }
 
     // Do I make accessor for table elements calls to electionMethods???
@@ -92,23 +103,21 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
                 Header: 'Moderator',
                 accessor: moderatorStatus,
             },
-            // {
-            //   Header: 'Candidates',
-            //   accessor:
-
-            // },
-            // {
-            //   Header: 'Status',
-            //   accessor:
-
-            // },
+            {
+                Header: 'Candidates',
+                accessor: candidates,
+            },
+            {
+                Header: 'Status',
+                accessor: status,
+            },
         ],
         []
     )
 
     return (
         // <Styles>
-        <Table columns={columns} data={data} />
+        <Table columns={columns} data={data} onRowClicked={onRowClicked} />
         // </Styles>
     )
 }
