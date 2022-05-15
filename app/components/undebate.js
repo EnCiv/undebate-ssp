@@ -43,18 +43,18 @@ export default function Undebate(props) {
     return (
         <div className={cx(className, classes.wrapper)} style={style}>
             {url && (
-                <div className={classes.qrcode}>
-                    <div className={classes.code} ref={canvas}>
+                <div className={classes.qrcode} key='qr'>
+                    <div className={classes.code} ref={canvas} key='qrqr'>
                         <QRCode value={url} size={300} />
                     </div>
-                    <div className={classes.buttons}>
-                        {copied && <CopyNotification Icon={Clipboard} text='Copied to clipboard' />}
-                        <Submit name='Copy Link' onDone={copyNotify} />
-                        <Submit name='Download QR Code' onDone={downloadCode} />
+                    <div className={classes.buttons} key='qrbuttons'>
+                        {copied && <CopyNotification Icon={Clipboard} text='Copied to clipboard' key='clip' />}
+                        <Submit name='Copy Link' onDone={copyNotify} key='copy' />
+                        <Submit name='Download QR Code' onDone={downloadCode} key='download' />
                     </div>
                 </div>
             )}
-            <VideoUpload className={classes.upload} />
+            <VideoUpload className={classes.upload} key='up' />
         </div>
     )
 }

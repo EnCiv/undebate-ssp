@@ -16,7 +16,6 @@ import {
 } from '../svgr'
 
 import cx from 'classnames'
-import { useCss } from 'react-use'
 
 const portraitWidth = '45rem'
 const smallScreenWidth = '102rem'
@@ -47,56 +46,51 @@ function TemplateElectionTimeLine({
                     if (secondRow && percent != null) {
                         onSecondRow.push(percent)
                     }
-                    // used instead of useStyles to prevent jss from "collapsing"
-                    // all the itemPosition classes into one
-                    const itemPosition = useCss({
-                        display: 'block',
-                        position: 'relative',
-                        width: 0,
-                        height: 0,
-                        [`@media (min-width: ${portraitWidth})`]: {
-                            left: `${percent}%`,
-                        },
-                        [`@media (max-width: ${portraitWidth})`]: {
-                            top: `${percent}%`,
-                        },
-                    })
-                    const templateTextMargin = useCss({
-                        marginTop: '1rem',
-                        [`@media (min-width: ${portraitWidth}) and (max-width: ${smallScreenWidth})`]: {
-                            marginTop: secondRow ? '8rem' : '1rem',
-                        },
-                    })
-                    return (
-                        <span className={itemPosition}>
-                            <div className={classes.templateItem}>
-                                <div className={classes.templateIcon}>{svg}</div>
-                                {text ? <SvgSolidTriangleArrow className={classes.arrow} /> : ''}
-                                <div className={cx(templateTextMargin, classes.templateText)}>{text}</div>
-                            </div>
-                        </span>
-                    )
+                    return <Item classes={classes} percent={percent} secondRow={secondRow} text={text} svg={svg} />
                 })}
             </Meter>
         </div>
     )
 }
+
+function Item(props) {
+    const { classes, percent = 0, secondRow, text, svg } = props
+    const positionClasses = positionStyles({ percent: percent })
+    return (
+        <span className={positionClasses.itemPosition}>
+            <div className={classes.templateItem}>
+                <div className={classes.templateIcon}>{svg}</div>
+                {text ? <SvgSolidTriangleArrow className={classes.arrow} /> : ''}
+                <div className={cx(classes.templateTextMargin, classes.templateText, secondRow && classes.secondRow)}>
+                    {text}
+                </div>
+            </div>
+        </span>
+    )
+}
+const positionStyles = createUseStyles(theme => {
+    return {
+        itemPosition: {
+            display: 'block',
+            position: 'relative',
+            width: 0,
+            height: 0,
+            [`@media (min-width: ${portraitWidth})`]: {
+                left: props => `${props.percent}%`,
+            },
+            [`@media (max-width: ${portraitWidth})`]: {
+                top: props => `${props.percent}%`,
+            },
+        },
+    }
+})
+
 // align: "right" | "left" | "center"
 function TimelineText({ className, primaryText, secondaryText, position, align = 'center' }) {
     const classes = timelineTextUseStyles({ position, align })
-    const alignmentTransform = useCss({
-        [`@media (min-width: ${portraitWidth})`]: {
-            transform: { right: 'translateX(-90%)', left: 'initial', center: 'translateX(-45%)' }[align],
-            textAlign: align,
-        },
-        [`@media (max-width: ${portraitWidth})`]: {
-            transform: 'translate(35%, -80%)',
-            textAlign: 'center',
-        },
-    })
     return (
         <>
-            <div className={cx(className, alignmentTransform, classes.timelineTextContainer)}>
+            <div className={cx(className, classes.alignmentTransform, classes.timelineTextContainer)}>
                 <div className={classes.timelineText}>
                     <p className={classes.primaryTimelineText}>{primaryText}</p>
                     <p className={classes.secondaryTimelineText}>{secondaryText}</p>
@@ -234,6 +228,17 @@ const useStyles = createUseStyles(theme => ({
             bottom: '25%',
         },
     },
+    templateTextMargin: {
+        marginTop: '1rem',
+        [`@media (min-width: ${portraitWidth}) and (max-width: ${smallScreenWidth})`]: {
+            marginTop: '1rem',
+        },
+    },
+    secondRow: {
+        [`@media (min-width: ${portraitWidth}) and (max-width: ${smallScreenWidth})`]: {
+            marginTop: '8rem',
+        },
+    },
 }))
 
 const landingbarUseStyles = createUseStyles(theme => ({
@@ -265,5 +270,20 @@ const timelineTextUseStyles = createUseStyles(theme => ({
         fontSize: theme.secondaryTextFontSize,
         opacity: theme.secondaryTextOpacity,
         margin: '0px',
+    },
+    alignmentTransform: {
+        [`@media (min-width: ${portraitWidth})`]: {
+            transform: ({ position, align }) =>
+                ({
+                    right: 'translateX(-90%)',
+                    left: 'initial',
+                    center: 'translateX(-45%)',
+                }[align]),
+            textAlign: ({ position, align }) => align,
+        },
+        [`@media (max-width: ${portraitWidth})`]: {
+            transform: 'translate(35%, -80%)',
+            textAlign: 'center',
+        },
     },
 }))

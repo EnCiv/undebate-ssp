@@ -26,7 +26,7 @@ export default function CountLimitedTextInput({ name = '', maxCount = 0, default
 
     return (
         <div className={classes.container}>
-            <div className={classes.scriptInfo}>
+            <div className={classes.scriptInfo} key='header'>
                 <div className={classes.question}>{name}</div>
                 <div className={classes.quantity}>
                     ({length}/{maxCount})
@@ -34,6 +34,7 @@ export default function CountLimitedTextInput({ name = '', maxCount = 0, default
             </div>
 
             <TextareaAutosize
+                key='area'
                 className={classes.input}
                 defaultValue={defaultValue}
                 maxLength={maxCount}

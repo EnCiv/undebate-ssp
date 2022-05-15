@@ -14,7 +14,10 @@ const Template = args => <ElectionCreated {...args} />
 export const ElectionCreatedTest = Template.bind({})
 
 ElectionCreatedTest.args = {
-    electionMetadata: {
-        _id: '6199481498ac4e36c8a64753',
-    },
+    electionOM: [
+        {
+            _id: '6199481498ac4e36c8a64753',
+        },
+        {},
+    ],
 }
