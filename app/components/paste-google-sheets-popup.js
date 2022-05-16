@@ -15,7 +15,6 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     const MISSING_HEADERS_ERROR = "Sheet is missing required headers. Please include 'name', 'email', and 'office'."
     const GENERAL_ERROR = 'Unable to extract data from link. Please compare your document with the sample document.'
     const LINK_NOT_FOUND_ERROR = 'Unable to find a Google Sheets Document at the below link.'
-    const MISSING_AUTH_ERROR = 'Auth missing. Please open all access to your Google doc.'
     const UNAUTHORIZED_ERROR =
         'Could not authenticate Google Spreadsheets. Please allow access in the popup when clicking Extract Data.'
     const NO_DATA_FOUND_ERROR = 'No data found in sheet. Does data exist in range ' + SHEET_VALUES_RANGE + '?'
@@ -23,6 +22,7 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     const classes = useStyles()
     const [inputLink, setInputLink] = useState('')
     const [fileError, setFileError] = useState(null)
+    let authWindow = null
     const uniqueId = ObjectId.toString()
 
     const onInputChange = event => {
@@ -55,6 +55,8 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     }
 
     const handleSheetData = sheetData => {
+        console.log('handle sheet data', sheetData)
+        authWindow.close()
         const rows = JSON.parse(sheetData)
         console.log('handleSheetData', rows)
         if (!rows.length) {
@@ -73,8 +75,7 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
 
     const isSignedInResponse = authUrl => {
         window.socket.emit('extract-sheet-data', uniqueId, getSpreadsheetId(), handleSheetData)
-        // todo close after it's done
-        window.open(authUrl)
+        authWindow = window.open(authUrl, 'authWindow')
     }
 
     const handleValidSheetUrl = () => {

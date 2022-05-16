@@ -12,10 +12,10 @@ export default async function isSignedInForSheet(uniqueId, spreadsheetId, cb) {
      * } */
     try {
         // Decided to put the oauth client in here instead of generating the auth url manually clientside
-        // so that if google ever changes their auth url we just have to update the googleapis package and
-        // don't have to manually update the urls.
+        // so that if google ever changes their auth url we just have to update the googleapis package version
+        // and don't have to manually update the urls.
 
-        // todo fix redirect url
+        // todo fix redirect url to property
         const oauth2Client = new google.auth.OAuth2(
             process.env.GOOGLE_CLIENT_ID,
             process.env.GOOGLE_CLIENT_SECRET,
@@ -26,7 +26,7 @@ export default async function isSignedInForSheet(uniqueId, spreadsheetId, cb) {
             uniqueId,
             oauth2Client,
         })
-        // for now assume we are not signed in every time. todo later add actual check
+        // for now we assume the user is not signed in to google for every request
 
         const authorizationUrl = oauth2Client.generateAuthUrl({
             scope: scope,

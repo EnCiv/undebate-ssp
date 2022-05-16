@@ -9,7 +9,6 @@ async function getSheetsData(spreadsheetId, oauth2Client, cb) {
         spreadsheetId: spreadsheetId,
         range: SHEET_VALUES_RANGE,
     })
-    logger.debug('data stuff', res.data.values)
     if (res && res.data && res.data.values) {
         cb(JSON.stringify(res.data.values))
     } else {

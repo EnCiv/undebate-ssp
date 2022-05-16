@@ -2,7 +2,6 @@ export const oauth2callbacks = []
 
 async function googleAuthRedirect(req, res, next) {
     // this is what gets called after the user has consented to the app reading their spreadsheets
-    logger.debug('stuff', req.query)
     if (!req.query.code) return next()
     if (!req.query.state) return next()
 
@@ -17,8 +16,7 @@ async function googleAuthRedirect(req, res, next) {
     // remove the item from the list so we don't have excess credentials in memory
     oauth2callbacks.splice(index, 1)
 
-    // todo change this to redirect otherwise the client receives the access token?
-    res.sendStatus(200).end()
+    res.status(200).send('Successful authentication, you may now close this tab if it does not close automatically')
 }
 
 export default function route() {
