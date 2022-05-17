@@ -7,6 +7,7 @@ import SvgDesktop from '../svgr/desktop'
 import SvgPortrait from '../svgr/portrait'
 import SvgRectangle from '../svgr/rectangle'
 import SvgExternalLink from '../svgr/external-link'
+import theme from '../theme'
 
 const daLink = (
     <a
@@ -14,8 +15,9 @@ const daLink = (
             textDecorationLine: 'none',
             color: 'grey',
             fontFamily: 'poppins',
-            textAlign: 'center',
-            fontSize: '1.5rem',
+            textAlign: 'left',
+            fontSize: '1.25rem',
+            display: 'block',
         }}
         href={'https://cc.enciv.org/country:us/organization:ucla-student-accociation/office:usac-president/2021-05-07'}
     >
@@ -39,6 +41,10 @@ export default function LandscapePortraitSlider(props) {
     return (
         <>
             <div className={classes.body}>
+                <div className={classes.bannerTxt}>
+                    <h1>Automated video Q&A</h1>
+                    <h2>for every candidate, for every election, across the US.</h2>
+                </div>
                 <div className={classes.portraitTailoredContainer}>
                     <div
                         className={cx(
@@ -59,7 +65,7 @@ export default function LandscapePortraitSlider(props) {
                 </div>
 
                 <div className={classes.daContainer}>
-                    <SvgRectangle className={classes.iconda} />
+                    <SvgRectangle className={classes.iconLine} />
                     <p className={classes.iconda}> {daLink}</p>
                     <p className={classes.icondaPerson}> Windspotter, Rabiechel</p>
                 </div>
@@ -156,48 +162,61 @@ const useStyles = createUseStyles(theme => ({
         width: '1.6rem',
     },
     iconda: {
-        display: 'inline-block',
-        position: 'relative',
+        paddingTop: '-2rem',
         fontSize: '0.85rem',
-        overflow: 'hidden',
         lineHeight: '2.4rem',
         marginLeft: '0.5rem',
         cursor: 'pointer',
         '& path': { stroke: 'grey' },
     },
+    iconLine: {
+        display: 'flex',
+        alignContent: 'left',
+        height: '3.25rem',
+        paddingTop: '1rem',
+        paddingLeft: '1rem',
+    },
     icondaPerson: {
-        display: 'block',
-        position: 'relative',
-        verticalAlign: 'top',
         fontSize: '1rem',
-        overflow: 'hidden',
         lineHeight: '1rem',
-        marginLeft: '1.2rem',
-        marginTop: '-2rem',
         color: 'grey',
         fontFamily: 'poppins',
-        fontSize: '0.7rem',
-        align: 'left',
+        fontSize: '0.95rem',
+        marginLeft: '-16.25rem',
+        display: 'block',
+        paddingTop: '2rem',
     },
     daContainer: {
-        position: 'relative',
+        display: 'flex',
+        alignContent: 'left',
+        marginTop: '2rem',
     },
     iconContainer: {
         position: 'relative',
-        bottom: '0%',
-        left: '50%',
+        margin: '0 auto',
+        width: '100%',
+        textAlign: 'center',
+    },
+    bannerTxt: {
+        textAlign: 'center',
+        '& h1': {
+            color: theme.colorPrimary,
+            fontSize: '3rem',
+        },
+        '& h2': {
+            color: '#262D33',
+            fontSize: '2.5rem',
+            marginTop: '-2.5rem',
+        },
     },
     '@media (orientation: portrait)': {
         daContainer: {
-            position: 'relative',
-            bottom: '0%',
-            left: '30%',
-            marginTop: '0.5rem',
+            paddingTop: '1rem',
+            width: '100%',
         },
         iconContainer: {
             position: 'relative',
             bottom: '0%',
-            left: '50%',
             marginTop: '4rem',
         },
         portraitContainer: {
