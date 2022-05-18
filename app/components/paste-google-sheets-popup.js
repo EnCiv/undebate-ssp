@@ -9,12 +9,11 @@ import ObjectId from 'isomorphic-mongo-objectid'
 import { handleTableData, validateHeaders } from '../lib/get-table-upload-methods'
 
 function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, style = {} }) {
-    const SHEETS_API_BASE = 'https://sheets.googleapis.com/v4/spreadsheets/'
     const SHEET_VALUES_RANGE = 'A:ZZ'
-    const GOOGLE_AUTH_SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly'
     const MISSING_HEADERS_ERROR = "Sheet is missing required headers. Please include 'name', 'email', and 'office'."
     const GENERAL_ERROR = 'Unable to extract data from link. Please compare your document with the sample document.'
     const LINK_NOT_FOUND_ERROR = 'Unable to find a Google Sheets Document at the below link.'
+    const AUTH_TIMEOUT_ERROR = 'Timed out authorizing app to read provided spreadsheet. Please try again.'
     const UNAUTHORIZED_ERROR =
         'Could not authenticate Google Spreadsheets. Please allow access in the popup when clicking Extract Data.'
     const NO_DATA_FOUND_ERROR = 'No data found in sheet. Does data exist in range ' + SHEET_VALUES_RANGE + '?'
@@ -23,7 +22,7 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     const [inputLink, setInputLink] = useState('')
     const [fileError, setFileError] = useState(null)
     let authWindow = null
-    const uniqueId = ObjectId.toString()
+    const uniqueId = ObjectId().toString()
 
     const onInputChange = event => {
         event.preventDefault()
@@ -54,9 +53,16 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
         return data
     }
 
+    const closeAuthTab = () => {
+        if (authWindow) {
+            authWindow.close()
+            authWindow = null
+        }
+    }
+
     const handleSheetData = sheetData => {
         console.log('handle sheet data', sheetData)
-        authWindow.close()
+        closeAuthTab()
         const rows = JSON.parse(sheetData)
         console.log('handleSheetData', rows)
         if (!rows.length) {
@@ -76,6 +82,11 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     const isSignedInResponse = authUrl => {
         window.socket.emit('extract-sheet-data', uniqueId, getSpreadsheetId(), handleSheetData)
         authWindow = window.open(authUrl, 'authWindow')
+        // close the auth tab after 2 minutes
+        setTimeout(() => {
+            closeAuthTab()
+            setFileError(AUTH_TIMEOUT_ERROR)
+        }, 2 * 60 * 1000)
     }
 
     const handleValidSheetUrl = () => {

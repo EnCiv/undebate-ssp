@@ -16,6 +16,13 @@ async function getSheetsData(spreadsheetId, oauth2Client, cb) {
     }
 }
 
+function removeOldCallback(uniqueId) {
+    const index = oauth2callbacks.findIndex(obj => obj.uniqueId === uniqueId)
+    if (index >= 0) {
+        oauth2callbacks.splice(index, 1)
+    }
+}
+
 export default async function extractSheetData(uniqueId, spreadsheetId, cb) {
     // todo add back in
     /* if (!this.synuser) {
@@ -27,6 +34,8 @@ export default async function extractSheetData(uniqueId, spreadsheetId, cb) {
         // this is the second socket call so we add the callback to the oauth2callbacks list item so that the data gets back to the browser
         const item = oauth2callbacks.find(obj => obj.uniqueId === uniqueId)
         item.callback = () => getSheetsData(spreadsheetId, item.oauth2Client, cb)
+        // remove the item from the list after 2 minutes to ensure no memory leaks
+        setTimeout(() => removeOldCallback(uniqueId), 2 * 60 * 1000)
     } catch (err) {
         logger.error('err', err)
         if (cb) cb()
