@@ -2,12 +2,11 @@
 'use strict'
 
 import React, { useState } from 'react'
-import { createUseStyles } from 'react-jss'
 
 import SigninSignupCom from '../components/signin-signup'
 
 function SigninSignup(props) {
-    const classes = useStyles()
+    const { user } = props
     const [userInfo, setUserInfo] = useState(null)
 
     function onUserLogin(info) {
@@ -17,29 +16,29 @@ function SigninSignup(props) {
 
     return (
         <>
-            <div style={{ width: '100vw', height: '100vh', textAlign: 'center', verticalAlign: 'middle' }}>
-                {!userInfo ? (
-                    <SigninSignupCom className={classes['join']} onChange={onUserLogin} destination={'/home'} />
+            <div
+                style={{
+                    fontFamily: 'Poppins',
+                    fontWeight: 400,
+                    width: '100vw',
+                    height: '100vh',
+                    textAlign: 'center',
+                    verticalAlign: 'middle',
+                }}
+            >
+                {!userInfo && !user ? (
+                    <SigninSignupCom onChange={onUserLogin} destination={onUserLogin} />
                 ) : (
-                    <div className={classes['join']}>
+                    <div>
                         <div>Welcome Aboard</div>
                         <div>info: {JSON.stringify(userInfo)}</div>
-                        <div>user: {JSON.stringify(props.user)}</div>
+                        <div>user: {JSON.stringify(user)}</div>
+                        <a href='/sign/out'>Log out</a>
                     </div>
                 )}
             </div>
         </>
     )
 }
-
-const useStyles = createUseStyles({
-    join: {
-        position: 'absolute',
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%,-50%)',
-        fontSize: '1.5rem',
-    },
-})
 
 export default SigninSignup

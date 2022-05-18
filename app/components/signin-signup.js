@@ -105,7 +105,7 @@ const useStyles = createUseStyles(theme => ({
         height: 'auto',
         padding: '0',
         fontFamily: theme.defaultFontFamily,
-        position: 'absolute',
+        position: 'fixed',
         left: '50%',
         top: '50%',
         transform: 'translate(-50%,-50%)',
