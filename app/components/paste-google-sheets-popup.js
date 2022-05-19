@@ -133,11 +133,7 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     }
 
     const renderErrors = () => {
-        return (
-            <div className={classes.errorsRow} style={{ visibility: fileError ? 'visible' : 'hidden' }}>
-                {fileError}
-            </div>
-        )
+        return fileError ? <div className={classes.errorsRow}>{fileError}</div> : ''
     }
 
     const renderPasteLink = () => {
@@ -219,10 +215,8 @@ const useStyles = createUseStyles(theme => ({
         backgroundColor: theme.colorSecondary,
         color: 'white',
         width: theme.uploadPopupWidth,
-        height: theme.pastePopupHeight,
         display: 'flex',
         flexDirection: 'column',
-        /* borderRadius: theme.defaultBorderRadius, // this is smaller than the radius on figma */
         borderRadius: '1.25rem',
     },
     innerPopup: {
@@ -236,7 +230,6 @@ const useStyles = createUseStyles(theme => ({
     },
     popupTop: {
         width: '100%',
-        height: '30.375rem',
     },
     provideText: {
         width: '100%',
@@ -273,7 +266,6 @@ const useStyles = createUseStyles(theme => ({
         color: 'red',
         display: 'flex',
         alignItems: 'center',
-        height: '2.375rem',
         padding: '0 0.25rem 0.25rem 0.25rem',
     },
     fileBox: {
@@ -361,6 +353,8 @@ const useStyles = createUseStyles(theme => ({
         width: '100%',
         height: '3.5625rem',
         padding: '0',
+        marginTop: '0.5rem',
+        marginBottom: '2.5rem',
         backgroundColor: theme.backgroundColorApp,
         '& svg path': {
             stroke: theme.colorSecondary,
