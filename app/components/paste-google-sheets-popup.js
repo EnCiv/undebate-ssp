@@ -1,5 +1,5 @@
 // https://github.com/EnCiv/undebate-ssp/issues/55
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import _ from 'lodash'
@@ -197,11 +197,6 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
 export default PasteGoogleSheetsPopup
 
 const useStyles = createUseStyles(theme => ({
-    fileIcon: {
-        width: '4rem',
-        height: '4rem',
-        margin: '1.25rem 0',
-    },
     btn: {
         ...theme.button,
         display: 'flex',
@@ -267,77 +262,6 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         padding: '0 0.25rem 0.25rem 0.25rem',
-    },
-    fileBox: {
-        height: '21.6875rem',
-        width: '100%',
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: theme.defaultBorderRadius,
-    },
-    dropFileBox: {
-        cursor: 'pointer',
-        '& > .file-drop-target': {
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-        },
-        '& > .file-drop-target.file-drop-dragging-over-frame': {
-            border: `2px solid ${theme.colorPrimary}`,
-            borderRadius: theme.defaultBorderRadius,
-        },
-        '& > .file-drop-target.file-drop-dragging-over-target': {
-            color: theme.colorSuccess,
-            boxShadow: `0 0 13px 3px ${theme.colorSuccess}`,
-            '& svg path': {
-                stroke: theme.colorSuccess,
-                fill: theme.colorSuccess,
-            },
-        },
-    },
-    dropFileDiv: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    dropFileText: {
-        fontSize: '0.875rem',
-        fontWeight: '500',
-        opacity: '0.5',
-    },
-    browseDiv: {
-        padding: '0.625rem',
-        '& span': {
-            padding: '0.375rem',
-        },
-    },
-    orText: {
-        fontWeight: '500',
-        opacity: '0.5',
-    },
-    browseText: {
-        fontSize: '1.125rem',
-        fontWeight: '700',
-    },
-    pastedLinkText: {
-        width: '100%',
-        fontSize: '2rem',
-        textAlign: 'center',
-        padding: '1rem',
-        boxSizing: 'border-box',
-        overflowWrap: 'break-word',
-    },
-    removeFileButton: {
-        ...theme.button,
-        borderRadius: theme.defaultBorderRadius,
-        padding: '0.5rem',
     },
     linkIcon: {
         height: '1.5rem',
