@@ -4,15 +4,25 @@ import { oauth2callbacks } from '../routes/google-auth-redirect'
 async function getSheetsData(spreadsheetId, oauth2Client, cb) {
     const SHEET_VALUES_RANGE = 'A:ZZ'
     const sheets = google.sheets({ version: 'v4', auth: oauth2Client })
-    const res = await sheets.spreadsheets.values.get({
-        auth: oauth2Client,
-        spreadsheetId: spreadsheetId,
-        range: SHEET_VALUES_RANGE,
-    })
-    if (res && res.data && res.data.values) {
-        cb(JSON.stringify(res.data.values))
-    } else {
-        cb()
+    let res
+    try {
+        res = await sheets.spreadsheets.values.get({
+            auth: oauth2Client,
+            spreadsheetId: spreadsheetId,
+            range: SHEET_VALUES_RANGE,
+        })
+        if (res && res.data && res.data.values) {
+            cb(JSON.stringify(res.data.values))
+        } else {
+            cb()
+        }
+    } catch (err) {
+        logger.error('error trying to get data from spreadsheetId: ' + spreadsheetId, err)
+        if (err.message.includes('The caller does not have permission')) {
+            cb("Can't authenticate")
+        } else {
+            cb('General error')
+        }
     }
 }
 

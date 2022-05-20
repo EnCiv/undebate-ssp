@@ -12,10 +12,10 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     const SHEET_VALUES_RANGE = 'A:ZZ'
     const MISSING_HEADERS_ERROR = "Sheet is missing required headers. Please include 'name', 'email', and 'office'."
     const GENERAL_ERROR = 'Unable to extract data from link. Please compare your document with the sample document.'
-    const LINK_NOT_FOUND_ERROR = 'Unable to find a Google Sheets Document at the below link.'
-    const AUTH_TIMEOUT_ERROR = 'Timed out authorizing app to read provided spreadsheet. Please try again.'
-    const UNAUTHORIZED_ERROR =
-        'Could not authenticate Google Spreadsheets. Please allow access in the popup when clicking Extract Data.'
+    const BAD_LINK_ERROR = 'Unable to find a Google Sheets Document at the below link.'
+    const AUTH_TIMEOUT_ERROR =
+        'Timed out authorizing app to read provided spreadsheet. Please try again or make sure you have access to the sheet.'
+    const UNAUTHORIZED_ERROR = 'Could not authenticate Google Spreadsheets. Please ensure you have access to the sheet.'
     const NO_DATA_FOUND_ERROR = 'No data found in sheet. Does data exist in range ' + SHEET_VALUES_RANGE + '?'
 
     const classes = useStyles()
@@ -48,7 +48,7 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
             })
         } else {
             setFileError(MISSING_HEADERS_ERROR)
-            return null
+            return -1
         }
         return data
     }
@@ -63,15 +63,29 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     const handleSheetData = sheetData => {
         console.log('handle sheet data', sheetData)
         closeAuthTab()
+        if (!sheetData || sheetData === 'General error') {
+            setFileError(GENERAL_ERROR)
+            return
+        }
+        if (sheetData === "Can't authenticate") {
+            setFileError(UNAUTHORIZED_ERROR)
+            return
+        }
         const rows = JSON.parse(sheetData)
-        console.log('handleSheetData', rows)
+        console.log('handleSheetData rows', rows)
         if (!rows.length) {
             setFileError(NO_DATA_FOUND_ERROR)
-        } else {
-            const tableData = extractSheetData(rows)
-            handleTableData(tableData, electionOM)
-            handleSuccessfulExtraction()
+            return
         }
+        const tableData = extractSheetData(rows)
+        if (!tableData) {
+            setFileError(NO_DATA_FOUND_ERROR)
+            return
+        } else if (tableData === -1) {
+            return
+        }
+        handleTableData(tableData, electionOM)
+        handleSuccessfulExtraction()
     }
 
     const handleSuccessfulExtraction = () => {
@@ -108,7 +122,7 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
                 setFileError(GENERAL_ERROR)
             }
         } else {
-            setFileError(LINK_NOT_FOUND_ERROR)
+            setFileError(BAD_LINK_ERROR)
         }
     }
 
