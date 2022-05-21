@@ -66,3 +66,16 @@ export const handleTableData = (tableData, electionOM) => {
 export const validateHeaders = headers => {
     return REQUIRED_COLUMNS.every(reqCol => headers.includes(reqCol))
 }
+
+export const mapRowsToObjects = (headers, rows) => {
+    const data = []
+    rows.forEach(row => {
+        data.push(
+            row.reduce((rowObj, item, idx) => {
+                rowObj[headers[idx]] = item
+                return rowObj
+            }, {})
+        )
+    })
+    return data
+}

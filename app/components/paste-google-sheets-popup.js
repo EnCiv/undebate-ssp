@@ -6,7 +6,7 @@ import _ from 'lodash'
 import ExternalLinkSvg from '../svgr/external-link'
 import LinkSvg from '../svgr/link'
 import ObjectId from 'isomorphic-mongo-objectid'
-import { handleTableData, validateHeaders } from '../lib/get-table-upload-methods'
+import { handleTableData, validateHeaders, mapRowsToObjects } from '../lib/get-table-upload-methods'
 
 function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, style = {} }) {
     const SHEET_VALUES_RANGE = 'A:ZZ'
@@ -37,15 +37,13 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     const extractSheetData = rows => {
         const headers = rows.shift().map(val => _.camelCase(val))
 
-        const data = []
+        let data
         if (validateHeaders(headers)) {
             if (!rows.length) {
                 setFileError(NO_DATA_FOUND_ERROR)
                 return null
             }
-            rows.forEach(row => {
-                data.push(row)
-            })
+            data = mapRowsToObjects(headers, rows)
         } else {
             setFileError(MISSING_HEADERS_ERROR)
             return -1

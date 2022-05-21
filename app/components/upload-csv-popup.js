@@ -6,7 +6,7 @@ import { FileDrop } from 'react-file-drop'
 import _ from 'lodash'
 import FileSvg from '../svgr/file'
 import ExternalLinkSvg from '../svgr/external-link'
-import { handleTableData, validateHeaders } from '../lib/get-table-upload-methods'
+import { handleTableData, validateHeaders, mapRowsToObjects } from '../lib/get-table-upload-methods'
 
 function UploadCSVPopup({ electionOM, closePopup, visible, className, style = {} }) {
     const GENERAL_ERROR = 'Unable to extract data from file. Please compare this file with the sample file.'
@@ -20,22 +20,11 @@ function UploadCSVPopup({ electionOM, closePopup, visible, className, style = {}
     const [fileError, setFileError] = useState(null)
 
     const extractCsvData = fileContents => {
-        const rows = fileContents.split('\n')
-        const headers = rows
-            .shift()
-            .split(',')
-            .map(val => _.camelCase(val))
-
-        const data = []
+        const rows = fileContents.split('\n').map(row => row.split(','))
+        const headers = rows.shift().map(val => _.camelCase(val))
+        let data
         if (validateHeaders(headers)) {
-            rows.forEach(row => {
-                data.push(
-                    row.split(',').reduce((rowObj, item, idx) => {
-                        rowObj[headers[idx]] = item
-                        return rowObj
-                    }, {})
-                )
-            })
+            data = mapRowsToObjects(headers, rows)
         } else {
             setFileError(MISSING_HEADERS_ERROR)
             return null
