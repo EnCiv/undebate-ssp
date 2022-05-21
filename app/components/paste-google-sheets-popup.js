@@ -93,13 +93,19 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
         closePopup()
     }
 
+    const timeoutAuthCall = () => {
+        if (authWindow) {
+            closeAuthTab()
+            setFileError(AUTH_TIMEOUT_ERROR)
+        }
+    }
+
     const isSignedInResponse = authUrl => {
         window.socket.emit('extract-sheet-data', uniqueId, getSpreadsheetId(), handleSheetData)
         authWindow = window.open(authUrl, 'authWindow')
         // close the auth tab after 2 minutes
         setTimeout(() => {
-            closeAuthTab()
-            setFileError(AUTH_TIMEOUT_ERROR)
+            timeoutAuthCall()
         }, 2 * 60 * 1000)
     }
 
