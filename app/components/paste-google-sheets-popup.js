@@ -8,6 +8,8 @@ import LinkSvg from '../svgr/link'
 import ObjectId from 'isomorphic-mongo-objectid'
 import { handleTableData, validateHeaders, mapRowsToObjects } from '../lib/get-table-upload-methods'
 
+const scope = 'https://www.googleapis.com/auth/spreadsheets.readonly'
+
 function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, style = {} }) {
     const SHEET_VALUES_RANGE = 'A:ZZ'
     const MISSING_HEADERS_ERROR = "Sheet is missing required headers. Please include 'name', 'email', and 'office'."
@@ -108,7 +110,7 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     }
 
     const handleValidSheetUrl = () => {
-        window.socket.emit('is-signed-in-for-sheet', uniqueId, getSpreadsheetId(), isSignedInResponse)
+        window.socket.emit('is-signed-in-for-sheet', uniqueId, scope, isSignedInResponse)
     }
 
     const getSpreadsheetId = () => {
