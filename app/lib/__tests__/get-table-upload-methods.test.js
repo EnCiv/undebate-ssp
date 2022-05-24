@@ -1,8 +1,8 @@
-import { handleTableData, validateHeaders } from '../get-table-upload-methods'
+import { handleTableData, validateHeaders, mapRowsToObjects } from '../get-table-upload-methods'
 import { merge } from 'lodash'
 
 describe('table upload methods', () => {
-    describe('empty table', () => {
+    describe('handleTableData empty table', () => {
         let state
         let electionOM
 
@@ -54,7 +54,7 @@ describe('table upload methods', () => {
         })
     })
 
-    describe('with candidates in table', () => {
+    describe('handleTableData with candidates in table', () => {
         let state
         let electionOM
 
@@ -267,6 +267,46 @@ describe('table upload methods', () => {
 
         it('extra columns', () => {
             expect(validateHeaders(['name', 'stuff', 'email', 'things', 'foo', 'office', 'uniqueId'])).toBeTruthy()
+        })
+    })
+
+    describe('mapRowsToObjects', () => {
+        it('empty lists', () => {
+            expect(mapRowsToObjects([], [])).toEqual([])
+        })
+
+        it('empty rows', () => {
+            expect(mapRowsToObjects(['name', 'email', 'office'], [])).toEqual([])
+        })
+
+        it('one row', () => {
+            expect(
+                mapRowsToObjects(['name', 'email', 'office'], [['John Smith', 'john.smith@example.com', 'Foo bar']])
+            ).toEqual([{ name: 'John Smith', email: 'john.smith@example.com', office: 'Foo bar' }])
+        })
+
+        it('different order', () => {
+            expect(
+                mapRowsToObjects(
+                    ['office', 'name', 'email'],
+                    [['Foo bar office', 'John Smith', 'john.smith@example.com']]
+                )
+            ).toEqual([{ name: 'John Smith', email: 'john.smith@example.com', office: 'Foo bar office' }])
+        })
+
+        it('multiple rows', () => {
+            expect(
+                mapRowsToObjects(
+                    ['name', 'email', 'office'],
+                    [
+                        ['John Smith', 'john.smith@example.com', 'Foo bar'],
+                        ['Carolyn Jefferson', 'carjeff@example.edu', 'Potus'],
+                    ]
+                )
+            ).toEqual([
+                { name: 'John Smith', email: 'john.smith@example.com', office: 'Foo bar' },
+                { name: 'Carolyn Jefferson', email: 'carjeff@example.edu', office: 'Potus' },
+            ])
         })
     })
 })
