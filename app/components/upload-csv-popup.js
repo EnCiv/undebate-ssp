@@ -176,6 +176,7 @@ function UploadCSVPopup({ electionOM, closePopup, visible, className, style = {}
                     </button>
                     <button
                         id='extract-csv-button'
+                        data-testid='extract-csv-button'
                         type='button'
                         disabled={!selectedFile}
                         className={cx(

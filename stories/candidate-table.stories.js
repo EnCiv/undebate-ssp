@@ -91,6 +91,6 @@ UploadCsvUsage.play = async ({ canvasElement }) => {
     await userEvent.upload(canvas.getByTestId('file-select-input'), noUniqueIdsFile)
     await new Promise(r => setTimeout(r, 1000))
 
-    await userEvent.click(canvas.getByText('Extract Data'))
+    await userEvent.click(canvas.getByTestId('extract-csv-button'))
     await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(4))
 }
