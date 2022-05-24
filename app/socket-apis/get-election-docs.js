@@ -9,7 +9,7 @@ export default async function getElectionDocs(cb) {
     }
     try {
         // get all the ElectionDoc component belonging to the user, and all of the children of those docs
-        // up to depth 2. but depth can be extended by extending the aggregation operators
+        // up to depth 1. but depth can be extended by extending the aggregation operators
         const iotas = await Iota.aggregate([
             { $match: { userId: this.synuser.id, 'webComponent.webComponent': 'ElectionDoc' } },
             { $project: { depth0: ['$$CURRENT'] } },
@@ -23,6 +23,7 @@ export default async function getElectionDocs(cb) {
                     maxDepth: 0,
                 },
             },
+            /* only up to depth 1 is needed
             {
                 $graphLookup: {
                     from: 'iotas',
@@ -37,11 +38,11 @@ export default async function getElectionDocs(cb) {
                     as: 'depth2',
                     maxDepth: 0,
                 },
-            },
+            },*/
             {
                 $project: {
                     _id: false,
-                    children: { $concatArrays: ['$depth0', '$depth1', '$depth2'] },
+                    children: { $concatArrays: ['$depth0', '$depth1' /*'$depth2'*/] },
                 },
             },
             { $unwind: '$children' },
