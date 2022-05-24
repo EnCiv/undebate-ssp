@@ -1,18 +1,7 @@
 import { google } from 'googleapis'
-import { oauth2callbacks } from '../routes/google-auth-redirect'
+import { redirectUrl } from '../routes/oauth-redirect'
 
-const scope = 'https://www.googleapis.com/auth/spreadsheets.readonly'
-const redirectRoute = '/googleAuthRedirect'
-let redirectUrl
-if (process.env.HOSTNAME) {
-    let domain = process.env.HOSTNAME === 'localhost:3011' ? 'http' : 'https'
-    redirectUrl = domain + '://' + process.env.HOSTNAME + redirectRoute
-} else {
-    redirectUrl = 'http://localhost:3011' + redirectRoute
-    logger.warn('HOSTNAME not set in env. Using default google auth redirect url of', redirectUrl)
-}
-
-export default async function isSignedInForSheet(uniqueId, spreadsheetId, cb) {
+export default async function getOauthRedirectUrl(uniqueId, scope, cb) {
     // todo add back in
     /* if (!this.synuser) {
      *     logger.error('extractSheetData called, but no user ', this.synuser)
@@ -28,12 +17,6 @@ export default async function isSignedInForSheet(uniqueId, spreadsheetId, cb) {
             process.env.GOOGLE_CLIENT_SECRET,
             redirectUrl
         )
-        // can't add the callback itself yet as that has to come from the next socket call
-        oauth2callbacks.push({
-            uniqueId,
-            oauth2Client,
-        })
-        // for now we assume the user is not signed in to google for every request, even if they just authenticated
 
         const authorizationUrl = oauth2Client.generateAuthUrl({
             scope: scope,

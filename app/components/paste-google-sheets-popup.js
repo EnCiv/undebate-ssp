@@ -8,6 +8,8 @@ import LinkSvg from '../svgr/link'
 import ObjectId from 'isomorphic-mongo-objectid'
 import { handleTableData, validateHeaders, mapRowsToObjects } from '../lib/get-table-upload-methods'
 
+const scope = 'https://www.googleapis.com/auth/spreadsheets.readonly'
+
 function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, style = {} }) {
     const SHEET_VALUES_RANGE = 'A:ZZ'
     const MISSING_HEADERS_ERROR = "Sheet is missing required headers. Please include 'name', 'email', and 'office'."
@@ -98,7 +100,7 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
         }
     }
 
-    const isSignedInResponse = authUrl => {
+    const getAuthRedirectResponse = authUrl => {
         window.socket.emit('extract-sheet-data', uniqueId, getSpreadsheetId(), handleSheetData)
         authWindow = window.open(authUrl, 'authWindow')
         // close the auth tab after 2 minutes
@@ -108,7 +110,7 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     }
 
     const handleValidSheetUrl = () => {
-        window.socket.emit('is-signed-in-for-sheet', uniqueId, getSpreadsheetId(), isSignedInResponse)
+        window.socket.emit('get-oauth-redirect-url', uniqueId, scope, getAuthRedirectResponse)
     }
 
     const getSpreadsheetId = () => {

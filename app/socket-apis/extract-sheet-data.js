@@ -1,7 +1,15 @@
 import { google } from 'googleapis'
-import { oauth2callbacks } from '../routes/google-auth-redirect'
+import { oauth2callbacks, redirectUrl } from '../routes/oauth-redirect'
 
-async function getSheetsData(spreadsheetId, oauth2Client, cb) {
+async function getSheetsData(oAuthCode, spreadsheetId, cb) {
+    const oauth2Client = new google.auth.OAuth2(
+        process.env.GOOGLE_CLIENT_ID,
+        process.env.GOOGLE_CLIENT_SECRET,
+        redirectUrl
+    )
+    let { tokens } = await oauth2Client.getToken(oAuthCode)
+    oauth2Client.setCredentials(tokens)
+
     const SHEET_VALUES_RANGE = 'A:ZZ'
     const sheets = google.sheets({ version: 'v4', auth: oauth2Client })
     let res
@@ -42,8 +50,7 @@ export default async function extractSheetData(uniqueId, spreadsheetId, cb) {
      * } */
     try {
         // this is the second socket call so we add the callback to the oauth2callbacks list item so that the data gets back to the browser
-        const item = oauth2callbacks.find(obj => obj.uniqueId === uniqueId)
-        item.callback = () => getSheetsData(spreadsheetId, item.oauth2Client, cb)
+        oauth2callbacks.push({ uniqueId, callback: oAuthCode => getSheetsData(oAuthCode, spreadsheetId, cb) })
         // remove the item from the list after 2 minutes to ensure no memory leaks
         setTimeout(() => removeOldCallback(uniqueId), 2 * 60 * 1000)
     } catch (err) {
