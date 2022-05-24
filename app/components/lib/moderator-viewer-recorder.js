@@ -64,6 +64,8 @@ const moderatorViewerRecorder = {
         newViewer.subject = getIotaPropertyFromCSVColumn.office(csvRowObj)
         newViewer.description = 'A Candidate Conversation for: ' + getIotaPropertyFromCSVColumn.office(csvRowObj)
         newViewer.bp_info.electionList = this.electionList
+        newViewer.bp_info.office = getIotaPropertyFromCSVColumn.office(csvRowObj)
+        newViewer.bp_info.election_date = getIotaPropertyFromCSVColumn.election_date(csvRowObj)
         let nextPrev = this.electionList.reduce((acc, viewerPath) => {
             if (acc.nextElection);
             else if (acc.found)

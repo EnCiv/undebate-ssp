@@ -116,7 +116,7 @@ const mergeOps = {
         return true
     },
     moderatorViewer(iota, child, iotas, usedIndexes) {
-        if (!(child?.webComponent?.webComponent === 'CandidateConversation' && child?.subject === 'Moderator'))
+        if (!(child?.webComponent?.webComponent === 'CandidateConversation' && child?.bp_info?.office === 'Moderator'))
             return false
         pushToArrayAtEndOfPath(iota, 'webComponent.moderator.viewers', child)
         return true

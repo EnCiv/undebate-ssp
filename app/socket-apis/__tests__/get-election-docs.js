@@ -54,6 +54,18 @@ const iotas = [
         },
         parentId: '628c73daf2014b3f4c5da4ee',
     },
+    {
+        _id: Iota.ObjectID('628d0b225f7a7746488c0bff'),
+        subject: 'Moderator Viewer for #4',
+        description: 'Moderator Viewer for #4',
+        bp_info: {
+            office: 'Moderator',
+        },
+        webComponent: {
+            webComponent: 'CandidateConversation',
+        },
+        parentId: '628c73daf2014b3f4c5da4ee',
+    },
 ]
 
 const exampleUser = {
@@ -78,7 +90,7 @@ beforeAll(async () => {
     apisThis.synuser.id = MongoModels.ObjectID(user._id).toString()
     // eslint-disable-next-line no-restricted-syntax
     for await (const doc of iotas) {
-        doc.userId = apisThis.synuser.id
+        if (!doc.userId) doc.userId = apisThis.synuser.id
         await Iota.create(doc)
     }
 })
@@ -165,6 +177,21 @@ test('get election docs should get them', done => {
                             "parentId": "628c73daf2014b3f4c5da4ee",
                             "subject": "Moderator Recorder for #4",
                             "userId": "628d0a2afacbb605f4d8e6ac",
+                          },
+                        ],
+                        "viewers": Array [
+                          Object {
+                            "_id": "628d0b225f7a7746488c0bff",
+                            "bp_info": Object {
+                              "office": "Moderator",
+                            },
+                            "description": "Moderator Viewer for #4",
+                            "parentId": "628c73daf2014b3f4c5da4ee",
+                            "subject": "Moderator Viewer for #4",
+                            "userId": "628d0a2afacbb605f4d8e6ac",
+                            "webComponent": Object {
+                              "webComponent": "CandidateConversation",
+                            },
                           },
                         ],
                       },

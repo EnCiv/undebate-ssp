@@ -66,7 +66,9 @@ test('it should create a viewer', done => {
                     "electionList": Array [
                       "/country:us/organization:cfa/office:moderator/2021-03-21",
                     ],
+                    "election_date": "03/21/2021",
                     "election_source": "CodeForAmerica.NAC",
+                    "office": "Moderator",
                   },
                   "component": Object {
                     "component": "MergeParticipants",
