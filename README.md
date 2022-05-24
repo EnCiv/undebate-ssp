@@ -644,8 +644,10 @@ Instructions to get this working:
 -   Click Create Credentials at the top, then Oauth client ID.
 -   Application Type will be Web application, the name can be something like Undebates Web Client.
 -   Add the following to the Authorized JavaScript origins: http://localhost:3011
--   Add the following to the Authorized redirect URIs: http://localhost:3011/googleAuthRedirect
+-   Add the following to the Authorized redirect URIs: http://localhost:3011/oauthRedirect
 -   Click save.
+-   Visit this url and enable it if the project has not yet been enabled: https://console.cloud.google.com/apis/library/sheets.googleapis.com?project=<project-name>
+-   It can take a few minutes for these changes to take effect.
 -   Using the values from the popup, within your .bashrc file, add the following lines:
 
 ```
@@ -653,6 +655,8 @@ export GOOGLE_CLIENT_ID='<your-client-id>'
 export GOOGLE_CLIENT_SECRET='<your-client-secret>'
 ```
 
-The paste google sheets component should now work when running in dev (note that it doesn't work in storybook because the routes aren't running)
+The paste google sheets component should now work when running in dev (note that it doesn't work in storybook because the routes aren't running). The first time it is used,
+
+If things are still not working after about 10 minutes, one of the above steps may have been missed.
 
 </details>

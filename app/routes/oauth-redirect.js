@@ -1,6 +1,6 @@
 export const oauth2callbacks = []
 
-async function googleAuthRedirect(req, res, next) {
+async function oauthRedirect(req, res, next) {
     // this is what gets called after the user has consented to the app reading their spreadsheets
     if (!req.query.code) return next()
     if (!req.query.state) return next()
@@ -15,13 +15,14 @@ async function googleAuthRedirect(req, res, next) {
 }
 
 export default function route() {
-    this.app.get('/googleAuthRedirect', googleAuthRedirect)
+    this.app.get('/oauthRedirect', oauthRedirect)
 }
 
-const redirectRoute = '/googleAuthRedirect'
+const redirectRoute = '/oauthRedirect'
 export const redirectUrl = process.env.HOSTNAME
     ? (process.env.HOSTNAME === 'localhost:3011' ? 'http' : 'https') + '://' + process.env.HOSTNAME + redirectRoute
     : 'http://localhost:3011' + redirectRoute
 
-if (!process.env.HOSTNAME)
-    logger.error('HOSTNAME not set in env. Using default google auth redirect url of', redirectUrl)
+if (!process.env.HOSTNAME) {
+    logger.error('HOSTNAME not set in env. Using default auth redirect url of', redirectUrl)
+}
