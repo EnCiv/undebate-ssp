@@ -1,6 +1,8 @@
 // https://github.com/EnCiv/undebate-ssp/issues/54
 import React, { useEffect } from 'react'
-import { within, userEvent } from '@storybook/testing-library'
+import { expect } from '@storybook/jest'
+import { within, userEvent, waitFor } from '@storybook/testing-library'
+import { getElectionCandidates } from './story-helpers'
 import UploadCSV from '../app/components/upload-csv'
 
 export default {
@@ -42,8 +44,10 @@ const Template = (args, context) => {
 }
 
 export const Default = Template.bind({})
+Default.args = { defaultValue: {} }
 
 export const Clicked = Template.bind({})
+Clicked.args = { defaultValue: {} }
 Clicked.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
@@ -51,6 +55,7 @@ Clicked.play = async ({ canvasElement }) => {
 }
 
 export const SuccessfulExtractionAndClose = Template.bind({})
+SuccessfulExtractionAndClose.args = { defaultValue: {} }
 SuccessfulExtractionAndClose.play = async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await new Promise(r => setTimeout(r, 1000))
@@ -62,4 +67,6 @@ SuccessfulExtractionAndClose.play = async ({ canvasElement }) => {
     await new Promise(r => setTimeout(r, 1000))
 
     await userEvent.click(canvas.getByText('Extract Data'))
+
+    await waitFor(() => expect(Object.values(getElectionCandidates(canvas)).length).toBe(2))
 }
