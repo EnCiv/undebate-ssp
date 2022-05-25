@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/undebate-ssp/issues/71
+// https://github.com/EnCiv/undebate-ssp/issues/52
 
 import { Iota } from 'civil-server'
 
@@ -9,7 +10,7 @@ export default async function getElectionDocs(cb) {
     }
     try {
         // get all the ElectionDoc component belonging to the user, and all of the children of those docs
-        // up to depth 1. but depth can be extended by extending the aggregation operators
+        // up to depth 2. but depth can be extended by extending the aggregation operators
         const iotas = await Iota.aggregate([
             { $match: { userId: this.synuser.id, 'webComponent.webComponent': 'ElectionDoc' } },
             { $project: { depth0: ['$$CURRENT'] } },
@@ -23,7 +24,6 @@ export default async function getElectionDocs(cb) {
                     maxDepth: 0,
                 },
             },
-            /* only up to depth 1 is needed
             {
                 $graphLookup: {
                     from: 'iotas',
@@ -38,11 +38,11 @@ export default async function getElectionDocs(cb) {
                     as: 'depth2',
                     maxDepth: 0,
                 },
-            },*/
+            },
             {
                 $project: {
                     _id: false,
-                    children: { $concatArrays: ['$depth0', '$depth1' /*'$depth2'*/] },
+                    children: { $concatArrays: ['$depth0', '$depth1', '$depth2'] },
                 },
             },
             { $unwind: '$children' },
@@ -63,40 +63,61 @@ export default async function getElectionDocs(cb) {
 function mergeElectionChildren(iotas) {
     const results = []
     const usedIndexes = {}
-    debugger
-    for (const i in iotas) {
-        if (usedIndexes[i]) continue
-        const iota = iotas[i]
-        if (iota?.webComponent?.webComponent === 'ElectionDoc') {
-            usedIndexes[i] = true
-            mergeInChildren(iota, iotas, usedIndexes)
-            results.push(iota)
+    function doMerge() {
+        for (const i in iotas) {
+            if (usedIndexes[i]) continue
+            const iota = iotas[i]
+            if (iota?.webComponent?.webComponent === 'ElectionDoc') {
+                usedIndexes[i] = true
+                intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(iota, iota, iotas, usedIndexes)
+                results.push(iota)
+            }
         }
     }
-    for (const i in iotas) {
-        if (!usedIndexes[i]) logger.error('getElectionDocs.mergeElectionChildren did not merge', iotas[i])
+    function countUnmerged() {
+        let unmerged = 0
+        for (const i in iotas) {
+            if (!usedIndexes[i]) {
+                unmerged++
+                logger.error('getElectionDocs.mergeElectionChildren did not merge', iotas[i])
+            }
+        }
+        return unmerged
+    }
+    let lastUnmerged = Number.POSITIVE_INFINITY
+    doMerge()
+    let unmerged = countUnmerged()
+    while (unmerged > 0 && unmerged < lastUnmerged) {
+        lastUnmerged = unmerged
+        doMerge()
+        unmerged = countUnmerged()
     }
     return results
 }
 
-function mergeInChildren(iota, iotas, usedIndexes) {
-    const parentId = Iota.ObjectId(iota._id).toString()
+function getId(id) {
+    if (typeof id === 'object') return Iota.ObjectID(id).toString()
+    return id
+}
+
+function intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(root, parent, iotas, usedIndexes) {
+    let _id = getId(parent._id)
     for (const i in iotas) {
         if (usedIndexes[i]) continue
         const child = iotas[i]
-        if (child.parentId === parentId) {
-            for (const op of Object.values(mergeOps)) {
-                if (op(iota, child, iotas, usedIndexes)) {
-                    usedIndexes[i] = true
-                    break
-                }
+        if (_id !== child.parentId) continue
+        let result
+        for (const op of Object.values(mergeOps)) {
+            if ((result = op(root, child, iotas, usedIndexes))) {
+                usedIndexes[i] = true
+                if (typeof result == 'function') result()
+                break
             }
         }
     }
 }
 
-function pushToArrayAtEndOfPath(obj, path, value) {
-    debugger
+function intoArrayAtObjPathPushDoc(obj, path, doc) {
     let o = obj
     const keys = path.split('.')
     let key
@@ -106,20 +127,52 @@ function pushToArrayAtEndOfPath(obj, path, value) {
     }
     // key will be the last of the path
     if (!o[key]) o[key] = []
-    o[key].push(value)
+    o[key].push(doc)
 }
 
+function doesArrayAtObjPathContainDocWithId(obj, path, id) {
+    if (!id) return false
+    id = getId(id)
+    const keys = path.split('.')
+    let o = obj
+    while (keys.length > 0) {
+        o = o[keys.shift()]
+        if (typeof o === 'undefined') return false
+    }
+    if (!Array.isArray(o)) return false
+    for (const e of o) {
+        if (typeof e !== 'object') continue
+        if (getId(e._id) === id) return true
+    }
+    return false
+}
+
+// function name should describe the destination of the merge into the root
+// return false if child does not match conditions for the merge
+// return true if merge successful
+// return a function if merge successful and more work needs to be done, after the child is marked used
 const mergeOps = {
     // iotas and usedIndexes are props in case the op needs to run recursively
-    moderatorRecorder(iota, child, iotas, usedIndexes) {
+    moderatorRecorder(root, child, iotas, usedIndexes) {
         if (!(child?.component?.component === 'undebateCreator' && child?.bp_info?.office === 'Moderator')) return false
-        pushToArrayAtEndOfPath(iota, 'webComponent.moderator.recorders', child)
+        intoArrayAtObjPathPushDoc(root, 'webComponent.moderator.recorders', child)
         return true
     },
-    moderatorViewer(iota, child, iotas, usedIndexes) {
+    moderatorViewer(root, child, iotas, usedIndexes) {
         if (!(child?.webComponent?.webComponent === 'CandidateConversation' && child?.bp_info?.office === 'Moderator'))
             return false
-        pushToArrayAtEndOfPath(iota, 'webComponent.moderator.viewers', child)
+        intoArrayAtObjPathPushDoc(root, 'webComponent.moderator.viewers', child)
+        return () => intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(root, child, iotas, usedIndexes)
+    },
+    moderatorSubmissions(root, child, iotas, usedIndexes) {
+        if (
+            !(
+                child?.component?.component === 'MergeParticipants' &&
+                doesArrayAtObjPathContainDocWithId(root, 'webComponent.moderator.viewers', child?.parentId)
+            )
+        )
+            return false
+        intoArrayAtObjPathPushDoc(root, 'webComponent.moderator.submissions', child)
         return true
     },
 }
