@@ -2,12 +2,11 @@ import { google } from 'googleapis'
 import { redirectUrl } from '../routes/oauth-redirect'
 
 export default async function getOauthRedirectUrl(uniqueId, scope, cb) {
-    // todo add back in
-    /* if (!this.synuser) {
-     *     logger.error('extractSheetData called, but no user ', this.synuser)
-     *     if (cb) cb() // no user
-     *     return
-     * } */
+    if (!this.synuser) {
+        logger.error('extractSheetData called, but no user ', this.synuser)
+        if (cb) cb() // no user
+        return
+    }
     try {
         // Decided to put the oauth client in here instead of generating the auth url manually clientside
         // so that if google ever changes their auth url we just have to update the googleapis package version

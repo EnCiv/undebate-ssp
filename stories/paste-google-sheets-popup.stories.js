@@ -29,14 +29,3 @@ export const Default = mC(chapterTemplateArgs, async ({ canvasElement }) => {
     // ensure button is disabled by default:
     await waitFor(() => expect(canvas.getByText('Extract Data').getAttribute('disabled')).toBe(''))
 })
-
-export const HappyPath = mC(chapterTemplateArgs, async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await new Promise(r => setTimeout(r, 1000))
-
-    await waitFor(() => userEvent.type(canvas.getByTestId('sheets-link'), happyPathLink))
-    await new Promise(r => setTimeout(r, 1000))
-
-    await userEvent.click(canvas.getByText('Extract Data'))
-    // todo
-})

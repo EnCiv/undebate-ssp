@@ -18,6 +18,7 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     const AUTH_TIMEOUT_ERROR =
         'Timed out authorizing app to read provided spreadsheet. Please try again or make sure you have access to the sheet.'
     const UNAUTHORIZED_ERROR = 'Could not authenticate Google Spreadsheets. Please ensure you have access to the sheet.'
+    const NOT_LOGGED_IN = 'Not currently logged in. Please login to use this feature.'
     const NO_DATA_FOUND_ERROR = 'No data found in sheet. Does data exist in range ' + SHEET_VALUES_RANGE + '?'
 
     const classes = useStyles()
@@ -61,7 +62,6 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     }
 
     const handleSheetData = sheetData => {
-        console.log('handle sheet data', sheetData)
         closeAuthTab()
         if (!sheetData || sheetData === 'General error') {
             setFileError(GENERAL_ERROR)
@@ -72,7 +72,6 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
             return
         }
         const rows = JSON.parse(sheetData)
-        console.log('handleSheetData rows', rows)
         if (!rows.length) {
             setFileError(NO_DATA_FOUND_ERROR)
             return
@@ -101,6 +100,10 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
     }
 
     const getAuthRedirectResponse = authUrl => {
+        if (!authUrl) {
+            setFileError(NOT_LOGGED_IN)
+            return
+        }
         window.socket.emit('extract-sheet-data', uniqueId, getSpreadsheetId(), handleSheetData)
         authWindow = window.open(authUrl, 'authWindow')
         // close the auth tab after 2 minutes

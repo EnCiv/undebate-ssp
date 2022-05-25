@@ -42,12 +42,11 @@ function removeOldCallback(uniqueId) {
 }
 
 export default async function extractSheetData(uniqueId, spreadsheetId, cb) {
-    // todo add back in
-    /* if (!this.synuser) {
-     *     logger.error('extractSheetData called, but no user ', this.synuser)
-     *     if (cb) cb() // no user
-     *     return
-     * } */
+    if (!this.synuser) {
+        logger.error('extractSheetData called, but no user ', this.synuser)
+        if (cb) cb() // no user
+        return
+    }
     try {
         // this is the second socket call so we add the callback to the oauth2callbacks list item so that the data gets back to the browser
         oauth2callbacks.push({ uniqueId, callback: oAuthCode => getSheetsData(oAuthCode, spreadsheetId, cb) })
