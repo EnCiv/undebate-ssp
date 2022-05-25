@@ -8,6 +8,15 @@ import PasteGoogleSheetsLink from '../app/components/paste-google-sheets-link'
 export default {
     title: 'Paste Google Sheets Link',
     component: PasteGoogleSheetsLink,
+    decorators: [
+        Story => (
+            <div>
+                Because this component relies on actual routes and sockets, its actual functionality will not work in
+                storybook.
+                <Story />
+            </div>
+        ),
+    ],
 }
 
 const Template = (args, context) => {

@@ -8,12 +8,18 @@ import makeChapter from './make-chapter'
 
 const mC = makeChapter(PasteGoogleSheetsPopup)
 
-const happyPathLink =
-    'https://docs.google.com/spreadsheets/d/1K0qt8A25qTVocoVbzVPUEnMRVvEaiq0cE86WmqShRKI/edit?usp=sharing'
-
 export default {
     title: 'Paste Google Sheets Popup',
     component: PasteGoogleSheetsPopup,
+    decorators: [
+        Story => (
+            <div>
+                Because this component relies on actual routes and sockets, its actual functionality will not work in
+                storybook.
+                <Story />
+            </div>
+        ),
+    ],
     argTypes: {},
 }
 
