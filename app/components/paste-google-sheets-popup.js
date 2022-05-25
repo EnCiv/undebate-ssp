@@ -183,7 +183,11 @@ function PasteGoogleSheetsPopup({ electionOM, closePopup, visible, className, st
                     <span className={classes.provideText}>Provide Election Table</span>
                     <div className={classes.checkSampleRow}>
                         <div>Paste Google Sheets Link</div>
-                        <a href='todo' className={classes.checkSampleText}>
+                        <a
+                            target={'_blank'}
+                            href='https://docs.google.com/spreadsheets/d/1hR3dQb3Giju27ssb3IReeRh_Q7VfdL26AWF8IvFV-o4/edit#gid=0'
+                            className={classes.checkSampleText}
+                        >
                             Check Sample &nbsp;
                             <ExternalLinkSvg className={classes.externalLinkIcon} />
                         </a>
