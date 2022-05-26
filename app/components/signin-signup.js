@@ -64,7 +64,12 @@ export default function SignInSignUp(props) {
                 />
                 <div className={cx(classes.agreeTermContainer, isLogIn && classes.disabled)}>
                     <div className={classes.checkTerm}>
-                        <input type='checkbox' name='agreed' onClick={e => methods.onChangeAgree(e.target.checked)} />
+                        <input
+                            className={classes.checkTermBox}
+                            type='checkbox'
+                            name='agreed'
+                            onClick={e => methods.onChangeAgree(e.target.checked)}
+                        />
                         <label className={classes.agreeTermLabel}>
                             I agree to the
                             <a href='https://enciv.org/terms' target='_blank' className={classes.aLinkTerm}>
@@ -99,7 +104,8 @@ export default function SignInSignUp(props) {
 const useStyles = createUseStyles(theme => ({
     SignInSignUp: {
         backgroundColor: Color(theme.colorPrimary).lighten(0.2).hex(),
-        width: '22rem',
+        width: '24rem',
+        maxWidth: '100vw',
         margin: 0,
         borderRadius: '1rem',
         height: 'auto',
@@ -123,7 +129,7 @@ const useStyles = createUseStyles(theme => ({
     },
     aLinkTerm: {
         color: '#fec215',
-        marginLeft: '2%',
+        marginLeft: '1rem',
         textDecoration: 'none',
         fontSize: '1rem',
         '&:hover': {
@@ -157,7 +163,7 @@ const useStyles = createUseStyles(theme => ({
         display: 'block',
         margin: '1rem auto',
         textAlign: 'center',
-        fontSize: '1.25em',
+        fontSize: '2rem',
         width: '100%',
         '&:hover': {
             backgroundColor: '#fec215',
@@ -178,13 +184,14 @@ const useStyles = createUseStyles(theme => ({
         borderRadius: '1rem 0 1rem 1rem',
     },
     input: {
-        width: '95%',
+        width: '100%',
         background: 'rgba(255, 255, 255, 0.8)',
+        fontSize: '1.5rem',
         border: 'none',
-        height: '5vh',
-        marginBottom: '2vh',
+        padding: '1rem',
+        marginBottom: '2rem',
         borderRadius: '0.5rem',
-        paddingLeft: '5%',
+        boxSizing: 'border-box',
     },
     resetPasswordBtn: {
         width: '100%',
@@ -206,20 +213,27 @@ const useStyles = createUseStyles(theme => ({
         width: '100%',
         display: 'flex',
         justifyContent: 'center',
-        paddingBottom: '7%',
+        paddingBottom: '2rem',
         margin: '0 auto',
     },
     checkTerm: {
         width: '100%',
         margin: '0 auto',
-        textAlign: 'center',
-        alignItems: 'center',
+        textAlign: 'left',
+        alignItems: 'left',
+    },
+    checkTermBox: {
+        margin: 0,
+        width: '1.5rem',
+        height: '1.5rem',
+        verticalAlign: 'middle',
     },
     agreeTermLabel: {
         width: '100%',
         color: '#FFFFFF',
         fontSize: '1rem',
-        marginLeft: '2%',
+        marginLeft: '1rem',
+        verticalAlign: 'middle',
     },
     disabled: {
         display: 'none',
