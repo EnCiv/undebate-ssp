@@ -10,12 +10,14 @@ const checkDateCompleted = obj => {
 }
 
 const checkObjCompleted = obj => {
+    let count = 0
     for (const key in obj) {
+        count++
         if (obj[key].text === '') {
             return false
         }
     }
-    return true
+    return !!count // if no keys then false
 }
 
 function getElectionStatusMethods(dispatch, state) {

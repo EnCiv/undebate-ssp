@@ -16,6 +16,7 @@ const Template = (args, context) => {
 
     return (
         <div>
+            {/* {console.log('NavigationPanel')} */}
             <NavigationPanel electionOM={electionOM} onDone={onDone} {...otherArgs} />
         </div>
     )
@@ -25,7 +26,7 @@ const defaultElectionObject = {
     _id: 'mongoobjid',
     electionName: 'U.S Presidential Election',
     organizationName: 'United States Federal Government',
-    electionDate: '2022-11-07T23:59:59.999Z',
+    electionDate: '2023-11-07T23:59:59.999Z',
     questions: {
         0: {
             text: 'What is your favorite color?',
