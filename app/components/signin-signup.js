@@ -5,14 +5,14 @@ import { createUseStyles } from 'react-jss'
 import { useAuth } from 'civil-client'
 import Color from 'color'
 
-export default function SignInSignUp(props) {
+const SignInSignUp = React.forwardRef((props, ref) => {
     const { className, style, startTab = 'login' } = props
     const [isLogIn, setIsLogIn] = useState(startTab.toLowerCase().includes('in'))
     const { destination, userInfo = {} } = props
     const classes = useStyles()
     const [state, methods] = useAuth(destination, userInfo)
     return (
-        <div className={cx(className, classes.SignInSignUp)} style={style}>
+        <div className={cx(className, classes.SignInSignUp)} style={style} ref={ref}>
             <div className={classes.tabs}>
                 <div className={cx(classes.tab, !isLogIn && classes.tabSelected)}>
                     <div className={cx(classes.leftTabCorner, !isLogIn && classes.disabled)}>
@@ -99,7 +99,9 @@ export default function SignInSignUp(props) {
             </div>
         </div>
     )
-}
+})
+
+export default SignInSignUp
 
 const useStyles = createUseStyles(theme => ({
     SignInSignUp: {
