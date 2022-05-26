@@ -201,6 +201,15 @@
     },
     {
         "_id": {
+            "$oid": "627ed0160c12de4fe8b36da5"
+        },
+        "path": "/qa/signin-signup",
+        "subject": "Civil Server Template",
+        "description": "Civil Server Template Sign In/Up Page",
+        "webComponent": "SigninSignup"
+    },
+    {
+        "_id": {
             "$oid": "621e7da7705e8e4fc07f8960"
         },
         "path": "/qa-create-moderator-recorder",

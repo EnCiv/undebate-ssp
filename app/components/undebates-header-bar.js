@@ -7,7 +7,6 @@ import SearchButton from './search-button'
 import InstructionsButton from './instruction-button'
 import LinkButton from './link-button'
 import SignInButton from './sign-in-button'
-import SignUpButton from './sign-up-button'
 import SubmitButton from './submit'
 
 import UserImage from './user-image'
@@ -47,7 +46,7 @@ function UndebatesHeaderBar(props) {
         userBtns = (
             <>
                 <SignInButton />
-                <SignUpButton />
+                <SignInButton name={'Sign Up'} />
             </>
         )
     }
