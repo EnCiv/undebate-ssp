@@ -1,16 +1,16 @@
-// https://github.com/EnCiv/undebate-ssp/issues/54
+// https://github.com/EnCiv/undebate-ssp/issues/55
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import FilePlusSvg from '../svgr/file-plus'
-import UploadCSVPopup from './upload-csv-popup'
+import PasteGoogleSheetsPopup from './paste-google-sheets-popup'
+import LinkSvg from '../svgr/link'
 
-function UploadCSV(props) {
+function PasteGoogleSheetsLink(props) {
     const classes = useStyles()
     const { className, style, electionOM } = props
     const [selected, setSelected] = useState(false)
 
-    const handleUploadClick = () => {
+    const handleButtonClick = () => {
         setSelected(!selected)
     }
 
@@ -21,20 +21,19 @@ function UploadCSV(props) {
     return (
         <div className={cx(className, classes.wrapper)} style={style}>
             <button
-                id='upload-csv-button'
-                data-testid='upload-csv-button'
+                id='paste-sheets-button'
+                data-testid='paste-sheets-button'
                 type='button'
                 className={cx(
                     classes.btn,
-                    classes.uploadButton,
+                    classes.pasteSheetsButton,
                     selected ? classes.btnSelected : classes.btnDeselected
                 )}
-                onClick={handleUploadClick}
+                onClick={handleButtonClick}
             >
-                Upload CSV File &nbsp;
-                <FilePlusSvg className={classes.filePlusIcon} />
+                Paste Google Sheets Link &nbsp; &nbsp; <LinkSvg className={classes.linkIcon} />
             </button>
-            <UploadCSVPopup
+            <PasteGoogleSheetsPopup
                 electionOM={electionOM}
                 closePopup={closePopup}
                 visible={selected}
@@ -44,7 +43,7 @@ function UploadCSV(props) {
     )
 }
 
-export default UploadCSV
+export default PasteGoogleSheetsLink
 
 const useStyles = createUseStyles(theme => ({
     wrapper: {
@@ -53,7 +52,7 @@ const useStyles = createUseStyles(theme => ({
         alignItems: 'flex-start',
         position: 'relative',
     },
-    filePlusIcon: {
+    linkIcon: {
         height: theme.iconSize,
         width: theme.iconSize,
     },
@@ -65,8 +64,8 @@ const useStyles = createUseStyles(theme => ({
             cursor: 'pointer',
         },
     },
-    uploadButton: {
-        width: '13.5625rem',
+    pasteSheetsButton: {
+        width: '18.25rem',
         height: '3.375rem',
         border: `2px solid ${theme.button.borderColor}`,
     },
@@ -83,7 +82,7 @@ const useStyles = createUseStyles(theme => ({
     },
     popup: {
         position: 'fixed',
-        top: `calc((100vh - ${theme.csvPopupHeight}) / 2)`,
+        top: `calc((100vh - ${theme.pastePopupHeight}) / 2)`,
         left: `calc((100vw - ${theme.uploadPopupWidth}) / 2)`,
     },
 }))

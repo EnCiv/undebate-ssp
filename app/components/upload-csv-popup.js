@@ -1,19 +1,18 @@
 // https://github.com/EnCiv/undebate-ssp/issues/54
 import React, { useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
-import ObjectID from 'isomorphic-mongo-objectid'
 import cx from 'classnames'
 import { FileDrop } from 'react-file-drop'
 import _ from 'lodash'
 import FileSvg from '../svgr/file'
 import ExternalLinkSvg from '../svgr/external-link'
+import { handleTableData, validateHeaders, mapRowsToObjects } from '../lib/get-table-upload-methods'
 
-function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, className, style = {} }) {
+function UploadCSVPopup({ electionOM, closePopup, visible, className, style = {} }) {
     const GENERAL_ERROR = 'Unable to extract data from file. Please compare this file with the sample file.'
     const UNABLE_TO_READ_FILE_ERROR = 'Unable to read file. Please confirm this is a csv file.'
     const TOO_MANY_FILES_ERROR = 'Too many files, please only upload one file at a time.'
     const MISSING_HEADERS_ERROR = "File is missing required headers. Please include 'name', 'email', and 'office'."
-    const REQUIRED_COLUMNS = ['name', 'email', 'office']
 
     const classes = useStyles()
     const fileInputEl = useRef(null)
@@ -21,79 +20,16 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
     const [fileError, setFileError] = useState(null)
 
     const extractCsvData = fileContents => {
-        const rows = fileContents.split('\n')
-        const headers = rows
-            .shift()
-            .split(',')
-            .map(val => _.camelCase(val))
-
-        const data = []
+        const rows = fileContents.split('\n').map(row => row.split(','))
+        const headers = rows.shift().map(val => _.camelCase(val))
+        let data
         if (validateHeaders(headers)) {
-            rows.forEach(row => {
-                data.push(
-                    row.split(',').reduce((rowObj, item, idx) => {
-                        rowObj[headers[idx]] = item
-                        return rowObj
-                    }, {})
-                )
-            })
+            data = mapRowsToObjects(headers, rows)
         } else {
             setFileError(MISSING_HEADERS_ERROR)
             return null
         }
         return data
-    }
-
-    const validateHeaders = headers => {
-        return REQUIRED_COLUMNS.every(reqCol => headers.includes(reqCol))
-    }
-
-    const isEmptyTable = () => {
-        return !(electionObj && electionObj.candidates !== undefined && Object.keys(electionObj.candidates).length > 0)
-    }
-
-    const handleEmptyElectionTable = csvData => {
-        csvData.forEach(rowObj => {
-            if (!Object.keys(rowObj).includes('uniqueId')) {
-                rowObj.uniqueId = ObjectID().toString()
-            }
-
-            electionMethods.upsert({ candidates: { [rowObj.uniqueId]: rowObj } })
-        })
-    }
-
-    const handleExistingTable = csvData => {
-        // at this point assume electionObj and candidates exist
-        csvData.forEach(rowObj => {
-            if (!Object.keys(rowObj).includes('uniqueId')) {
-                let matchingCandidateId = null
-                Object.values(electionObj.candidates).every(cand => {
-                    if (cand.email === rowObj.email) {
-                        matchingCandidateId = cand.uniqueId
-                        return false
-                    }
-                    return true
-                })
-                if (!matchingCandidateId) {
-                    // have to do this as a separate loop so that we don't incorrectly merge two candidates with the same name
-                    Object.values(electionObj.candidates).every(cand => {
-                        if (cand.name === rowObj.name && cand.office === rowObj.office) {
-                            // note that this could produce unexpected behavior if two people with the same name are running for office and one of them changes their email
-                            matchingCandidateId = cand.uniqueId
-                            return false
-                        }
-                        return true
-                    })
-                }
-                if (matchingCandidateId) {
-                    rowObj.uniqueId = matchingCandidateId
-                } else {
-                    rowObj.uniqueId = ObjectID().toString()
-                }
-            }
-
-            electionMethods.upsert({ candidates: { [rowObj.uniqueId]: rowObj } })
-        })
     }
 
     const handleTextFile = fileContents => {
@@ -102,11 +38,7 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
         } else {
             const csvData = extractCsvData(fileContents)
             if (csvData) {
-                if (isEmptyTable()) {
-                    handleEmptyElectionTable(csvData)
-                } else {
-                    handleExistingTable(csvData)
-                }
+                handleTableData(csvData, electionOM)
                 handleSuccessfulExtraction()
             }
         }
@@ -173,7 +105,11 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
 
     const renderErrors = () => {
         return (
-            <div className={classes.errorsRow} style={{ visibility: fileError ? 'visible' : 'hidden' }}>
+            <div
+                data-testid='upload-csv-error'
+                className={classes.errorsRow}
+                style={{ visibility: fileError ? 'visible' : 'hidden' }}
+            >
                 {fileError}
             </div>
         )
@@ -240,6 +176,7 @@ function UploadCSVPopup({ electionObj, electionMethods, closePopup, visible, cla
                     </button>
                     <button
                         id='extract-csv-button'
+                        data-testid='extract-csv-button'
                         type='button'
                         disabled={!selectedFile}
                         className={cx(
@@ -277,7 +214,7 @@ const useStyles = createUseStyles(theme => ({
     popup: {
         backgroundColor: theme.colorSecondary,
         color: 'white',
-        width: theme.csvPopupWidth,
+        width: theme.uploadPopupWidth,
         height: theme.csvPopupHeight,
         display: 'flex',
         flexDirection: 'column',

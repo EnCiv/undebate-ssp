@@ -6,6 +6,7 @@ import cx from 'classnames'
 import Submit from './submit'
 import CandidateTableInput from './candidate-table-input'
 import UploadCSV from './upload-csv'
+import PasteGoogleSheetsLink from './paste-google-sheets-link'
 
 export default function CandidateTable(props) {
     const classes = useStyles()
@@ -62,6 +63,7 @@ export default function CandidateTable(props) {
                     <p>Choose one of these formats to porivide the Candidate Table:</p>
                     <div className={classes.actionButtons}>
                         <UploadCSV electionOM={electionOM} />
+                        <PasteGoogleSheetsLink electionOM={electionOM} />
                         <Submit
                             name='Edit Manually'
                             className={cx(classes.opButton, editable && classes.editable)}
