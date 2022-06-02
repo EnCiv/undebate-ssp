@@ -4,8 +4,6 @@ const path = require('path')
 const fs = require('fs') // require so it runs as is without having to bable it
 const repoName = require('git-repo-name')
 
-if (typeof global.logger === 'undefined') global.logger = console
-
 var SibSMTPApi
 export default SibSMTPApi
 
@@ -109,6 +107,7 @@ export function SibDeleteSmtpTemplate(id) {
 
 if (
     ['SENDINBLUE_API_KEY', 'SENDINBLUE_DEFAULT_FROM_EMAIL'].reduce((allExist, name) => {
+        debugger
         if (!process.env[name]) {
             logger.error('env ', name, 'not set. sendModeratorInvite disabled.')
             return false

@@ -1,19 +1,34 @@
 // https://github.com/EnCiv/undebate-ssp/wiki/Send-In-Blue-Transactional
 import { expect, test, beforeAll, afterAll, jest, describe } from '@jest/globals'
-import SibSMTPApi, { SibGetTemplateId, SibDeleteSmtpTemplate, SibSendTransacEmail } from '../send-in-blue-transactional'
 
-// dummy out logger for tests
-// global.logger = { error: jest.fn(e => e) }
+global.logger = console
+global.logger = { error: jest.fn((...args) => args) }
+
+// has to be require, not import, so it doesn't get hoisted and run before global.logger is set above
+const { SibGetTemplateId, SibDeleteSmtpTemplate, SibSendTransacEmail } = require('../send-in-blue-transactional')
 
 const maybe = process.env.SENDINBLUE_API_KEY && process.env.SENDINBLUE_DEFAULT_FROM_EMAIL ? describe : describe.skip
 const maybeNot = !(process.env.SENDINBLUE_API_KEY && process.env.SENDINBLUE_DEFAULT_FROM_EMAIL)
     ? describe
     : describe.skip
 
+maybeNot('Is Sendinblue environment setup for testing?', () => {
+    test('No, go to https://github.com/EnCiv/undebate-ssp/wiki/Send-In-Blue-Transactional for info on setup', () => {
+        expect(global.logger.error.mock.results[0].value).toMatchInlineSnapshot(`
+            Array [
+              "env ",
+              "SENDINBLUE_API_KEY",
+              "not set. sendModeratorInvite disabled.",
+            ]
+        `)
+    })
+})
 maybe('Test the Sendinblue Transactional APIs', () => {
     test('Template does not exist', async () => {
         const id = await SibGetTemplateId('invalid-template-name')
         expect(id).toBeFalsy()
+        expect(global.logger.error.mock.results[0].value[0]).toMatch('SibGetTemplateId caught error')
+        expect(global.logger.error.mock.results[0].value[1]).toMatch(/^ENOENT: no such file or directory.+/)
     })
     let id
     test('Template exists or can be created', async () => {
@@ -28,7 +43,7 @@ maybe('Test the Sendinblue Transactional APIs', () => {
         newId = await SibGetTemplateId('jest-test')
         expect(newId).toBeGreaterThan(id)
     })
-    test('can send a test email', async () => {
+    test('Can send a test email, check your inbox', async () => {
         const result = await SibSendTransacEmail({
             to: [{ email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL, name: 'TEST EMAIL' }],
             templateId: newId,
@@ -39,10 +54,5 @@ maybe('Test the Sendinblue Transactional APIs', () => {
             },
         })
         expect(result.messageId).toBeTruthy()
-    })
-})
-maybeNot('Skippin Sendinblue transactional testing', () => {
-    test('Go to https://github.com/EnCiv/undebate-ssp/wiki/Send-In-Blue-Transactional for info on setup', () => {
-        expect(true).toBe(true)
     })
 })
