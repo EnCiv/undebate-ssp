@@ -1,5 +1,7 @@
 // https://github.com/EnCiv/undebate-ssp/issues/105
 
+import { isArray } from 'lodash'
+
 const checkDateCompleted = obj => {
     for (const key in obj) {
         if (obj[key].date !== '') {
@@ -20,6 +22,29 @@ const checkObjCompleted = obj => {
     return !!count // if no keys then false
 }
 
+const getLatestObjByDate = oList => {
+    if (!oList) return undefined
+    const latest = Object.values(oList).reduce(
+        (latest, obj) => (latest.date.localeCompare(obj?.date || '') < 0 ? obj : latest),
+        { date: '' }
+    )
+    if (!latest.date) return undefined
+    return latest
+}
+
+function idCompare(a, b) {
+    if (typeof a === 'object') a = a.toString()
+    if (typeof b === 'object') b = b.toString()
+    return a.localeCompare(b)
+}
+
+const getLatestIota = iotas => {
+    if (!iotas) return undefined
+    if (!isArray(iotas)) return undefined
+    const latest = iotas.reduce((latest, obj) => (idCompare(latest._id, obj._id) < 0 ? obj : latest), { _id: '' })
+    if (!latest._id) return undefined
+    return latest
+}
 function getElectionStatusMethods(dispatch, state) {
     const recentInvitationStatus = () => {
         if (!state?.moderator?.invitations || !state?.moderator?.invitations[0]) return {}
@@ -180,7 +205,24 @@ function getElectionStatusMethods(dispatch, state) {
         return 'isLive'
     }
 
+    const isModeratorReadyForCreateRecorder = () => {
+        if (!state?.moderator?.name) return false
+        if (!state?.moderator?.email) return false
+        if (getQuestionsStatus() !== 'completed') return false
+        if (getScriptStatus() !== 'completed') return false
+        return true
+    }
+
+    const isModeratorReadyToInvite = () => {
+        if (!isModeratorReadyForCreateRecorder()) return false
+        if (!getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)) return false
+        if (!getLatestIota(state?.moderator?.recorders)) return false
+        return true
+    }
+
     return {
+        getLatestObj: getLatestObjByDate,
+        getLatestIota,
         checkDateCompleted,
         checkTimelineCompleted,
         getTimelineStatus,
@@ -203,6 +245,8 @@ function getElectionStatusMethods(dispatch, state) {
         getSubmissionsStatus,
         checkReminderSent,
         areQuestionsLocked,
+        isModeratorReadyForCreateRecorder,
+        isModeratorReadyToInvite,
     }
 }
 
