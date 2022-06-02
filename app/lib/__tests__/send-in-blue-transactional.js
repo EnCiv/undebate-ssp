@@ -1,13 +1,16 @@
-// https://github.com/EnCiv/undebate-ssp/issues/72
+// https://github.com/EnCiv/undebate-ssp/wiki/Send-In-Blue-Transactional
 import { expect, test, beforeAll, afterAll, jest, describe } from '@jest/globals'
 import SibSMTPApi, { SibGetTemplateId, SibDeleteSmtpTemplate, SibSendTransacEmail } from '../send-in-blue-transactional'
 
 // dummy out logger for tests
-//global.logger = { error: jest.fn(e => e) }
+// global.logger = { error: jest.fn(e => e) }
 
 const maybe = process.env.SENDINBLUE_API_KEY && process.env.SENDINBLUE_DEFAULT_FROM_EMAIL ? describe : describe.skip
+const maybeNot = !(process.env.SENDINBLUE_API_KEY && process.env.SENDINBLUE_DEFAULT_FROM_EMAIL)
+    ? describe
+    : describe.skip
 
-maybe('Test the Send In Blue Transactional APIs', () => {
+maybe('Test the Sendinblue Transactional APIs', () => {
     test('Template does not exist', async () => {
         const id = await SibGetTemplateId('invalid-template-name')
         expect(id).toBeFalsy()
@@ -36,5 +39,10 @@ maybe('Test the Send In Blue Transactional APIs', () => {
             },
         })
         expect(result.messageId).toBeTruthy()
+    })
+})
+maybeNot('Skippin Sendinblue transactional testing', () => {
+    test('Go to https://github.com/EnCiv/undebate-ssp/wiki/Send-In-Blue-Transactional for info on setup', () => {
+        expect(true).toBe(true)
     })
 })

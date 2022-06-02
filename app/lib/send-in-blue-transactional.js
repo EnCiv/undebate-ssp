@@ -1,3 +1,4 @@
+// https://github.com/EnCiv/undebate-ssp/wiki/Send-In-Blue-Transactional
 const SibApiV3Sdk = require('sib-api-v3-sdk')
 const path = require('path')
 const fs = require('fs') // require so it runs as is without having to bable it
