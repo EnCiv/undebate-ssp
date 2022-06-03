@@ -3,56 +3,80 @@
 
 import { Iota } from 'civil-server'
 
+// get all the ElectionDoc component belonging to the user, and all of the children of those docs
+// up to depth 2. but depth can be extended by extending the aggregation operators
+const aggLookupChildren = [
+    { $project: { depth0: ['$$CURRENT'] } },
+    {
+        $graphLookup: {
+            from: 'iotas',
+            startWith: { $toString: '$_id' },
+            connectFromField: 'notused1',
+            connectToField: 'parentId',
+            as: 'depth1',
+            maxDepth: 0,
+        },
+    },
+    {
+        $graphLookup: {
+            from: 'iotas',
+            startWith: {
+                $map: {
+                    input: '$depth1',
+                    in: { $toString: '$$this._id' },
+                },
+            },
+            connectFromField: 'notused2',
+            connectToField: 'parentId',
+            as: 'depth2',
+            maxDepth: 0,
+        },
+    },
+    {
+        $project: {
+            _id: false,
+            children: { $concatArrays: ['$depth0', '$depth1', '$depth2'] },
+        },
+    },
+    { $unwind: '$children' },
+    { $replaceRoot: { newRoot: '$children' } },
+    { $sort: { _id: 1 } },
+]
+
 export default async function getElectionDocs(cb) {
     if (!this.synuser) {
         if (cb) cb() // no user
         return
     }
     try {
-        // get all the ElectionDoc component belonging to the user, and all of the children of those docs
-        // up to depth 2. but depth can be extended by extending the aggregation operators
-        const iotas = await Iota.aggregate([
-            { $match: { userId: this.synuser.id, 'webComponent.webComponent': 'ElectionDoc' } },
-            { $project: { depth0: ['$$CURRENT'] } },
-            {
-                $graphLookup: {
-                    from: 'iotas',
-                    startWith: { $toString: '$_id' },
-                    connectFromField: 'notused1',
-                    connectToField: 'parentId',
-                    as: 'depth1',
-                    maxDepth: 0,
-                },
-            },
-            {
-                $graphLookup: {
-                    from: 'iotas',
-                    startWith: {
-                        $map: {
-                            input: '$depth1',
-                            in: { $toString: '$$this._id' },
-                        },
-                    },
-                    connectFromField: 'notused2',
-                    connectToField: 'parentId',
-                    as: 'depth2',
-                    maxDepth: 0,
-                },
-            },
-            {
-                $project: {
-                    _id: false,
-                    children: { $concatArrays: ['$depth0', '$depth1', '$depth2'] },
-                },
-            },
-            { $unwind: '$children' },
-            { $replaceRoot: { newRoot: '$children' } },
-            { $sort: { _id: 1 } },
-        ])
+        const iotas = await Iota.aggregate(
+            [{ $match: { userId: this.synuser.id, 'webComponent.webComponent': 'ElectionDoc' } }].concat(
+                aggLookupChildren
+            )
+        )
         if (!iotas) return cb && cb()
         if (!iotas.length) return cb && cb(iotas)
         const merged = mergeElectionChildren(iotas)
         if (cb) cb(merged)
+    } catch (err) {
+        logger.error('getElectionDocs caught error:', err)
+        if (cb) cb()
+    }
+}
+
+export async function getElectionDocById(id, cb) {
+    if (!this.synuser) {
+        if (cb) cb() // no user
+        return
+    }
+    const _id = typeof id !== 'object' ? Iota.ObjectID(id) : id
+    try {
+        const iotas = await Iota.aggregate([{ $match: { _id } }].concat(aggLookupChildren))
+        if (!iotas) return cb && cb()
+        if (!iotas.length) return cb && cb(iotas)
+        const merged = mergeElectionChildren(iotas)
+        const doc = merged.find(doc => doc._id.toString() === _id.toString())
+        if (cb) cb(doc)
     } catch (err) {
         logger.error('getElectionDocs caught error:', err)
         if (cb) cb()

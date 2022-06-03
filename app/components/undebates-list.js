@@ -51,7 +51,6 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     const classes = useStyles()
 
     const onRowClicked = (row, e) => {
-        debugger
         onDone({ value: row.original._id, valid: true })
     }
 

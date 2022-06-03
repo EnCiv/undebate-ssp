@@ -34,7 +34,6 @@ beforeAll(async () => {
     apisThis.synuser.id = MongoModels.ObjectID(user._id).toString()
 
     testDoc.userId = apisThis.synuser.id
-    debugger
     testDoc._id = ObjectID(testDoc._id.$oid || testDoc._id)
     await Iota.create(testDoc)
 })
@@ -265,7 +264,6 @@ test('it fails if no id', done => {
     async function callback(result) {
         try {
             expect(result).not.toBeTruthy()
-            debugger
             expect(global.logger.error.mock.results[1].value).toMatchInlineSnapshot(
                 `"createModeratorRecorder called, but bad id:"`
             )

@@ -11,7 +11,6 @@ export default {
 const Template = (args, context) => {
     const { onDone, electionOM } = context
     const { defaultValue, ...otherArgs } = args
-    debugger
     const [electionObj, electionMethods] = electionOM
     useEffect(() => defaultValue && electionMethods.upsert({ candidates: defaultValue }), [defaultValue])
     const candidateTable = Object.values(electionObj.candidates || {})

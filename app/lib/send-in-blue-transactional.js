@@ -89,7 +89,7 @@ export function SibSendTransacEmail(props) {
             data => {
                 ok(data)
             },
-            err => {
+            error => {
                 logger.error('sendTransacEmail got error', error?.message ? error.message : error, 'props:', props)
                 ok()
             }
@@ -107,7 +107,6 @@ export function SibDeleteSmtpTemplate(id) {
 
 if (
     ['SENDINBLUE_API_KEY', 'SENDINBLUE_DEFAULT_FROM_EMAIL'].reduce((allExist, name) => {
-        debugger
         if (!process.env[name]) {
             logger.error('env ', name, 'not set. sendModeratorInvite disabled.')
             return false
