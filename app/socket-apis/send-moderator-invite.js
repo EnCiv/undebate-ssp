@@ -2,6 +2,8 @@
 import { SibGetTemplateId, SibSendTransacEmail } from '../lib/send-in-blue-transactional'
 import getElectionStatusMethods from '../lib/get-election-status-methods'
 import { getElectionDocById } from './get-election-docs'
+import { Iota } from 'civil-server'
+import { updateElectionInfo } from './subscribe-election-info'
 
 var templateId
 
@@ -42,13 +44,32 @@ export default async function sendModeratorInvite(id, cb) {
                 submissionDeadline: new Date(submissionDeadline).toLocaleString(),
             },
         }
-        const result = await SibSendTransacEmail({
+        const messageProps = {
             params,
             to: [{ email: params.moderator.email, name: params.moderator.name }],
             templateId,
             tags: [`id:${id}`, 'role:moderator'],
-        })
+        }
+        const result = await SibSendTransacEmail(messageProps)
         if (!result || !result.messageId) logger.error('sendModeratorInvite failed', id)
+        else {
+            try {
+                const doc = await Iota.create({
+                    parentId: id,
+                    subject: 'Moderator Invite Sent',
+                    description: `Moderator Invite Send for election ${electionObj?.electionName || id}`,
+                    component: {
+                        component: 'ModeratorEmailSent',
+                        messageId: result.messageId,
+                        ...messageProps,
+                        sentDate: new Date().toISOString(),
+                    },
+                })
+                updateElectionInfo(id, id, [doc])
+            } catch (error) {
+                logger.error("send-moderator-invite couldn't create Iota for ModeratorEmailSent", error)
+            }
+        }
         cb(result.messageId)
     })
 }

@@ -69,6 +69,7 @@ export async function getElectionDocById(id, cb) {
         if (cb) cb() // no user
         return
     }
+    debugger
     const _id = typeof id !== 'object' ? Iota.ObjectID(id) : id
     try {
         const iotas = await Iota.aggregate([{ $match: { _id } }].concat(aggLookupChildren))
@@ -93,7 +94,7 @@ function mergeElectionChildren(iotas) {
             const iota = iotas[i]
             if (iota?.webComponent?.webComponent === 'ElectionDoc') {
                 usedIndexes[i] = true
-                intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(iota, iota, iotas, usedIndexes)
+                intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(iota, getId(iota._id), iotas, usedIndexes)
                 results.push(iota)
             }
         }
@@ -124,12 +125,11 @@ function getId(id) {
     return id
 }
 
-function intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(root, parent, iotas, usedIndexes) {
-    let _id = getId(parent._id)
+export function intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(root, parentId, iotas, usedIndexes) {
     for (const i in iotas) {
         if (usedIndexes[i]) continue
         const child = iotas[i]
-        if (_id !== child.parentId) continue
+        if (parentId !== child.parentId) continue
         let result
         for (const op of Object.values(mergeOps)) {
             if ((result = op(root, child, iotas, usedIndexes))) {
@@ -186,7 +186,7 @@ const mergeOps = {
         if (!(child?.webComponent?.webComponent === 'CandidateConversation' && child?.bp_info?.office === 'Moderator'))
             return false
         intoArrayAtObjPathPushDoc(root, 'webComponent.moderator.viewers', child)
-        return () => intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(root, child, iotas, usedIndexes)
+        return () => intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(root, getId(child._id), iotas, usedIndexes)
     },
     moderatorSubmissions(root, child, iotas, usedIndexes) {
         if (
@@ -197,6 +197,11 @@ const mergeOps = {
         )
             return false
         intoArrayAtObjPathPushDoc(root, 'webComponent.moderator.submissions', child)
+        return true
+    },
+    moderatorInvitations(root, child, iotas, usedIndexes) {
+        if (!(child?.cmponent?.component === 'ModeratorEmailSent')) return false
+        intoArrayAtObjPathPushDoc(root, 'webComponent.moderator.invitations', { _id: child._id, ...child.component })
         return true
     },
 }
