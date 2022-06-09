@@ -200,7 +200,7 @@ const mergeOps = {
         return true
     },
     moderatorInvitations(root, child, iotas, usedIndexes) {
-        if (!(child?.cmponent?.component === 'ModeratorEmailSent')) return false
+        if (!(child?.component?.component === 'ModeratorEmailSent')) return false
         intoArrayAtObjPathPushDoc(root, 'webComponent.moderator.invitations', { _id: child._id, ...child.component })
         return true
     },

@@ -1,13 +1,11 @@
 // https://github.com/EnCiv/undebate-ssp/issues/71
 import { expect, test, beforeAll, afterAll, describe } from '@jest/globals'
-const { getPort } = require('get-port-please')
+
 import MongoModels from 'mongo-models'
 import { Iota, User, serverEvents } from 'civil-server'
-import socketIo from 'socket.io'
-import clientIo from 'socket.io-client'
 import subscribeElectionInfo from '../subscribe-election-info'
+import jestSocketApiSetup from '../../lib/jest-socket-api-setup'
 
-if (typeof window === 'undefined') global.window = {} // socketApiSubscribe expects to run on the browser
 import socketApiSubscribe from '../../components/lib/socket-api-subscribe'
 
 // dummy out logger for tests
@@ -87,27 +85,7 @@ beforeAll(async () => {
     await Iota.create(viewerDoc)
 
     // setup socket.io server
-    const SocketIoPort = await getPort() // not static port# because there may be multiple tests in parallel
-    const server = socketIo()
-    let connections = 0
-    server.on('connection', socket => {
-        connections++
-        // synuser info is used by APIs
-        socket.synuser = { id: User.ObjectID(user._id).toString() }
-        socket.on(handle, socketApiUnderTest.bind(socket)) // this is what we are testing
-        socket.on('disconnect', reason => {
-            if (--connections <= 0) server.close() // so test will finish
-        })
-    })
-    server.listen(SocketIoPort)
-
-    // start socket.io client connection to server
-    window.socket = clientIo.connect(`http://localhost:${SocketIoPort}`)
-    await new Promise((ok, ko) => {
-        window.socket.on('connect', () => {
-            ok()
-        })
-    })
+    await jestSocketApiSetup(User.ObjectID(user._id).toString(), handle, socketApiUnderTest)
 })
 
 afterAll(async () => {
@@ -212,7 +190,7 @@ describe('subscribeElectionInfo first returns request, then updates', () => {
 
 test('socket should disconnect', () => {
     let disconnectReason
-    window.socket.on('disconnect', reason => (disconnectReason = reason))
-    window.socket.close()
+    global.window.socket.on('disconnect', reason => (disconnectReason = reason))
+    global.window.socket.close()
     expect(disconnectReason).toMatch('io client disconnect')
 })

@@ -1,9 +1,14 @@
 // https://github.com/EnCiv/undebate-ssp/issues/71
 import { expect, test, beforeAll, afterAll } from '@jest/globals'
-import MongoModels from 'mongo-models'
+import MongoModels, { ObjectID } from 'mongo-models'
 import { Iota, User } from 'civil-server'
+import subscribeElectionInfo from '../subscribe-election-info'
+import jestSocketApiSetup from '../../lib/jest-socket-api-setup'
+const handle = 'subscribe-election-info'
+const socketApiUnderTest = subscribeElectionInfo
+import socketApiSubscribe from '../../components/lib/socket-api-subscribe'
 
-global.logger = console
+if (!global.logger) global.logger = console
 global.logger = { error: jest.fn((...args) => args) }
 
 // has to be require so it happens after global.logger gets set above. imports would hoist
@@ -115,6 +120,9 @@ const exampleUser = {
 // apis are called with 'this' that has synuser defined
 const apisThis = { synuser: {} }
 
+const ISODate = expect.stringMatching(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/)
+const OBJECTID = expect.stringMatching(/^[0-9a-fA-F]{24}$/)
+
 const maybe = process.env.SENDINBLUE_API_KEY && process.env.SENDINBLUE_DEFAULT_FROM_EMAIL ? describe : describe.skip
 const maybeNot = !(process.env.SENDINBLUE_API_KEY && process.env.SENDINBLUE_DEFAULT_FROM_EMAIL)
     ? describe
@@ -132,6 +140,8 @@ maybeNot('Is Sendinblue environment setup for testing?', () => {
     })
 })
 maybe('Test the send moderator invite API', () => {
+    let requestedDoc
+    let updatedDoc
     beforeAll(async () => {
         await MongoModels.connect({ uri: global.__MONGO_URI__ }, { useUnifiedTopology: true })
         // run the init functions that models require - after the connection is setup
@@ -146,9 +156,21 @@ maybe('Test the send moderator invite API', () => {
             if (!doc.userId) doc.userId = apisThis.synuser.id
             await Iota.create(doc)
         }
+        await jestSocketApiSetup(apisThis.synuser.id, handle, socketApiUnderTest)
+        function requestHandler(doc) {
+            requestedDoc = doc
+        }
+        function updateHandler(doc) {
+            // if the test below for updatedDoc has already been executed, then it will have set updatedDoc to a function
+            // if the test has not started, then just give it the value
+            if (!updatedDoc) updatedDoc = doc
+            else updatedDoc(doc)
+        }
+        socketApiSubscribe(handle, '629950b73100ea171064d4b7', requestHandler, updateHandler)
     })
 
     afterAll(async () => {
+        window.socket.close()
         MongoModels.disconnect()
     })
 
@@ -173,5 +195,203 @@ maybe('Test the send moderator invite API', () => {
             }
         }
         sendModeratorInvite.call(apisThis, '629950b73100ea171064d4b7', callback)
+    })
+    test('subscribeElectionInfo update should receive update', done => {
+        // this asynchronous update from the socket api may have already happend, or we may need to wait for it.
+        function updated(doc) {
+            expect(doc).toMatchInlineSnapshot(
+                {
+                    webComponent: {
+                        electionDate: ISODate,
+                        undebateDate: ISODate,
+                        moderator: {
+                            invitations: [
+                                {
+                                    _id: OBJECTID,
+                                    messageId: expect.any(String),
+                                    sentDate: ISODate,
+                                    params: {
+                                        moderator: {
+                                            submissionDeadline: expect.any(String),
+                                        },
+                                    },
+
+                                    templateId: expect.any(Number),
+                                },
+                            ],
+                        },
+
+                        timeline: {
+                            candidateDeadlineReminderEmails: {
+                                0: {
+                                    date: ISODate,
+                                },
+                            },
+
+                            candidateSubmissionDeadline: {
+                                0: {
+                                    date: ISODate,
+                                },
+                            },
+
+                            moderatorDeadlineReminderEmails: {
+                                0: {
+                                    date: ISODate,
+                                },
+                            },
+
+                            moderatorSubmissionDeadline: {
+                                0: {
+                                    date: ISODate,
+                                },
+                            },
+                        },
+                    },
+                },
+                `
+                Object {
+                  "_id": "629950b73100ea171064d4b7",
+                  "description": "Election document #4",
+                  "subject": "Election document",
+                  "userId": "62995151f50a0d478415d6f1",
+                  "webComponent": Object {
+                    "electionDate": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
+                    "electionName": "The Election",
+                    "email": "admin@email.com",
+                    "moderator": Object {
+                      "email": "ddfridley@yahoo.com",
+                      "invitations": Array [
+                        Object {
+                          "_id": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
+                          "component": "ModeratorEmailSent",
+                          "messageId": Any<String>,
+                          "params": Object {
+                            "email": "admin@email.com",
+                            "moderator": Object {
+                              "email": "ddfridley@yahoo.com",
+                              "name": "bob",
+                              "recorder_url": "localhost:3011/moderator-recorder",
+                              "submissionDeadline": Any<String>,
+                            },
+                            "name": "admin name",
+                            "organizationLogo": "https://www.bringfido.com/assets/images/bfi-logo-new.jpg",
+                            "organizationName": "The Organization",
+                          },
+                          "sentDate": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
+                          "tags": Array [
+                            "id:629950b73100ea171064d4b7",
+                            "role:moderator",
+                          ],
+                          "templateId": Any<Number>,
+                          "to": Array [
+                            Object {
+                              "email": "ddfridley@yahoo.com",
+                              "name": "bob",
+                            },
+                          ],
+                        },
+                      ],
+                      "name": "bob",
+                      "recorders": Array [
+                        Object {
+                          "_id": "629952046bf16a07dc69e2d5",
+                          "bp_info": Object {
+                            "office": "Moderator",
+                          },
+                          "component": Object {
+                            "component": "undebateCreator",
+                          },
+                          "description": "Moderator Recorder for #4",
+                          "parentId": "629950b73100ea171064d4b7",
+                          "path": "/moderator-recorder",
+                          "subject": "Moderator Recorder for #4",
+                          "userId": "62995151f50a0d478415d6f1",
+                        },
+                      ],
+                      "viewers": Array [
+                        Object {
+                          "_id": "62995210214f715b3c3084c8",
+                          "bp_info": Object {
+                            "office": "Moderator",
+                          },
+                          "description": "Moderator Viewer for #4",
+                          "parentId": "629950b73100ea171064d4b7",
+                          "path": "/moderator-viewer",
+                          "subject": "Moderator Viewer for #4",
+                          "userId": "62995151f50a0d478415d6f1",
+                          "webComponent": Object {
+                            "webComponent": "CandidateConversation",
+                          },
+                        },
+                      ],
+                    },
+                    "name": "admin name",
+                    "organizationLogo": "https://www.bringfido.com/assets/images/bfi-logo-new.jpg",
+                    "organizationName": "The Organization",
+                    "questions": Object {
+                      "0": Object {
+                        "text": "What is your favorite color?",
+                        "time": "30",
+                      },
+                      "1": Object {
+                        "text": "Do you have a pet?",
+                        "time": "60",
+                      },
+                      "2": Object {
+                        "text": "Should we try to fix income inequality?",
+                        "time": "90",
+                      },
+                    },
+                    "script": Object {
+                      "0": Object {
+                        "text": "Welcome everyone. Our first question is: What is your favorite color?",
+                      },
+                      "1": Object {
+                        "text": "Thank you. Our next Question is: Do you have a pet?",
+                      },
+                      "2": Object {
+                        "text": "Great. And our last question is: Should we try to fix income inequality?",
+                      },
+                      "3": Object {
+                        "text": "Thanks everyone for watching this!",
+                      },
+                    },
+                    "timeline": Object {
+                      "candidateDeadlineReminderEmails": Object {
+                        "0": Object {
+                          "date": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
+                        },
+                      },
+                      "candidateSubmissionDeadline": Object {
+                        "0": Object {
+                          "date": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
+                        },
+                      },
+                      "moderatorDeadlineReminderEmails": Object {
+                        "0": Object {
+                          "date": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
+                        },
+                      },
+                      "moderatorSubmissionDeadline": Object {
+                        "0": Object {
+                          "date": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
+                        },
+                      },
+                    },
+                    "undebateDate": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
+                    "webComponent": "ElectionDoc",
+                  },
+                }
+            `
+            )
+            done()
+        }
+        if (updatedDoc) {
+            // I haven't seend it go this way - but it's here if that happens
+            updated(updatedDoc)
+        } else {
+            // i've only see it go this way
+            updatedDoc = updated
+        }
     })
 })
