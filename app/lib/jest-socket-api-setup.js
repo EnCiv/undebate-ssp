@@ -1,11 +1,13 @@
 import { jest } from '@jest/globals'
-const { getPort } = require('get-port-please')
-import socketIo from 'socket.io'
+import { createServer } from 'http'
+import { Server, Socket } from 'socket.io'
 import clientIo from 'socket.io-client'
 
 // creates global.window if it doesn't exits
 // mocks window.socket with a real socket but can be run by multiple jest tests in parallel
 // creates a new server and client pair for each parallel test but using a distinct io port
+
+var SocketIoPort = 3000
 
 export default async function jestSocketApiSetup(userId, handle, socketApiUnderTest) {
     if (typeof window === 'undefined') global.window = {}
@@ -20,23 +22,36 @@ export default async function jestSocketApiSetup(userId, handle, socketApiUnderT
         })
     }
     // setup socket.io server
-    const SocketIoPort = await getPort() // not static port# because there may be multiple tests in parallel
-    const server = socketIo()
+    const httpServer = createServer()
+    const io = new Server(httpServer)
     let connections = 0
-    server.on('connection', socket => {
+    io.on('connection', socket => {
         connections++
         // synuser info is used by APIs as this.synuser
         socket.synuser = { id: userId }
         socket.on(handle, socketApiUnderTest.bind(socket)) // this is what we are testing
         socket.on('disconnect', reason => {
             if (--connections <= 0) {
-                server.close() // so test will finish
+                io.close() // so test will finish
             }
         })
     })
-    server.listen(SocketIoPort)
+    // we start the server, but the port may be in use
+    const serverPort = new Promise((ok, ko) => {
+        httpServer.on('error', e => {
+            if (e.code === 'EADDRINUSE') {
+                httpServer.close()
+                httpServer.listen(SocketIoPort++)
+            } else throw e
+        })
+        httpServer.listen(SocketIoPort++, () => {
+            const port = httpServer.address().port
+            ok(port)
+        })
+    })
+    const port = await serverPort
     // start socket.io client connection to server
-    const socket = clientIo.connect(`http://localhost:${SocketIoPort}`)
+    const socket = clientIo.connect(`http://localhost:${port}`)
     // spyOn allows us to have a different window.socket for each test running in parallel
     const windowSpy = jest.spyOn(window, 'socket', 'get')
     socket.on('disconnect', windowSpy.mockRestore)
