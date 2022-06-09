@@ -1,13 +1,11 @@
 // https://github.com/EnCiv/undebate-ssp/issues/71
 import { expect, test, beforeAll, afterAll, describe } from '@jest/globals'
-const { getPort } = require('get-port-please')
+
 import MongoModels from 'mongo-models'
 import { Iota, User, serverEvents } from 'civil-server'
-import socketIo from 'socket.io'
-import clientIo from 'socket.io-client'
 import subscribeElectionInfo from '../subscribe-election-info'
+import jestSocketApiSetup from '../../lib/jest-socket-api-setup'
 
-if (typeof window === 'undefined') global.window = {} // socketApiSubscribe expects to run on the browser
 import socketApiSubscribe from '../../components/lib/socket-api-subscribe'
 
 // dummy out logger for tests
@@ -16,12 +14,52 @@ if (!global.logger) {
 }
 
 const testDoc = {
-    _id: Iota.ObjectId(),
+    _id: Iota.ObjectID('629f828ace9f775bb89f05df'),
     subject: 'Election Document #1',
     description: 'Election Document',
-    webComponent: {},
+    webComponent: {
+        webComponent: 'ElectionDoc',
+    },
+    userId: '629f850dfb8ee6220ceade47',
 }
+
+const viewerDoc = {
+    _id: Iota.ObjectID('629f84602d574a52a4ce1cb3'),
+    subject: 'Moderator Viewer for #4',
+    description: 'Moderator Viewer for #4',
+    bp_info: {
+        office: 'Moderator',
+    },
+    webComponent: {
+        webComponent: 'CandidateConversation',
+    },
+    parentId: '629f828ace9f775bb89f05df',
+    userId: '629f850dfb8ee6220ceade47',
+}
+
+const testParticipant = {
+    _id: Iota.ObjectID('621028f37b48de4820cba6ea'),
+    parentId: '629f84602d574a52a4ce1cb3',
+    subject: 'Moderator Recording for #4',
+    description: 'Moderator Recording for #4',
+    component: {
+        component: 'MergeParticipants',
+        participant: {
+            speaking: [
+                'https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm',
+                'https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510659/5d5b73c01e3b194174cd9b92-2-speaking.webm',
+                'https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510665/5d5b73c01e3b194174cd9b92-3-speaking.webm',
+            ],
+            name: 'david',
+            listening:
+                'https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm',
+        },
+    },
+    userId: '629f856022c0b4428c123c5b',
+}
+
 const exampleUser = {
+    _id: User.ObjectID('629f850dfb8ee6220ceade47'),
     firstName: 'Example',
     lastName: 'User',
     email: 'example.user@example.com',
@@ -43,42 +81,16 @@ beforeAll(async () => {
 
     // initialize data in Mongo
     const user = await User.create(exampleUser)
-    testDoc.userId = User.ObjectID(user._id).toString()
     await Iota.create(testDoc)
+    await Iota.create(viewerDoc)
 
     // setup socket.io server
-    const SocketIoPort = await getPort() // not static port# because there may be multiple tests in parallel
-    const server = socketIo()
-    let connections = 0
-    server.on('connection', socket => {
-        connections++
-        // synuser info is used by APIs
-        socket.synuser = { id: User.ObjectID(user._id).toString() }
-        socket.on(handle, socketApiUnderTest.bind(socket)) // this is what we are testing
-        socket.on('disconnect', reason => {
-            if (--connections <= 0) server.close() // so test will finish
-        })
-    })
-    server.listen(SocketIoPort)
-
-    // start socket.io client connection to server
-    window.socket = clientIo.connect(`http://localhost:${SocketIoPort}`)
-    await new Promise((ok, ko) => {
-        window.socket.on('connect', () => {
-            ok()
-        })
-    })
+    await jestSocketApiSetup(User.ObjectID(user._id).toString(), handle, socketApiUnderTest)
 })
 
 afterAll(async () => {
     MongoModels.disconnect()
 })
-
-const testParticipant = {
-    _id: '621028f37b48de4820cba6ea',
-    name: 'Participant1',
-    parentId: Iota.ObjectID(testDoc._id).toString(),
-}
 
 describe('subscribeElectionInfo first returns request, then updates', () => {
     let requestedDoc
@@ -90,21 +102,75 @@ describe('subscribeElectionInfo first returns request, then updates', () => {
             serverEvents.emit(serverEvents.eNames.ParticipantCreated, testParticipant)
         }
         function updateHandler(doc) {
-            expect(doc).toMatchObject({ participants: [testParticipant] })
+            expect(doc).toMatchInlineSnapshot(`
+                Object {
+                  "webComponent": Object {
+                    "moderator": Object {
+                      "submissions": Object {
+                        "621028f37b48de4820cba6ea": Object {
+                          "_id": "621028f37b48de4820cba6ea",
+                          "component": Object {
+                            "component": "MergeParticipants",
+                            "participant": Object {
+                              "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
+                              "name": "david",
+                              "speaking": Array [
+                                "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm",
+                                "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510659/5d5b73c01e3b194174cd9b92-2-speaking.webm",
+                                "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510665/5d5b73c01e3b194174cd9b92-3-speaking.webm",
+                              ],
+                            },
+                          },
+                          "description": "Moderator Recording for #4",
+                          "parentId": "629f84602d574a52a4ce1cb3",
+                          "subject": "Moderator Recording for #4",
+                          "userId": "629f856022c0b4428c123c5b",
+                        },
+                      },
+                    },
+                  },
+                }
+            `)
             done()
         }
         socketApiSubscribe(handle, Iota.ObjectID(testDoc._id).toString(), requestHandler, updateHandler)
     })
 
     test('subscribeElectionInfo request should match the doc', () => {
-        const _testDoc = { ...testDoc, _id: Iota.ObjectId(testDoc._id).toString() } // _id is stringified through socket.io
-        expect(requestedDoc).toMatchObject(_testDoc)
+        expect(requestedDoc).toMatchInlineSnapshot(`
+            Object {
+              "_id": "629f828ace9f775bb89f05df",
+              "description": "Election Document",
+              "subject": "Election Document #1",
+              "userId": "629f850dfb8ee6220ceade47",
+              "webComponent": Object {
+                "moderator": Object {
+                  "viewers": Object {
+                    "629f84602d574a52a4ce1cb3": Object {
+                      "_id": "629f84602d574a52a4ce1cb3",
+                      "bp_info": Object {
+                        "office": "Moderator",
+                      },
+                      "description": "Moderator Viewer for #4",
+                      "parentId": "629f828ace9f775bb89f05df",
+                      "subject": "Moderator Viewer for #4",
+                      "userId": "629f850dfb8ee6220ceade47",
+                      "webComponent": Object {
+                        "webComponent": "CandidateConversation",
+                      },
+                    },
+                  },
+                },
+                "webComponent": "ElectionDoc",
+              },
+            }
+        `)
     })
 })
 
 test('socket should disconnect', () => {
     let disconnectReason
-    window.socket.on('disconnect', reason => (disconnectReason = reason))
-    window.socket.close()
+    global.window.socket.on('disconnect', reason => (disconnectReason = reason))
+    global.window.socket.close()
     expect(disconnectReason).toMatch('io client disconnect')
 })
