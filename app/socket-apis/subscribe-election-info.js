@@ -1,7 +1,12 @@
 // https://github.com/EnCiv/undebate-ssp/issues/74
 import { serverEvents, Iota } from 'civil-server'
+import { merge } from 'lodash'
 import { subscribeEventName } from '../components/lib/socket-api-subscribe'
-import { getElectionDocById, intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs } from './get-election-docs'
+import {
+    getElectionDocById,
+    intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs,
+    intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs,
+} from './get-election-docs'
 
 // there could be multiple subscribers to changes on the same id.  When a change is made to an id, be careful to only update the electionIota once, and then send the update to all the subscribers.
 // currently, updates are the entire iota, in the ideal, only what's changed will be send in the update.
@@ -35,16 +40,14 @@ export default function subscribeElectionInfo(id, cb) {
         serverEvents.on(serverEvents.eNames.ParticipantCreated, iota => {
             // The parent of the ParticipantCreate Iota is the viewer
             // we need to find if there is an electionIota with this viewer, and update that electionIota
-            const { electionIota } = Object.values(electionIotaSubscribers).find(({ electionIota }) =>
-                electionIota?.webComponent?.moderator?.viewers?.find(
-                    v => Iota.ObjectId(v._id).toString() === iota.parentId
-                )
+            const electionIotaSubscriber = Object.values(electionIotaSubscribers).find(
+                ({ electionIota }) => !!electionIota?.webComponent?.moderator?.viewers?.[iota.parentId]
             )
-            if (!electionIota) {
+            if (!electionIotaSubscriber?.electionIota) {
                 logger.warn('subscribeElectionInfo ParticipantCreate event, no parent found for', iota)
                 return
             }
-            updateElectionInfo(Iota.ObjectID(electionIota._id).toString(), iota.parentId, [iota])
+            updateElectionInfo(Iota.ObjectID(electionIotaSubscriber.electionIota._id).toString(), iota.parentId, [iota])
         })
         serverEventsSubscribed = true
     }
@@ -84,8 +87,10 @@ export function updateElectionInfo(rootId, parentId, iotas) {
         delete electionIotaSubscribers[id]
     }
     const socket = sockets[0] // only need the first one, broadcast will send to all the rest
-    intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(electionIota, parentId, iotas, [])
+    const update = {}
+    intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(update, electionIota, parentId, iotas, [])
     const eventName = subscribeEventName('subscribe-election-info', rootId)
-    socket.broadcast.to(rootId).emit(eventName, electionIota)
-    socket.emit(eventName, electionIota) // broadcast above doesn't send it to the socket itself
+    merge(electionIota, update)
+    socket.broadcast.to(rootId).emit(eventName, update)
+    socket.emit(eventName, update) // broadcast above doesn't send it to the socket itself
 }

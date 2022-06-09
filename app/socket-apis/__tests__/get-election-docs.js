@@ -183,8 +183,8 @@ test('get election docs should get them', done => {
                     "userId": "628d0a2afacbb605f4d8e6ac",
                     "webComponent": Object {
                       "moderator": Object {
-                        "recorders": Array [
-                          Object {
+                        "recorders": Object {
+                          "628d076dcf19df5aa438c07a": Object {
                             "_id": "628d076dcf19df5aa438c07a",
                             "bp_info": Object {
                               "office": "Moderator",
@@ -197,9 +197,9 @@ test('get election docs should get them', done => {
                             "subject": "Moderator Recorder for #4",
                             "userId": "628d0a2afacbb605f4d8e6ac",
                           },
-                        ],
-                        "submissions": Array [
-                          Object {
+                        },
+                        "submissions": Object {
+                          "628d2d25c945f836b8be0901": Object {
                             "_id": "628d2d25c945f836b8be0901",
                             "component": Object {
                               "component": "MergeParticipants",
@@ -218,9 +218,9 @@ test('get election docs should get them', done => {
                             "subject": "Moderator Recording for #4",
                             "userId": "628d0a2afacbb605f4d8e6ac",
                           },
-                        ],
-                        "viewers": Array [
-                          Object {
+                        },
+                        "viewers": Object {
+                          "628d0b225f7a7746488c0bff": Object {
                             "_id": "628d0b225f7a7746488c0bff",
                             "bp_info": Object {
                               "office": "Moderator",
@@ -233,7 +233,7 @@ test('get election docs should get them', done => {
                               "webComponent": "CandidateConversation",
                             },
                           },
-                        ],
+                        },
                       },
                       "webComponent": "ElectionDoc",
                     },
@@ -258,8 +258,8 @@ test('get election doc by id should get one', done => {
               "userId": "628d0a2afacbb605f4d8e6ac",
               "webComponent": Object {
                 "moderator": Object {
-                  "recorders": Array [
-                    Object {
+                  "recorders": Object {
+                    "628d076dcf19df5aa438c07a": Object {
                       "_id": "628d076dcf19df5aa438c07a",
                       "bp_info": Object {
                         "office": "Moderator",
@@ -272,9 +272,9 @@ test('get election doc by id should get one', done => {
                       "subject": "Moderator Recorder for #4",
                       "userId": "628d0a2afacbb605f4d8e6ac",
                     },
-                  ],
-                  "submissions": Array [
-                    Object {
+                  },
+                  "submissions": Object {
+                    "628d2d25c945f836b8be0901": Object {
                       "_id": "628d2d25c945f836b8be0901",
                       "component": Object {
                         "component": "MergeParticipants",
@@ -293,9 +293,9 @@ test('get election doc by id should get one', done => {
                       "subject": "Moderator Recording for #4",
                       "userId": "628d0a2afacbb605f4d8e6ac",
                     },
-                  ],
-                  "viewers": Array [
-                    Object {
+                  },
+                  "viewers": Object {
+                    "628d0b225f7a7746488c0bff": Object {
                       "_id": "628d0b225f7a7746488c0bff",
                       "bp_info": Object {
                         "office": "Moderator",
@@ -308,7 +308,7 @@ test('get election doc by id should get one', done => {
                         "webComponent": "CandidateConversation",
                       },
                     },
-                  ],
+                  },
                 },
                 "webComponent": "ElectionDoc",
               },

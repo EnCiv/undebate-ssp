@@ -94,7 +94,13 @@ function mergeElectionChildren(iotas) {
             const iota = iotas[i]
             if (iota?.webComponent?.webComponent === 'ElectionDoc') {
                 usedIndexes[i] = true
-                intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(iota, getId(iota._id), iotas, usedIndexes)
+                intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(
+                    iota,
+                    iota,
+                    getId(iota._id),
+                    iotas,
+                    usedIndexes
+                )
                 results.push(iota)
             }
         }
@@ -125,14 +131,14 @@ function getId(id) {
     return id
 }
 
-export function intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(root, parentId, iotas, usedIndexes) {
+export function intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(dst, root, parentId, iotas, usedIndexes) {
     for (const i in iotas) {
         if (usedIndexes[i]) continue
         const child = iotas[i]
         if (parentId !== child.parentId) continue
         let result
         for (const op of Object.values(mergeOps)) {
-            if ((result = op(root, child, iotas, usedIndexes))) {
+            if ((result = op(dst, root, child, iotas, usedIndexes))) {
                 usedIndexes[i] = true
                 if (typeof result == 'function') result()
                 break
@@ -152,6 +158,22 @@ function intoArrayAtObjPathPushDoc(obj, path, doc) {
     // key will be the last of the path
     if (!o[key]) o[key] = []
     o[key].push(doc)
+}
+
+// an object of docs is an object where each key is a doc's _id and the value is the doc
+// { '62a17c01635c4c4700ced877': {_id: '62a17c01635c4c4700ced877, subject: "an iota doc", description: 'this is an iota in an object of docs, ...}}
+function intoObjOfDocsAtObjPathMergeDoc(obj, path, doc) {
+    let o = obj
+    const keys = path.split('.')
+    let key
+    while (((key = keys.shift()), keys.length > 0)) {
+        if (!o[key]) o[key] = {}
+        o = o[key]
+    }
+    // key will be the last of the path
+    if (!o[key]) o[key] = {}
+    if (!o[key][doc._id]) o[key][doc._id] = doc
+    else merge(o[key][doc._id], doc)
 }
 
 function doesArrayAtObjPathContainDocWithId(obj, path, id) {
@@ -177,31 +199,41 @@ function doesArrayAtObjPathContainDocWithId(obj, path, id) {
 // return a function if merge successful and more work needs to be done, after the child is marked used
 const mergeOps = {
     // iotas and usedIndexes are props in case the op needs to run recursively
-    moderatorRecorder(root, child, iotas, usedIndexes) {
+    moderatorRecorder(dst, root, child, iotas, usedIndexes) {
         if (!(child?.component?.component === 'undebateCreator' && child?.bp_info?.office === 'Moderator')) return false
-        intoArrayAtObjPathPushDoc(root, 'webComponent.moderator.recorders', child)
+        intoObjOfDocsAtObjPathMergeDoc(dst, 'webComponent.moderator.recorders', child)
         return true
     },
-    moderatorViewer(root, child, iotas, usedIndexes) {
+    moderatorViewer(dst, root, child, iotas, usedIndexes) {
         if (!(child?.webComponent?.webComponent === 'CandidateConversation' && child?.bp_info?.office === 'Moderator'))
             return false
-        intoArrayAtObjPathPushDoc(root, 'webComponent.moderator.viewers', child)
-        return () => intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(root, getId(child._id), iotas, usedIndexes)
+        intoObjOfDocsAtObjPathMergeDoc(dst, 'webComponent.moderator.viewers', child)
+        return () =>
+            intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(
+                dst,
+                root,
+                getId(child._id),
+                iotas,
+                usedIndexes
+            )
     },
-    moderatorSubmissions(root, child, iotas, usedIndexes) {
+    moderatorSubmissions(dst, root, child, iotas, usedIndexes) {
         if (
             !(
                 child?.component?.component === 'MergeParticipants' &&
-                doesArrayAtObjPathContainDocWithId(root, 'webComponent.moderator.viewers', child?.parentId)
+                root?.webComponent?.moderator?.viewers?.[child?.parentId]
             )
         )
             return false
-        intoArrayAtObjPathPushDoc(root, 'webComponent.moderator.submissions', child)
+        intoObjOfDocsAtObjPathMergeDoc(dst, 'webComponent.moderator.submissions', child)
         return true
     },
-    moderatorInvitations(root, child, iotas, usedIndexes) {
+    moderatorInvitations(dst, root, child, iotas, usedIndexes) {
         if (!(child?.component?.component === 'ModeratorEmailSent')) return false
-        intoArrayAtObjPathPushDoc(root, 'webComponent.moderator.invitations', { _id: child._id, ...child.component })
+        intoObjOfDocsAtObjPathMergeDoc(dst, 'webComponent.moderator.invitations', {
+            _id: child._id,
+            ...child.component,
+        })
         return true
     },
 }

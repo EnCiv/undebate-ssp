@@ -40,8 +40,10 @@ function idCompare(a, b) {
 
 const getLatestIota = iotas => {
     if (!iotas) return undefined
-    if (!isArray(iotas)) return undefined
-    const latest = iotas.reduce((latest, obj) => (idCompare(latest._id, obj._id) < 0 ? obj : latest), { _id: '' })
+    if (typeof iotas !== 'object') return undefined
+    const latest = Object.values(iotas).reduce((latest, obj) => (idCompare(latest._id, obj._id) < 0 ? obj : latest), {
+        _id: '',
+    })
     if (!latest._id) return undefined
     return latest
 }

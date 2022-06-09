@@ -104,14 +104,10 @@ describe('subscribeElectionInfo first returns request, then updates', () => {
         function updateHandler(doc) {
             expect(doc).toMatchInlineSnapshot(`
                 Object {
-                  "_id": "629f828ace9f775bb89f05df",
-                  "description": "Election Document",
-                  "subject": "Election Document #1",
-                  "userId": "629f850dfb8ee6220ceade47",
                   "webComponent": Object {
                     "moderator": Object {
-                      "submissions": Array [
-                        Object {
+                      "submissions": Object {
+                        "621028f37b48de4820cba6ea": Object {
                           "_id": "621028f37b48de4820cba6ea",
                           "component": Object {
                             "component": "MergeParticipants",
@@ -130,24 +126,8 @@ describe('subscribeElectionInfo first returns request, then updates', () => {
                           "subject": "Moderator Recording for #4",
                           "userId": "629f856022c0b4428c123c5b",
                         },
-                      ],
-                      "viewers": Array [
-                        Object {
-                          "_id": "629f84602d574a52a4ce1cb3",
-                          "bp_info": Object {
-                            "office": "Moderator",
-                          },
-                          "description": "Moderator Viewer for #4",
-                          "parentId": "629f828ace9f775bb89f05df",
-                          "subject": "Moderator Viewer for #4",
-                          "userId": "629f850dfb8ee6220ceade47",
-                          "webComponent": Object {
-                            "webComponent": "CandidateConversation",
-                          },
-                        },
-                      ],
+                      },
                     },
-                    "webComponent": "ElectionDoc",
                   },
                 }
             `)
@@ -165,8 +145,8 @@ describe('subscribeElectionInfo first returns request, then updates', () => {
               "userId": "629f850dfb8ee6220ceade47",
               "webComponent": Object {
                 "moderator": Object {
-                  "viewers": Array [
-                    Object {
+                  "viewers": Object {
+                    "629f84602d574a52a4ce1cb3": Object {
                       "_id": "629f84602d574a52a4ce1cb3",
                       "bp_info": Object {
                         "office": "Moderator",
@@ -179,7 +159,7 @@ describe('subscribeElectionInfo first returns request, then updates', () => {
                         "webComponent": "CandidateConversation",
                       },
                     },
-                  ],
+                  },
                 },
                 "webComponent": "ElectionDoc",
               },

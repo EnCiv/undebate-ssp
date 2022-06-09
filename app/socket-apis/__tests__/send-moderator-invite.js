@@ -7,6 +7,7 @@ import jestSocketApiSetup from '../../lib/jest-socket-api-setup'
 const handle = 'subscribe-election-info'
 const socketApiUnderTest = subscribeElectionInfo
 import socketApiSubscribe from '../../components/lib/socket-api-subscribe'
+import { doc } from 'prettier'
 
 if (!global.logger) global.logger = console
 global.logger = { error: jest.fn((...args) => args) }
@@ -199,188 +200,53 @@ maybe('Test the send moderator invite API', () => {
     test('subscribeElectionInfo update should receive update', done => {
         // this asynchronous update from the socket api may have already happend, or we may need to wait for it.
         function updated(doc) {
-            expect(doc).toMatchInlineSnapshot(
+            // invitations is an object of key: doc, where the key could be anything
+            // can't create a matcher for that in toMatchInlinSnapshot so pull it out manually
+            expect(doc.webComponent.moderator.invitations).toBeDefined()
+            let invitations = Object.values(doc.webComponent.moderator.invitations)
+            expect(invitations.length).toEqual(1)
+            let invitation = invitations[0]
+            expect(invitation).toMatchInlineSnapshot(
                 {
-                    webComponent: {
-                        electionDate: ISODate,
-                        undebateDate: ISODate,
+                    _id: OBJECTID,
+                    messageId: expect.any(String),
+                    sentDate: ISODate,
+                    templateId: expect.any(Number),
+                    params: {
                         moderator: {
-                            invitations: [
-                                {
-                                    _id: OBJECTID,
-                                    messageId: expect.any(String),
-                                    sentDate: ISODate,
-                                    params: {
-                                        moderator: {
-                                            submissionDeadline: expect.any(String),
-                                        },
-                                    },
-
-                                    templateId: expect.any(Number),
-                                },
-                            ],
-                        },
-
-                        timeline: {
-                            candidateDeadlineReminderEmails: {
-                                0: {
-                                    date: ISODate,
-                                },
-                            },
-
-                            candidateSubmissionDeadline: {
-                                0: {
-                                    date: ISODate,
-                                },
-                            },
-
-                            moderatorDeadlineReminderEmails: {
-                                0: {
-                                    date: ISODate,
-                                },
-                            },
-
-                            moderatorSubmissionDeadline: {
-                                0: {
-                                    date: ISODate,
-                                },
-                            },
+                            submissionDeadline: expect.any(String),
                         },
                     },
                 },
                 `
                 Object {
-                  "_id": "629950b73100ea171064d4b7",
-                  "description": "Election document #4",
-                  "subject": "Election document",
-                  "userId": "62995151f50a0d478415d6f1",
-                  "webComponent": Object {
-                    "electionDate": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
-                    "electionName": "The Election",
+                  "_id": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
+                  "component": "ModeratorEmailSent",
+                  "messageId": Any<String>,
+                  "params": Object {
                     "email": "admin@email.com",
                     "moderator": Object {
                       "email": "ddfridley@yahoo.com",
-                      "invitations": Array [
-                        Object {
-                          "_id": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-                          "component": "ModeratorEmailSent",
-                          "messageId": Any<String>,
-                          "params": Object {
-                            "email": "admin@email.com",
-                            "moderator": Object {
-                              "email": "ddfridley@yahoo.com",
-                              "name": "bob",
-                              "recorder_url": "localhost:3011/moderator-recorder",
-                              "submissionDeadline": Any<String>,
-                            },
-                            "name": "admin name",
-                            "organizationLogo": "https://www.bringfido.com/assets/images/bfi-logo-new.jpg",
-                            "organizationName": "The Organization",
-                          },
-                          "sentDate": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
-                          "tags": Array [
-                            "id:629950b73100ea171064d4b7",
-                            "role:moderator",
-                          ],
-                          "templateId": Any<Number>,
-                          "to": Array [
-                            Object {
-                              "email": "ddfridley@yahoo.com",
-                              "name": "bob",
-                            },
-                          ],
-                        },
-                      ],
                       "name": "bob",
-                      "recorders": Array [
-                        Object {
-                          "_id": "629952046bf16a07dc69e2d5",
-                          "bp_info": Object {
-                            "office": "Moderator",
-                          },
-                          "component": Object {
-                            "component": "undebateCreator",
-                          },
-                          "description": "Moderator Recorder for #4",
-                          "parentId": "629950b73100ea171064d4b7",
-                          "path": "/moderator-recorder",
-                          "subject": "Moderator Recorder for #4",
-                          "userId": "62995151f50a0d478415d6f1",
-                        },
-                      ],
-                      "viewers": Array [
-                        Object {
-                          "_id": "62995210214f715b3c3084c8",
-                          "bp_info": Object {
-                            "office": "Moderator",
-                          },
-                          "description": "Moderator Viewer for #4",
-                          "parentId": "629950b73100ea171064d4b7",
-                          "path": "/moderator-viewer",
-                          "subject": "Moderator Viewer for #4",
-                          "userId": "62995151f50a0d478415d6f1",
-                          "webComponent": Object {
-                            "webComponent": "CandidateConversation",
-                          },
-                        },
-                      ],
+                      "recorder_url": "localhost:3011/moderator-recorder",
+                      "submissionDeadline": Any<String>,
                     },
                     "name": "admin name",
                     "organizationLogo": "https://www.bringfido.com/assets/images/bfi-logo-new.jpg",
                     "organizationName": "The Organization",
-                    "questions": Object {
-                      "0": Object {
-                        "text": "What is your favorite color?",
-                        "time": "30",
-                      },
-                      "1": Object {
-                        "text": "Do you have a pet?",
-                        "time": "60",
-                      },
-                      "2": Object {
-                        "text": "Should we try to fix income inequality?",
-                        "time": "90",
-                      },
-                    },
-                    "script": Object {
-                      "0": Object {
-                        "text": "Welcome everyone. Our first question is: What is your favorite color?",
-                      },
-                      "1": Object {
-                        "text": "Thank you. Our next Question is: Do you have a pet?",
-                      },
-                      "2": Object {
-                        "text": "Great. And our last question is: Should we try to fix income inequality?",
-                      },
-                      "3": Object {
-                        "text": "Thanks everyone for watching this!",
-                      },
-                    },
-                    "timeline": Object {
-                      "candidateDeadlineReminderEmails": Object {
-                        "0": Object {
-                          "date": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
-                        },
-                      },
-                      "candidateSubmissionDeadline": Object {
-                        "0": Object {
-                          "date": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
-                        },
-                      },
-                      "moderatorDeadlineReminderEmails": Object {
-                        "0": Object {
-                          "date": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
-                        },
-                      },
-                      "moderatorSubmissionDeadline": Object {
-                        "0": Object {
-                          "date": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
-                        },
-                      },
-                    },
-                    "undebateDate": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
-                    "webComponent": "ElectionDoc",
                   },
+                  "sentDate": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
+                  "tags": Array [
+                    "id:629950b73100ea171064d4b7",
+                    "role:moderator",
+                  ],
+                  "templateId": Any<Number>,
+                  "to": Array [
+                    Object {
+                      "email": "ddfridley@yahoo.com",
+                      "name": "bob",
+                    },
+                  ],
                 }
             `
             )
