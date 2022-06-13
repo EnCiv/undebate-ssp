@@ -11,7 +11,7 @@ import { SvgRightArrow } from './lib/svg'
 export default function NavigationPanel({ className, style, electionOM, onDone }) {
     const classes = useStyles()
     const [electionObj, electionMethods] = electionOM
-    const [current, setCurrent] = useState('')
+    const [current, setCurrent] = useState('Election')
 
     const convertStringDate = date => {
         const d = new Date(date)
