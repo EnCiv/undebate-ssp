@@ -1,5 +1,5 @@
 // https://github.com/EnCiv/undebate-ssp/issue/20
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import ConfigureElection from './configure-election'
@@ -10,11 +10,15 @@ import useMethods from 'use-methods'
 import { merge } from 'lodash'
 
 export default function UndebateHomepage(props) {
-    const { className, style, electionObjs, user } = props
+    const { className, style, user } = props
+    const [electionObjs, setElectionObjs] = useState([])
     const classes = useStyles(props)
     const [selectedId, setSelectedId] = useState('')
     const index = selectedId ? electionObjs.findIndex(eObj => eObj._id === selectedId) : -1
     const electionNames = useMemo(() => electionObjs.map(obj => obj.electionName), [electionObjs])
+    useEffect(() => {
+        window.socket.emit('get-election-docs', setElectionObjs)
+    })
     return (
         <div className={cx(className, classes.undebateHomePage)} style={style}>
             <ElectionHeader
@@ -27,7 +31,7 @@ export default function UndebateHomepage(props) {
                 }
             />
             {selectedId ? (
-                <SelectedElection electionObj={electionObjs[index]} key={index} />
+                <SelectedElection selectedId={selectedId} key={selectedId} />
             ) : (
                 <UndebatesList
                     electionObjs={electionObjs}
@@ -40,7 +44,7 @@ export default function UndebateHomepage(props) {
 }
 
 function SelectedElection(props) {
-    const { electionObj } = props
+    const { selectedId } = props
     const electionOM = useMethods(
         (dispatch, state) => ({
             ...getElectionStatusMethods(dispatch, state),
@@ -68,9 +72,12 @@ function SelectedElection(props) {
                 )
             },
         }),
-        electionObj,
-        [electionObj]
+        {},
+        []
     )
+    useEffect(() => {
+        window.socket.emit('subscribe-election-info', selectedId, eObj => electionOM[1].upsert(eObj))
+    }, [selectedId])
     return <ConfigureElection electionOM={electionOM} />
 }
 

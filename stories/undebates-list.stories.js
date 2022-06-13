@@ -151,3 +151,6 @@ defaultElectionObject3._id = '627ecafe4c12b659a8b954de'
 
 export const UndebatesListDefault = Template.bind({})
 UndebatesListDefault.args = { electionObjs: [defaultElectionObject, defaultElectionObject1, defaultElectionObject2] }
+
+export const Empty = Template.bind({})
+Empty.args = { electionObjs: [] }

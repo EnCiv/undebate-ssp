@@ -49,44 +49,6 @@ function Table({ columns, data, onRowClicked }) {
 
 export default function UndebatesList({ className, style, electionObjs, onDone }) {
     const classes = useStyles()
-
-    const onRowClicked = (row, e) => {
-        onDone({ value: row.original._id, valid: true })
-    }
-
-    // Not sure if this is proper use of useMemo for "data"
-    const data = React.useMemo(() => electionObjs, [])
-    // Eventually need to do electionOMs.map()....right now only doing one.
-    const electionOMs = React.useMemo(
-        () => electionObjs.map(obj => [obj, getElectionStatusMethods(null, obj)]),
-        [electionObjs]
-    )
-    const [electionObj, electionMethods] = electionOMs[0]
-    const electionDates = () => {
-        const createDate = moment(ObjectID(electionObj._id).getDate())
-        const formattedCreateDate = createDate.format('DD.MM.YY')
-        const endDate = moment(new Date(electionObj.electionDate))
-        // const endDate = moment(electionObjs[0].electionDate).getDate());
-        const formattedEndDate = endDate.format('DD.MM.YY')
-        return `${formattedCreateDate} - ${formattedEndDate}`
-    }
-
-    const moderatorStatus = () => {
-        if (electionMethods.checkTimelineCompleted() && electionMethods.getScriptStatus() !== 'completed') {
-            return 'Script pending'
-        } else {
-            return 'Script not completed'
-        }
-    }
-
-    const candidates = () => {
-        return ''
-    }
-
-    const status = () => {
-        return ''
-    }
-
     // Do I make accessor for table elements calls to electionMethods???
     const columns = React.useMemo(
         () => [
@@ -114,9 +76,48 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         []
     )
 
+    const onRowClicked = (row, e) => {
+        onDone({ value: row.original._id, valid: true })
+    }
+
+    // Not sure if this is proper use of useMemo for "data"
+    //const data = React.useMemo(() => electionObjs, [])
+    // Eventually need to do electionOMs.map()....right now only doing one.
+    const electionOMs = React.useMemo(
+        () => electionObjs.map(obj => [obj, getElectionStatusMethods(null, obj)]),
+        [electionObjs]
+    )
+    if (!electionOMs.length) return null
+
+    const [electionObj = {}, electionMethods = {}] = electionOMs[0] || []
+    const electionDates = () => {
+        const createDate = moment(ObjectID(electionObj._id).getDate())
+        const formattedCreateDate = createDate.format('DD.MM.YY')
+        const endDate = moment(new Date(electionObj.electionDate))
+        // const endDate = moment(electionObjs[0].electionDate).getDate());
+        const formattedEndDate = endDate.format('DD.MM.YY')
+        return `${formattedCreateDate} - ${formattedEndDate}`
+    }
+
+    const moderatorStatus = () => {
+        if (electionMethods.checkTimelineCompleted() && electionMethods.getScriptStatus() !== 'completed') {
+            return 'Script pending'
+        } else {
+            return 'Script not completed'
+        }
+    }
+
+    const candidates = () => {
+        return ''
+    }
+
+    const status = () => {
+        return ''
+    }
+
     return (
         // <Styles>
-        <Table columns={columns} data={data} onRowClicked={onRowClicked} />
+        <Table columns={columns} data={electionObjs} onRowClicked={onRowClicked} />
         // </Styles>
     )
 }

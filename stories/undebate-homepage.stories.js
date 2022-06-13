@@ -1,5 +1,5 @@
 // https://github.com/EnCiv/undebate-ssp/issues/20
-import iotas from '../iotas.json'
+import React, { useState, useEffect } from 'react'
 import UndebateHomepage from '../app/components/undebate-homepage'
 import { cloneDeep } from 'lodash'
 
@@ -11,6 +11,39 @@ export default {
 
 const Template = (args, context) => {
     const { onDone, electionOM } = context
+    useState(() => {
+        // just want to do this when the Template is first called. useEffect is too late.
+        window.socket = {
+            emit: (handle, ...otherArgs) => {
+                if (handle === 'get-election-docs') {
+                    const [cb] = otherArgs
+                    cb(args.electionObjs)
+                    return
+                } else if (handle === 'subscribe-election-info') {
+                    const [id, cb] = otherArgs
+                    cb(args.electionObjs.find(doc => doc._id === id))
+                    // subscriptions are not handled, just the initial result is returned
+                    return
+                } else if (handle === 'send-password') {
+                    const [email, href, cb] = otherArgs
+                    if (email === 'success@email.com') setTimeout(() => cb({ error: '' }), 1000)
+                    else setTimeout(() => cb({ error: 'User not found' }), 1000)
+                    return
+                } else console.error('emit expected send-password, got:', handle)
+            },
+            // when user authenticates socket io needs to close and then connect to authenticate the user
+            // so we simulate that here
+            onHandlers: {},
+            on: (handle, handler) => {
+                window.socket.onHandlers[handle] = handler
+            },
+            close: () => {
+                if (window.socket.onHandlers.connect) setTimeout(window.socket.onHandlers.connect, 1000)
+                else console.error('No connect handler registered')
+            },
+            removeListener: () => {},
+        }
+    })
     return (
         <div>
             <UndebateHomepage {...args} onDone={onDone} />
