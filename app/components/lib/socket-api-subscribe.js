@@ -1,10 +1,10 @@
-// socketApiSubscribe('socket-api-name',id,..., resultHandler, updateHandler)
+// const unsubscribe=socketApiSubscribe('socket-api-name',id,..., resultHandler, updateHandler)
 //
 // socket-api-name - the name part of the file in socket_apis
 // id - a unique id for the data being subscribed to, usually a mongo objectId
 // resultHandler - the initial api call will return a result that is handled here
 // updateHandler - asynchronous updates to the data will be sent here
-//
+// return a function to unsubscribe
 export default function socketApiSubscribe(handle, id, ...args) {
     const updateHandler = args.pop()
     const resultHandler = args.pop()
@@ -15,6 +15,9 @@ export default function socketApiSubscribe(handle, id, ...args) {
     const eventName = subscribeEventName(handle, id)
     window.socket.on(eventName, updateHandler)
     window.socket.emit(handle, id, ...args, resultHandler)
+    return () => {
+        window.socket.leave(eventName)
+    }
 }
 
 export function subscribeEventName(handle, id) {

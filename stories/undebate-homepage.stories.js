@@ -42,6 +42,9 @@ const Template = (args, context) => {
                 else console.error('No connect handler registered')
             },
             removeListener: () => {},
+            leave: room => {
+                delete window.socket.onHandlers[room]
+            },
         }
     })
     return (
@@ -187,3 +190,4 @@ WithData.args = {
     electionObjs: [defaultElectionObject, defaultElectionObject1, defaultElectionObject2],
     user: { id: '6274ae8bee422b0f9c607b75', email: 'someone@email.com' },
 }
+export const Empty = Template.bind({})
