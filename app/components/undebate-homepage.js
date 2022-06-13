@@ -5,6 +5,7 @@ import cx from 'classnames'
 import UndebatesList from './undebates-list'
 import ElectionHeader from './election-header'
 import SubscribeElectionInfo from './subscribe-election-info'
+import UndebatesHeaderBar from './undebates-header-bar'
 
 export default function UndebateHomepage(props) {
     const { className, style, user } = props
@@ -16,26 +17,39 @@ export default function UndebateHomepage(props) {
     useEffect(() => {
         window.socket.emit('get-election-docs', objs => objs && setElectionObjs(objs))
     })
+    const createNew = () => {}
     return (
         <div className={cx(className, classes.undebateHomePage)} style={style}>
-            <ElectionHeader
-                elections={selectedId ? electionNames : ['Select One']}
-                defaultValue={index}
-                className={classes.header}
-                user={user}
-                onDone={({ valid, value }) =>
-                    setSelectedId(electionObjs.find(obj => obj.electionName === electionNames[value])._id)
-                }
-            />
             {/*key below to make sure React creates new component rather than reuse existing which would screw up subscription */}
             {selectedId ? (
-                <SubscribeElectionInfo id={selectedId} key={selectedId} />
+                <>
+                    <ElectionHeader
+                        elections={selectedId ? electionNames : ['Select One']}
+                        defaultValue={index}
+                        className={classes.header}
+                        user={user}
+                        onDone={({ valid, value }) =>
+                            setSelectedId(electionObjs.find(obj => obj.electionName === electionNames[value])._id)
+                        }
+                    />
+                    <SubscribeElectionInfo id={selectedId} key={selectedId} />
+                </>
             ) : (
-                <UndebatesList
-                    electionObjs={electionObjs}
-                    onDone={({ value, valid }) => setSelectedId(value)}
-                    key='list'
-                />
+                <>
+                    <UndebatesHeaderBar
+                        electionOM={[, { createNew }]}
+                        className={classes.header}
+                        user={user}
+                        onDone={({ valid, value }) =>
+                            setSelectedId(electionObjs.find(obj => obj.electionName === electionNames[value])._id)
+                        }
+                    />
+                    <UndebatesList
+                        electionObjs={electionObjs}
+                        onDone={({ value, valid }) => setSelectedId(value)}
+                        key='list'
+                    />
+                </>
             )}
         </div>
     )
