@@ -15,7 +15,20 @@ const Template = (args, context) => {
         // just want to do this when the Template is first called. useEffect is too late.
         window.socket = {
             emit: (handle, ...otherArgs) => {
-                if (handle === 'get-election-docs') {
+                if (handle === 'create-election-doc') {
+                    const [cb] = otherArgs
+                    args.electionObjs.push({
+                        _id: '62a7c2f80c83204a784ee83c',
+                        subject: 'Election Doc',
+                        description: 'an election document',
+                        webComponent: {
+                            webComponent: 'ElectionDoc',
+                        },
+                        userId: '6274ae8bee422b0f9c607b75',
+                    })
+                    cb('62a7c2f80c83204a784ee83c')
+                    return
+                } else if (handle === 'get-election-docs') {
                     const [cb] = otherArgs
                     cb(args.electionObjs)
                     return
@@ -191,3 +204,8 @@ WithData.args = {
     user: { id: '6274ae8bee422b0f9c607b75', email: 'someone@email.com' },
 }
 export const Empty = Template.bind({})
+export const NewUser = Template.bind({})
+NewUser.args = {
+    electionObjs: [],
+    user: { id: '6274ae8bee422b0f9c607b75', email: 'someone@email.com' },
+}

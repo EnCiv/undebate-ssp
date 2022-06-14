@@ -17,7 +17,12 @@ export default function UndebateHomepage(props) {
     useEffect(() => {
         window.socket.emit('get-election-docs', objs => objs && setElectionObjs(objs))
     })
-    const createNew = () => {}
+    const createNew = () => {
+        window.socket.emit('create-election-doc', id => {
+            if (!id) return
+            setSelectedId(id)
+        })
+    }
     return (
         <div className={cx(className, classes.undebateHomePage)} style={style}>
             {/*key below to make sure React creates new component rather than reuse existing which would screw up subscription */}
