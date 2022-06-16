@@ -12,9 +12,11 @@ export default {
 export const Normal = mC({
     defaultValue: 2,
     elections: ['District Attorney Election 1', 'District Attorney Election 2', 'District Attorney Election 3'],
+    user: { id: '6274ae8bee422b0f9c607b75', email: 'someone@email.com' },
 })
 
 export const Different = mC({
     defaultValue: 0,
     elections: ['President', 'Vice President', 'King'],
+    user: { id: '6274ae8bee422b0f9c607b75', email: 'someone@email.com' },
 })

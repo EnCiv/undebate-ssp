@@ -5,12 +5,14 @@ import cx from 'classnames'
 import HomeButton from './home-button'
 import BackButton from './back-button'
 import InstructionButton from './instruction-button'
+import UserOrSignup from './user-or-signup'
+import SignInButton from './sign-in-button'
 
 // if elections is a list of one, just show it and don't do a selector
 
 function ElectionHeader(props) {
     const classes = useStyles()
-    const { className, style, defaultValue = 0, elections = [], onDone = () => {} } = props
+    const { className, style, defaultValue = 0, elections = [], onDone = () => {}, user } = props
 
     return (
         <div className={cx(className, classes.electionHeader)} style={style}>
@@ -36,7 +38,8 @@ function ElectionHeader(props) {
                 <span className={classes.title}>{elections[0] || ''}</span>
             )}
             <div>
-                <InstructionButton className={classes.icon} />
+                <InstructionButton className={cx(classes.icon, classes.gap)} />
+                <UserOrSignup user={user} style={{ verticalAlign: 'middle' }} />
             </div>
         </div>
     )
@@ -50,6 +53,7 @@ const useStyles = createUseStyles(theme => ({
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: '1.25rem 2.5rem',
+        alignItems: 'center',
 
         '& select': {
             fontFamily: theme.defaultFontFamily,
@@ -71,5 +75,8 @@ const useStyles = createUseStyles(theme => ({
         height: theme.iconSize,
         width: theme.iconSize,
         verticalAlign: 'middle',
+    },
+    gap: {
+        paddingRight: '1rem',
     },
 }))

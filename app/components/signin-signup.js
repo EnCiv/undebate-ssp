@@ -7,7 +7,9 @@ import Color from 'color'
 
 const SignInSignUp = React.forwardRef((props, ref) => {
     const { className, style, startTab = 'login' } = props
-    const [isLogIn, setIsLogIn] = useState(startTab.toLowerCase().includes('in'))
+    const [isLogIn, setIsLogIn] = useState(
+        startTab.toLowerCase().includes('up') ? false : startTab.toLowerCase().includes('in') ? true : false
+    )
     const { destination, userInfo = {} } = props
     const classes = useStyles()
     const [state, methods] = useAuth(destination, userInfo)
