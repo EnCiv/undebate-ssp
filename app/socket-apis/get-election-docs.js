@@ -69,7 +69,6 @@ export async function getElectionDocById(id, cb) {
         if (cb) cb() // no user
         return
     }
-    debugger
     const _id = typeof id !== 'object' ? Iota.ObjectID(id) : id
     try {
         const iotas = await Iota.aggregate([{ $match: { _id } }].concat(aggLookupChildren))

@@ -65,7 +65,6 @@ async function SibGetTemplate(name, htmlContent) {
 }
 
 export async function SibGetTemplateId(templateName) {
-    debugger
     try {
         const htmlFile = path.resolve(__dirname, `../../assets/email-templates/${templateName}.html`)
         const htmlContent = fs.readFileSync(htmlFile, 'utf8')
