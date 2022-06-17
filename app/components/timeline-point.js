@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/12
 
-import { React, forwardRef, useState, useEffect, useRef } from 'react'
+import React, { forwardRef, useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import Plus from '../svgr/plus'
 import DateTimeInput from './datetime-input'
