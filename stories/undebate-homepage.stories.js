@@ -18,13 +18,8 @@ const Template = (args, context) => {
                 if (handle === 'create-election-doc') {
                     const [cb] = otherArgs
                     args.electionObjs.push({
-                        _id: '62a7c2f80c83204a784ee83c',
-                        subject: 'Election Doc',
-                        description: 'an election document',
-                        webComponent: {
-                            webComponent: 'ElectionDoc',
-                        },
-                        userId: '6274ae8bee422b0f9c607b75',
+                        id: '62a7c2f80c83204a784ee83c',
+                        webComponent: 'ElectionDoc',
                     })
                     cb('62a7c2f80c83204a784ee83c')
                     return
@@ -34,7 +29,7 @@ const Template = (args, context) => {
                     return
                 } else if (handle === 'subscribe-election-info') {
                     const [id, cb] = otherArgs
-                    cb(args.electionObjs.find(doc => doc._id === id))
+                    cb(args.electionObjs.find(doc => doc.id === id))
                     // subscriptions are not handled, just the initial result is returned
                     return
                 } else if (handle === 'send-password') {
@@ -68,7 +63,7 @@ const Template = (args, context) => {
 }
 
 const defaultElectionObject = {
-    _id: '6199481498ac4e36c8a64753',
+    id: '6199481498ac4e36c8a64753',
     electionName: 'U.S Presidential Election',
     organizationName: 'United States Federal Government',
     electionDate: '2023-11-07T23:59:59.999Z',
@@ -184,17 +179,17 @@ const defaultElectionObject = {
     undebateDate: '2022-01-07T22:09:32.952Z',
 }
 let defaultElectionObject1 = cloneDeep(defaultElectionObject)
-defaultElectionObject1._id = '627e9dbd9ec85b0e440b6a3d'
+defaultElectionObject1.id = '627e9dbd9ec85b0e440b6a3d'
 ;(defaultElectionObject1.organizationName = 'San Diego Government Elections'),
     (defaultElectionObject1.electionName = 'SD County Supervisor')
 
 let defaultElectionObject2 = cloneDeep(defaultElectionObject)
-defaultElectionObject2._id = '627ecafe4c12b659a8b954de'
+defaultElectionObject2.id = '627ecafe4c12b659a8b954de'
 ;(defaultElectionObject2.organizationName = 'San Diego Government Elections'),
     (defaultElectionObject2.electionName = 'SD City Council')
 
 let defaultElectionObject3 = cloneDeep(defaultElectionObject)
-defaultElectionObject3._id = '627ecafe4c12b659a8b954de'
+defaultElectionObject3.id = '627ecafe4c12b659a8b954de'
 ;(defaultElectionObject3.organizationName = 'San Diego Government Elections'),
     (defaultElectionObject3.electionName = 'SD City Council')
 

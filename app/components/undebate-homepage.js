@@ -12,11 +12,11 @@ export default function UndebateHomepage(props) {
     const [electionObjs, setElectionObjs] = useState([])
     const classes = useStyles(props)
     const [selectedId, setSelectedId] = useState('')
-    const index = selectedId ? electionObjs.findIndex(eObj => eObj._id === selectedId) : -1
+    const index = selectedId ? electionObjs.findIndex(eObj => eObj.id === selectedId) : -1
     const electionNames = useMemo(() => electionObjs.map(obj => obj.electionName), [electionObjs])
     useEffect(() => {
         window.socket.emit('get-election-docs', objs => objs && setElectionObjs(objs))
-    })
+    }, [])
     const createNew = () => {
         window.socket.emit('create-election-doc', id => {
             if (!id) return
@@ -34,7 +34,7 @@ export default function UndebateHomepage(props) {
                         className={classes.header}
                         user={user}
                         onDone={({ valid, value }) =>
-                            setSelectedId(electionObjs.find(obj => obj.electionName === electionNames[value])._id)
+                            setSelectedId(electionObjs.find(obj => obj.electionName === electionNames[value]).id)
                         }
                     />
                     <SubscribeElectionInfo id={selectedId} key={selectedId} />
@@ -46,7 +46,7 @@ export default function UndebateHomepage(props) {
                         className={classes.header}
                         user={user}
                         onDone={({ valid, value }) =>
-                            setSelectedId(electionObjs.find(obj => obj.electionName === electionNames[value])._id)
+                            setSelectedId(electionObjs.find(obj => obj.electionName === electionNames[value]).id)
                         }
                     />
                     <UndebatesList

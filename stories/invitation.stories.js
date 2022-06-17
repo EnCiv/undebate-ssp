@@ -15,9 +15,9 @@ export default {
 export const Empty = mC({})
 
 export const InvitationTest = mC({
-    defaultElectionObj: { _id: '123', moderator: { name: '', email: '' } },
+    defaultElectionObj: { id: '123', moderator: { name: '', email: '' } },
 })
 
 export const WithData = mC({
-    defaultElectionObj: { _id: '2349099238402', moderator: { name: 'James Smith', email: 'jsmith@gmail.com' } },
+    defaultElectionObj: { id: '2349099238402', moderator: { name: 'James Smith', email: 'jsmith@gmail.com' } },
 })

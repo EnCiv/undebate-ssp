@@ -19,7 +19,7 @@ const Template = (args, context) => {
 }
 
 const defaultElectionObject = {
-    _id: '6199481498ac4e36c8a64753',
+    id: '6199481498ac4e36c8a64753',
     electionName: 'U.S Presidential Election',
     organizationName: 'United States Federal Government',
     electionDate: '2023-11-07T23:59:59.999Z',
@@ -135,17 +135,17 @@ const defaultElectionObject = {
     undebateDate: '2022-01-07T22:09:32.952Z',
 }
 let defaultElectionObject1 = cloneDeep(defaultElectionObject)
-defaultElectionObject1._id = '627e9dbd9ec85b0e440b6a3d'
+defaultElectionObject1.id = '627e9dbd9ec85b0e440b6a3d'
 ;(defaultElectionObject1.organizationName = 'San Diego Government Elections'),
     (defaultElectionObject1.electionName = 'SD County Supervisor')
 
 let defaultElectionObject2 = cloneDeep(defaultElectionObject)
-defaultElectionObject2._id = '627ecafe4c12b659a8b954de'
+defaultElectionObject2.id = '627ecafe4c12b659a8b954de'
 ;(defaultElectionObject2.organizationName = 'San Diego Government Elections'),
     (defaultElectionObject2.electionName = 'SD City Council')
 
 let defaultElectionObject3 = cloneDeep(defaultElectionObject)
-defaultElectionObject3._id = '627ecafe4c12b659a8b954de'
+defaultElectionObject3.id = '627ecafe4c12b659a8b954de'
 ;(defaultElectionObject3.organizationName = 'San Diego Government Elections'),
     (defaultElectionObject3.electionName = 'SD City Council')
 

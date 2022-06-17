@@ -9,7 +9,7 @@ const OBJECTID = /^[0-9a-fA-F]{24}$/
 global.logger = { error: jest.fn(e => e) }
 
 const exampleUser = {
-    _id: User.ObjectID('629f850dfb8ee6220ceade47'),
+    _id: User.ObjectID('62acafc571a636160c5b1926'),
     firstName: 'Example',
     lastName: 'User',
     email: 'example.user@example.com',
@@ -33,8 +33,31 @@ afterAll(async () => {
 })
 
 test('should create one', done => {
-    function callback(id) {
+    async function callback(id) {
         expect(id).toMatch(OBJECTID)
+        const iota = await Iota.findOne({ _id: Iota.ObjectID(id) })
+        expect(iota._id.toString()).toEqual(iota.webComponent.id)
+        iota._id = iota._id.toString() // so inlinesnapshot works
+        expect(iota).toMatchInlineSnapshot(
+            {
+                _id: expect.stringMatching(OBJECTID),
+                webComponent: {
+                    id: expect.stringMatching(OBJECTID),
+                },
+            },
+            `
+            Object {
+              "_id": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
+              "description": "an election document",
+              "subject": "Election Doc",
+              "userId": "62acafc571a636160c5b1926",
+              "webComponent": Object {
+                "id": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
+                "webComponent": "ElectionDoc",
+              },
+            }
+        `
+        )
         done()
     }
     createElectionDoc.call(
@@ -47,7 +70,7 @@ test('it fails if no user', done => {
         try {
             expect(result).not.toBeTruthy()
             expect(global.logger.error.mock.results[0].value).toMatchInlineSnapshot(
-                `"createElectionDoc called by no user logged in"`
+                `"createElectionDoc called but no user logged in"`
             )
             done()
         } catch (error) {

@@ -34,6 +34,7 @@ function submissions() {
     )
 }
 const electionSchema = Joi.object({
+    id: Joi.string().pattern(ObjectID),
     webComponent: 'ElectionDoc',
     electionName: Joi.string().max(SANE),
     organizationName: Joi.string().max(SANE),

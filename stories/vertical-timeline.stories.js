@@ -22,7 +22,7 @@ export const Default = Template.bind({})
 
 Default.args = {
     defaultElectionObj: {
-        _id: '621aef18cdd5d35c69336ad0',
+        id: '621aef18cdd5d35c69336ad0',
         electionName: 'U.S Presidential Election',
         organizationName: 'United States Federal Government',
         timeline: {

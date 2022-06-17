@@ -16,7 +16,7 @@ export const ElectionCreatedTest = Template.bind({})
 ElectionCreatedTest.args = {
     electionOM: [
         {
-            _id: '6199481498ac4e36c8a64753',
+            id: '6199481498ac4e36c8a64753',
         },
         {},
     ],

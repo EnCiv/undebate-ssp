@@ -22,7 +22,7 @@ const Template = (args, context) => {
                     return
                 } else if (handle === 'subscribe-election-info') {
                     const [id, cb] = otherArgs
-                    cb(electionObjs.find(doc => doc._id === id))
+                    cb(electionObjs.find(doc => doc.id === id))
                     // subscriptions are not handled, just the initial result is returned
                     return
                 } else if (handle === 'send-password') {
@@ -56,7 +56,7 @@ const Template = (args, context) => {
 }
 const electionObjs = [
     {
-        _id: '6199481498ac4e36c8a64753',
+        id: '6199481498ac4e36c8a64753',
         electionName: 'U.S Presidential Election',
         organizationName: 'United States Federal Government',
         electionDate: '2023-11-07T23:59:59.999Z',

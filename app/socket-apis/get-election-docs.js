@@ -57,7 +57,7 @@ export default async function getElectionDocs(cb) {
         if (!iotas) return cb && cb()
         if (!iotas.length) return cb && cb(iotas)
         const merged = mergeElectionChildren(iotas)
-        if (cb) cb(merged)
+        if (cb) cb(merged.map(doc => doc.webComponent || {})) // electionDocs of the webComponent of Iotas
     } catch (err) {
         logger.error('getElectionDocs caught error:', err)
         if (cb) cb()

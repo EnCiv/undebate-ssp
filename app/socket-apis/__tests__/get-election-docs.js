@@ -150,93 +150,69 @@ test('get election docs should get them', done => {
             expect(docs).toMatchInlineSnapshot(`
                 Array [
                   Object {
-                    "_id": "628c739b0d8c5d32e4f4ff51",
-                    "description": "Election document #1",
-                    "subject": "Election document",
-                    "userId": "628d0a2afacbb605f4d8e6ac",
-                    "webComponent": Object {
-                      "webComponent": "ElectionDoc",
-                    },
+                    "webComponent": "ElectionDoc",
                   },
                   Object {
-                    "_id": "628c73af5a4b8e3c04b5f895",
-                    "description": "Election document #2",
-                    "subject": "Election document",
-                    "userId": "628d0a2afacbb605f4d8e6ac",
-                    "webComponent": Object {
-                      "webComponent": "ElectionDoc",
-                    },
+                    "webComponent": "ElectionDoc",
                   },
                   Object {
-                    "_id": "628c73c61be5e1526c288f18",
-                    "description": "Election document #3",
-                    "subject": "Election document",
-                    "userId": "628d0a2afacbb605f4d8e6ac",
-                    "webComponent": Object {
-                      "webComponent": "ElectionDoc",
-                    },
+                    "webComponent": "ElectionDoc",
                   },
                   Object {
-                    "_id": "628c73daf2014b3f4c5da4ee",
-                    "description": "Election document #4",
-                    "subject": "Election document",
-                    "userId": "628d0a2afacbb605f4d8e6ac",
-                    "webComponent": Object {
-                      "moderator": Object {
-                        "recorders": Object {
-                          "628d076dcf19df5aa438c07a": Object {
-                            "_id": "628d076dcf19df5aa438c07a",
-                            "bp_info": Object {
-                              "office": "Moderator",
-                            },
-                            "component": Object {
-                              "component": "undebateCreator",
-                            },
-                            "description": "Moderator Recorder for #4",
-                            "parentId": "628c73daf2014b3f4c5da4ee",
-                            "subject": "Moderator Recorder for #4",
-                            "userId": "628d0a2afacbb605f4d8e6ac",
+                    "moderator": Object {
+                      "recorders": Object {
+                        "628d076dcf19df5aa438c07a": Object {
+                          "_id": "628d076dcf19df5aa438c07a",
+                          "bp_info": Object {
+                            "office": "Moderator",
                           },
-                        },
-                        "submissions": Object {
-                          "628d2d25c945f836b8be0901": Object {
-                            "_id": "628d2d25c945f836b8be0901",
-                            "component": Object {
-                              "component": "MergeParticipants",
-                              "participant": Object {
-                                "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
-                                "name": "david",
-                                "speaking": Array [
-                                  "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm",
-                                  "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510659/5d5b73c01e3b194174cd9b92-2-speaking.webm",
-                                  "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510665/5d5b73c01e3b194174cd9b92-3-speaking.webm",
-                                ],
-                              },
-                            },
-                            "description": "Moderator Recording for #4",
-                            "parentId": "628d0b225f7a7746488c0bff",
-                            "subject": "Moderator Recording for #4",
-                            "userId": "628d0a2afacbb605f4d8e6ac",
+                          "component": Object {
+                            "component": "undebateCreator",
                           },
+                          "description": "Moderator Recorder for #4",
+                          "parentId": "628c73daf2014b3f4c5da4ee",
+                          "subject": "Moderator Recorder for #4",
+                          "userId": "628d0a2afacbb605f4d8e6ac",
                         },
-                        "viewers": Object {
-                          "628d0b225f7a7746488c0bff": Object {
-                            "_id": "628d0b225f7a7746488c0bff",
-                            "bp_info": Object {
-                              "office": "Moderator",
+                      },
+                      "submissions": Object {
+                        "628d2d25c945f836b8be0901": Object {
+                          "_id": "628d2d25c945f836b8be0901",
+                          "component": Object {
+                            "component": "MergeParticipants",
+                            "participant": Object {
+                              "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
+                              "name": "david",
+                              "speaking": Array [
+                                "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm",
+                                "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510659/5d5b73c01e3b194174cd9b92-2-speaking.webm",
+                                "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510665/5d5b73c01e3b194174cd9b92-3-speaking.webm",
+                              ],
                             },
-                            "description": "Moderator Viewer for #4",
-                            "parentId": "628c73daf2014b3f4c5da4ee",
-                            "subject": "Moderator Viewer for #4",
-                            "userId": "628d0a2afacbb605f4d8e6ac",
-                            "webComponent": Object {
-                              "webComponent": "CandidateConversation",
-                            },
+                          },
+                          "description": "Moderator Recording for #4",
+                          "parentId": "628d0b225f7a7746488c0bff",
+                          "subject": "Moderator Recording for #4",
+                          "userId": "628d0a2afacbb605f4d8e6ac",
+                        },
+                      },
+                      "viewers": Object {
+                        "628d0b225f7a7746488c0bff": Object {
+                          "_id": "628d0b225f7a7746488c0bff",
+                          "bp_info": Object {
+                            "office": "Moderator",
+                          },
+                          "description": "Moderator Viewer for #4",
+                          "parentId": "628c73daf2014b3f4c5da4ee",
+                          "subject": "Moderator Viewer for #4",
+                          "userId": "628d0a2afacbb605f4d8e6ac",
+                          "webComponent": Object {
+                            "webComponent": "CandidateConversation",
                           },
                         },
                       },
-                      "webComponent": "ElectionDoc",
                     },
+                    "webComponent": "ElectionDoc",
                   },
                 ]
             `)

@@ -2,11 +2,7 @@
 import { serverEvents, Iota } from 'civil-server'
 import { merge } from 'lodash'
 import { subscribeEventName } from '../components/lib/socket-api-subscribe'
-import {
-    getElectionDocById,
-    intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs,
-    intoRootMergeChildrenOfParentFromIotasMarkingUsedIndexs,
-} from './get-election-docs'
+import { getElectionDocById, intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs } from './get-election-docs'
 
 // there could be multiple subscribers to changes on the same id.  When a change is made to an id, be careful to only update the electionIota once, and then send the update to all the subscribers.
 // currently, updates are the entire iota, in the ideal, only what's changed will be send in the update.
@@ -31,7 +27,7 @@ function finishSubscribe(socket, id, cb) {
     electionIotaSubscribers[id].sockets.push(socket)
     socket.join(id) // join this user into the socket.io room related to this item
     onSocketDisconnect(socket, id)
-    cb && cb(electionIotaSubscribers[id].electionIota)
+    cb && cb(electionIotaSubscribers[id].electionIota.webComponent)
 }
 
 let serverEventsSubscribed = false
@@ -91,6 +87,7 @@ export function updateElectionInfo(rootId, parentId, iotas) {
     intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(update, electionIota, parentId, iotas, [])
     const eventName = subscribeEventName('subscribe-election-info', rootId)
     merge(electionIota, update)
-    socket.broadcast.to(rootId).emit(eventName, update)
-    socket.emit(eventName, update) // broadcast above doesn't send it to the socket itself
+    const electionUpdates = update.webComponent || {}
+    socket.broadcast.to(rootId).emit(eventName, electionUpdates)
+    socket.emit(eventName, electionUpdates) // broadcast above doesn't send it to the socket itself
 }
