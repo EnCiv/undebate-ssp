@@ -9,12 +9,11 @@ export default SibSMTPApi
 
 // parse through HTML text to get the {{params}}
 const uniqueParams = content =>
-    content
-        .match(/{{([\w.]+)}}/g) // get the {{params}}
+    (content.match(/{{\s*([\w.]+)\s*}}/g) || []) // get the {{ params }} [] in case there's none
         .map(str => str.replace('{{', '').replace('}}', ''))
+        .map(s => s.trim())
         .sort((a, b) => a.localeCompare(b))
         .filter((str, pos, ary) => !pos || str != ary[pos - 1]) // filter out duplicates
-        .map(s => s.trim())
 
 async function SibCreateTemplate(name, templateName, htmlContent) {
     const subject = htmlContent.match(/<title[^>]*>([^<]+)<\/title>/)[1] || templateName
@@ -66,6 +65,7 @@ async function SibGetTemplate(name, htmlContent) {
 }
 
 export async function SibGetTemplateId(templateName) {
+    debugger
     try {
         const htmlFile = path.resolve(__dirname, `../../assets/email-templates/${templateName}.html`)
         const htmlContent = fs.readFileSync(htmlFile, 'utf8')
