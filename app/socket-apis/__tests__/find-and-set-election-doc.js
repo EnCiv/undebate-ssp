@@ -5,16 +5,14 @@ import { Iota, User } from 'civil-server'
 import findAndSetElectionDoc from '../find-and-set-election-doc'
 const ObjectID = Iota.ObjectId
 
-// dummy out logger for tests
-if (!global.logger) {
-    global.logger = console
-}
+global.logger = { error: jest.fn((...args) => args) }
 
 const testDoc = {
-    _id: ObjectID(),
+    _id: ObjectID('62ac1922d6812e1f90583e43'),
     subject: 'Election Document #1',
     description: 'Election Document',
     webComponent: {},
+    userId: '62ac19bb1fa2ea539849b122',
 }
 
 const mockElection = {
@@ -53,20 +51,24 @@ const mockElection = {
         name: 'Bill Smith',
         email: 'billsmith@gmail.com',
         message: 'Please be a moderator',
-        invitations: [
+        invitations: {
             // derived data, list may be empty or not present
-            {
-                _id: ObjectID(),
+            '62ac19413a924c163c12a88b': {
+                _id: ObjectID('62ac19413a924c163c12a88b'),
                 text: 'Hi Mike, please send answers',
                 sentDate: '2022-02-10T00:50:16.802Z',
                 responseDate: '2022-02-10T00:50:16.802Z',
                 status: 'Accepted',
             },
-        ],
-        submissions: [
+        },
+        submissions: {
             // derived data, list may be empty or not present
-            { _id: ObjectID(), url: 'url', date: '2022-02-10T00:50:16.802Z' },
-        ],
+            '62ac1955520661234c14d5fd': {
+                _id: ObjectID('62ac1955520661234c14d5fd'),
+                url: 'url',
+                date: '2022-02-10T00:50:16.802Z',
+            },
+        },
     },
     candidates: {
         '61e76bbefeaa4a25840d85d0': {
@@ -75,20 +77,25 @@ const mockElection = {
             email: 'sarahjones@mail.com',
             office: 'President of the U.S.',
             region: 'United States',
-            invitations: [
+            invitations: {
                 // derived data - list may be empty or not present
-                {
-                    _id: ObjectID().toString(),
+                '62ac196cf1a3893c84d0b41d': {
+                    _id: ObjectID('62ac196cf1a3893c84d0b41d'),
                     text: 'text',
                     sentDate: '2022-02-10T00:50:16.802Z',
                     responseDate: '2022-02-10T00:50:16.802Z',
                     status: 'Accepted',
                 },
-            ],
-            submissions: [
+            },
+            submissions: {
                 // derived data - list may be empty or not present
-                { _id: ObjectID(), url: 'url', date: '2022-02-10T00:50:16.802Z', parentId: '6204672e8d39d45d1cbcc0a6' },
-            ],
+                '62ac197d51df8d46dc0b45b0': {
+                    _id: ObjectID('62ac197d51df8d46dc0b45b0'),
+                    url: 'url',
+                    date: '2022-02-10T00:50:16.802Z',
+                    parentId: '6204672e8d39d45d1cbcc0a6',
+                },
+            },
         },
         '61e76bfc8a82733d08f0cf12': {
             uniqueId: '61e76bfc8a82733d08f0cf12',
@@ -96,23 +103,23 @@ const mockElection = {
             email: 'mikejeff@mail.com',
             office: 'President of the U.S.',
             region: 'United States',
-            invitations: [
-                {
-                    _id: ObjectID().toString(),
+            invitations: {
+                '62ac198e4b78fa3fd81beebb': {
+                    _id: ObjectID('62ac198e4b78fa3fd81beebb'),
                     text: 'Hi Mike, please send answers',
                     sentDate: '2022-02-10T00:50:16.802Z',
                     responseDate: '2022-02-10T00:50:16.802Z',
                     status: 'Declined',
                 },
-            ],
-            submissions: [
-                {
-                    _id: ObjectID().toString(),
-                    url: '2022-02-10T00:50:16.802Z',
+            },
+            submissions: {
+                '62ac199835ae8635b0076b62': {
+                    _id: ObjectID('62ac199835ae8635b0076b62'),
+                    url: 'url.com',
                     date: '2022-02-10T00:50:16.802Z',
                     parentId: '6204672e8d39d45d1cbcc0a6',
                 },
-            ],
+            },
         },
     },
     timeline: {
@@ -163,6 +170,7 @@ const mockElection = {
 }
 
 const exampleUser = {
+    _id: User.ObjectID('62ac19bb1fa2ea539849b122'),
     firstName: 'Example',
     lastName: 'User',
     email: 'example.user@example.com',
@@ -180,9 +188,8 @@ beforeAll(async () => {
     // eslint-disable-next-line no-restricted-syntax
     for await (const init of toInit) await init()
     const user = await User.create(exampleUser)
-    apisThis.synuser.id = MongoModels.ObjectID(user._id).toString()
+    apisThis.synuser.id = exampleUser._id.toString()
 
-    testDoc.userId = apisThis.synuser.id
     await Iota.create(testDoc)
 })
 
@@ -216,10 +223,42 @@ test('it can find and set a valid doc', done => {
     findAndSetElectionDoc.call(apisThis, { subject: 'Election Document #1' }, mockElection, callback)
 })
 
-test('it should fail is setting webComponent to wrong value', done => {
+test('it should fail if setting webComponent to wrong value', done => {
     async function callback(res) {
         try {
             expect(res).toEqual(undefined)
+            expect(global.logger.error.mock.results[0].value).toMatchInlineSnapshot(`
+                Array [
+                  "ElectionDoc validation",
+                  "{
+                  \\"value\\": {
+                    \\"webComponent\\": \\"Dummy\\"
+                  },
+                  \\"error\\": {
+                    \\"_original\\": {
+                      \\"webComponent\\": \\"Dummy\\"
+                    },
+                    \\"details\\": [
+                      {
+                        \\"message\\": \\"\\\\\\"webComponent\\\\\\" must be [ElectionDoc]\\",
+                        \\"path\\": [
+                          \\"webComponent\\"
+                        ],
+                        \\"type\\": \\"any.only\\",
+                        \\"context\\": {
+                          \\"valids\\": [
+                            \\"ElectionDoc\\"
+                          ],
+                          \\"label\\": \\"webComponent\\",
+                          \\"value\\": \\"Dummy\\",
+                          \\"key\\": \\"webComponent\\"
+                        }
+                      }
+                    ]
+                  }
+                }",
+                ]
+            `)
             const result = await Iota.findOne({ subject: 'Election Document #1' })
             expect(result.webComponent).toEqual(mockElection)
             done()
@@ -228,4 +267,217 @@ test('it should fail is setting webComponent to wrong value', done => {
         }
     }
     findAndSetElectionDoc.call(apisThis, { subject: 'Election Document #1' }, { webComponent: 'Dummy' }, callback)
+})
+
+test('it should set a deep property without deleting other properties', done => {
+    async function callback(res) {
+        try {
+            expect(res).toBeTruthy()
+            const result = await Iota.findOne({ subject: 'Election Document #1' })
+            expect(result.webComponent.moderator).toMatchInlineSnapshot(`
+                Object {
+                  "email": "billsmith@gmail.com",
+                  "invitations": Object {
+                    "62ac19413a924c163c12a88b": Object {
+                      "_id": "62ac19413a924c163c12a88b",
+                      "responseDate": "2022-02-10T00:50:16.802Z",
+                      "sentDate": "2022-02-10T00:50:16.802Z",
+                      "status": "Accepted",
+                      "text": "Hi Mike, please send answers",
+                    },
+                  },
+                  "message": "Please be a moderator",
+                  "name": "William Smith",
+                  "submissions": Object {
+                    "62ac1955520661234c14d5fd": Object {
+                      "_id": "62ac1955520661234c14d5fd",
+                      "date": "2022-02-10T00:50:16.802Z",
+                      "url": "url",
+                    },
+                  },
+                }
+            `)
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    findAndSetElectionDoc.call(
+        apisThis,
+        { subject: 'Election Document #1' },
+        { moderator: { name: 'William Smith' } },
+        callback
+    )
+})
+
+test('it should be able to add a new property to an object-list', done => {
+    async function callback(res) {
+        try {
+            expect(res).toBeTruthy()
+            const result = await Iota.findOne({ subject: 'Election Document #1' })
+            expect(result.webComponent.moderator).toMatchInlineSnapshot(`
+                Object {
+                  "email": "billsmith@gmail.com",
+                  "invitations": Object {
+                    "62ac19413a924c163c12a88b": Object {
+                      "_id": "62ac19413a924c163c12a88b",
+                      "responseDate": "2022-02-10T00:50:16.802Z",
+                      "sentDate": "2022-02-10T00:50:16.802Z",
+                      "status": "Accepted",
+                      "text": "Hi Mike, please send answers",
+                    },
+                  },
+                  "message": "Please be a moderator",
+                  "name": "William Smith",
+                  "submissions": Object {
+                    "62ac1955520661234c14d5fd": Object {
+                      "_id": "62ac1955520661234c14d5fd",
+                      "date": "2022-02-10T00:50:16.802Z",
+                      "url": "url",
+                    },
+                    "62aca621acfdb80f40cbf2b4": Object {
+                      "_id": "62aca621acfdb80f40cbf2b4",
+                      "date": "2022-06-10T00:50:16.802Z",
+                      "parentId": "6204672e8d39d45d1cbcc0a6",
+                      "url": "url.com",
+                    },
+                  },
+                }
+            `)
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    findAndSetElectionDoc.call(
+        apisThis,
+        { subject: 'Election Document #1' },
+        {
+            moderator: {
+                submissions: {
+                    '62aca621acfdb80f40cbf2b4': {
+                        _id: ObjectID('62aca621acfdb80f40cbf2b4'),
+                        url: 'url.com',
+                        date: '2022-06-10T00:50:16.802Z',
+                        parentId: '6204672e8d39d45d1cbcc0a6',
+                    },
+                },
+            },
+        },
+        callback
+    )
+})
+
+test('it should be able to delete a property from an object-list', done => {
+    async function callback(res) {
+        try {
+            expect(res).toBeTruthy()
+            const result = await Iota.findOne({ subject: 'Election Document #1' })
+            expect(result.webComponent.moderator).toMatchInlineSnapshot(`
+                Object {
+                  "email": "billsmith@gmail.com",
+                  "invitations": Object {
+                    "62ac19413a924c163c12a88b": Object {
+                      "_id": "62ac19413a924c163c12a88b",
+                      "responseDate": "2022-02-10T00:50:16.802Z",
+                      "sentDate": "2022-02-10T00:50:16.802Z",
+                      "status": "Accepted",
+                      "text": "Hi Mike, please send answers",
+                    },
+                  },
+                  "message": "Please be a moderator",
+                  "name": "William Smith",
+                  "submissions": Object {
+                    "62aca621acfdb80f40cbf2b4": Object {
+                      "_id": "62aca621acfdb80f40cbf2b4",
+                      "date": "2022-06-10T00:50:16.802Z",
+                      "parentId": "6204672e8d39d45d1cbcc0a6",
+                      "url": "url.com",
+                    },
+                  },
+                }
+            `)
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    findAndSetElectionDoc.call(
+        apisThis,
+        { subject: 'Election Document #1' },
+        {
+            moderator: {
+                submissions: {
+                    '62ac1955520661234c14d5fd': undefined,
+                },
+            },
+        },
+        callback
+    )
+})
+
+test('it should be able to set and delete multiple properties', done => {
+    async function callback(res) {
+        try {
+            expect(res).toBeTruthy()
+            const result = await Iota.findOne({ subject: 'Election Document #1' })
+            expect(result.webComponent.moderator).toMatchInlineSnapshot(`
+                Object {
+                  "email": "billsmith@gmail.com",
+                  "invitations": Object {
+                    "62ac19413a924c163c12a88b": Object {
+                      "_id": "62ac19413a924c163c12a88b",
+                      "responseDate": "2022-02-10T00:50:16.802Z",
+                      "sentDate": "2022-02-10T00:50:16.802Z",
+                      "text": "Hi Mike, please send answers",
+                    },
+                  },
+                  "message": "Please, please, be a moderator",
+                  "name": "Bill Smith",
+                  "submissions": Object {
+                    "62aca621acfdb80f40cbf2b4": Object {
+                      "_id": "62aca621acfdb80f40cbf2b4",
+                      "date": "2022-06-10T00:50:16.802Z",
+                      "parentId": "6204672e8d39d45d1cbcc0a6",
+                      "url": "url.com",
+                    },
+                    "62aca95ea9060d2e64e8402a": Object {
+                      "_id": "62aca95ea9060d2e64e8402a",
+                      "date": "2022-06-17T00:50:16.802Z",
+                      "parentId": "6204672e8d39d45d1cbcc0a6",
+                      "url": "https://enciv.org",
+                    },
+                  },
+                }
+            `)
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    findAndSetElectionDoc.call(
+        apisThis,
+        { subject: 'Election Document #1' },
+        {
+            moderator: {
+                name: 'Bill Smith',
+                message: 'Please, please, be a moderator',
+                invitations: {
+                    '62ac19413a924c163c12a88b': {
+                        status: undefined,
+                    },
+                },
+                submissions: {
+                    '62ac1955520661234c14d5fd': undefined, // it's not there though
+                    '62aca95ea9060d2e64e8402a': {
+                        _id: ObjectID('62aca95ea9060d2e64e8402a'),
+                        date: '2022-06-17T00:50:16.802Z',
+                        parentId: '6204672e8d39d45d1cbcc0a6',
+                        url: 'https://enciv.org',
+                    },
+                },
+            },
+        },
+        callback
+    )
 })
