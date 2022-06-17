@@ -16,6 +16,7 @@ const testDoc = {
 }
 
 const mockElection = {
+    webComponent: 'ElectionDoc',
     electionName: 'U.S Presidential Election',
     organizationName: 'United States Federal Government',
     electionDate: '2022-11-07T23:59:59.999Z',
