@@ -11,16 +11,21 @@ const electionIotaSubscribers = {}
 
 function onSocketDisconnect(socket, id) {
     socket.on('disconnect', () => {
-        const i = electionIotaSubscribers[id].sockets.findIndex(s => s === socket)
-        if (i < 0) {
-            logger.error('could find socket', socket)
-            return
-        }
-        electionIotaSubscribers[id].sockets.splice(i, 1)
-        if (electionIotaSubscribers[id].sockets.length === 0) {
-            delete electionIotaSubscribers[id]
-        }
+        removeSocket(socket, id)
     })
+}
+
+export function removeSocket(socket, id) {
+    const i = electionIotaSubscribers[id]?.sockets?.findIndex(s => s === socket) || -1
+    if (i < 0) {
+        // this happens when the server restarts with browsers still open,
+        // the browers will try to unsubscribe from sockets that don't exist anymore
+        return
+    }
+    electionIotaSubscribers[id].sockets.splice(i, 1)
+    if (electionIotaSubscribers[id].sockets.length === 0) {
+        delete electionIotaSubscribers[id]
+    }
 }
 
 function finishSubscribe(socket, id, cb) {
@@ -79,8 +84,9 @@ export function updateElectionInfo(rootId, parentId, iotas) {
     }
     const { electionIota, sockets } = electionIotaSubscribers[rootId]
     if (sockets.length === 0) {
-        logger.warn('subscribeElectionInfo expected subscibers of', id, 'to have . deleting the object')
-        delete electionIotaSubscribers[id]
+        logger.warn('subscribeElectionInfo expected subscibers of', rootId, 'to have . deleting the object')
+        delete electionIotaSubscribers[rootId]
+        return
     }
     const socket = sockets[0] // only need the first one, broadcast will send to all the rest
     const update = {}
@@ -90,4 +96,25 @@ export function updateElectionInfo(rootId, parentId, iotas) {
     const electionUpdates = update.webComponent || {}
     socket.broadcast.to(rootId).emit(eventName, electionUpdates)
     socket.emit(eventName, electionUpdates) // broadcast above doesn't send it to the socket itself
+}
+
+export function updateSubscribers(rootId, update) {
+    if (!rootId) {
+        logger.warn('updateSubscribers - no parentId')
+        return
+    }
+    if (!electionIotaSubscribers[rootId]) {
+        logger.warn('updateSubscribers - electionObjSubscriber of', rootId, 'not found')
+        return
+    }
+    const { electionIota, sockets } = electionIotaSubscribers[rootId]
+    if (sockets.length === 0) {
+        logger.warn('updateSubscribers expected subscibers of', drootI, 'to have . deleting the object')
+        delete electionIotaSubscribers[rootId]
+        return
+    }
+    const eventName = subscribeEventName('subscribe-election-info', rootId)
+    merge(electionIota, update)
+    const electionUpdates = update.webComponent || {}
+    this.broadcast.to(rootId).emit(eventName, electionUpdates)
 }

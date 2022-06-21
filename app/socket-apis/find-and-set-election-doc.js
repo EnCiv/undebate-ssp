@@ -3,6 +3,7 @@
 import { Iota } from 'civil-server'
 import Joi from 'joi'
 import JoiObjectID from 'joi-objectid'
+import { updateSubscribers } from './subscribe-election-info'
 
 Joi.objectId = JoiObjectID(Joi)
 
@@ -134,11 +135,14 @@ export default async function findAndSetElectionDoc(query, doc, cb) {
         logger.error('ElectionDoc validation', JSON.stringify(valid, null, 2))
         return cb && cb()
     }
+    const id = query._id
+    if (typeof id !== 'string') logger.error('id was not a string', id)
     if (query._id) query._id = Iota.ObjectID(query._id)
     const [sets, unsets] = docToSetUnset({ webComponent: doc })
     try {
         // upsert
         await Iota.updateOne(query, { $set: sets, $unset: unsets })
+        updateSubscribers.call(this, id, { webComponent: doc })
         return cb && cb(true)
     } catch (err) {
         logger.error('upsertElectionDoc', err)

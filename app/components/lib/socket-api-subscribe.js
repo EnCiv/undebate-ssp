@@ -16,7 +16,7 @@ export default function socketApiSubscribe(handle, id, ...args) {
     window.socket.on(eventName, updateHandler)
     window.socket.emit(handle, id, ...args, resultHandler)
     return () => {
-        window.socket.leave(eventName)
+        window.socket.emit('unsubscribe', eventName)
     }
 }
 
