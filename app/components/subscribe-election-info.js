@@ -11,9 +11,18 @@ export default function SubscribeElectionInfo(props) {
     const electionOM = useMethods(
         (dispatch, state) => ({
             ...getElectionStatusMethods(dispatch, state),
-            upsert(obj) {
-                console.info('upsert called with', obj)
+            merge(obj) {
+                console.info('merge called with', obj)
                 dispatch(merge({}, state, obj, { _count: (state?._count || 0) + 1 }))
+            },
+            upsert(obj) {
+                if (state.webComponent) {
+                    console.info('upsert called with', obj)
+                    window.socket.emit('find-and-set-election-doc', { _id: id }, obj)
+                    dispatch(merge({}, state, obj, { _count: (state?._count || 0) + 1 }))
+                } else {
+                    logger.info('upsert: no updates until state has been populated')
+                }
             },
             sendInvitation() {
                 dispatch(
@@ -45,10 +54,10 @@ export default function SubscribeElectionInfo(props) {
         const unsubscribe = socketApiSubscribe(
             'subscribe-election-info',
             id,
-            electionOM[1].upsert,
-            electionOM[1].upsert
+            electionOM[1].merge, // callback
+            electionOM[1].merge // update handler
         )
         return unsubscribe
-    }, [id])
+    }, [])
     return <ConfigureElection electionOM={electionOM} />
 }
