@@ -112,9 +112,10 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
                                       }
                                       onDone={({ valid, value }) => {
                                           if (
-                                              (typeof validInputs[i] === 'undefined' && valid) ||
-                                              validInputs[i] !== null ||
-                                              valid
+                                              ((typeof validInputs[i] === 'undefined' && valid) ||
+                                                  validInputs[i] !== null ||
+                                                  valid) &&
+                                              electionObj.script[i].text !== value
                                           ) {
                                               sideEffects.push(() =>
                                                   electionMethods.upsert({ script: { [i]: { text: value } } })

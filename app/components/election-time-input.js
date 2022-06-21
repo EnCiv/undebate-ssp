@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/6
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import ClockSolidSVG from '../svgr/clock-solid'
@@ -10,17 +10,18 @@ function ElectionTimeInput(props) {
     const classes = useStyles({ defaultValue, disabled })
     const inputRef = useRef(null)
 
+    // onDone for the initial render
+    useEffect(() => onDone({ valid: !!defaultValue, value: defaultValue }), [])
+    // onDone for when the defaultValue is changed from top down
     useEffect(() => {
-        handleDone()
+        if (!inputRef.current || inputRef.current.value === defaultValue) return
+        inputRef.current.value = defaultValue
+        onDone({ valid: !!defaultValue, value: defaultValue })
     }, [defaultValue])
 
-    const getTime = () => {
-        return inputRef.current.value
-    }
-
     const handleDone = () => {
-        const time = getTime()
-        onDone({ valid: !!time, value: time })
+        const value = inputRef.current.value
+        onDone({ valid: !!value, value })
     }
 
     return (

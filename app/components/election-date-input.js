@@ -4,7 +4,8 @@ import React, { useEffect, useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import Calendar from 'react-calendar'
 import { Calendar as SvgCalendar } from '../svgr'
-import 'react-calendar/dist/Calendar.css'
+import { useClickAway } from 'react-use'
+if (typeof window !== 'undefined') require('react-calendar/dist/Calendar.css')
 
 const splitDate = mdy => {
     const mMdDyY = mdy
@@ -20,9 +21,7 @@ const splitDate = mdy => {
 }
 
 const mdyToDate = mdy => {
-    if (!isMdyValid(mdy)) {
-        return new Date(NaN)
-    }
+    if (!isMdyValid(mdy)) return new Date(NaN)
     const [month, day, year] = splitDate(mdy)
     return new Date(year, month - 1, day)
 }
@@ -30,13 +29,6 @@ const mdyToDate = mdy => {
 const isMdyValid = mdy => {
     const str = new Date(mdy).toLocaleDateString()
     return str !== 'Invalid Date'
-}
-
-const dateToMdy = date => {
-    const month = date.getMonth() + 1
-    const day = date.getDate()
-    const year = date.getFullYear()
-    return `${month}/${day}/${year}`
 }
 
 function toLocaleDateStr(str) {
@@ -54,57 +46,33 @@ function toISODateValidValue(str) {
 export default function ElectionDateInput(props) {
     // defaultValue: mm/dd/yyyy string
     // onDone: ({valid: bool, value: Date}): null
-    const { defaultValue = '', disabled = false, onDone: propOnDone = () => {} } = props
+    const { defaultValue = '', disabled = false, onDone = () => {} } = props
 
     const [error, setError] = useState(null)
     const [datePickerOpen, setDatePickerOpen] = useState(false)
-    const parentEl = useRef(null)
+    const parentRef = useRef(null)
     const inputRef = useRef(null)
 
     const localeDefaultValue = toLocaleDateStr(defaultValue)
-
-    // side effects are functions that should be executed after the render has completed
-    const [sideEffects] = useState([])
+    // onDone for initial render
+    useEffect(() => onDone({ value: defaultValue, valid: isMdyValid(localeDefaultValue) }), [])
+    // onDone after defaultValue is changed from the top down
     useEffect(() => {
-        while (sideEffects.length) sideEffects.shift()()
-    })
-
-    // before the render, we need to check if defaultValue has changed from the top down (by a parent component)
-    // but we can't execute the onDone until after the render is complete (because react doesn't let you run hooks while rendering a component)
-    // so it is pushed as a side effect
-    if (!inputRef.current) {
-        // first time through
-        sideEffects.push(() => propOnDone(toISODateValidValue(defaultValue)))
-    } else if (inputRef.current.value !== localeDefaultValue) {
-        sideEffects.push(() => propOnDone(toISODateValidValue(getInputValue())))
-    }
+        if (!inputRef.current || inputRef.current.value === localeDefaultValue) return
+        inputRef.current.value = localeDefaultValue
+        onDone({ value: defaultValue, valid: isMdyValid(localeDefaultValue) })
+    }, [defaultValue])
 
     const classes = useStyles({
         disabled,
         error,
     })
 
-    const getInputValue = () => {
-        if (!inputRef.current) return defaultValue
-        else return inputRef.current.value
-    }
-
-    useEffect(() => {
-        const onNonDatepickerClick = e => {
-            if (
-                !parentEl.current.contains(e.target) &&
-                !(e.target.className.includes && e.target.className.includes(classes.datePickerPart))
-            ) {
-                if (datePickerOpen) {
-                    blurDateInput(getInputValue())
-                }
-                setDatePickerOpen(false)
-            }
+    useClickAway(parentRef, () => {
+        if (datePickerOpen) {
+            blurDateInput(inputRef.current.value)
         }
-        document.addEventListener('click', onNonDatepickerClick)
-        return () => {
-            document.removeEventListener('click', onNonDatepickerClick)
-        }
+        setDatePickerOpen(false)
     })
 
     const onInputChange = e => {
@@ -116,16 +84,12 @@ export default function ElectionDateInput(props) {
         }
     }
     const onDatePickerChange = date => {
-        const value = date.toLocaleDateStr()
+        const value = date.toLocaleDateString()
         const valid = isMdyValid(value)
         if (!valid) setError('Please enter a valid date')
         else setError(null)
         inputRef.current.value = value // to prevent extra iteration of onDone after defaultValue is changed from parent
-        //no need for propOnDone({ valid, value }) here - blurDateInput will get called when the Calendar is closed
-    }
-
-    const datePickerButtonOnClick = () => {
-        setDatePickerOpen(!datePickerOpen)
+        //no need for onDone({ valid, value }) here - blurDateInput will get called when the Calendar is closed
     }
 
     const blurDateInput = value => {
@@ -133,11 +97,11 @@ export default function ElectionDateInput(props) {
         if (!valid) {
             setError('Please enter a valid date')
         }
-        propOnDone(toISODateValidValue(getInputValue()))
+        onDone(toISODateValidValue(value))
     }
 
     return (
-        <div ref={parentEl}>
+        <div ref={parentRef}>
             <div className={classes.dateInputWrapper}>
                 <span className={classes.inputContainer}>
                     <input
@@ -158,7 +122,7 @@ export default function ElectionDateInput(props) {
                         disabled={disabled}
                         type='button'
                         className={classes.datePickerButton}
-                        onClick={datePickerButtonOnClick}
+                        onClick={() => setDatePickerOpen(!datePickerOpen)}
                         key='button'
                     >
                         <SvgCalendar className={classes.icon} />
@@ -170,7 +134,7 @@ export default function ElectionDateInput(props) {
                 <Calendar
                     className={classes.datePicker}
                     tileClassName={[classes.datePickerTile, classes.datePickerPart]}
-                    value={isMdyValid(getInputValue()) ? mdyToDate(getInputValue()) : new Date()}
+                    value={isMdyValid(inputRef.current.value) ? mdyToDate(inputRef.current.value) : new Date()}
                     onChange={onDatePickerChange}
                 />
             )}
