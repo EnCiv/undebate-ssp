@@ -40,6 +40,8 @@ npm run transpile  || {
 }
 echo "transpile ok"
 
+node_modules/jss-cli/bin/jss.js convert node_modules/react-calendar/dist/Calendar.css -f js -e cjs > node_modules/react-calendar/dist/react-calendar-css.js
+
 #echo '*************************************************************************'
 #echo WEBPACK
 #echo '*************************************************************************'

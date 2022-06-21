@@ -5,7 +5,12 @@ import { createUseStyles } from 'react-jss'
 import Calendar from 'react-calendar'
 import { Calendar as SvgCalendar } from '../svgr'
 import { useClickAway } from 'react-use'
-if (typeof window !== 'undefined') require('react-calendar/dist/Calendar.css')
+
+// added this line to postinstall.js to make this work
+// node_modules/jss-cli/bin/jss.js convert node_modules/react-calendar/dist/Calendar.css -f js -e cjs > node_modules/react-calendar/dist/react-calendar-css.js
+// don't for get to call useCalendarStyle() in the react component below to get the styles pulled in
+import reactCalendarCss from 'react-calendar/dist/react-calendar-css'
+const useReactCalendarCss = createUseStyles(reactCalendarCss)
 
 const splitDate = mdy => {
     const mMdDyY = mdy
@@ -67,6 +72,8 @@ export default function ElectionDateInput(props) {
         disabled,
         error,
     })
+
+    useReactCalendarCss() // have to do this to get it pulled in
 
     useClickAway(parentRef, () => {
         if (datePickerOpen) {
