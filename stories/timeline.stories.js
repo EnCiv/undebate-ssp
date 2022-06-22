@@ -25,7 +25,7 @@ const addDays = (date, days) => {
 export const TimelineTest = Template.bind({})
 TimelineTest.args = {
     defaultElectionObj: {
-        _id: '621aef18cdd5d35c69336ad0',
+        id: '621aef18cdd5d35c69336ad0',
         electionName: 'U.S Presidential Election',
         organizationName: 'United States Federal Government',
         undebateDate: addDays(new Date(), 3),
@@ -80,7 +80,7 @@ TimelineTest.args = {
 export const EmptyTimeline = Template.bind({})
 EmptyTimeline.args = {
     defaultElectionObj: {
-        _id: '621aef18cdd5d35c69336ad0',
+        id: '621aef18cdd5d35c69336ad0',
         electionName: 'U.S Presidential Election',
         organizationName: 'United States Federal Government',
         timeline: {

@@ -1,78 +1,68 @@
 // https://github.com/EnCiv/undebate-ssp/issue/20
-import React, { useState } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import Header from './election-header'
-import NavigationPanel from './navigation-panel'
-import ElectionComponent from './election-component'
-import Timeline from './timeline'
-import Questions from './questions'
-import Script from './script'
-import Invitation from './invitation'
-import ElectionTable from './candidate-table'
-import Submissions from './submissions'
-import Submission from './submission'
-import Undebate from './undebate'
-
-const components = {
-    Election: ElectionComponent,
-    Timeline: Timeline,
-    Questions: Questions,
-    Script: Script,
-    Invitation: Invitation,
-    Submission: Submission,
-    'Election Table': ElectionTable,
-    Submissions: Submissions,
-    Undebate: Undebate,
-}
+import UndebatesList from './undebates-list'
+import ElectionHeader from './election-header'
+import SubscribeElectionInfo from './subscribe-election-info'
+import UndebatesHeaderBar from './undebates-header-bar'
 
 export default function UndebateHomepage(props) {
-    const { className, style, electionOM, user } = props
+    const { className, style, user } = props
+    const [electionObjs, setElectionObjs] = useState([])
     const classes = useStyles(props)
-    const [component, setComponent] = useState('Election')
-    const Component = components[component] || ElectionComponent
-    const [electionObj, electionMethods] = electionOM
-
+    const [selectedId, setSelectedId] = useState('')
+    const index = selectedId ? electionObjs.findIndex(eObj => eObj.id === selectedId) : -1
+    const electionNames = useMemo(() => electionObjs.map(obj => obj.electionName), [electionObjs])
+    useEffect(() => {
+        window.socket.emit('get-election-docs', objs => objs && setElectionObjs(objs))
+    }, [])
+    const createNew = () => {
+        window.socket.emit('create-election-doc', id => {
+            if (!id) return
+            setSelectedId(id)
+        })
+    }
     return (
-        <div className={cx(className, classes.wrapper)} style={style}>
-            <Header elections={[electionObj.electionName]} className={classes.header} user={user} />
-            <div className={classes.workArea}>
-                <NavigationPanel
-                    className={classes.nav}
-                    electionOM={electionOM}
-                    onDone={({ valid, value }) => {
-                        if (components[value]) setComponent(value)
-                        else console.error('UndebateHomepage got', value, 'expected a valid component name')
-                    }}
-                />
-                <div className={classes.comp}>
-                    <Component className={classes.inner} electionOM={electionOM} key={component} />
-                </div>
-            </div>
+        <div className={cx(className, classes.undebateHomePage)} style={style}>
+            {/*key below to make sure React creates new component rather than reuse existing which would screw up subscription */}
+            {selectedId ? (
+                <>
+                    <ElectionHeader
+                        elections={selectedId ? electionNames : ['Select One']}
+                        defaultValue={index}
+                        className={classes.header}
+                        user={user}
+                        onDone={({ valid, value }) =>
+                            setSelectedId(electionObjs.find(obj => obj.electionName === electionNames[value]).id)
+                        }
+                    />
+                    <SubscribeElectionInfo id={selectedId} key={selectedId} />
+                </>
+            ) : (
+                <>
+                    <UndebatesHeaderBar
+                        electionOM={[, { createNew }]}
+                        className={classes.header}
+                        user={user}
+                        onDone={({ valid, value }) =>
+                            setSelectedId(electionObjs.find(obj => obj.electionName === electionNames[value]).id)
+                        }
+                    />
+                    <UndebatesList
+                        electionObjs={electionObjs}
+                        onDone={({ value, valid }) => setSelectedId(value)}
+                        key='list'
+                    />
+                </>
+            )}
         </div>
     )
 }
 
 const useStyles = createUseStyles(theme => ({
-    wrapper: {},
+    undebateHomePage: {},
     header: {
         height: '100%',
     },
-    workArea: {
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'nowrap',
-    },
-    nav: {
-        width: '25rem',
-        borderTop: `1px solid ${theme.thinBorderColor}`,
-        borderRight: `1px solid ${theme.thinBorderColor}`,
-        paddingTop: '2.5rem',
-    },
-    comp: {
-        width: '100%',
-        borderTop: `1px solid ${theme.thinBorderColor}`,
-        padding: '2.5rem 1rem 1rem 2.5rem',
-    },
-    inner: {},
 }))

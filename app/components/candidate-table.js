@@ -7,6 +7,7 @@ import Submit from './submit'
 import CandidateTableInput from './candidate-table-input'
 import UploadCSV from './upload-csv'
 import PasteGoogleSheetsLink from './paste-google-sheets-link'
+import { isEqual } from 'lodash'
 
 export default function CandidateTable(props) {
     const classes = useStyles()
@@ -85,7 +86,10 @@ export default function CandidateTable(props) {
             <div className={classes.form}>
                 <CandidateTableInput
                     onDone={({ valid, value }) => {
-                        if (typeof validInputs[value.uniqueId] !== 'undefined' || valid)
+                        if (
+                            (typeof validInputs[value.uniqueId] !== 'undefined' || valid) &&
+                            !isEqual(electionObj.candidates[value.uniqueId], value)
+                        )
                             sideEffects.push(() => electionMethods.upsert({ candidates: { [value.uniqueId]: value } }))
                         setValidInputs({ [value.uniqueId]: valid })
                     }}

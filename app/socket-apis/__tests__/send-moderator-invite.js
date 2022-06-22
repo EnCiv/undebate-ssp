@@ -202,8 +202,8 @@ maybe('Test the send moderator invite API', () => {
         function updated(doc) {
             // invitations is an object of key: doc, where the key could be anything
             // can't create a matcher for that in toMatchInlinSnapshot so pull it out manually
-            expect(doc.webComponent.moderator.invitations).toBeDefined()
-            let invitations = Object.values(doc.webComponent.moderator.invitations)
+            expect(doc.moderator.invitations).toBeDefined()
+            let invitations = Object.values(doc.moderator.invitations)
             expect(invitations.length).toEqual(1)
             let invitation = invitations[0]
             expect(invitation).toMatchInlineSnapshot(

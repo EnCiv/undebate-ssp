@@ -23,7 +23,7 @@ const Template = (args, context) => {
 }
 
 const defaultElectionObject = {
-    _id: 'mongoobjid',
+    id: 'mongoobjid',
     electionName: 'U.S Presidential Election',
     organizationName: 'United States Federal Government',
     electionDate: '2023-11-07T23:59:59.999Z',

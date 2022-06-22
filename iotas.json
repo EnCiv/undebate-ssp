@@ -230,5 +230,16 @@
         "webComponent": {
             "webComponent": "QaPasteGoogleSheetsPopup"
         }
+    },
+    {
+        "_id": {
+            "$oid": "62ab8f35cf2ae421e0887e03"
+        },
+        "path": "/undebates",
+        "subject": "Undebate Homepage",
+        "description": "The Undebate Home Page",
+        "webComponent": {
+            "webComponent": "UndebatesHomepage"
+        }
     }
 ]

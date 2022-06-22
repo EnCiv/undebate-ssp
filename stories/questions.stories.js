@@ -14,7 +14,7 @@ export default {
 
 export const QuestionsTest = mC({
     defaultElectionObj: {
-        _id: '123',
+        id: '123',
         questions: {
             0: {
                 text: '',
@@ -25,7 +25,7 @@ export const QuestionsTest = mC({
 
 export const WithData = mC({
     defaultElectionObj: {
-        _id: '2349099238402',
+        id: '2349099238402',
         questions: {
             0: {
                 text: 'What is your favorite color?',

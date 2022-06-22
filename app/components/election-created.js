@@ -11,7 +11,7 @@ const ElectionCreate = forwardRef((props, ref) => {
     const [electionObj, electionMethods] = electionOM
     const classes = useStyles()
     const formatDate = () => {
-        const date = moment(ObjectID(electionObj._id).getDate())
+        const date = moment(ObjectID(electionObj.id).getDate())
         const formatted = date.format('DD MMMM YYYY, LTS')
         return formatted
     }

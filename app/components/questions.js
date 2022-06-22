@@ -88,19 +88,22 @@ export default function Questions({ className, style, electionOM, onDone }) {
                 />
             </div>
             <div className={classes.questionBox}>
-                {Object.entries(questions).map((key, question) => (
+                {Object.entries(questions).map((key, qIndex) => (
                     <CountLimitedTextInput
                         key={key}
-                        name={`Question ${question + 1}`}
+                        name={`Question ${qIndex + 1}`}
                         maxCount={250}
-                        defaultValue={questions[question].text}
+                        defaultValue={questions[qIndex].text}
                         onDone={({ valid, value }) => {
-                            if (validInputs[question] !== null || valid) {
+                            if (
+                                (validInputs[qIndex] !== null || valid) &&
+                                electionObj.questions[qIndex].text !== value
+                            ) {
                                 sideEffects.push(() =>
-                                    electionMethods.upsert({ questions: { [question]: { text: value } } })
+                                    electionMethods.upsert({ questions: { [qIndex]: { text: value } } })
                                 )
                             }
-                            setValidInputs({ [question]: { text: value } })
+                            setValidInputs({ [qIndex]: { text: value } })
                         }}
                     />
                 ))}

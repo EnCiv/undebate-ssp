@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/12
 
-import { React, forwardRef, useState, useEffect, useRef } from 'react'
+import React, { forwardRef, useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import Plus from '../svgr/plus'
 import DateTimeInput from './datetime-input'
@@ -21,7 +21,7 @@ const TimelinePoint = forwardRef((props, ref) => {
     const classes = useStyles()
     const [validValues] = useState([])
     const { timeline = {} } = electionObj
-    const timelineObj = timelineKey ? timeline[timelineKey] || {} : { 0: electionObj[electionObjKey] || '' }
+    const timelineObj = timelineKey ? timeline[timelineKey] || {} : { 0: { date: electionObj[electionObjKey] || '' } }
 
     const [sideEffects] = useState([])
     useEffect(() => {
@@ -55,13 +55,20 @@ const TimelinePoint = forwardRef((props, ref) => {
                             onDone={({ valid, value }) => {
                                 validValues[i] = { valid, value }
                                 const isValid = areAllPairsValid()
-                                sideEffects.push(() => {
-                                    if (timelineKey)
-                                        electionMethods.upsert({
-                                            timeline: { [timelineKey]: { [i]: { date: value } } },
+                                if (timelineKey) {
+                                    if (timeline[timelineKey][i].date !== value) {
+                                        sideEffects.push(() => {
+                                            electionMethods.upsert({
+                                                timeline: { [timelineKey]: { [i]: { date: value } } },
+                                            })
                                         })
-                                    else electionMethods.upsert({ [electionObjKey]: value })
-                                })
+                                    }
+                                } else {
+                                    if (electionObj[electionObjKey] !== value)
+                                        sideEffects.push(() => {
+                                            electionMethods.upsert({ [electionObjKey]: value })
+                                        })
+                                }
                                 onDone({
                                     value: value,
                                     valid: isValid,

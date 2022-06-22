@@ -49,21 +49,47 @@ function Table({ columns, data, onRowClicked }) {
 
 export default function UndebatesList({ className, style, electionObjs, onDone }) {
     const classes = useStyles()
+    /*
+    // Do I make accessor for table elements calls to electionMethods???
+    const columns = [
+        {
+            Header: 'Election Name',
+            accessor: 'electionName',
+        },
+        {
+            Header: 'Date',
+            accessor: electionDates,
+        },
+        {
+            Header: 'Moderator',
+            accessor: moderatorStatus,
+        },
+        {
+            Header: 'Candidates',
+            accessor: candidates,
+        },
+        {
+            Header: 'Status',
+            accessor: status,
+        },
+    ]
 
     const onRowClicked = (row, e) => {
-        onDone({ value: row.original._id, valid: true })
+        onDone({ value: row.original.id, valid: true })
     }
 
     // Not sure if this is proper use of useMemo for "data"
-    const data = React.useMemo(() => electionObjs, [])
+    //const data = React.useMemo(() => electionObjs, [])
     // Eventually need to do electionOMs.map()....right now only doing one.
     const electionOMs = React.useMemo(
         () => electionObjs.map(obj => [obj, getElectionStatusMethods(null, obj)]),
         [electionObjs]
     )
-    const [electionObj, electionMethods] = electionOMs[0]
+    if (!electionOMs.length) return null
+
+    const [electionObj = {}, electionMethods = {}] = electionOMs[0] || []
     const electionDates = () => {
-        const createDate = moment(ObjectID(electionObj._id).getDate())
+        const createDate = moment(ObjectID(electionObj.id).getDate())
         const formattedCreateDate = createDate.format('DD.MM.YY')
         const endDate = moment(new Date(electionObj.electionDate))
         // const endDate = moment(electionObjs[0].electionDate).getDate());
@@ -85,38 +111,16 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
 
     const status = () => {
         return ''
-    }
-
-    // Do I make accessor for table elements calls to electionMethods???
-    const columns = React.useMemo(
-        () => [
-            {
-                Header: 'Election Name',
-                accessor: 'electionName',
-            },
-            {
-                Header: 'Date',
-                accessor: electionDates,
-            },
-            {
-                Header: 'Moderator',
-                accessor: moderatorStatus,
-            },
-            {
-                Header: 'Candidates',
-                accessor: candidates,
-            },
-            {
-                Header: 'Status',
-                accessor: status,
-            },
-        ],
-        []
-    )
+    }*/
 
     return (
+        <div>
+            {electionObjs.map(obj => (
+                <div onClick={e => onDone({ valid: true, value: obj.id })}>{obj.electionName}</div>
+            ))}
+        </div>
         // <Styles>
-        <Table columns={columns} data={data} onRowClicked={onRowClicked} />
+        //<Table columns={columns} data={electionObjs} onRowClicked={onRowClicked} />
         // </Styles>
     )
 }
