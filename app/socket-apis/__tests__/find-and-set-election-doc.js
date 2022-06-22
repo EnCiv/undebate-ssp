@@ -5,7 +5,10 @@ import { Iota, User } from 'civil-server'
 import findAndSetElectionDoc from '../find-and-set-election-doc'
 const ObjectID = Iota.ObjectId
 
-global.logger = { error: jest.fn((...args) => args) }
+global.logger = {
+    error: jest.fn((...args) => args),
+    warn: jest.fn((...args) => args), // ignore warnings about logger.warn('updateSubscribers - electionObjSubscriber of', rootId, 'not found')
+}
 
 const testDoc = {
     _id: ObjectID('62ac1922d6812e1f90583e43'),
@@ -189,7 +192,7 @@ beforeAll(async () => {
     // eslint-disable-next-line no-restricted-syntax
     for await (const init of toInit) await init()
     const user = await User.create(exampleUser)
-    apisThis.synuser.id = exampleUser._id.toString()
+    apisThis.synuser.id = User.ObjectID(exampleUser._id).toString()
 
     await Iota.create(testDoc)
 })
@@ -207,27 +210,27 @@ test('it should return undefined if user not logged in', done => {
             done(error)
         }
     }
-    findAndSetElectionDoc.call({}, { subject: 'Election Document #1' }, mockElection, callback)
+    findAndSetElectionDoc.call({}, { _id: '62ac1922d6812e1f90583e43' }, mockElection, callback)
 })
 
 test('it can find and set a valid doc', done => {
     async function callback(res) {
         try {
             expect(res).toBeTruthy()
-            const result = await Iota.findOne({ subject: 'Election Document #1' })
+            const result = await Iota.findOne({ _id: Iota.ObjectID('62ac1922d6812e1f90583e43') })
             expect(result.webComponent).toEqual(mockElection)
             done()
         } catch (error) {
             done(error)
         }
     }
-    findAndSetElectionDoc.call(apisThis, { subject: 'Election Document #1' }, mockElection, callback)
+    findAndSetElectionDoc.call(apisThis, { _id: '62ac1922d6812e1f90583e43' }, mockElection, callback)
 })
 
 test('it should fail if setting webComponent to wrong value', done => {
     async function callback(res) {
+        expect(res).toEqual(undefined)
         try {
-            expect(res).toEqual(undefined)
             expect(global.logger.error.mock.results[0].value).toMatchInlineSnapshot(`
                 Array [
                   "ElectionDoc validation",
@@ -260,21 +263,21 @@ test('it should fail if setting webComponent to wrong value', done => {
                 }",
                 ]
             `)
-            const result = await Iota.findOne({ subject: 'Election Document #1' })
+            const result = await Iota.findOne({ _id: Iota.ObjectID('62ac1922d6812e1f90583e43') })
             expect(result.webComponent).toEqual(mockElection)
             done()
         } catch (error) {
             done(error)
         }
     }
-    findAndSetElectionDoc.call(apisThis, { subject: 'Election Document #1' }, { webComponent: 'Dummy' }, callback)
+    findAndSetElectionDoc.call(apisThis, { _id: '62ac1922d6812e1f90583e43' }, { webComponent: 'Dummy' }, callback)
 })
 
 test('it should set a deep property without deleting other properties', done => {
     async function callback(res) {
         try {
             expect(res).toBeTruthy()
-            const result = await Iota.findOne({ subject: 'Election Document #1' })
+            const result = await Iota.findOne({ _id: Iota.ObjectID('62ac1922d6812e1f90583e43') })
             expect(result.webComponent.moderator).toMatchInlineSnapshot(`
                 Object {
                   "email": "billsmith@gmail.com",
@@ -305,7 +308,7 @@ test('it should set a deep property without deleting other properties', done => 
     }
     findAndSetElectionDoc.call(
         apisThis,
-        { subject: 'Election Document #1' },
+        { _id: '62ac1922d6812e1f90583e43' },
         { moderator: { name: 'William Smith' } },
         callback
     )
@@ -315,7 +318,7 @@ test('it should be able to add a new property to an object-list', done => {
     async function callback(res) {
         try {
             expect(res).toBeTruthy()
-            const result = await Iota.findOne({ subject: 'Election Document #1' })
+            const result = await Iota.findOne({ _id: Iota.ObjectID('62ac1922d6812e1f90583e43') })
             expect(result.webComponent.moderator).toMatchInlineSnapshot(`
                 Object {
                   "email": "billsmith@gmail.com",
@@ -352,7 +355,7 @@ test('it should be able to add a new property to an object-list', done => {
     }
     findAndSetElectionDoc.call(
         apisThis,
-        { subject: 'Election Document #1' },
+        { _id: '62ac1922d6812e1f90583e43' },
         {
             moderator: {
                 submissions: {
@@ -373,7 +376,7 @@ test('it should be able to delete a property from an object-list', done => {
     async function callback(res) {
         try {
             expect(res).toBeTruthy()
-            const result = await Iota.findOne({ subject: 'Election Document #1' })
+            const result = await Iota.findOne({ _id: Iota.ObjectID('62ac1922d6812e1f90583e43') })
             expect(result.webComponent.moderator).toMatchInlineSnapshot(`
                 Object {
                   "email": "billsmith@gmail.com",
@@ -405,7 +408,7 @@ test('it should be able to delete a property from an object-list', done => {
     }
     findAndSetElectionDoc.call(
         apisThis,
-        { subject: 'Election Document #1' },
+        { _id: '62ac1922d6812e1f90583e43' },
         {
             moderator: {
                 submissions: {
@@ -421,7 +424,7 @@ test('it should be able to set and delete multiple properties', done => {
     async function callback(res) {
         try {
             expect(res).toBeTruthy()
-            const result = await Iota.findOne({ subject: 'Election Document #1' })
+            const result = await Iota.findOne({ _id: Iota.ObjectID('62ac1922d6812e1f90583e43') })
             expect(result.webComponent.moderator).toMatchInlineSnapshot(`
                 Object {
                   "email": "billsmith@gmail.com",
@@ -458,7 +461,7 @@ test('it should be able to set and delete multiple properties', done => {
     }
     findAndSetElectionDoc.call(
         apisThis,
-        { subject: 'Election Document #1' },
+        { _id: '62ac1922d6812e1f90583e43' },
         {
             moderator: {
                 name: 'Bill Smith',
