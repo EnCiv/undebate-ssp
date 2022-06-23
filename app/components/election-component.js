@@ -34,7 +34,9 @@ export default function ElectionComponent(props) {
                         className={classes.input}
                         defaultValue={electionObj[key] || ''}
                         onDone={({ valid, value }) => {
-                            sideEffects.push(() => electionMethods.upsert({ [key]: value }))
+                            if (electionObj[key] !== value) {
+                                sideEffects.push(() => electionMethods.upsert({ [key]: value }))
+                            }
                             setValidInputs({ [key]: valid })
                         }}
                     />

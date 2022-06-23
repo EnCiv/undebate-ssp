@@ -3,45 +3,29 @@
 
 import React, { useState, useEffect } from 'react'
 
-import Questions from '../app/components/questions'
-
+import component from '../app/components/questions'
+import makeChapter from './make-chapter'
+const mC = makeChapter(component)
 export default {
     title: 'Questions',
-    component: Questions,
+    component,
     argTypes: {},
 }
 
-const Template = (args, context) => {
-    const { electionOM } = context
-    const { defaultElectionObj, ...otherArgs } = args
-    const [electionObj, electionMethods] = electionOM
-    useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
-    const [validity, setValidity] = useState({ valid: false, value: {} })
-    return (
-        <div>
-            <Questions electionOM={electionOM} onDone={v => setValidity(v)} {...otherArgs} />
-            <p>Is valid: {validity.valid ? 'True' : 'False'}</p>
-            <p>Value: {JSON.stringify(validity.value)}</p>
-        </div>
-    )
-}
-
-export const QuestionsTest = Template.bind({})
-QuestionsTest.args = {
+export const QuestionsTest = mC({
     defaultElectionObj: {
-        _id: '123',
+        id: '123',
         questions: {
             0: {
                 text: '',
             },
         },
     },
-}
+})
 
-export const WithData = Template.bind({})
-WithData.args = {
+export const WithData = mC({
     defaultElectionObj: {
-        _id: '2349099238402',
+        id: '2349099238402',
         questions: {
             0: {
                 text: 'What is your favorite color?',
@@ -57,4 +41,6 @@ WithData.args = {
             },
         },
     },
-}
+})
+
+export const Empty = mC({})

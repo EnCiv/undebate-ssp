@@ -17,14 +17,14 @@ export function Invitation(props) {
     const {
         email = '',
         name = '',
-        greeting = "Thank you for being the moderator in our election. The next step is to click on the link below, and you will be taken to the web app for recording. The page will give you a script to start with, and the questions to ask, and you will be able to review and redo as you like. We aren't able to invite are candidates to record their answers until you ask the questions, so please try to do this soon.",
+        message = "Thank you for being the moderator in our election. The next step is to click on the link below, and you will be taken to the web app for recording. The page will give you a script to start with, and the questions to ask, and you will be able to review and redo as you like. We aren't able to invite are candidates to record their answers until you ask the questions, so please try to do this soon.",
         // eslint-disable-next-line no-unused-vars
         invitations = [],
     } = moderator
     const [validInputs, setValidInputs] = useReducer((state, action) => ({ ...state, ...action }), {
         name: null,
         email: null,
-        greeting: null,
+        message: null,
     }) // null->[false||true] to prevent a loop of the initial values above that will get rendered first, and then the electionObj data which may get updated right after the initial render
     // a reducer becasue if useState  setValidInputs({...validInputs,email}) would overwrite the value of name with what might not be the current value if setValidInputs({...validInputs,name}) were both called in event handlers before the next rerender that updates ...validInputs
     // not using the usual action {type: "SET_EMAIL", value: true} format because it's too long and wordy for this simple case of updating values of an object
@@ -54,7 +54,7 @@ export function Invitation(props) {
                         name='Moderation Name'
                         defaultValue={name}
                         onDone={({ valid, value }) => {
-                            if (validInputs.name !== null || valid)
+                            if ((validInputs.name !== null || valid) && name !== value)
                                 sideEffects.push(() => electionMethods.upsert({ moderator: { name: value } })) // side effect because we don't want the upsert to cause a rerender before setValidInputs does
                             setValidInputs({ name: valid })
                         }}
@@ -64,22 +64,22 @@ export function Invitation(props) {
                         defaultValue={email}
                         checkIsEmail
                         onDone={({ valid, value }) => {
-                            if (validInputs.email !== null || valid)
+                            if ((validInputs.email !== null || valid) && email !== value)
                                 sideEffects.push(() => electionMethods.upsert({ moderator: { email: value } }))
                             setValidInputs({ email: valid })
                         }}
                     />
                 </div>
-                <div className={classes.greeting}>
+                <div className={classes.message}>
                     <ElectionTextArea
                         name='Invitation greeting'
                         description='This would be included in the invite email for the moderator. Not more than 400 words.'
-                        defaultValue={greeting}
+                        defaultValue={message}
                         maxWords={400}
                         onDone={({ valid, value }) => {
-                            if (validInputs.greeting !== null || valid)
-                                sideEffects.push(() => electionMethods.upsert({ moderator: { greeting: value } }))
-                            setValidInputs({ greeting: valid })
+                            if ((validInputs.message !== null || valid) && message !== value)
+                                sideEffects.push(() => electionMethods.upsert({ moderator: { message: value } }))
+                            setValidInputs({ message: valid })
                         }}
                     />
                 </div>
@@ -117,7 +117,7 @@ const useStyles = createUseStyles({
         right: '1rem',
         fontSize: '16rem',
     },
-    greeting: {
+    message: {
         display: 'flex',
         flexDirection: 'column',
     },

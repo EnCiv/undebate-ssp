@@ -1,7 +1,6 @@
 //https://github.com/EnCiv/undebate-ssp/issues/110
 import React from 'react'
-import { createUseStyles, ThemeProvider } from 'react-jss'
-import theme from '../theme'
+import { createUseStyles } from 'react-jss'
 import SvgExternalLink from '../svgr/external-link'
 
 export default function Footer() {
@@ -53,7 +52,7 @@ export default function Footer() {
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     footer: {
         ...theme.footer,
         fontFamily: theme.defaultFontFamily,
@@ -143,4 +142,4 @@ const useStyles = createUseStyles({
             fontSize: '2em',
         },
     },
-})
+}))

@@ -7,7 +7,7 @@ import ObjectID from 'isomorphic-mongo-objectid'
 
 // Create an editable cell renderer
 function EditableCell({
-    value: initialValue,
+    value = '',
     row: { index },
     column: { id },
     updateMyData, // This is a custom function that we supplied to our table instance
@@ -16,19 +16,19 @@ function EditableCell({
 
     // We'll only update the external data when the input is blurred
     const onBlur = () => {
-        if (initialValue !== inputRef.current.value) updateMyData(index, id, inputRef.current.value)
+        if (value !== inputRef.current.value) updateMyData(index, id, inputRef.current.value)
     }
 
-    // If the initialValue is changed external, sync it up with our state
+    // If the initialValue is changed from above, update the input
     React.useEffect(() => {
-        if (inputRef.current) onBlur()
-    }, [initialValue])
+        if (inputRef.current) inputRef.current.value = value
+    }, [value])
 
     return (
         <input
             ref={inputRef}
             disabled={id === 'status' || !updateMyData.editable}
-            defaultValue={initialValue}
+            defaultValue={value}
             onBlur={onBlur}
         />
     )

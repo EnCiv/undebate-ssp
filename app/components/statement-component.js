@@ -1,6 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
+import cx from 'classnames'
 
 export default function StatementComponent(props) {
     const { subject, description, className, style } = props

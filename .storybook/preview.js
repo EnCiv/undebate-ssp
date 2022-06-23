@@ -67,7 +67,7 @@ export const decorators = [
                 {electionObj._count > 0 && (
                     <div>
                         electionObj:{' '}
-                        <span id='electionObj' style={{ whiteSpace: 'pre-wrap' }}>
+                        <span id='electionObj' data-testid='electionObj' style={{ whiteSpace: 'pre-wrap' }}>
                             {JSON.stringify(electionObj, null, 4)}
                         </span>
                     </div>

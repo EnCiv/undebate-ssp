@@ -201,10 +201,19 @@
     },
     {
         "_id": {
+            "$oid": "627ed0160c12de4fe8b36da5"
+        },
+        "path": "/qa/signin-signup",
+        "subject": "Civil Server Template",
+        "description": "Civil Server Template Sign In/Up Page",
+        "webComponent": "SigninSignup"
+    },
+    {
+        "_id": {
             "$oid": "621e7da7705e8e4fc07f8960"
         },
         "path": "/qa-create-moderator-recorder",
-        "subject": "Create Moderatore Recoarder",
+        "subject": "Create Moderator Recorder",
         "description": "QA Test for creating the moderator recorder",
         "webComponent": {
             "webComponent": "QaCreateModeratorRecorder",
@@ -253,6 +262,28 @@
                     "answer": "FAQ description goes here"
                 }
             ]
+        }
+    },
+    {
+        "_id": {
+            "$oid": "627833a2ee9d2017eec0a69b"
+        },
+        "path": "/qa-paste-google-sheets-popup",
+        "subject": "Paste Google Sheets Popup",
+        "description": "QA Test for Paste Google Sheets Popup. Needed for testing google auth redirects in conjunction with actual sockets and routes",
+        "webComponent": {
+            "webComponent": "QaPasteGoogleSheetsPopup"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "62ab8f35cf2ae421e0887e03"
+        },
+        "path": "/undebates",
+        "subject": "Undebate Homepage",
+        "description": "The Undebate Home Page",
+        "webComponent": {
+            "webComponent": "UndebatesHomepage"
         }
     }
 ]

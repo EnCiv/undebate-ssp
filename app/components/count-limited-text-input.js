@@ -7,14 +7,18 @@ export default function CountLimitedTextInput({ name = '', maxCount = 0, default
     const classes = useStyles()
     const [length, setLength] = useState(defaultValue.length)
 
-    useEffect(() => {
-        handleDone() // if default value changes, inputRef.value will be set to it by the time useEffect is called - need to update the validity
-    }, [defaultValue])
-
     const inputRef = useRef(null)
 
+    useEffect(() => onDone({ valid: isTextValid(defaultValue), value: defaultValue }), [])
+    useEffect(() => {
+        if (!inputRef.current || inputRef.current.value === defaultValue) return
+        inputRef.current.value = defaultValue
+        setLength(defaultValue.length)
+        onDone({ valid: isTextValid(defaultValue), value: defaultValue })
+    }, [defaultValue])
+
     // eslint-disable-next-line no-unused-vars
-    const handleDone = e => {
+    const onBlur = e => {
         onDone({ valid: isTextValid(inputRef?.current?.value), value: inputRef?.current?.value })
     }
 
@@ -26,18 +30,18 @@ export default function CountLimitedTextInput({ name = '', maxCount = 0, default
 
     return (
         <div className={classes.container}>
-            <div className={classes.scriptInfo}>
+            <div className={classes.scriptInfo} key='header'>
                 <div className={classes.question}>{name}</div>
                 <div className={classes.quantity}>
                     ({length}/{maxCount})
                 </div>
             </div>
-
             <TextareaAutosize
+                key='area'
                 className={classes.input}
                 defaultValue={defaultValue}
                 maxLength={maxCount}
-                onBlur={handleDone}
+                onBlur={onBlur}
                 onKeyPress={handleKeyPress}
                 onChange={e => {
                     setLength(e.target.value.length)

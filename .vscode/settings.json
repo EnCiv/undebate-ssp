@@ -1,5 +1,9 @@
 {
     "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "prettier.configPath": ""
+    "prettier.configPath": "",
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    }
 }
