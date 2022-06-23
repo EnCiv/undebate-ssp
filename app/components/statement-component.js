@@ -1,11 +1,12 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
+import cx from 'classnames'
 
 export default function StatementComponent(props) {
-    const { subject, description } = props
+    const { className, style, subject, description } = props
     const classes = useStyles()
     return (
-        <div className={classes.wrapper}>
+        <div className={cx(className, classes.wrapper)} style={style}>
             <h1 className={classes.subject}>{subject}</h1>
             <p className={classes.description}>{description}</p>
         </div>
