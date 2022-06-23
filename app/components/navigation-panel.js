@@ -11,7 +11,7 @@ import { SvgRightArrow } from './lib/svg'
 export default function NavigationPanel({ className, style, electionOM, onDone }) {
     const classes = useStyles()
     const [electionObj, electionMethods] = electionOM
-    const [current, setCurrent] = useState('')
+    const [current, setCurrent] = useState('Election')
 
     const convertStringDate = date => {
         const d = new Date(date)
@@ -82,9 +82,9 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                         selected={current?.includes('Questions')}
                     />
                 </div>
-                <div onClick={handleClick} onMouseEnter={onMouseEnterHandler}>
+                {/* <div onClick={handleClick} onMouseEnter={onMouseEnterHandler}>
                     <ElectionCategory categoryName='Danger Zone' selected={current?.includes('Danger Zone')} />
-                </div>
+                </div> */}
             </div>
             <div className={classes.top}>
                 <div className={classes.title}>moderator</div>
@@ -205,6 +205,10 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                         classes.underbateSection,
                         electionMethods.getUndebateStatus() === 'archieved' && classes.archieved
                     )}
+                    onClick={e => {
+                        handleClick(e, true, 'Undebate')
+                    }}
+                    onMouseEnter={onMouseEnterHandler}
                 >
                     <div className={classes.left}>
                         <div className={classes.underbate}>
@@ -238,12 +242,15 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         paddingTop: '3.125rem',
+        '&:first-child': {
+            paddingTop: '0px',
+        },
     },
     title: {
         textTransform: 'uppercase',
         fontWeight: 'bold',
         color: theme.colorSecondary,
-        marginLeft: '1.5625rem',
+        marginLeft: '2.5rem',
     },
     line: {
         border: `1px solid ${theme.colorSecondary}`,

@@ -5,8 +5,9 @@ import { hot } from 'react-hot-loader'
 import { ErrorBoundary } from 'civil-client'
 import WebComponents from '../web-components'
 import Footer from './footer'
-
-//import '../../assets/styles/index.css'
+import { ThemeProvider } from 'react-jss'
+import theme from '../theme'
+import FontFaces from './font-faces'
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends React.Component {
@@ -18,10 +19,14 @@ class App extends React.Component {
             Object.assign(newProps, iota)
             return (
                 <ErrorBoundary>
-                    <div style={{ position: 'relative' }}>
-                        <WebComponents key='web-component' webComponent={iota.webComponent} {...newProps} />
-                        <Footer key='footer' />
-                    </div>
+                    <FontFaces>
+                        <ThemeProvider theme={theme}>
+                            <div style={{ position: 'relative' }}>
+                                <WebComponents key='web-component' webComponent={iota.webComponent} {...newProps} />
+                                <Footer key='footer' />
+                            </div>
+                        </ThemeProvider>
+                    </FontFaces>
                 </ErrorBoundary>
             )
         } else

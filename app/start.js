@@ -1,10 +1,12 @@
-import CivilServer, { Iota } from 'civil-server'
+import CivilServer, { Iota, serverReactRender } from 'civil-server'
 import civilIotas from 'civil-server/iotas.json'
 import undebateIotas from 'undebate/iotas.json'
 import iotas from '../iotas.json'
 import App from './components/app'
 
 const path = require('path')
+
+if (serverReactRender.head) serverReactRender.head.shift() // the first on in the head didles the font size and we don't want that
 
 Iota.load(civilIotas)
 Iota.load(undebateIotas)

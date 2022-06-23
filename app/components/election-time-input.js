@@ -1,43 +1,44 @@
 // https://github.com/EnCiv/undebate-ssp/issues/6
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import ClockSolidSVG from '../svgr/clock-solid'
 
 function ElectionTimeInput(props) {
     const { className, style, disabled = false, defaultValue = '', onDone = () => {} } = props
-    const [time, setTime] = useState(defaultValue)
-    const classes = useStyles({ time, disabled })
+    const classes = useStyles({ defaultValue, disabled })
     const inputRef = useRef(null)
 
+    // onDone for the initial render
+    useEffect(() => onDone({ valid: !!defaultValue, value: defaultValue }), [])
+    // onDone for when the defaultValue is changed from top down
     useEffect(() => {
-        handleDone(time)
-    }, [])
-
-    const handleChange = e => {
-        setTime(e.target.value)
-    }
+        if (!inputRef.current || inputRef.current.value === defaultValue) return
+        inputRef.current.value = defaultValue
+        onDone({ valid: !!defaultValue, value: defaultValue })
+    }, [defaultValue])
 
     const handleDone = () => {
-        onDone({ valid: !!time, value: time })
+        const value = inputRef.current.value
+        onDone({ valid: !!value, value })
     }
 
     return (
         <div className={cx(className, classes.electionTimeInput)} style={style}>
             <input
+                key='input'
                 className={classes.input}
                 type='time'
-                defaultValue={time}
+                defaultValue={defaultValue}
                 disabled={disabled}
                 onBlur={handleDone}
-                onChange={handleChange}
                 onKeyPress={e => {
                     if (e.key === 'Enter') inputRef.current.blur()
                 }}
                 ref={inputRef}
             />
-            <ClockSolidSVG className={classes.clockIcon} />
+            <ClockSolidSVG className={classes.clockIcon} key='icon' />
         </div>
     )
 }

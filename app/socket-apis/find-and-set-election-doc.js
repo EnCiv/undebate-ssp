@@ -3,6 +3,7 @@
 import { Iota } from 'civil-server'
 import Joi from 'joi'
 import JoiObjectID from 'joi-objectid'
+import { updateSubscribers } from './subscribe-election-info'
 
 Joi.objectId = JoiObjectID(Joi)
 
@@ -10,7 +11,31 @@ const Integer = /^[0-9]+$/
 const ObjectID = /^[0-9a-fA-F]{24}$/
 const SANE = 4096
 
+function invitations() {
+    return Joi.object().pattern(
+        Joi.string().pattern(ObjectID),
+        Joi.object({
+            _id: Joi.objectId(),
+            text: Joi.string().max(SANE),
+            sentDate: Joi.string().isoDate(),
+            responseDate: Joi.string().isoDate(),
+            status: Joi.string().max(SANE),
+        })
+    )
+}
+function submissions() {
+    return Joi.object().pattern(
+        Joi.string().pattern(ObjectID),
+        Joi.object({
+            _id: Joi.objectId(),
+            url: Joi.string().max(SANE),
+            date: Joi.string().isoDate(),
+            parentId: Joi.string().pattern(ObjectID),
+        })
+    )
+}
 const electionSchema = Joi.object({
+    id: Joi.string().pattern(ObjectID),
     webComponent: 'ElectionDoc',
     electionName: Joi.string().max(SANE),
     organizationName: Joi.string().max(SANE),
@@ -32,22 +57,8 @@ const electionSchema = Joi.object({
         name: Joi.string().max(SANE),
         email: Joi.string().email(),
         message: Joi.string().max(SANE),
-        invitations: Joi.array().items(
-            Joi.object({
-                _id: Joi.objectId(),
-                text: Joi.string().max(SANE),
-                sentDate: Joi.string().isoDate(),
-                responseDate: Joi.string().isoDate(),
-                status: Joi.string().max(SANE),
-            })
-        ),
-        submissions: Joi.array().items(
-            Joi.object({
-                _id: Joi.objectId(),
-                url: Joi.string().max(SANE),
-                date: Joi.string().isoDate(),
-            })
-        ),
+        invitations: invitations(),
+        submissions: submissions(),
     }),
     candidates: Joi.object().pattern(
         Joi.string().pattern(ObjectID),
@@ -57,23 +68,8 @@ const electionSchema = Joi.object({
             email: Joi.string().email(),
             office: Joi.string().max(SANE),
             region: Joi.string().max(SANE),
-            invitations: Joi.array().items(
-                Joi.object({
-                    _id: Joi.objectId(),
-                    text: Joi.string().max(SANE),
-                    sentDate: Joi.string().isoDate(),
-                    responseDate: Joi.string().isoDate(),
-                    status: Joi.string().max(SANE),
-                })
-            ),
-            submissions: Joi.array().items(
-                Joi.object({
-                    _id: Joi.objectId(),
-                    url: Joi.string().max(SANE),
-                    date: Joi.string().isoDate(),
-                    parentId: Joi.string().pattern(ObjectID),
-                })
-            ),
+            invitations: invitations(),
+            submissions: submissions(),
         })
     ),
     timeline: {
@@ -116,6 +112,22 @@ const electionSchema = Joi.object({
     undebateDate: Joi.string().isoDate(),
 })
 
+function lp(path) {
+    return path ? path + '.' : ''
+}
+function docToSetUnset(doc, sets = {}, unsets = {}, path = '') {
+    Object.keys(doc).forEach(key => {
+        if (typeof doc[key] === 'object' && !(doc[key] instanceof Iota.ObjectID) && !(doc[key] instanceof Date)) {
+            docToSetUnset(doc[key], sets, unsets, lp(path) + key)
+        } else if (typeof doc[key] === 'function') return
+        //just skip functions
+        else if (typeof doc[key] === 'undefined') {
+            unsets[lp(path) + key] = ''
+        } else sets[lp(path) + key] = doc[key]
+    })
+    return [sets, unsets]
+}
+
 export default async function findAndSetElectionDoc(query, doc, cb) {
     if (!this.synuser) return cb && cb() // no user
     const valid = electionSchema.validate(doc)
@@ -123,9 +135,14 @@ export default async function findAndSetElectionDoc(query, doc, cb) {
         logger.error('ElectionDoc validation', JSON.stringify(valid, null, 2))
         return cb && cb()
     }
+    const id = query._id
+    if (typeof id !== 'string') logger.error('id was not a string', id)
+    if (query._id) query._id = Iota.ObjectID(query._id)
+    const [sets, unsets] = docToSetUnset({ webComponent: doc })
     try {
         // upsert
-        await Iota.updateOne(query, { $set: { webComponent: doc } }, { upsert: true })
+        await Iota.updateOne(query, { $set: sets, $unset: unsets })
+        updateSubscribers.call(this, id, { webComponent: doc })
         return cb && cb(true)
     } catch (err) {
         logger.error('upsertElectionDoc', err)

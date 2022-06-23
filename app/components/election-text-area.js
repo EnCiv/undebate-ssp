@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import TextareaAutosize from 'react-textarea-autosize'
 
@@ -17,8 +17,14 @@ export default function ElectionTextArea(props) {
         description = 'This would be included in the invite email for the moderator. Not more than 400 words.',
     } = props
     const classes = useStyles()
+    const inputRef = useRef(null)
+    // onDone for the initial render
+    useEffect(() => onDone({ valid: validText(defaultValue, maxWords), value: defaultValue }), [])
+    // onDone for when defaultValue changes from the top down
     useEffect(() => {
-        if (onDone) onDone({ valid: validText(defaultValue, maxWords), value: defaultValue })
+        if (!inputRef.current || inputRef.current.value === defaultValue) return
+        inputRef.current.value = defaultValue
+        onDone({ valid: validText(defaultValue, maxWords), value: defaultValue })
     }, [defaultValue]) // initiall report if default value is valid or not
     return (
         <label className={classes.label}>
@@ -27,6 +33,7 @@ export default function ElectionTextArea(props) {
                 <span className={classes.desc}>{description}</span>
             </div>
             <TextareaAutosize
+                key='area'
                 onBlur={e => {
                     const { value } = e.target
                     if (onDone) onDone({ valid: validText(value, maxWords), value })
@@ -35,6 +42,7 @@ export default function ElectionTextArea(props) {
                 name={name}
                 minRows={12}
                 defaultValue={defaultValue}
+                ref={inputRef}
             />
         </label>
     )

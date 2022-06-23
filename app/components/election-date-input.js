@@ -3,8 +3,14 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import Calendar from 'react-calendar'
-import { SvgCalendar } from './lib/svg'
-import 'react-calendar/dist/Calendar.css'
+import { Calendar as SvgCalendar } from '../svgr'
+import { useClickAway } from 'react-use'
+
+// added this line to postinstall.js to make this work
+// node_modules/jss-cli/bin/jss.js convert node_modules/react-calendar/dist/Calendar.css -f js -e cjs > node_modules/react-calendar/dist/react-calendar-css.js
+// don't for get to call useCalendarStyle() in the react component below to get the styles pulled in
+import reactCalendarCss from 'react-calendar/dist/react-calendar-css'
+const useReactCalendarCss = createUseStyles(reactCalendarCss)
 
 const splitDate = mdy => {
     const mMdDyY = mdy
@@ -20,74 +26,61 @@ const splitDate = mdy => {
 }
 
 const mdyToDate = mdy => {
-    if (!isMdyValid(mdy)) {
-        return new Date(NaN)
-    }
+    if (!isMdyValid(mdy)) return new Date(NaN)
     const [month, day, year] = splitDate(mdy)
     return new Date(year, month - 1, day)
 }
 
 const isMdyValid = mdy => {
-    const [month, day, year] = splitDate(mdy)
-    const date = new Date(year, month - 1, day)
-    const yearLength = year?.toString().length
-    if (
-        !(yearLength === 2 || yearLength === 4) ||
-        year !== date.getFullYear() ||
-        date.getMonth() !== month - 1 ||
-        date.getDate() !== day
-    ) {
-        return false
-    }
-    return true
+    const str = new Date(mdy).toLocaleDateString()
+    return str !== 'Invalid Date'
 }
 
-const dateToMdy = date => {
-    const month = date.getMonth() + 1
-    const day = date.getDate()
-    const year = date.getFullYear()
-    return `${month}/${day}/${year}`
+function toLocaleDateStr(str) {
+    const localeDate = new Date(str).toLocaleDateString()
+    return localeDate !== 'Invalid Date' ? localeDate : str
+}
+
+function toISODateValidValue(str) {
+    // .toISOString throws an error if date is invalid so we check the date first
+    const locale = new Date(str).toLocaleDateString()
+    if (locale == 'Invalid Date') return { valid: false, value: str }
+    else return { valid: true, value: new Date(str).toISOString().split('T')[0] }
 }
 
 export default function ElectionDateInput(props) {
-    // defaultValue: mm/dd/yyyy string or a Date object
+    // defaultValue: mm/dd/yyyy string
     // onDone: ({valid: bool, value: Date}): null
-    const { defaultValue = '', disabled = false, onDone: propOnDone = () => {} } = props
+    const { defaultValue = '', disabled = false, onDone = () => {} } = props
 
-    const today = new Date()
-
-    const defaultDate = defaultValue instanceof Date ? dateToMdy(defaultValue) : defaultValue
-
-    const [textDate, setTextDate] = useState(defaultDate)
     const [error, setError] = useState(null)
     const [datePickerOpen, setDatePickerOpen] = useState(false)
-    const parentEl = useRef(null)
+    const parentRef = useRef(null)
+    const inputRef = useRef(null)
+
+    const localeDefaultValue = toLocaleDateStr(defaultValue)
+    // onDone for initial render
+    useEffect(() => onDone({ value: defaultValue, valid: isMdyValid(localeDefaultValue) }), [])
+    // onDone after defaultValue is changed from the top down
+    useEffect(() => {
+        if (!inputRef.current || inputRef.current.value === localeDefaultValue) return
+        inputRef.current.value = localeDefaultValue
+        onDone({ value: defaultValue, valid: isMdyValid(localeDefaultValue) })
+    }, [defaultValue])
 
     const classes = useStyles({
-        ...props,
+        disabled,
         error,
-        datePickerOpen,
     })
 
-    useEffect(() => {
-        const onNonDatepickerClick = e => {
-            if (!parentEl.current.contains(e.target) && !e.target.className.includes(classes.datePickerPart)) {
-                if (datePickerOpen) {
-                    blurDateInput(textDate)
-                }
-                setDatePickerOpen(false)
-            }
-        }
-        document.addEventListener('click', onNonDatepickerClick)
-        return () => {
-            document.removeEventListener('click', onNonDatepickerClick)
-        }
-    }, [textDate, datePickerOpen])
+    useReactCalendarCss() // have to do this to get it pulled in
 
-    // Calls onDone/validation for initial defaultValue
-    useEffect(() => {
-        propOnDone({ valid: isMdyValid(textDate), value: textDate })
-    }, [])
+    useClickAway(parentRef, () => {
+        if (datePickerOpen) {
+            blurDateInput(inputRef.current.value)
+        }
+        setDatePickerOpen(false)
+    })
 
     const onInputChange = e => {
         const { value } = e.target
@@ -96,26 +89,26 @@ export default function ElectionDateInput(props) {
         } else {
             setError(null)
         }
-        setTextDate(value)
     }
     const onDatePickerChange = date => {
-        setError(null)
-        setTextDate(dateToMdy(date))
+        const value = date.toLocaleDateString()
+        const valid = isMdyValid(value)
+        if (!valid) setError('Please enter a valid date')
+        else setError(null)
+        inputRef.current.value = value // to prevent extra iteration of onDone after defaultValue is changed from parent
+        //no need for onDone({ valid, value }) here - blurDateInput will get called when the Calendar is closed
     }
 
-    const datePickerButtonOnClick = () => {
-        blurDateInput(textDate, datePickerOpen ? null : true)
-        setDatePickerOpen(!datePickerOpen)
-    }
-    const blurDateInput = _valid => {
-        const valid = _valid === null ? isMdyValid(textDate) : _valid
+    const blurDateInput = value => {
+        const valid = isMdyValid(value)
         if (!valid) {
             setError('Please enter a valid date')
         }
-        propOnDone({ valid: isMdyValid(textDate), value: textDate })
+        onDone(toISODateValidValue(value))
     }
+
     return (
-        <div ref={parentEl}>
+        <div ref={parentRef}>
             <div className={classes.dateInputWrapper}>
                 <span className={classes.inputContainer}>
                     <input
@@ -124,17 +117,20 @@ export default function ElectionDateInput(props) {
                         type='text'
                         maxLength='10'
                         required
-                        value={textDate}
                         disabled={disabled}
                         onChange={onInputChange}
+                        ref={inputRef}
                         onBlur={e => blurDateInput(e.target.value)}
                         placeholder='mm/dd/yyyy'
+                        defaultValue={localeDefaultValue}
+                        key='input'
                     />
                     <button
                         disabled={disabled}
                         type='button'
                         className={classes.datePickerButton}
-                        onClick={datePickerButtonOnClick}
+                        onClick={() => setDatePickerOpen(!datePickerOpen)}
+                        key='button'
                     >
                         <SvgCalendar className={classes.icon} />
                     </button>
@@ -145,7 +141,7 @@ export default function ElectionDateInput(props) {
                 <Calendar
                     className={classes.datePicker}
                     tileClassName={[classes.datePickerTile, classes.datePickerPart]}
-                    value={isMdyValid(textDate) ? mdyToDate(textDate) : today}
+                    value={isMdyValid(inputRef.current.value) ? mdyToDate(inputRef.current.value) : new Date()}
                     onChange={onDatePickerChange}
                 />
             )}
@@ -176,6 +172,7 @@ const useStyles = createUseStyles(theme => ({
         fontFamily: theme.defaultFontFamily,
         color: props.disabled ? 'grey' : 'black',
         cursor: props.disabled ? 'not-allowed' : 'pointer',
+        width: '100%',
     }),
     datePicker: {
         position: 'absolute',
@@ -193,7 +190,7 @@ const useStyles = createUseStyles(theme => ({
     datePickerTile: {
         borderRadius: '0.5rem',
     },
-    datePickerButton: props => ({
+    datePickerButton: {
         background: 'none',
         border: 'none',
         display: 'flex',
@@ -205,7 +202,7 @@ const useStyles = createUseStyles(theme => ({
         '&:hover': {
             backgroundColor: '#b4b5b6',
         },
-    }),
+    },
     errorText: {
         color: 'red',
     },

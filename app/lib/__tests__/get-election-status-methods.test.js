@@ -1149,4 +1149,39 @@ describe('election status methods', () => {
             expect(getSubmissionsStatus()).toBe('default')
         })
     })
+    describe('are questions locked', () => {
+        it('should be locked since invite sent', () => {
+            const state = {
+                moderator: {
+                    invitations: [
+                        // derived data, list may be empty or not present
+                        {
+                            _id: '21934788293',
+                            sentDate: new Date(Date.now() - 3600 * 1000 * 24),
+                            responseDate: new Date(Date.now() - 3600 * 1000),
+                            status: 'Accepted',
+                        },
+                    ],
+                },
+            }
+            const { areQuestionsLocked } = getElectionStatusMethods(null, state)
+            expect(areQuestionsLocked()).toBe(true)
+        })
+        it('should not be locked since no invites', () => {
+            let state = {
+                moderator: {
+                    invitations: [{ _id: '', sentDate: null }],
+                },
+            }
+            const { areQuestionsLocked } = getElectionStatusMethods(null, state)
+            expect(areQuestionsLocked()).toBe(false)
+            state = {}
+            expect(areQuestionsLocked()).toBe(false)
+        })
+        it('should not be locked since empty obj', () => {
+            let state = {}
+            const { areQuestionsLocked } = getElectionStatusMethods(null, state)
+            expect(areQuestionsLocked()).toBe(false)
+        })
+    })
 })

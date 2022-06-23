@@ -1,3 +1,4 @@
+// use this tool to flatten colors https://filosophy.org/code/online-tool-to-lighten-color-without-alpha-channel/  color + opacity + background color => solid color
 const theme = {
     // UI Colors
     colorPrimary: '#7470FF',
@@ -9,6 +10,7 @@ const theme = {
     colorLightGray: '#d4d5d6',
     askQuestionColor: '#FFFFFF',
     colorText: '#262D33',
+    thinBorderColor: '#D8D9DA', // was #262D33 rgb(38,45,51) opacity 0.1 but flattened on the backgroundColorApp #ECECEC
 
     // Can be combined with UI colors to create a 'disabled' version
     disabledOpacity: '0.3',
@@ -59,6 +61,10 @@ const theme = {
     colorSubmitted: '#7470FF',
     colorSent: 'rgba(38, 45, 51, 0.2)',
     colorDeadlineMissed: '#FCA105',
+
+    csvPopupHeight: '41.25rem',
+    pastePopupHeight: '23.125rem',
+    uploadPopupWidth: '29.6875rem',
 }
 
 export default theme

@@ -1,5 +1,5 @@
 // https://github.com/EnCiv/undebate-ssp/issues/10
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
@@ -16,6 +16,7 @@ export default function ScriptTextInput({
     onDone,
 }) {
     const classes = useStyles()
+    const inputRef = useRef(null)
 
     const getWordCount = inputText => {
         if (!inputText) return 0
@@ -41,8 +42,14 @@ export default function ScriptTextInput({
         setWordCount(getWordCount(event.target.value))
     }
 
+    // onDone for the initial render
+    useEffect(() => onDone({ valid: isValid(defaultValue), value: defaultValue }), [])
+    // onDone for when the defaultValue is changed from top down
     useEffect(() => {
-        if (onDone) onDone({ valid: isValid(defaultValue), value: defaultValue })
+        if (!inputRef.current || inputRef.current.value === defaultValue) return
+        inputRef.current.value = defaultValue
+        setWordCount(getWordCount(defaultValue))
+        onDone({ valid: isValid(defaultValue), value: defaultValue })
     }, [defaultValue]) // initiall report if default value is valid or not
 
     return (
@@ -66,6 +73,7 @@ export default function ScriptTextInput({
                 </div>
             </div>
             <TextareaAutosize
+                key='area'
                 minRows={4}
                 className={cx(classes.input, !(wordCount > 0 && wordCount <= maxWordCount) && classes.inputError)}
                 onChange={event => {
@@ -79,6 +87,7 @@ export default function ScriptTextInput({
                     })
                 }}
                 defaultValue={defaultValue}
+                ref={inputRef}
             />
         </div>
     )

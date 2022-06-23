@@ -23,6 +23,7 @@ export default function Submission(props) {
     }
 
     const getSubmission = () => {
+        if (!electionObj?.moderator?.submissions) return emptySubmission
         const sortedSubmissions = electionObj.moderator?.submissions.sort(function (a, b) {
             return ('' + b.date).localeCompare(a.date)
         })
@@ -97,7 +98,7 @@ export default function Submission(props) {
                     <div className={cx(classes.card, { [classes.backgroundRed]: missed })}>
                         <div className={classes.preview}>
                             {submission?.url && getSubmissionStatus() === 'submitted' ? (
-                                <iframe src={submission?.url} frameborder='0'>
+                                <iframe src={submission?.url} frameBorder='0'>
                                     {icon}
                                 </iframe>
                             ) : (
