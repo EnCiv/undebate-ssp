@@ -6,6 +6,7 @@ import UndebatesList from './undebates-list'
 import ElectionHeader from './election-header'
 import SubscribeElectionInfo from './subscribe-election-info'
 import UndebatesHeaderBar from './undebates-header-bar'
+import UndebatesLandingPage from './undebates-landing-page'
 
 export default function UndebateHomepage(props) {
     const { className, style, user } = props
@@ -41,19 +42,27 @@ export default function UndebateHomepage(props) {
                 </>
             ) : (
                 <>
-                    <UndebatesHeaderBar
-                        electionOM={[, { createNew }]}
-                        className={classes.header}
-                        user={user}
-                        onDone={({ valid, value }) =>
-                            setSelectedId(electionObjs.find(obj => obj.electionName === electionNames[value]).id)
-                        }
-                    />
-                    <UndebatesList
-                        electionObjs={electionObjs}
-                        onDone={({ value, valid }) => setSelectedId(value)}
-                        key='list'
-                    />
+                    {user ? (
+                        <>
+                            <UndebatesHeaderBar
+                                electionOM={[, { createNew }]}
+                                className={classes.header}
+                                user={user}
+                                onDone={({ valid, value }) =>
+                                    setSelectedId(
+                                        electionObjs.find(obj => obj.electionName === electionNames[value]).id
+                                    )
+                                }
+                            />
+                            <UndebatesList
+                                electionObjs={electionObjs}
+                                onDone={({ value, valid }) => setSelectedId(value)}
+                                key='list'
+                            />
+                        </>
+                    ) : (
+                        <UndebatesLandingPage {...props} />
+                    )}
                 </>
             )}
         </div>

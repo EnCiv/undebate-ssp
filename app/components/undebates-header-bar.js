@@ -11,7 +11,7 @@ import UndebateLogoSVG from '../svgr/undebate-logo'
 import UserOrSignup from './user-or-signup'
 
 function UndebatesHeaderBar(props) {
-    const { className, style, user, electionOM } = props
+    const { className, style, user, electionOM = [{}, {}] } = props
     // eslint-disable-next-line no-unused-vars
     const [electionObj, electionMethods] = electionOM
 
@@ -58,7 +58,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         width: '12.5rem',
         marginRight: 'auto',
     },
-    '@media screen and (max-width: 56rem)': {
+    '@media screen and (max-width: 48rem)': {
         undebatesHeader: {
             flexDirection: 'column',
             justifyContent: 'center',
@@ -66,7 +66,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         },
         logo: {
             marginRight: '0',
-            width: '100rem',
         },
         buttonGroup: {
             flexDirection: 'column',

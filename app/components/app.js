@@ -7,8 +7,6 @@ import { ThemeProvider } from 'react-jss'
 import theme from '../theme'
 import WebComponents from '../web-components'
 import Footer from './footer'
-import { ThemeProvider } from 'react-jss'
-import theme from '../theme'
 import FontFaces from './font-faces'
 
 // eslint-disable-next-line react/prefer-stateless-function

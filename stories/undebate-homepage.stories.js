@@ -2,12 +2,14 @@
 import React, { useState, useEffect } from 'react'
 import UndebateHomepage from '../app/components/undebate-homepage'
 import { cloneDeep } from 'lodash'
+import iotas from '../iotas.json'
 
 export default {
     title: 'Undebate Homepage',
     component: UndebateHomepage,
     argTypes: {},
 }
+if (typeof logger === 'undefined') window.logger = console
 
 const Template = (args, context) => {
     const { onDone, electionOM } = context
@@ -204,3 +206,6 @@ NewUser.args = {
     electionObjs: [],
     user: { id: '6274ae8bee422b0f9c607b75', email: 'someone@email.com' },
 }
+export const NoUser = Template.bind({})
+const iota = iotas.find(doc => doc.path === '/undebates')
+NoUser.args = iota.webComponent

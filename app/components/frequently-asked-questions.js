@@ -37,7 +37,7 @@ export default function FrequentlyAskedQuestions(props) {
 }
 
 const useStyles = createUseStyles({
-    caret: { display: 'inline-block', float: 'right', paddingRight: '2rem', cursor: 'pointer' },
+    caret: { display: 'flex', paddingRight: '2rem', cursor: 'pointer' },
 
     headerStyle: { textAlign: 'center', paddingTop: '1rem', fontSize: '2rem' },
 
@@ -52,7 +52,10 @@ const useStyles = createUseStyles({
         // transition: 'all, .5s, ease-in-out, .1s',
     },
 
-    questionLine: { display: 'inline' },
+    questionLine: {
+        display: 'flex',
+        justifyContent: 'space-between',
+    },
 
     questionStyle: {
         fontWeight: '300',

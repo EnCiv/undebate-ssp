@@ -1,123 +1,168 @@
 import React from 'react'
-import { createUseStyles, ThemeProvider } from 'react-jss'
+import { createUseStyles } from 'react-jss'
 import IconBox from './icon-box'
 import Statement from './statement-component'
 import FAQ from './frequently-asked-questions'
 import HaveAQuestion from './have-a-question'
 import LandingTimeline from './landing-timeline'
-import theme from '../theme'
+import LandscapePortraitSlider from './landscape-portrait-slider'
+import UndebatesHeaderBar from './undebates-header-bar'
+import SignInButton from './sign-in-button'
+import cx from 'classnames'
+
+const verticalGap = '8rem'
 
 export default function UndebatesLandingPage(props) {
+    const {
+        line1 = '',
+        line2 = '',
+        statements = [],
+        topIframe = {},
+        iconBoxes = [],
+        faqs = [],
+        secondarySignupButton = 'Create your own Undebate',
+    } = props
     const classes = useStyles()
     return (
         <div style={{ backgroundColor: '#e9eaeb' }}>
-            <h1 style={{ textAlign: 'center', padding: '2% 0', fontFamily: theme.defaultFontFamily }}>
-                Undebates Landing Page (Component)
-            </h1>
-            <div className={classes.iconbox}>
-                <h2>Landscape Portrait Slider (Component)</h2>
+            <UndebatesHeaderBar className={classes.borders} />
+            <div className={cx(classes.title, classes.borders)}>
+                <h1 className={classes.mainTitle}>{line1}</h1>
+                <h2 className={classes.subtitle}>{line2}</h2>
             </div>
-            <div className={classes.undebates}>
-                <h2>What are Undebates? (Component)</h2>
-            </div>
-
-            <div className={classes.iconbox}>
+            <LandscapePortraitSlider className={cx(classes.slider, classes.borders)} {...topIframe} />
+            <Statement {...statements[0]} className={cx(classes.statement, classes.borders)} />
+            <SignInButton className={cx(classes.createYourOwn, classes.borders)} name={secondarySignupButton} />
+            <div className={cx(classes.iconbox, classes.borders)}>
                 <div className={classes.iconDiv}>
-                    <IconBox {...props.iconBox[0]} className={classes.iconBox} />
+                    <IconBox {...iconBoxes[0]} className={classes.iconBox} />
                 </div>
                 <div className={classes.iconDiv}>
-                    <IconBox {...props.iconBox1[0]} className={classes.iconBox} />
+                    <IconBox {...iconBoxes[1]} className={classes.iconBox} />
                 </div>
-                <div className={classes.iconDivLast}>
-                    <IconBox {...props.iconBox2[0]} className={classes.iconBox} />
+                <div className={classes.iconDiv}>
+                    <IconBox {...iconBoxes[2]} className={classes.iconBox} />
                 </div>
             </div>
-            <Statement {...props.statement[0]} className={classes.statement} />
-            <LandingTimeline className={classes.landingTimeline} />
-            <FAQ faqs={props.faqs} className={classes.faqCom} />
-            <HaveAQuestion style={{ paddingBottom: '10rem' }} />
+            <Statement {...statements[1]} className={cx(classes.statement, classes.borders)} />
+            <LandingTimeline className={cx(classes.borders, classes.landingTimeline)} />
+            <SignInButton className={cx(classes.createYourOwn, classes.borders)} name={secondarySignupButton} />
+            <div className={classes.borders}>
+                <FAQ faqs={faqs} className={classes.faqCom} />
+                <HaveAQuestion className={cx(classes.haveAQuestion)} />
+            </div>
+            <SignInButton
+                className={cx(classes.createYourOwn, classes.borders)}
+                name={secondarySignupButton}
+                style={{ paddingBottom: verticalGap, marginBottom: 0 }}
+            />
         </div>
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
+    borders: { marginBottom: verticalGap },
+    title: {
+        textAlign: 'center',
+        marginLeft: '6rem',
+        marginRight: '6rem',
+        fontFamily: theme.defaultFontFamily,
+    },
+    mainTitle: {
+        fontSize: '2.5rem',
+        fontWeight: '600',
+        lineHeight: '110%',
+        color: theme.colorPrimary,
+        margin: 0,
+        marginBottom: '1rem',
+    },
+    subtitle: {
+        fontSize: '1.5rem',
+        fontWeight: '600',
+        lineHeight: '110%',
+        color: theme.colorSecondary,
+        margin: 0,
+    },
     undebates: {
         width: '100%',
         height: '15.625rem',
         textAlign: 'center',
-        marginBottom: '2%',
         fontFamily: theme.defaultFontFamily,
+    },
+    slider: {
+        marginLeft: '5rem',
+        marginRight: '5rem',
     },
     iconbox: {
-        width: '100%',
-        height: 'auto',
-        textAlign: 'center',
-        marginBottom: '2%',
+        maxWidth: theme.landscapeMaxWidth,
         display: 'flex',
         justifyContent: 'center',
-        padding: '3% 0',
         fontFamily: theme.defaultFontFamily,
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
     iconDiv: {
-        width: '20rem',
-        height: 'auto',
-        paddingTop: '3%',
+        width: '33%',
         fontSize: '1.5rem',
         color: 'purple',
-        marginRight: '5%',
-    },
-    iconDivLast: {
-        width: '20rem',
-        height: 'auto',
-        paddingTop: '3%',
-        fontSize: '1.5rem',
-        color: 'purple',
-        marginRight: 'none',
+        marginLeft: '1rem',
+        marginRight: '1rem',
     },
     statement: {
-        width: '55rem',
+        maxWidth: theme.landscapeMaxWidth,
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginBottom: '10rem',
     },
     faqCom: {
-        width: '55rem',
+        maxWidth: theme.landscapeMaxWidth,
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginBottom: '10rem',
         fontFamily: theme.defaultFontFamily,
     },
+    haveAQuestion: {
+        maxWidth: theme.landscapeMaxWidth,
+    },
     landingTimeline: {
-        marginBottom: '10rem',
+        marginLeft: '2rem',
+        marginRight: '2rem',
+    },
+    createYourOwn: {
+        textAlign: 'center',
     },
     '@media (orientation: portrait)': {
+        borders: {
+            marginBottom: '2rem',
+            marginLeft: '1rem',
+            marginRight: '1rem',
+        },
+        title: {
+            margin: '6rem 1rem 6rem 1rem',
+        },
+        slider: {
+            marginLeft: '1rem',
+            marginRight: '1rem',
+        },
         iconbox: {
             flexDirection: 'column',
-            width: '100%',
-            margin: '0 auto',
+            width: 'auto',
             display: 'inline-flex',
         },
         iconDiv: {
-            textAlign: 'center',
-            width: '80%',
-            height: '30.625rem',
-            display: 'flex-box',
-            margin: '0 auto',
-            marginBottom: '70%',
-        },
-        iconDivLast: {
-            textAlign: 'center',
-            width: '80%',
-            height: '30.625rem',
-            display: 'flex-box',
-            margin: '0 auto',
-            marginBottom: '70%',
+            width: 'auto',
+            margin: '4rem',
+            marginBottom: 0,
         },
         landingTimeline: {
-            marginBottom: '12rem',
-            display: 'table',
-            justifyContent: 'left',
-            marginLeft: '10rem',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
+        faqCom: {
+            width: 'auto',
+            marginLeft: '1rem',
+            marginRight: '1rem',
+        },
+        haveAQuestion: {
+            width: 'auto',
         },
     },
-})
+}))

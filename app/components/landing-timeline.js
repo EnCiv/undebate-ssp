@@ -46,7 +46,16 @@ function TemplateElectionTimeLine({
                     if (secondRow && percent != null) {
                         onSecondRow.push(percent)
                     }
-                    return <Item classes={classes} percent={percent} secondRow={secondRow} text={text} svg={svg} />
+                    return (
+                        <Item
+                            classes={classes}
+                            percent={percent}
+                            secondRow={secondRow}
+                            text={text}
+                            svg={svg}
+                            last={i === positions.length - 1}
+                        />
+                    )
                 })}
             </Meter>
         </div>
@@ -54,11 +63,11 @@ function TemplateElectionTimeLine({
 }
 
 function Item(props) {
-    const { classes, percent = 0, secondRow, text, svg } = props
+    const { classes, percent = 0, secondRow, text, svg, last } = props
     const positionClasses = positionStyles({ percent: percent })
     return (
         <span className={positionClasses.itemPosition}>
-            <div className={classes.templateItem}>
+            <div className={cx(classes.templateItem, last && classes.templateItemLast)}>
                 <div className={classes.templateIcon}>{svg}</div>
                 {text ? <SvgSolidTriangleArrow className={classes.arrow} /> : ''}
                 <div className={cx(classes.templateTextMargin, classes.templateText, secondRow && classes.secondRow)}>
@@ -106,76 +115,88 @@ function LandingTimelineBar({ children }) {
 }
 
 export default function LandingTimeline({ className, style }) {
+    const classes = createUseStyles(theme => ({
+        landingTimeline: {
+            overflow: 'hidden',
+            [`@media (min-width: ${portraitWidth}) and (max-width: ${smallScreenWidth})`]: {
+                height: '19rem',
+            },
+            [`@media (max-width: ${portraitWidth})`]: {
+                width: '17rem',
+                height: '78rem', // hard coded and shoule be coordinated with landingBar below
+            },
+        },
+    }))()
     return (
-        <TemplateElectionTimeLine
-            className={className}
-            style={style}
-            Meter={LandingTimelineBar}
-            positions={[
-                {
-                    svg: <SvgElectionCreated />,
-                    text: <TimelineText primaryText='Election Created' align='left' />,
-                    percent: 0,
-                },
-                { svg: <SvgElectionPaper />, percent: 6 },
-                { svg: <SvgAccepted />, percent: 12 },
-                {
-                    svg: <SvgVideoSubmitted />,
-                    text: (
-                        <TimelineText
-                            primaryText='Moderator Records and Submits Video'
-                            secondaryText='Link is provided in the invite email'
-                        />
-                    ),
-                    percent: 18,
-                },
-                { svg: <SvgReminderSent />, percent: 24 },
-                {
-                    svg: <SvgXCircle />,
-                    text: (
-                        <TimelineText
-                            primaryText='Moderator Submission Deadline'
-                            secondaryText='Last date for the moderator to make'
-                        />
-                    ),
-                    percent: 30,
-                },
-                { svg: <SvgVideoSubmitted />, percent: 36 },
-                { svg: <SvgElectionGrid />, percent: 46 },
-                { svg: <SvgReminderSent />, percent: 53 },
-                {
-                    svg: <SvgXCircle />,
-                    text: (
-                        <TimelineText
-                            primaryText='Candidate Submission Deadline'
-                            secondaryText='Last date for candidates to submit their video answers'
-                        />
-                    ),
-                    percent: 59,
-                },
-                {
-                    svg: <SvgElectionLive />,
-                    text: (
-                        <TimelineText
-                            primaryText='Candidate Submission Deadline'
-                            secondaryText='Last date for candidates to submit their video answers'
-                        />
-                    ),
-                    percent: 70,
-                },
-                {
-                    svg: <SvgContainer />,
-                    percent: 100,
-                    text: (
-                        <TimelineText
-                            primaryText='Candidate Submission Deadline'
-                            secondaryText='Last date for candidates to submit their video answers'
-                            align='right'
-                        />
-                    ),
-                },
-            ]}
-        />
+        <div className={cx(className, classes.landingTimeline)} style={style}>
+            <TemplateElectionTimeLine
+                Meter={LandingTimelineBar}
+                positions={[
+                    {
+                        svg: <SvgElectionCreated />,
+                        text: <TimelineText primaryText='Election Created' align='left' />,
+                        percent: 0,
+                    },
+                    { svg: <SvgElectionPaper />, percent: 6 },
+                    { svg: <SvgAccepted />, percent: 12 },
+                    {
+                        svg: <SvgVideoSubmitted />,
+                        text: (
+                            <TimelineText
+                                primaryText='Moderator Records and Submits Video'
+                                secondaryText='Link is provided in the invite email'
+                            />
+                        ),
+                        percent: 18,
+                    },
+                    { svg: <SvgReminderSent />, percent: 24 },
+                    {
+                        svg: <SvgXCircle />,
+                        text: (
+                            <TimelineText
+                                primaryText='Moderator Submission Deadline'
+                                secondaryText='Last date for the moderator to make'
+                            />
+                        ),
+                        percent: 30,
+                    },
+                    { svg: <SvgVideoSubmitted />, percent: 36 },
+                    { svg: <SvgElectionGrid />, percent: 46 },
+                    { svg: <SvgReminderSent />, percent: 53 },
+                    {
+                        svg: <SvgXCircle />,
+                        text: (
+                            <TimelineText
+                                primaryText='Candidate Submission Deadline'
+                                secondaryText='Last date for candidates to submit their video answers'
+                            />
+                        ),
+                        percent: 59,
+                    },
+                    {
+                        svg: <SvgElectionLive />,
+                        text: (
+                            <TimelineText
+                                primaryText='Candidate Submission Deadline'
+                                secondaryText='Last date for candidates to submit their video answers'
+                            />
+                        ),
+                        percent: 70,
+                    },
+                    {
+                        svg: <SvgContainer />,
+                        percent: 100,
+                        text: (
+                            <TimelineText
+                                primaryText='Candidate Submission Deadline'
+                                secondaryText='Last date for candidates to submit their video answers'
+                                align='right'
+                            />
+                        ),
+                    },
+                ]}
+            />
+        </div>
     )
 }
 
@@ -187,7 +208,7 @@ const useStyles = createUseStyles(theme => ({
             height: '18rem',
         },
         [`@media (max-width: ${portraitWidth})`]: {
-            height: '100rem',
+            height: '100%',
         },
     },
 
@@ -220,6 +241,12 @@ const useStyles = createUseStyles(theme => ({
         position: 'absolute',
         transform: 'translateY(-20%)',
     },
+    templateItemLast: {
+        transform: 'translate(-1.25rem, -20%)',
+        [`@media (max-width: ${portraitWidth})`]: {
+            transform: 'translateY(-20%)',
+        },
+    },
     arrow: {
         position: 'absolute',
         [`@media (max-width: ${portraitWidth})`]: {
@@ -245,12 +272,11 @@ const landingbarUseStyles = createUseStyles(theme => ({
     landingBar: {
         height: '1.875rem',
         [`@media (max-width: ${portraitWidth})`]: {
-            height: '100rem',
+            height: '72rem', // hard coded and shoule be coordinated with templateBar above
             width: '1.875rem',
         },
-        width: '90%',
         backgroundColor: theme.colorPrimary,
-        margin: '0 auto',
+        //margin: '0 auto',
         fontFamily: theme.defaultFontFamily,
     },
 }))

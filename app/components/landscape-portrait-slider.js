@@ -79,7 +79,6 @@ export default function LandscapePortraitSlider(props) {
 //possibly set height to a ratio based on width (w/1920*1080)
 const useStyles = createUseStyles(theme => ({
     LandscapePortraitSlider: {
-        backgroundColor: 'white',
         maxWidth: '100%',
     },
     noborderBottom: {
@@ -130,6 +129,7 @@ const useStyles = createUseStyles(theme => ({
         boxSizing: 'border-box',
         border: '2px solid black',
         borderStyle: 'solid',
+        borderRadius: '1.5rem',
     },
     portrait: {
         position: 'relative',
@@ -145,6 +145,7 @@ const useStyles = createUseStyles(theme => ({
         boxSizing: 'border-box',
         border: '2px solid black',
         borderStyle: 'solid',
+        borderRadius: '1.5rem',
     },
     icon: {
         height: '1.9rem',
