@@ -27,7 +27,7 @@ const getIotaPropertyFromCSVColumn = {
     viewer_url_name: () => 'viewer_url',
     recorder_url_name: () => 'recorder_url',
     url_update_name: name => name + '_updated',
-    lastname: row => row['Name'].split(' ').reduce((acc, word) => word, ''), // the last word in the full name will be the last name
+    lastname: row => row['Name'].split(' ').reduce((acc, word) => word, ''), // the last word in full name will be the last name
     election_source: () => 'CodeForAmerica.NAC',
 }
 
@@ -36,10 +36,10 @@ function date_dash(date) {
         let mdy = date.split('/')
         return mdy[2] + '-' + mdy[0] + '-' + mdy[1]
     }
-    return date
 }
 
-const moderatorViewerRecorder = {
+// todo refactor for duplicates in moderator viewer recorder
+const candidateViewerRecorder = {
     electionList: [],
     setup: function (csvRowObjList) {
         // make a list of all the elections in the table, so each viewer can navigate to other ones
@@ -50,7 +50,7 @@ const moderatorViewerRecorder = {
         }, [])
     },
     viewerPath: function (csvRowObj) {
-        // ()=> here will not get 'this'
+        // () => here will not get 'this'
         return `/country:us/${getIotaPropertyFromCSVColumn.type_name()}:${getIotaPropertyFromCSVColumn
             .type_id(csvRowObj)
             .toLowerCase()}/office:${S(getIotaPropertyFromCSVColumn.office(csvRowObj)).slugify().value()}/${date_dash(
@@ -87,6 +87,7 @@ const moderatorViewerRecorder = {
         newRecorder.bp_info.office = getIotaPropertyFromCSVColumn.office(csvRowObj)
         newRecorder.bp_info.election_date = getIotaPropertyFromCSVColumn.election_date(csvRowObj)
         newRecorder.bp_info.candidate_name = getIotaPropertyFromCSVColumn.candidate_name(csvRowObj)
+
         newRecorder.bp_info.last_name = getIotaPropertyFromCSVColumn.lastname(csvRowObj)
         if (getIotaPropertyFromCSVColumn.unique_id(csvRowObj))
             newRecorder.bp_info.unique_id = getIotaPropertyFromCSVColumn.unique_id(csvRowObj)
@@ -113,8 +114,8 @@ const moderatorViewerRecorder = {
     },
     updateLinkProperty: function (csvRowObj, property, path) {
         if (csvRowObj[property] && csvRowObj[property].length) {
-            if (csvRowObj[property] !== hostName + path) {
-                csvRowObj[property] = hostName + path
+            if (csvRowObj[property] !== hostname + path) {
+                csvRowObj[property] = hostname + path
                 csvRowObj[getIotaPropertyFromCSVColumn.url_update_name(property)] = 'yes'
             } else {
                 csvRowObj[getIotaPropertyFromCSVColumn.url_update_name(property)] = ''
@@ -127,8 +128,6 @@ const moderatorViewerRecorder = {
     updateProperties: function (csvRowObj, viewerObj, recorderObj) {
         this.updateLinkProperty(csvRowObj, getIotaPropertyFromCSVColumn.recorder_url_name(), recorderObj.path)
         this.updateLinkProperty(csvRowObj, getIotaPropertyFromCSVColumn.viewer_url_name(), viewerObj.path)
-        if (!getIotaPropertyFromCSVColumn.unique_id(csvRowObj))
-            getIotaPropertyFromCSVColumn.set.unique_id(csvRowObj, recorderObj.bp_info.unique_id)
     },
     getViewer: function (csvRowObj) {
         return this['candidateViewer']
@@ -252,4 +251,4 @@ const moderatorViewerRecorder = {
     },
 }
 
-export default moderatorViewerRecorder
+export default candidateViewerRecorder
