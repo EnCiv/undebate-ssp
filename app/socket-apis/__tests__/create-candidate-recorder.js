@@ -9,9 +9,12 @@ import { merge } from 'lodash'
 const ObjectID = Iota.ObjectId
 
 // dummy out logger for tests
-global.logger = { error: jest.fn(e => e) }
+// todo remove debug logger
+/* global.logger = { error: jest.fn(e => e), debug: jest.fn() } */
+global.logger = { error: jest.fn((...vals) => console.error(vals)), debug: jest.fn((...vals) => console.log(vals)) }
 
 const testDoc = iotas.filter(iota => iota.subject === 'Undebate SSP Test Iota')[0]
+const testCandidate = testDoc.webComponent.candidates['61e76bbefeaa4a25840d85d0']
 
 const exampleUser = {
     firstName: 'Example',
@@ -42,13 +45,57 @@ afterAll(async () => {
     MongoModels.disconnect()
 })
 
+afterEach(() => {
+    global.logger.error.mockReset()
+    global.logger.debug.mockReset()
+})
+
 let viewerId
 
-/* test('it should create a viewer', done => {}) */
+test.skip('it should create a viewer', done => {
+    async function callback({ rowObjs, messages }) {
+        try {
+            expect(rowObjs).toBeTruthy()
+            const iotas = await Iota.find({
+                parentId: ObjectID(testDoc._id).toString(),
+                'webComponent.webComponent': 'CandidateConversation',
+            })
+            expect(iotas).toHaveLength(1)
+            viewerId = ObjectID(iotas[0]._id).toString
+            expect(iotas[0]).toMatchInlineSnapshot(
+                { _id: expect.any(ObjectID) },
+                `
+                Object {
+                }
+                `
+            )
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    createCandidateRecorder.call(apisThis, ObjectID(testDoc._id).toString(), testCandidate.uniqueId, callback)
+})
 
 const objectIdPattern = /^[0-9a-fA-F]{24}$/
 
-/* test('it should create a recorder', async () => {}) */
+test.skip('it should create a recorder', async () => {
+    const iotas = await Iota.find({ 'webComponent.webComponent': 'Undebate', parentId: viewerId })
+    expect(iotas).toHaveLength(1)
+    expect(iotas[0]).toMatchInlineSnapshot(
+        {
+            _id: expect.any(ObjectID),
+            bp_info: {
+                unique_id: expect.stringMatching(objectIdPattern),
+            },
+            parentId: expect.stringMatching(objectIdPattern),
+            path: expect.stringMatching(
+                /\/country:us\/organization:cfa\/office:moderator\/2021-03-21-recorder-[0-9-a-fA-F]{24}$/
+            ),
+        },
+        ``
+    )
+})
 
 /* test('it should create a submission??', async () => {}) */
 
@@ -65,7 +112,7 @@ test('it fails if no user', done => {
             done(error)
         }
     }
-    createCandidateRecorder.call({}, ObjectID(testDoc._id).toString(), callback)
+    createCandidateRecorder.call({}, ObjectID(testDoc._id).toString(), '', callback)
 })
 
 test('it fails if no id', done => {
@@ -78,7 +125,7 @@ test('it fails if no id', done => {
             done(error)
         }
     }
-    createCandidateRecorder.call(apisThis, '', callback)
+    createCandidateRecorder.call(apisThis, '', '', callback)
 })
 
 test('it fails if bad id', done => {
@@ -94,13 +141,61 @@ test('it fails if bad id', done => {
             done(error)
         }
     }
-    createCandidateRecorder.call(apisThis, 'abc123', callback)
+    createCandidateRecorder.call(apisThis, 'abc123', '', callback)
+})
+
+test('it fails if no userId', done => {
+    async function callback(result) {
+        try {
+            expect(result).toBeUndefined()
+            expect(global.logger.error).toHaveBeenLastCalledWith('createCandidateRecorder called, but bad userId:', '')
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    createCandidateRecorder.call(apisThis, ObjectID(testDoc._id).toString(), '', callback)
+})
+
+test('it fails if bad userId', done => {
+    async function callback(result) {
+        try {
+            expect(result).toBeUndefined()
+            expect(global.logger.error).toHaveBeenLastCalledWith(
+                'createCandidateRecorder called, but bad userId:',
+                'abc321'
+            )
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    createCandidateRecorder.call(apisThis, ObjectID(testDoc._id).toString(), 'abc321', callback)
+})
+
+test('it fails if userId not in candidates', done => {
+    async function callback(result) {
+        try {
+            expect(result).toBeUndefined()
+            expect(global.logger.error).toHaveBeenLastCalledWith(
+                'no candidate found for userId:',
+                '61edf8791dff058c2a73724d'
+            )
+            done()
+        } catch (error) {
+            done(error)
+        }
+    }
+    createCandidateRecorder.call(apisThis, ObjectID(testDoc._id).toString(), '61edf8791dff058c2a73724d', callback)
 })
 
 test('it fails if electionName is missing', done => {
     async function callback(result) {
         try {
             expect(result).toBeUndefined()
+            expect(global.logger.error).toHaveBeenLastCalledWith('not ready for candidate recorder:', [
+                'electionName required',
+            ])
             done()
         } catch (error) {
             done(error)
@@ -112,7 +207,7 @@ test('it fails if electionName is missing', done => {
         badDoc._id = ObjectID() // give it a new objectId
         await Iota.create(badDoc)
 
-        createCandidateRecorder.call(apisThis, ObjectID(badDoc._id).toString(), callback)
+        createCandidateRecorder.call(apisThis, ObjectID(badDoc._id).toString(), testCandidate.uniqueId, callback)
     }
     doAsync()
 })
@@ -121,6 +216,10 @@ test('it fails if script is missing', done => {
     async function callback(result) {
         try {
             expect(result).toBeUndefined()
+            expect(global.logger.error).toHaveBeenLastCalledWith('not ready for candidate recorder:', [
+                'script required',
+                'length of script 0 was not one more than length of questions 3.',
+            ])
             done()
         } catch (error) {
             done(error)
@@ -133,7 +232,7 @@ test('it fails if script is missing', done => {
         badDoc.webComponent.script = undefined
         await Iota.create(badDoc)
 
-        createCandidateRecorder.call(apisThis, ObjectID(badDoc._id).toString(), callback)
+        createCandidateRecorder.call(apisThis, ObjectID(badDoc._id).toString(), testCandidate.uniqueId, callback)
     }
     doAsync()
 })
@@ -142,6 +241,9 @@ test('it fails if script is short', done => {
     async function callback(result) {
         try {
             expect(result).toBeUndefined()
+            expect(global.logger.error).toHaveBeenLastCalledWith('not ready for candidate recorder:', [
+                'length of script 3 was not one more than length of questions 3.',
+            ])
             done()
         } catch (error) {
             done(error)
@@ -155,7 +257,7 @@ test('it fails if script is short', done => {
         delete badDoc.webComponent.script[scriptKeys[scriptKeys.length - 1]]
         await Iota.create(badDoc)
 
-        createCandidateRecorder.call(apisThis, ObjectID(badDoc._id).toString(), callback)
+        createCandidateRecorder.call(apisThis, ObjectID(badDoc._id).toString(), testCandidate.uniqueId, callback)
     }
     doAsync()
 })
