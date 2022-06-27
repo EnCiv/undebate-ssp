@@ -7,31 +7,31 @@ import App from './components/app'
 const path = require('path')
 
 if (serverReactRender.head) serverReactRender.head.shift() // the first on in the head didles the font size and we don't want that
-logger.info('in start')
+console.info('in start')
 Iota.load(civilIotas)
 Iota.load(undebateIotas)
 Iota.load(iotas) // set the initial data for the database
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-logger.info('about to start')
+console.info('about to start')
 async function start() {
     try {
         const server = new CivilServer()
-        logger.info('new server')
+        console.info('new server')
         server.App = App // set the outer React wrapper for this site
         server.directives.frameSrc.push('cc.enciv.org')
         await server.earlyStart() // connect to the database, and such
-        logger.info('early started')
+        console.info('early started')
         server.routesDirPaths.push(path.resolve(__dirname, '../node_modules/undebate/dist/routes'))
         server.routesDirPaths.push(path.resolve(__dirname, './routes'))
         server.socketAPIsDirPaths.push(path.resolve(__dirname, '../node_modules/undebate/dist/socket-apis'))
         server.socketAPIsDirPaths.push(path.resolve(__dirname, './socket-apis'))
         server.serverEventsDirPaths.push(path.resolve(__dirname, '../node_modules/undebate/dist/events'))
         server.serverEventsDirPaths.push(path.resolve(__dirname, './events'))
-        logger.info('about to start)')
+        console.info('about to start)')
         await server.start()
         logger.info('started')
     } catch (error) {
-        logger.error('error on start', error)
+        console.error('error on start', error)
     }
 }
 
