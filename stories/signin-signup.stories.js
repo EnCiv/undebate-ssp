@@ -6,8 +6,20 @@ export default {
     title: 'SignInSignUp',
     component,
     argTypes: {},
+    decorators: [
+        Story => (
+            <div>
+                success@email.com / 'password' will succede
+                <br />
+                all other combinations will fail
+                <Story />
+            </div>
+        ),
+    ],
 }
 
 export const empty = mC({})
 export const SignUp = mC({ startTab: 'Sign Up' })
 export const LoginIn = mC({ startTab: 'Log In' })
+export const DestinationHomeString = mC({ destination: '/?path=/story/app--home' })
+export const DestinationHomeFunction = mC({ destination: value => (location.href = '/?path=/story/app--home') })

@@ -6,13 +6,12 @@ import HomeButton from './home-button'
 import BackButton from './back-button'
 import InstructionButton from './instruction-button'
 import UserOrSignup from './user-or-signup'
-import SignInButton from './sign-in-button'
 
 // if elections is a list of one, just show it and don't do a selector
 
 function ElectionHeader(props) {
     const classes = useStyles()
-    const { className, style, defaultValue = 0, elections = [], onDone = () => {}, user } = props
+    const { className, style, defaultValue = 0, elections = [], onDone = () => {}, user, destination } = props
 
     return (
         <div className={cx(className, classes.electionHeader)} style={style}>
@@ -39,7 +38,7 @@ function ElectionHeader(props) {
             )}
             <div>
                 <InstructionButton className={cx(classes.icon, classes.gap)} />
-                <UserOrSignup user={user} style={{ verticalAlign: 'middle' }} />
+                <UserOrSignup user={user} style={{ verticalAlign: 'middle' }} destination={destination} />
             </div>
         </div>
     )

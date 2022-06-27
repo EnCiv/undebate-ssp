@@ -7,6 +7,16 @@ export default {
     title: 'Sign In Button',
     component,
     argTypes: {},
+    decorators: [
+        Story => (
+            <div>
+                success@email.com / 'password' will succede
+                <br />
+                all other combinations will fail
+                <Story />
+            </div>
+        ),
+    ],
 }
 
 export const Default = mC({})

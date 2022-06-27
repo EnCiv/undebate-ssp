@@ -11,7 +11,7 @@ import UndebateLogoSVG from '../svgr/undebate-logo'
 import UserOrSignup from './user-or-signup'
 
 function UndebatesHeaderBar(props) {
-    const { className, style, user, electionOM = [{}, {}] } = props
+    const { className, style, user, electionOM = [{}, {}], destination } = props
     // eslint-disable-next-line no-unused-vars
     const [electionObj, electionMethods] = electionOM
 
@@ -28,7 +28,7 @@ function UndebatesHeaderBar(props) {
                 <SearchButton className={classes.svg} />
                 <InstructionsButton className={classes.svg} />
                 {user && <SubmitButton name='Create New' onDone={handleCreateNew} />}
-                <UserOrSignup user={user} />
+                <UserOrSignup user={user} destination={destination} />
             </div>
         </div>
     )

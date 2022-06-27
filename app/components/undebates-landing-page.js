@@ -11,6 +11,7 @@ import SignInButton from './sign-in-button'
 import cx from 'classnames'
 
 const verticalGap = '8rem'
+const destination = '/undebates' // after the user logs in, go to this destination
 
 export default function UndebatesLandingPage(props) {
     const {
@@ -25,14 +26,18 @@ export default function UndebatesLandingPage(props) {
     const classes = useStyles()
     return (
         <div style={{ backgroundColor: '#e9eaeb' }}>
-            <UndebatesHeaderBar className={classes.borders} />
+            <UndebatesHeaderBar className={classes.borders} destination={destination} />
             <div className={cx(classes.title, classes.borders)}>
                 <h1 className={classes.mainTitle}>{line1}</h1>
                 <h2 className={classes.subtitle}>{line2}</h2>
             </div>
             <LandscapePortraitSlider className={cx(classes.slider, classes.borders)} {...topIframe} />
             <Statement {...statements[0]} className={cx(classes.statement, classes.borders)} />
-            <SignInButton className={cx(classes.createYourOwn, classes.borders)} name={secondarySignupButton} />
+            <SignInButton
+                className={cx(classes.createYourOwn, classes.borders)}
+                name={secondarySignupButton}
+                destination={destination}
+            />
             <div className={cx(classes.iconbox, classes.borders)}>
                 <div className={classes.iconDiv}>
                     <IconBox {...iconBoxes[0]} className={classes.iconBox} />
@@ -46,7 +51,11 @@ export default function UndebatesLandingPage(props) {
             </div>
             <Statement {...statements[1]} className={cx(classes.statement, classes.borders)} />
             <LandingTimeline className={cx(classes.borders, classes.landingTimeline)} />
-            <SignInButton className={cx(classes.createYourOwn, classes.borders)} name={secondarySignupButton} />
+            <SignInButton
+                className={cx(classes.createYourOwn, classes.borders)}
+                name={secondarySignupButton}
+                destination={destination}
+            />
             <div className={classes.borders}>
                 <FAQ faqs={faqs} className={classes.faqCom} />
                 <HaveAQuestion className={cx(classes.haveAQuestion)} />
@@ -55,6 +64,7 @@ export default function UndebatesLandingPage(props) {
                 className={cx(classes.createYourOwn, classes.borders)}
                 name={secondarySignupButton}
                 style={{ paddingBottom: verticalGap, marginBottom: 0 }}
+                destination={destination}
             />
         </div>
     )
