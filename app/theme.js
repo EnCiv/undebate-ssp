@@ -65,6 +65,7 @@ const theme = {
     csvPopupHeight: '41.25rem',
     pastePopupHeight: '23.125rem',
     uploadPopupWidth: '29.6875rem',
+    landscapeMaxWidth: '55rem',
 }
 
 export default theme

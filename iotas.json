@@ -222,6 +222,70 @@
     },
     {
         "_id": {
+            "$oid": "6244c31ed2347d8172a23d41"
+        },
+        "path": "/undebates-new",
+        "subject": "Civil Server Template",
+        "description": "Civil Server Template Undebates Page",
+        "webComponent": {
+            "webComponent": "Undebates",
+            "line1": "Automated Video Q&A",
+            "line2": "with every candidate for better voter engagement",
+            "secondarySignupButton": "Create your own Undebate",
+            "statements": [
+                {
+                    "subject": "What are Undebates",
+                    "description": "Reading candidate statements can be boring, uninspring, and easialy procrastinated.\nUndebates are automated online video Q&A with candidates so that can be heard, and for voters so they can quickly make a more meaningful decision."
+                },
+                {
+                    "subject": "How It Works",
+                    "description": "The election administrator will setup the election, enter the questions, invite a moderator, enter or import the candidate info, and invites the candidates to record. An inteactive debate viewer will be generated that can be embedded on a website, or shared or emailed as a link"
+                }
+            ],
+            "topIframe": {
+                "linkObj": {
+                    "subject": "Student Government Elections",
+                    "url": "https://cc.enciv.org/country:us/organization:ucla-student-accociation/office:usac-president/2021-05-07",
+                    "subtitle": "13 Offices"
+                },
+                "portraitStatement": {
+                    "subject": "Taylored for every device and every layout",
+                    "description": "Dolor adipiscing augue diam nulla ornare dictum tortor id ut. Eu etiam sed fermentum egestas nisl nulla porttitor non justo. Dolor commodo id justo, pretium. Magna et arcu fringilla in nisi, mauris tincidunt. Penatibus turpis eget sapien non at phasellus lacus. Pellentesque consectetur nunc mi amet curabitur cras fames amet cursus."
+                }
+            },
+            "iconBoxes": [
+                {
+                    "iconName": "SvgFitsInside",
+                    "subject": "Fits inside any layout, Embed anywhere!",
+                    "description": "Embeds available for multiple layouts. Delightful experience across a variety of devices."
+                },
+                {
+                    "iconName": "SvgAutomate",
+                    "subject": "Automated and structured process.",
+                    "description": "Invites, reminders and scripts automated to ease the participation of all entities involved."
+                },
+                {
+                    "iconName": "SvgShortFormat",
+                    "subject": "Short formats to decide quickly.",
+                    "description": "Time conciousness at every step that caters more towards the modern attention span."
+                }
+            ],
+            "faqs": [
+                { "question": "This is the first question?", "answer": "This is the answer to the first question." },
+                { "question": "This is the second question?", "answer": "This is the answer to the second question." },
+                {
+                    "question": "This is the third question?",
+                    "answer": "This is the answer to the third question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?"
+                },
+                {
+                    "question": "This is the fourth question?",
+                    "answer": "This is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?\nThis is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?\nThis is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?\nThis is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?"
+                }
+            ]
+        }
+    },
+    {
+        "_id": {
             "$oid": "627833a2ee9d2017eec0a69b"
         },
         "path": "/qa-paste-google-sheets-popup",
@@ -239,7 +303,60 @@
         "subject": "Undebate Homepage",
         "description": "The Undebate Home Page",
         "webComponent": {
-            "webComponent": "UndebatesHomepage"
+            "webComponent": "UndebatesHomepage",
+            "line1": "Automated Video Q&A",
+            "line2": "with every candidate for better voter engagement",
+            "secondarySignupButton": "Create your own Undebate",
+            "statements": [
+                {
+                    "subject": "What are Undebates",
+                    "description": "Reading candidate statements can be boring, uninspring, and easialy procrastinated.\nUndebates are automated online video Q&A with candidates so that can be heard, and for voters so they can quickly make a more meaningful decision."
+                },
+                {
+                    "subject": "How It Works",
+                    "description": "The election administrator will setup the election, enter the questions, invite a moderator, enter or import the candidate info, and invites the candidates to record. An inteactive debate viewer will be generated that can be embedded on a website, or shared or emailed as a link"
+                }
+            ],
+            "topIframe": {
+                "linkObj": {
+                    "subject": "Student Government Elections",
+                    "url": "https://cc.enciv.org/country:us/organization:ucla-student-accociation/office:usac-president/2021-05-07",
+                    "subtitle": "13 Offices"
+                },
+                "portraitStatement": {
+                    "subject": "Taylored for every device and every layout",
+                    "description": "Dolor adipiscing augue diam nulla ornare dictum tortor id ut. Eu etiam sed fermentum egestas nisl nulla porttitor non justo. Dolor commodo id justo, pretium. Magna et arcu fringilla in nisi, mauris tincidunt. Penatibus turpis eget sapien non at phasellus lacus. Pellentesque consectetur nunc mi amet curabitur cras fames amet cursus."
+                }
+            },
+            "iconBoxes": [
+                {
+                    "iconName": "SvgFitsInside",
+                    "subject": "Fits inside any layout, Embed anywhere!",
+                    "description": "Embeds available for multiple layouts. Delightful experience across a variety of devices."
+                },
+                {
+                    "iconName": "SvgAutomate",
+                    "subject": "Automated and structured process.",
+                    "description": "Invites, reminders and scripts automated to ease the participation of all entities involved."
+                },
+                {
+                    "iconName": "SvgShortFormat",
+                    "subject": "Short formats to decide quickly.",
+                    "description": "Time conciousness at every step that caters more towards the modern attention span."
+                }
+            ],
+            "faqs": [
+                { "question": "This is the first question?", "answer": "This is the answer to the first question." },
+                { "question": "This is the second question?", "answer": "This is the answer to the second question." },
+                {
+                    "question": "This is the third question?",
+                    "answer": "This is the answer to the third question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?"
+                },
+                {
+                    "question": "This is the fourth question?",
+                    "answer": "This is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?\nThis is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?\nThis is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?\nThis is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?"
+                }
+            ]
         }
     }
 ]

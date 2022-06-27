@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { useClickAway } from 'react-use'
 
 export default function SignInButton(props) {
-    const { className, style, name = 'Sign In' } = props
+    const { className, style, name = 'Sign In', destination } = props
     const classes = useStyles()
     const [showPopup, setShowPopup] = useState(false)
     const signRef = createRef(null)
@@ -19,9 +19,14 @@ export default function SignInButton(props) {
                 <SignInSignUp
                     ref={signRef}
                     startTab={name}
-                    destination={value => {
-                        setShowPopup(false)
-                    }}
+                    destination={
+                        typeof destination === 'string'
+                            ? destination
+                            : value => {
+                                  setShowPopup(false)
+                                  if (typeof destination === 'function') destination(value)
+                              }
+                    }
                 />
             )}
         </div>

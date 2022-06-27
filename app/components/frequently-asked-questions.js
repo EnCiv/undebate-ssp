@@ -9,32 +9,23 @@ export default function FrequentlyAskedQuestions(props) {
     const classes = useStyles()
 
     return (
-        <div>
-            <h3 className={cx(className, classes.headerStyle)} style={style}>
-                Frequently Asked Questions
-            </h3>
+        <div className={className} style={style}>
+            <h3 className={classes.headerStyle}>Frequently Asked Questions</h3>
             {faqs &&
                 faqs.map(value => (
                     <div>
                         <div
-                            className={cx(className, classes.questionLine)}
-                            style={style}
+                            className={classes.questionLine}
                             key={value.question}
                             onClick={() => {
                                 active === value.question ? setActive(false) : setActive(value.question)
                             }}
                         >
-                            <p className={cx(className, classes.questionStyle)} style={style}>
-                                {value.question}
-                            </p>
+                            <p className={classes.questionStyle}>{value.question}</p>
                             {active === value.question ? (
-                                <p className={cx(className, classes.caret)} style={style}>
-                                    ^
-                                </p>
+                                <p className={classes.caret}>^</p>
                             ) : (
-                                <p className={cx(className, classes.caret)} style={style}>
-                                    v
-                                </p>
+                                <p className={classes.caret}>v</p>
                             )}
                         </div>
                         <Opener classes={classes} answer={value.answer} active={active === value.question} />
@@ -46,21 +37,31 @@ export default function FrequentlyAskedQuestions(props) {
 }
 
 const useStyles = createUseStyles({
-    caret: { display: 'inline-block', float: 'right', paddingRight: '2rem', cursor: 'pointer' },
+    caret: { display: 'flex', paddingRight: '2rem', cursor: 'pointer' },
 
-    headerStyle: { textAlign: 'center', paddingTop: '1rem' },
+    headerStyle: { textAlign: 'center', paddingTop: '1rem', fontSize: '2rem' },
 
     answerStyle: {
         whiteSpace: 'pre-wrap',
-        paddingLeft: '1rem',
         paddingRight: '2rem',
         fontWeight: '500',
+        fontSize: '1.5rem',
         // used px here to maintain a minimum distance from the bottom of the page for ease of visibility
         paddingBottom: 'max(1rem, .2rem)',
+        color: 'rgba(38, 45, 51, 0.5)',
         // transition: 'all, .5s, ease-in-out, .1s',
     },
 
-    questionLine: { display: 'inline' },
+    questionLine: {
+        display: 'flex',
+        justifyContent: 'space-between',
+    },
 
-    questionStyle: { paddingLeft: '1rem', fontWeight: '300', display: 'inline-block', cursor: 'pointer' },
+    questionStyle: {
+        fontWeight: '300',
+        display: 'inline-block',
+        cursor: 'pointer',
+        fontSize: '1.5rem',
+        color: 'rgba(38, 45, 51, 0.5)',
+    },
 })
