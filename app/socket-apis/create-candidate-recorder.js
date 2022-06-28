@@ -4,6 +4,7 @@ import { Iota } from 'civil-server'
 import { undebatesFromTemplateAndRows } from 'undebate'
 import getElectionStatusMethods from '../lib/get-election-status-methods'
 import candidateViewerRecorder from '../components/lib/candidate-viewer-recorder'
+import { getElectionDocById } from './get-election-docs'
 
 // todo eventually replace this video
 const introVideo =
@@ -78,55 +79,58 @@ export default async function createCandidateRecorder(id, userId, cb) {
         return
     }
     try {
-        const iota = await Iota.findOne({ _id: Iota.ObjectId(id) })
-        if (!iota) {
-            logger.error('createCandidateRecorder called, but no iota found by id:', id)
-            if (cb) cb()
-            return
-        }
-        const electionObj = iota.webComponent
-        logger.debug('electionObj', electionObj)
-        let msgs
-        // todo add moderator submissions not ready?
-        if ((msgs = reasonsNotReadyForCandidateRecorder(electionObj)).length) {
-            logger.error('not ready for candidate recorder:', msgs)
-            if (cb) cb()
-            return
-        }
-        const sortedQuestionPairs = Object.entries(electionObj.questions).sort(
-            ([aKey, aObj], [bKey, bObj]) => aKey - bKey
-        )
-        const agenda = sortedQuestionPairs.map(([key, obj]) => [obj.text])
+        getElectionDocById.call(this, id, async iota => {
+            if (!iota) {
+                logger.error('createCandidateRecorder called, but no iota found by id:', id)
+                if (cb) cb()
+                return
+            }
+            logger.debug('iota', iota)
+            const electionObj = iota.webComponent
+            logger.debug('electionObj', electionObj)
+            let msgs
+            // todo add moderator submissions not ready?
+            if ((msgs = reasonsNotReadyForCandidateRecorder(electionObj)).length) {
+                logger.error('not ready for candidate recorder:', msgs)
+                if (cb) cb()
+                return
+            }
+            const sortedQuestionPairs = Object.entries(electionObj.questions).sort(
+                ([aKey, aObj], [bKey, bObj]) => aKey - bKey
+            )
+            const agenda = sortedQuestionPairs.map(([key, obj]) => [obj.text])
 
-        const timeLimits = sortedQuestionPairs.map(([key, obj]) => [obj.time])
+            const timeLimits = sortedQuestionPairs.map(([key, obj]) => [obj.time])
 
-        const candidate = electionObj.candidates[userId]
-        if (!candidate) {
-            logger.error('no candidate found for userId:', userId)
-            if (cb) cb()
-            return
-        }
-        logger.debug('agenda', agenda)
-        logger.debug('timeLimits', timeLimits)
-        logger.debug('candidate', candidate)
+            const candidate = electionObj.candidates[userId]
+            if (!candidate) {
+                logger.error('no candidate found for userId:', userId)
+                if (cb) cb()
+                return
+            }
+            logger.debug('agenda', agenda)
+            logger.debug('timeLimits', timeLimits)
+            logger.debug('candidate', candidate)
 
-        const electionMethods = getElectionStatusMethods(undefined, electionObj)
-        const speaking = electionMethods.getLatestIota(electionObj.moderator.submissions).component.participant.speaking
-        speaking.unshift(introVideo)
-        logger.debug('speaking', speaking)
+            const electionMethods = getElectionStatusMethods(undefined, electionObj)
+            const speaking = electionMethods.getLatestIota(electionObj.moderator.submissions).component.participant
+                .speaking
+            speaking.unshift(introVideo)
+            logger.debug('speaking', speaking)
 
-        // todo updates to candidateViewerRecorder here
-        /* candidateViewerRecorder.candidateRecorder.component.participants */
-        /* candidateViewerRecorder.candidateViewer.webComponent.participants */
+            // todo updates to candidateViewerRecorder here
+            /* candidateViewerRecorder.candidateRecorder.component.participants */
+            /* candidateViewerRecorder.candidateViewer.webComponent.participants */
 
-        const inRowObjs = [{ Seat: candidate.office, Name: candidate.name, Email: candidate.email }]
-        const { rowObjs, messages } = await undebatesFromTemplateAndRows(candidateViewerRecorder, inRowObjs)
-        logger.debug('rowObjs', rowObjs)
-        if (!rowObjs) {
-            if (cb) cb()
-            return
-        }
-        if (cb) cb({ rowObjs, messages })
+            const inRowObjs = [{ Seat: candidate.office, Name: candidate.name, Email: candidate.email }]
+            const { rowObjs, messages } = await undebatesFromTemplateAndRows(candidateViewerRecorder, inRowObjs)
+            logger.debug('rowObjs', rowObjs)
+            if (!rowObjs) {
+                if (cb) cb()
+                return
+            }
+            if (cb) cb({ rowObjs, messages })
+        })
     } catch (err) {
         logger.error('err', err)
         if (cb) cb()

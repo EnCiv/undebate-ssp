@@ -85,6 +85,50 @@ const iotas = [
             },
         },
     },
+    {
+        _id: Iota.ObjectID('62b8e859582e3b95dc83e78b'),
+        subject: 'Candidate Recorder for #4',
+        description: 'Candidate Recorder for #4',
+        bp_info: {
+            office: 'President of the U.S.',
+            unique_id: '62b8ec895d49079beb4e1c5a',
+        },
+        component: {
+            component: 'undebateCreator',
+        },
+        parentId: '628c73daf2014b3f4c5da4ee',
+    },
+    {
+        _id: Iota.ObjectID('62b8e8e2e1fcf3bae96a4f48'),
+        subject: 'Candidate Viewer for #4',
+        description: 'Candidate Viewer for #4',
+        bp_info: {
+            office: 'President of the U.S.',
+        },
+        webComponent: {
+            webComponent: 'CandidateConversation',
+        },
+        parentId: '628c73daf2014b3f4c5da4ee',
+    },
+    {
+        _id: Iota.ObjectID('62b8e8eee48604bcfe9108fd'),
+        parentId: '62b8e8e2e1fcf3bae96a4f48',
+        subject: 'Candidate Recording for #4',
+        description: 'Candidate Recording for #4',
+        component: {
+            component: 'MergeParticipants',
+            participant: {
+                speaking: [
+                    'https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm',
+                    'https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510659/5d5b73c01e3b194174cd9b92-2-speaking.webm',
+                    'https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510665/5d5b73c01e3b194174cd9b92-3-speaking.webm',
+                ],
+                name: 'david',
+                listening:
+                    'https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm',
+            },
+        },
+    },
 ]
 
 const exampleUser = {
@@ -224,7 +268,8 @@ test('get election docs should get them', done => {
     getElectionDocs.call(apisThis, callback)
 })
 
-test('get election doc by id should get one', done => {
+// todo remove .only
+test.only('get election doc by id should get one', done => {
     function callback(doc) {
         expect(doc).toMatchInlineSnapshot(`
             Object {
@@ -233,6 +278,26 @@ test('get election doc by id should get one', done => {
               "subject": "Election document",
               "userId": "628d0a2afacbb605f4d8e6ac",
               "webComponent": Object {
+                "candidates": Object {
+                  "62b8ec895d49079beb4e1c5a": Object {
+                    "recorders": Object {
+                      "62b8e859582e3b95dc83e78b": Object {
+                        "_id": "62b8e859582e3b95dc83e78b",
+                        "bp_info": Object {
+                          "office": "President of the U.S.",
+                          "unique_id": "62b8ec895d49079beb4e1c5a",
+                        },
+                        "component": Object {
+                          "component": "undebateCreator",
+                        },
+                        "description": "Candidate Recorder for #4",
+                        "parentId": "628c73daf2014b3f4c5da4ee",
+                        "subject": "Candidate Recorder for #4",
+                        "userId": "628d0a2afacbb605f4d8e6ac",
+                      },
+                    },
+                  },
+                },
                 "moderator": Object {
                   "recorders": Object {
                     "628d076dcf19df5aa438c07a": Object {

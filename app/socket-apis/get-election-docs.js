@@ -235,4 +235,39 @@ const mergeOps = {
         })
         return true
     },
+    candidatesRecorder(dst, root, child, iotas, usedIndexes) {
+        if (!(child?.component?.component === 'undebateCreator' && child?.bp_info?.office !== 'Moderator')) return false
+        intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${child.bp_info.unique_id}.recorders`, child)
+        return true
+    },
+    /* candidatesViewer(dst, root, child, iotas, usedIndexes) {
+     *     if (
+     *         !(child?.webComponent?.webComponent === 'CandidateConversation' && child?.bp_info?.office !== 'Moderator')
+     *     ) {
+     *         return false
+     *     }
+     *     // todo fix incorrect path
+     *     intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${child.parentId}.viewers`, child)
+     *     return () =>
+     *         intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(
+     *             dst,
+     *             root,
+     *             getId(child.parentId),
+     *             iotas,
+     *             usedIndexes
+     *         )
+     * },
+     * candidatesSubmissions(dst, root, child, iotas, usedIndexes) {
+     *     if (
+     *         !(
+     *             child?.component?.component === 'MergeParticipants' &&
+     *             root?.webComponent?.candidates[child?.parentId]?.viewers?.[child?.parentId]
+     *         )
+     *     ) {
+     *         return false
+     *     }
+     *     // todo fix incorrect path
+     *     intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${child.parentId}.submissions`, child)
+     *     return true
+     * }, */
 }
