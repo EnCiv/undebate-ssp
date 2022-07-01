@@ -161,7 +161,7 @@ function intoArrayAtObjPathPushDoc(obj, path, doc) {
 
 // an object of docs is an object where each key is a doc's _id and the value is the doc
 // { '62a17c01635c4c4700ced877': {_id: '62a17c01635c4c4700ced877, subject: "an iota doc", description: 'this is an iota in an object of docs, ...}}
-function intoObjOfDocsAtObjPathMergeDoc(obj, path, doc) {
+export function intoObjOfDocsAtObjPathMergeDoc(obj, path, doc) {
     let o = obj
     const keys = path.split('.')
     let key
@@ -240,13 +240,32 @@ const mergeOps = {
         intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${child.bp_info.unique_id}.recorders`, child)
         return true
     },
-    /* candidatesViewer(dst, root, child, iotas, usedIndexes) {
+    /* candidatesSubmissions(dst, root, child, iotas, usedIndexes) {
+     *     console.log('child of candidatesSubmissions', child)
+     *     // console.debug('root.webComponent.candidates:', root.webComponent.candidates)
+     *     if (child?.component?.component !== 'MergeParticipants') {
+     *         return false
+     *     }
+     *     console.log('\n\n\nstuff\n\n\n')
+     *     // const candidateName = root?.webComponent?.component?.participant?.name
+     *     const candidateName = child?.component?.participant?.name
+     *     console.debug('candidateName searching for:', candidateName)
+     *     if (!candidateName) return false
+     *     const candidate = Object.values(root?.webComponent?.candidates || {}).find(cand => cand.name === candidateName)
+     *     if (!candidate) return false
+     *     // todo consider:
+     *     // if (root?.webComponent?.office.viewers?.[child?.parentId]) return false
+     *     intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidate.${candidate.uniqueId}.submissions`, child)
+     *     return true
+     * },
+     * officeViewer(dst, root, child, iotas, usedIndexes) {
      *     if (
      *         !(child?.webComponent?.webComponent === 'CandidateConversation' && child?.bp_info?.office !== 'Moderator')
      *     ) {
      *         return false
      *     }
-     *     // todo fix incorrect path
+     *     // child.bp_info.office
+     *     // "webComponent.offices.${...office}.viewer"
      *     intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${child.parentId}.viewers`, child)
      *     return () =>
      *         intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(
@@ -256,18 +275,5 @@ const mergeOps = {
      *             iotas,
      *             usedIndexes
      *         )
-     * },
-     * candidatesSubmissions(dst, root, child, iotas, usedIndexes) {
-     *     if (
-     *         !(
-     *             child?.component?.component === 'MergeParticipants' &&
-     *             root?.webComponent?.candidates[child?.parentId]?.viewers?.[child?.parentId]
-     *         )
-     *     ) {
-     *         return false
-     *     }
-     *     // todo fix incorrect path
-     *     intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${child.parentId}.submissions`, child)
-     *     return true
      * }, */
 }
