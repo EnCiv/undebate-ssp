@@ -10,7 +10,6 @@
         "hot-transpile": "babel --watch app --ignore **/__tests__ --out-dir dist --source-maps",
         "packbuild": "webpack --config webpack-prod.config.js",
         "postinstall": "bash postinstall.sh",
-        "heroku-postbuild": "node_modules/jss-cli/bin/jss.js convert node_modules/react-calendar/dist/Calendar.css -f js -e cjs > node_modules/react-calendar/dist/react-calendar-css.js",
         "prestart": "npm run packbuild",
         "start": "node --max_old_space_size=460 dist/start.js",
         "test": "jest",
@@ -46,8 +45,7 @@
         "url": "https://github.com/EnCiv/undebate-ssp/issues"
     },
     "homepage": "https://github.com/EnCiv/undebate-ssp#readme",
-    "devDependencies": {
-        "@babel/cli": "^7.16.0",
+    "peerDependencies": {
         "@jest/globals": "^27.4.6",
         "@shelf/jest-mongodb": "^2.2.0",
         "@storybook/addon-actions": "^6.4.9",
@@ -59,9 +57,7 @@
         "@storybook/manager-webpack5": "^6.4.9",
         "@storybook/react": "^6.4.9",
         "@storybook/testing-library": "^0.0.9",
-        "@svgr/cli": "^6.1.1",
         "concurrently": "^6.4.0",
-        "css-loader": "^6.5.1",
         "enzyme": "^3.11.0",
         "enzyme-adapter-react-16": "^1.15.6",
         "eslint": "^8.4.1",
@@ -79,7 +75,13 @@
         "prettier": "^2.5.1",
         "pretty-quick": "^3.1.2",
         "socket.io": "^4.4.1",
-        "socket.io-client": "^4.4.1"
+        "socket.io-client": "^4.4.1",
+        "webpack-dev-server": "^4.6.0"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.16.0",
+        "@svgr/cli": "^6.1.1",
+        "css-loader": "^6.5.1"
     },
     "dependencies": {
         "@babel/core": "^7.16.0",
@@ -93,7 +95,7 @@
         "@babel/preset-react": "^7.16.0",
         "@babel/runtime": "^7.16.3",
         "babel-loader": "^8.2.3",
-        "civil-client": "github:EnCiv/civil-client",
+        "civil-client": "github:EnCiv/civil-client#heroku-oom",
         "civil-server": "github:EnCiv/civil-server#heroku-oom",
         "classnames": "^2.3.1",
         "color": "^4.2.3",
@@ -122,7 +124,6 @@
         "use-methods": "github:EnCiv/use-methods",
         "util": "^0.12.4",
         "webpack": "^5.65.0",
-        "webpack-cli": "^4.9.1",
-        "webpack-dev-server": "^4.6.0"
+        "webpack-cli": "^4.9.1"
     }
 }

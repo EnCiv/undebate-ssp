@@ -30,6 +30,9 @@ npm run svgr
 node node_modules/civil-server/dist/tools/react-directory-indexer.js app/web-components/ node_modules/civil-server/dist/web-components/ node_modules/undebate/dist/web-components/
 node node_modules/civil-server/dist/tools/react-directory-indexer.js --data app/data-components/ node_modules/civil-server/dist/data-components/ node_modules/undebate/dist/data-components/
 
+# need this for app/components/election-date but its kind of a kludge
+node_modules/jss-cli/bin/jss.js convert node_modules/react-calendar/dist/Calendar.css -f js -e cjs > node_modules/react-calendar/dist/react-calendar-css.js
+
 #echo '*************************************************************************'
 #echo TRANSPILE
 #echo '*************#************************************************************'
