@@ -45,7 +45,7 @@
         "url": "https://github.com/EnCiv/undebate-ssp/issues"
     },
     "homepage": "https://github.com/EnCiv/undebate-ssp#readme",
-    "peerDependencies": {
+    "optionalDependencies": {
         "@jest/globals": "^27.4.6",
         "@shelf/jest-mongodb": "^2.2.0",
         "@storybook/addon-actions": "^6.4.9",
@@ -75,15 +75,18 @@
         "prettier": "^2.5.1",
         "pretty-quick": "^3.1.2",
         "socket.io": "^4.4.1",
-        "socket.io-client": "^4.4.1",
-        "webpack-dev-server": "^4.6.0"
+        "socket.io-client": "^4.4.1"
+    },
+    "peerDependencies": {
+        "civil-client": "github:EnCiv/civil-client#heroku-oom",
+        "civil-server": "github:EnCiv/civil-server#heroku-oom",
+        "undebate": "github:EnCiv/undebate"
     },
     "devDependencies": {
-        "@babel/cli": "^7.16.0",
-        "@svgr/cli": "^6.1.1",
-        "css-loader": "^6.5.1"
+        "webpack-dev-server": "^4.6.0"
     },
     "dependencies": {
+        "@babel/cli": "^7.16.0",
         "@babel/core": "^7.16.0",
         "@babel/plugin-proposal-class-properties": "^7.16.0",
         "@babel/plugin-proposal-object-rest-spread": "^7.16.0",
@@ -94,11 +97,11 @@
         "@babel/preset-env": "^7.16.4",
         "@babel/preset-react": "^7.16.0",
         "@babel/runtime": "^7.16.3",
+        "@svgr/cli": "^6.1.1",
         "babel-loader": "^8.2.3",
-        "civil-client": "github:EnCiv/civil-client#heroku-oom",
-        "civil-server": "github:EnCiv/civil-server#heroku-oom",
         "classnames": "^2.3.1",
         "color": "^4.2.3",
+        "css-loader": "^6.5.1",
         "git-repo-name": "^1.0.1",
         "googleapis": "^100.0.0",
         "isemail": "^3.2.0",
@@ -120,7 +123,6 @@
         "react-textarea-autosize": "^8.3.3",
         "react-use": "^17.3.2",
         "sib-api-v3-sdk": "^8.3.0",
-        "undebate": "github:EnCiv/undebate#heroku-oom",
         "use-methods": "github:EnCiv/use-methods",
         "util": "^0.12.4",
         "webpack": "^5.65.0",
