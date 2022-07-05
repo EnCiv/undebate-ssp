@@ -43,17 +43,17 @@ npm run transpile  || {
 }
 echo "transpile ok"
 
-#echo '*************************************************************************'
-#echo WEBPACK
-#echo '*************************************************************************'
-#
+echo '*************************************************************************'
+echo WEBPACK
+echo '*************************************************************************'
+
 # packbuild is moved to "prestart" in package.json. packbuild does not work when installing undebate as a package in another repo because the paths aren't right.
 # but the main.js that would be created is not used when this is a package
-#
-# npm run packbuild  || {
-#  echo Could not webpack;
-#  exit 1
-#}
-#echo "webpack ok"
+
+npm run packbuild  || {
+ echo Could not webpack;
+ exit 1
+}
+echo "webpack ok"
 
 
