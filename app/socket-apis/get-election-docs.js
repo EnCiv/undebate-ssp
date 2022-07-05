@@ -240,40 +240,38 @@ const mergeOps = {
         intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${child.bp_info.unique_id}.recorders`, child)
         return true
     },
-    /* candidatesSubmissions(dst, root, child, iotas, usedIndexes) {
-     *     console.log('child of candidatesSubmissions', child)
-     *     // console.debug('root.webComponent.candidates:', root.webComponent.candidates)
-     *     if (child?.component?.component !== 'MergeParticipants') {
-     *         return false
-     *     }
-     *     console.log('\n\n\nstuff\n\n\n')
-     *     // const candidateName = root?.webComponent?.component?.participant?.name
-     *     const candidateName = child?.component?.participant?.name
-     *     console.debug('candidateName searching for:', candidateName)
-     *     if (!candidateName) return false
-     *     const candidate = Object.values(root?.webComponent?.candidates || {}).find(cand => cand.name === candidateName)
-     *     if (!candidate) return false
-     *     // todo consider:
-     *     // if (root?.webComponent?.office.viewers?.[child?.parentId]) return false
-     *     intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidate.${candidate.uniqueId}.submissions`, child)
-     *     return true
-     * },
-     * officeViewer(dst, root, child, iotas, usedIndexes) {
-     *     if (
-     *         !(child?.webComponent?.webComponent === 'CandidateConversation' && child?.bp_info?.office !== 'Moderator')
-     *     ) {
-     *         return false
-     *     }
-     *     // child.bp_info.office
-     *     // "webComponent.offices.${...office}.viewer"
-     *     intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${child.parentId}.viewers`, child)
-     *     return () =>
-     *         intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(
-     *             dst,
-     *             root,
-     *             getId(child.parentId),
-     *             iotas,
-     *             usedIndexes
-     *         )
-     * }, */
+    candidatesSubmissions(dst, root, child, iotas, usedIndexes) {
+        if (child?.component?.component !== 'MergeParticipants') {
+            return false
+        }
+        const candidateName = child?.component?.participant?.name
+        if (!candidateName) return false
+        const candidate = Object.values(root?.webComponent?.candidates || {}).find(cand => cand.name === candidateName)
+        if (!candidate) return false
+        intoObjOfDocsAtObjPathMergeDoc(
+            dst,
+            `webComponent.offices.${candidate.office}.viewer.${child.parentId}.submissions`,
+            child
+        )
+        return true
+    },
+    officeViewer(dst, root, child, iotas, usedIndexes) {
+        if (
+            !(child?.webComponent?.webComponent === 'CandidateConversation' && child?.bp_info?.office !== 'Moderator')
+        ) {
+            return false
+        }
+        const bpInfoOffice = child?.bp_info?.office
+        if (!bpInfoOffice) return false
+        const office = Object.keys(root?.webComponent?.offices || {}).find(office => office === bpInfoOffice)
+        intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.offices.${bpInfoOffice}.viewer`, child)
+        return () =>
+            intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(
+                dst,
+                root,
+                getId(child._id),
+                iotas,
+                usedIndexes
+            )
+    },
 }

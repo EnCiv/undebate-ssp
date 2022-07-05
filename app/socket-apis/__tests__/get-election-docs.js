@@ -45,14 +45,14 @@ const iotas = [
                     uniqueId: '61e76bbefeaa4a25840d85d0',
                     name: 'Sarah Jones',
                     email: 'sarahjones@mail.com',
-                    office: 'President of the U.S.',
+                    office: 'President of the US',
                     region: 'United States',
                 },
                 '61e76bfc8a82733d08f0cf12': {
                     uniqueId: '61e76bfc8a82733d08f0cf12',
                     name: 'Michael Jefferson',
                     email: 'mikejeff@mail.com',
-                    office: 'President of the U.S.',
+                    office: 'President of the US',
                     region: 'United States',
                 },
             },
@@ -106,7 +106,7 @@ const iotas = [
         subject: 'Candidate Recorder 1 for #4',
         description: 'Candidate Recorder 1 for #4',
         bp_info: {
-            office: 'President of the U.S.',
+            office: 'President of the US',
             unique_id: '61e76bbefeaa4a25840d85d0',
         },
         component: {
@@ -119,7 +119,7 @@ const iotas = [
         subject: 'Candidate Recorder 2 for #4',
         description: 'Candidate Recorder 2 for #4',
         bp_info: {
-            office: 'President of the U.S.',
+            office: 'President of the US',
             unique_id: '61e76bfc8a82733d08f0cf12',
         },
         component: {
@@ -132,7 +132,7 @@ const iotas = [
         subject: 'Candidate Viewer for POTUS on #4',
         description: 'Candidate Viewer for POTUS on #4',
         bp_info: {
-            office: 'President of the U.S.',
+            office: 'President of the US',
         },
         webComponent: {
             webComponent: 'CandidateConversation',
@@ -159,6 +159,7 @@ const iotas = [
         },
     },
 ]
+// todo add bp_info to cand recording
 
 const exampleUser = {
     _id: User.ObjectID('628d0a2afacbb605f4d8e6ac'),
@@ -311,12 +312,12 @@ test.only('get election doc by id should get one', done => {
                   "61e76bbefeaa4a25840d85d0": Object {
                     "email": "sarahjones@mail.com",
                     "name": "Sarah Jones",
-                    "office": "President of the U.S.",
+                    "office": "President of the US",
                     "recorders": Object {
                       "62b8e859582e3b95dc83e78b": Object {
                         "_id": "62b8e859582e3b95dc83e78b",
                         "bp_info": Object {
-                          "office": "President of the U.S.",
+                          "office": "President of the US",
                           "unique_id": "61e76bbefeaa4a25840d85d0",
                         },
                         "component": Object {
@@ -334,12 +335,12 @@ test.only('get election doc by id should get one', done => {
                   "61e76bfc8a82733d08f0cf12": Object {
                     "email": "mikejeff@mail.com",
                     "name": "Michael Jefferson",
-                    "office": "President of the U.S.",
+                    "office": "President of the US",
                     "recorders": Object {
                       "62bf6d0f4dfc3a2b510881cd": Object {
                         "_id": "62bf6d0f4dfc3a2b510881cd",
                         "bp_info": Object {
-                          "office": "President of the U.S.",
+                          "office": "President of the US",
                           "unique_id": "61e76bfc8a82733d08f0cf12",
                         },
                         "component": Object {
@@ -404,6 +405,46 @@ test.only('get election doc by id should get one', done => {
                       "userId": "628d0a2afacbb605f4d8e6ac",
                       "webComponent": Object {
                         "webComponent": "CandidateConversation",
+                      },
+                    },
+                  },
+                },
+                "offices": Object {
+                  "President of the US": Object {
+                    "viewer": Object {
+                      "62b8e8e2e1fcf3bae96a4f48": Object {
+                        "_id": "62b8e8e2e1fcf3bae96a4f48",
+                        "bp_info": Object {
+                          "office": "President of the US",
+                        },
+                        "description": "Candidate Viewer for POTUS on #4",
+                        "parentId": "628c73daf2014b3f4c5da4ee",
+                        "subject": "Candidate Viewer for POTUS on #4",
+                        "submissions": Object {
+                          "62b8e8eee48604bcfe9108fd": Object {
+                            "_id": "62b8e8eee48604bcfe9108fd",
+                            "component": Object {
+                              "component": "MergeParticipants",
+                              "participant": Object {
+                                "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
+                                "name": "Sarah Jones",
+                                "speaking": Array [
+                                  "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm",
+                                  "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510659/5d5b73c01e3b194174cd9b92-2-speaking.webm",
+                                  "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510665/5d5b73c01e3b194174cd9b92-3-speaking.webm",
+                                ],
+                              },
+                            },
+                            "description": "Candidate Recording for #4",
+                            "parentId": "62b8e8e2e1fcf3bae96a4f48",
+                            "subject": "Candidate Recording for #4",
+                            "userId": "628d0a2afacbb605f4d8e6ac",
+                          },
+                        },
+                        "userId": "628d0a2afacbb605f4d8e6ac",
+                        "webComponent": Object {
+                          "webComponent": "CandidateConversation",
+                        },
                       },
                     },
                   },
