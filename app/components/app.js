@@ -3,10 +3,10 @@
 import React from 'react'
 import { hot } from 'react-hot-loader'
 import { ErrorBoundary } from 'civil-client'
-import WebComponents from '../web-components'
-import Footer from './footer'
 import { ThemeProvider } from 'react-jss'
 import theme from '../theme'
+import WebComponents from '../web-components'
+import Footer from './footer'
 import FontFaces from './font-faces'
 
 // eslint-disable-next-line react/prefer-stateless-function

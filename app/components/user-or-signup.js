@@ -10,7 +10,7 @@ import UserImage from './user-image'
 import LogoutSVG from '../svgr/log-out'
 
 export default function UserOrSignup(props) {
-    const { style, className, user } = props
+    const { style, className, user, destination } = props
     const [hoverWidth, setHoverWidth] = useState(0)
     const classes = useStyles({ hoverWidth })
     const hoverRef = useRef()
@@ -35,7 +35,14 @@ export default function UserOrSignup(props) {
             </div>
         )
     } else {
-        return <SignInButton className={cx(className, classes.signin)} style={style} name={'Sign Up / Log In'} />
+        return (
+            <SignInButton
+                className={cx(className, classes.signin)}
+                style={style}
+                name={'Sign Up / Log In'}
+                destination={destination}
+            />
+        )
     }
 }
 

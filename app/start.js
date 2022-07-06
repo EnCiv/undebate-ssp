@@ -16,6 +16,7 @@ async function start() {
     try {
         const server = new CivilServer()
         server.App = App // set the outer React wrapper for this site
+        server.directives.frameSrc.push('cc.enciv.org')
         await server.earlyStart() // connect to the database, and such
         server.routesDirPaths.push(path.resolve(__dirname, '../node_modules/undebate/dist/routes'))
         server.routesDirPaths.push(path.resolve(__dirname, './routes'))
