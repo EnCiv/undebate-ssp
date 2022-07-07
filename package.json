@@ -126,8 +126,5 @@
         "sib-api-v3-sdk": "^8.3.0",
         "use-methods": "github:EnCiv/use-methods",
         "util": "^0.12.4"
-    },
-    "engines": {
-        "npm": "^8.11.0"
     }
 }
