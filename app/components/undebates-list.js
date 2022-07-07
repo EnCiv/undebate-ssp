@@ -9,13 +9,11 @@ import cx from 'classnames'
 import { useTable } from 'react-table'
 
 function Table({ columns, data, onRowClicked }) {
-    // Use the state and functions returned from useTable to build your UI
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
         columns,
         data,
     })
 
-    // Render the UI for your table
     return (
         <table {...getTableProps()}>
             <thead>
@@ -49,55 +47,28 @@ function Table({ columns, data, onRowClicked }) {
 
 export default function UndebatesList({ className, style, electionObjs, onDone }) {
     const classes = useStyles()
-    /*
-    // Do I make accessor for table elements calls to electionMethods???
-    const columns = [
-        {
-            Header: 'Election Name',
-            accessor: 'electionName',
-        },
-        {
-            Header: 'Date',
-            accessor: electionDates,
-        },
-        {
-            Header: 'Moderator',
-            accessor: moderatorStatus,
-        },
-        {
-            Header: 'Candidates',
-            accessor: candidates,
-        },
-        {
-            Header: 'Status',
-            accessor: status,
-        },
-    ]
 
     const onRowClicked = (row, e) => {
         onDone({ value: row.original.id, valid: true })
     }
 
-    // Not sure if this is proper use of useMemo for "data"
-    //const data = React.useMemo(() => electionObjs, [])
-    // Eventually need to do electionOMs.map()....right now only doing one.
     const electionOMs = React.useMemo(
         () => electionObjs.map(obj => [obj, getElectionStatusMethods(null, obj)]),
         [electionObjs]
     )
     if (!electionOMs.length) return null
 
-    const [electionObj = {}, electionMethods = {}] = electionOMs[0] || []
-    const electionDates = () => {
-        const createDate = moment(ObjectID(electionObj.id).getDate())
+    const getFormattedDate = (originalRow, rowIndex) => {
+        const createDate = moment(ObjectID(originalRow.id).getDate())
         const formattedCreateDate = createDate.format('DD.MM.YY')
-        const endDate = moment(new Date(electionObj.electionDate))
-        // const endDate = moment(electionObjs[0].electionDate).getDate());
+        const endDate = moment(new Date(originalRow.electionDate))
         const formattedEndDate = endDate.format('DD.MM.YY')
         return `${formattedCreateDate} - ${formattedEndDate}`
     }
 
-    const moderatorStatus = () => {
+    const getModeratorStatus = (originalRow, rowIndex) => {
+        // todo use ElectionCategory
+        const [electionObj, electionMethods] = electionOMs[rowIndex]
         if (electionMethods.checkTimelineCompleted() && electionMethods.getScriptStatus() !== 'completed') {
             return 'Script pending'
         } else {
@@ -105,26 +76,43 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         }
     }
 
-    const candidates = () => {
+    const getCandidatesStatus = () => {
+        // todo use ElectionCategory
         return ''
     }
 
-    const status = () => {
-        return ''
-    }*/
+    const getElectionStatus = (originalRow, rowIndex) => {
+        // todo use ElectionCategory
+        const [electionObj, electionMethods] = electionOMs[rowIndex]
+        return electionMethods.getUndebateStatus()
+    }
 
-    return (
-        <div>
-            {electionObjs.map(obj => (
-                <div onClick={e => onDone({ valid: true, value: obj.id })}>{obj.electionName}</div>
-            ))}
-        </div>
-        // <Styles>
-        //<Table columns={columns} data={electionObjs} onRowClicked={onRowClicked} />
-        // </Styles>
-    )
+    const columns = useMemo(() => [
+        {
+            Header: 'Election Name',
+            accessor: 'electionName',
+        },
+        {
+            Header: 'Date',
+            accessor: getFormattedDate,
+        },
+        {
+            Header: 'Moderator',
+            accessor: getModeratorStatus,
+        },
+        {
+            Header: 'Candidates',
+            accessor: getCandidatesStatus,
+        },
+        {
+            Header: 'Status',
+            accessor: getElectionStatus,
+        },
+    ])
+
+    return <Table columns={columns} data={electionObjs} onRowClicked={onRowClicked} />
 }
-// Temp placeholder CSS styling ... will need to change to match FIGMA reqs for UndebatesList
+
 const useStyles = createUseStyles(theme => ({
     table: {
         borderSpacing: '0',
@@ -138,7 +126,6 @@ const useStyles = createUseStyles(theme => ({
             },
         },
 
-        // th,
         tr: {
             margin: '0',
             padding: '0.5rem',
