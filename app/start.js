@@ -7,16 +7,13 @@ import App from './components/app'
 const path = require('path')
 
 if (serverReactRender.head) serverReactRender.head.shift() // the first on in the head didles the font size and we don't want that
-console.info('in start')
 Iota.load(civilIotas)
 Iota.load(undebateIotas)
 Iota.load(iotas) // set the initial data for the database
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-console.info('about to start')
 async function start() {
     try {
         const server = new CivilServer()
-        console.info('new server')
         server.App = App // set the outer React wrapper for this site
         server.directives.frameSrc.push('cc.enciv.org')
         await server.earlyStart() // connect to the database, and such
@@ -27,7 +24,6 @@ async function start() {
         server.socketAPIsDirPaths.push(path.resolve(__dirname, './socket-apis'))
         server.serverEventsDirPaths.push(path.resolve(__dirname, '../node_modules/undebate/dist/events'))
         server.serverEventsDirPaths.push(path.resolve(__dirname, './events'))
-        console.info('about to start)')
         await server.start()
         logger.info('started')
     } catch (error) {
