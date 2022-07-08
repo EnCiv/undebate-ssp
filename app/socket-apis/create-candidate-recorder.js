@@ -2,9 +2,9 @@
 
 import { Iota } from 'civil-server'
 import { undebatesFromTemplateAndRows } from 'undebate'
-import getElectionStatusMethods from '../lib/get-election-status-methods'
 import candidateViewerRecorder from '../components/lib/candidate-viewer-recorder'
 import { getElectionDocById } from './get-election-docs'
+import { getLatestIota } from '../lib/get-election-status-methods'
 
 // todo eventually replace this video
 const introVideo =
@@ -87,9 +87,8 @@ export default async function createCandidateRecorder(id, userId, cb) {
             }
             logger.debug('iota', iota)
             const electionObj = iota.webComponent
-            logger.debug('electionObj', electionObj)
+            console.log('electionObj', JSON.stringify(electionObj, null, 4))
             let msgs
-            // todo add moderator submissions not ready?
             if ((msgs = reasonsNotReadyForCandidateRecorder(electionObj)).length) {
                 logger.error('not ready for candidate recorder:', msgs)
                 if (cb) cb()
@@ -112,19 +111,34 @@ export default async function createCandidateRecorder(id, userId, cb) {
             logger.debug('timeLimits', timeLimits)
             logger.debug('candidate', candidate)
 
-            const electionMethods = getElectionStatusMethods(undefined, electionObj)
-            const speaking = electionMethods.getLatestIota(electionObj.moderator.submissions).component.participant
-                .speaking
+            const moderatorComponent = getLatestIota(electionObj.moderator.submissions).component
+            const speaking = moderatorComponent.participant.speaking.slice()
             speaking.unshift(introVideo)
-            logger.debug('speaking', speaking)
 
-            // todo updates to candidateViewerRecorder here
-            /* candidateViewerRecorder.candidateRecorder.component.participants */
-            /* candidateViewerRecorder.candidateViewer.webComponent.participants */
+            candidateViewerRecorder.candidateRecorder.component.participants.moderator.speaking = speaking
+            candidateViewerRecorder.candidateRecorder.component.participants.moderator.listening =
+                moderatorComponent.participant.listening
+            candidateViewerRecorder.candidateRecorder.component.participants.human.name = candidate.name
 
-            const inRowObjs = [{ Seat: candidate.office, Name: candidate.name, Email: candidate.email }]
+            candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking
+            candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.name =
+                electionObj.moderator.name
+            candidateViewerRecorder.candidateViewer.bp_info.name = candidate.name
+            candidateViewerRecorder.candidateViewer.bp_info.email = candidate.email
+            candidateViewerRecorder.candidateViewer.bp_info.uniqueId = candidate.uniqueId
+
+            const inRowObjs = Object.values(electionObj.candidates).map(candidate => {
+                return {
+                    Seat: candidate.office,
+                    Name: candidate.name,
+                    Email: candidate.email,
+                    unique_id: candidate.uniqueId,
+                }
+            })
+            logger.debug('inRowObjs passed in:', inRowObjs)
             const { rowObjs, messages } = await undebatesFromTemplateAndRows(candidateViewerRecorder, inRowObjs)
             logger.debug('rowObjs', rowObjs)
+            logger.debug('messages', messages)
             if (!rowObjs) {
                 if (cb) cb()
                 return
@@ -138,6 +152,7 @@ export default async function createCandidateRecorder(id, userId, cb) {
 }
 
 function reasonsNotReadyForCandidateRecorder(electionObj) {
+    // todo add moderator.submissions not ready
     const errorMsgs = []
 
     ;['electionName', 'electionDate', 'organizationName', 'questions', 'script', 'moderator'].forEach(prop => {
