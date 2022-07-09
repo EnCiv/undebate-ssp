@@ -7,14 +7,21 @@ import getElectionStatusMethods from '../lib/get-election-status-methods'
 import cx from 'classnames'
 import ArrowSvg from '../svgr/arrow'
 import ChevronDown from '../svgr/chevron-down'
-
-import { useTable, useSortBy } from 'react-table'
+import { useTable, useFilters, useSortBy } from 'react-table'
 
 function Table({ columns, data, onRowClicked, classes }) {
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
         {
             columns,
             data,
+            initialState: {
+                sortBy: [
+                    {
+                        id: 'Date',
+                        desc: false,
+                    },
+                ],
+            },
         },
         useSortBy
     )
@@ -22,7 +29,8 @@ function Table({ columns, data, onRowClicked, classes }) {
 
     // todo fix styling of arrows
     // todo check arrow direction for sorts
-    // todo use ChevronDown for filters
+    // todo use ChevronDown for filters, and flip it for when the filter is visible
+    // todo TableHeader component, receives column and classes
     return (
         <table {...getTableProps()} className={classes.table}>
             <thead>
@@ -139,6 +147,7 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         {
             Header: 'Election Name',
             accessor: 'electionName',
+            disableFilters: true,
         },
         {
             Header: 'Date',
@@ -148,14 +157,17 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         {
             Header: 'Moderator',
             accessor: getModeratorStatus,
+            disableSortBy: true,
         },
         {
             Header: 'Candidates',
             accessor: getCandidatesStatus,
+            disableSortBy: true,
         },
         {
             Header: 'Status',
             accessor: getElectionStatus,
+            disableSortBy: true,
         },
     ])
 
