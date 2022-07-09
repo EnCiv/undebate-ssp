@@ -222,6 +222,33 @@ function getElectionStatusMethods(dispatch, state) {
         return true
     }
 
+    const getModeratorStatus = () => {
+        if (!checkTimelineCompleted()) {
+            return '-'
+        }
+        const scriptStatus = getScriptStatus()
+        const inviteStatus = getInvitationStatus()
+        if (scriptStatus !== 'completed') {
+            return 'Script Pending'
+        } else if (scriptStatus === 'completed' && inviteStatus === 'sent') {
+            return 'Script Sent'
+        }
+        if (inviteStatus === 'accepted') {
+            return 'Invite Accepted'
+        } else if (inviteStatus === 'declined') {
+            return 'Invite Declined'
+        }
+        const submissionStatus = getSubmissionStatus()
+        if (submissionStatus === 'sent') {
+            return 'Reminder Sent'
+        } else if (submissionStatus === 'submitted') {
+            return 'Video Submitted'
+        } else if (submissionStatus === 'missed') {
+            return 'Deadline Missed'
+        }
+        return 'unknown'
+    }
+
     return {
         getLatestObj: getLatestObjByDate,
         getLatestIota,
@@ -249,6 +276,7 @@ function getElectionStatusMethods(dispatch, state) {
         areQuestionsLocked,
         isModeratorReadyForCreateRecorder,
         isModeratorReadyToInvite,
+        getModeratorStatus,
     }
 }
 

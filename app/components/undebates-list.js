@@ -6,6 +6,13 @@ import ObjectID from 'isomorphic-mongo-objectid'
 import getElectionStatusMethods from '../lib/get-election-status-methods'
 import cx from 'classnames'
 import ArrowSvg from '../svgr/arrow'
+import Accepted from '../svgr/accepted'
+import Declined from '../svgr/declined'
+import ElectionPaper from '../svgr/election-paper'
+import ReminderSent from '../svgr/reminder-sent'
+import VideoSubmitted from '../svgr/video-submitted'
+import DeadlineMissed from '../svgr/deadline-missed'
+import ElectionGrid from '../svgr/election-grid'
 import ChevronDown from '../svgr/chevron-down'
 import { useTable, useFilters, useSortBy } from 'react-table'
 
@@ -25,7 +32,6 @@ function Table({ columns, data, onRowClicked, classes }) {
         },
         useSortBy
     )
-    console.log('classes', classes)
 
     // todo fix styling of arrows
     // todo check arrow direction for sorts
@@ -85,11 +91,11 @@ function Table({ columns, data, onRowClicked, classes }) {
 
 function DateCell({ value }) {
     const classes = useStyles()
-    const { originalRow, rowIndex } = value
+    const { electionObj, rowIndex } = value
 
-    const createDate = moment(ObjectID(originalRow.id).getDate())
+    const createDate = moment(ObjectID(electionObj.id).getDate())
     const formattedCreateDate = createDate.format('DD.MM.YY')
-    const endDate = moment(new Date(originalRow.electionDate))
+    const endDate = moment(new Date(electionObj.electionDate))
     const formattedEndDate = endDate ? endDate.format('DD.MM.YY') : ''
     const today = moment()
     // todo change this to last update date
@@ -101,6 +107,43 @@ function DateCell({ value }) {
                 {formattedCreateDate} - {formattedEndDate}
             </div>
             <div className={classes.secondaryText}>Last Update - {daysBetween} Days Ago</div>
+        </div>
+    )
+}
+
+function ModeratorCell({ value, electionOMs }) {
+    const classes = useStyles()
+    const { rowIndex } = value
+    const [obj, electionMethods] = electionOMs[rowIndex]
+    const moderatorStatus = electionMethods.getModeratorStatus()
+    let Icon
+    switch (moderatorStatus) {
+        case 'Script Pending':
+        // intentional fall through here
+        case 'ScriptSent':
+            Icon = ElectionPaper
+            break
+        case 'Invite Accepted':
+            Icon = Accepted
+            break
+        case 'Invite Declined':
+            Icon = Declined
+            break
+        case 'Reminder Sent':
+            Icon = ReminderSent
+            break
+        case 'Video Submitted':
+            Icon = VideoSubmitted
+            break
+        case 'Deadline Missed':
+            Icon = DeadlineMissed
+            break
+    }
+
+    return (
+        <div>
+            <Icon />
+            <div>{moderatorStatus}</div>
         </div>
     )
 }
@@ -118,28 +161,26 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     )
     if (!electionOMs.length) return null
 
-    const getEntireRow = (originalRow, rowIndex) => {
-        return { originalRow, rowIndex }
+    const getEntireRow = (electionObj, rowIndex) => {
+        return { electionObj, rowIndex }
     }
 
-    const getModeratorStatus = (originalRow, rowIndex) => {
+    const getModeratorStatus = (electionObj, rowIndex) => {
         // todo use ElectionCategory
-        const [electionObj, electionMethods] = electionOMs[rowIndex]
-        if (electionMethods.checkTimelineCompleted() && electionMethods.getScriptStatus() !== 'completed') {
-            return 'Script pending'
-        } else {
-            return 'Script not completed'
-        }
+        // todo use dynamic classes from react table to handle the different "urgency" states
+        const [obj, electionMethods] = electionOMs[rowIndex]
+        return electionMethods.getModeratorStatus()
     }
 
-    const getCandidatesStatus = () => {
+    const getCandidatesStatus = (electionObj, rowIndex) => {
         // todo use ElectionCategory
+        const [obj, electionMethods] = electionOMs[rowIndex]
         return ''
     }
 
-    const getElectionStatus = (originalRow, rowIndex) => {
+    const getElectionStatus = (electionObj, rowIndex) => {
         // todo use ElectionCategory
-        const [electionObj, electionMethods] = electionOMs[rowIndex]
+        const [obj, electionMethods] = electionOMs[rowIndex]
         return electionMethods.getUndebateStatus()
     }
 
@@ -156,7 +197,8 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         },
         {
             Header: 'Moderator',
-            accessor: getModeratorStatus,
+            accessor: getEntireRow,
+            Cell: value => <ModeratorCell value={value.value} electionOMs={electionOMs} />,
             disableSortBy: true,
         },
         {
