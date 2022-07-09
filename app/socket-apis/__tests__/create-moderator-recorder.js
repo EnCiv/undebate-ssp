@@ -4,18 +4,21 @@ import MongoModels from 'mongo-models'
 import { Iota, User } from 'civil-server'
 import iotas from '../../../iotas.json'
 import createModeratorRecorder from '../create-moderator-recorder'
-import { merge } from 'lodash'
+import { merge, cloneDeep } from 'lodash'
 
 const ObjectID = Iota.ObjectId
 
 // dummy out logger for tests
 global.logger = { error: jest.fn(e => e) }
 
-const testDoc = iotas.filter(iota => iota.subject === 'Undebate SSP Test Iota')[0]
+// making a clone so giving it it's own unique id so jest tests can run in parallel
+const testDoc = cloneDeep(iotas.filter(iota => iota.subject === 'Undebate SSP Test Iota')[0])
+testDoc._id = ObjectID('62c8f51b002a10563c43d205')
 
 const objectIdPattern = /^[0-9a-fA-F]{24}$/
 
 const exampleUser = {
+    _id: ObjectID('62c8f58a7e5866104cc793b4'),
     firstName: 'Example',
     lastName: 'User',
     email: 'example.user@example.com',
@@ -33,10 +36,9 @@ beforeAll(async () => {
     // eslint-disable-next-line no-restricted-syntax
     for await (const init of toInit) await init()
     const user = await User.create(exampleUser)
-    apisThis.synuser.id = MongoModels.ObjectID(user._id).toString()
+    apisThis.synuser.id = ObjectID(user._id).toString()
 
     testDoc.userId = apisThis.synuser.id
-    testDoc._id = ObjectID()
     await Iota.create(testDoc)
 })
 

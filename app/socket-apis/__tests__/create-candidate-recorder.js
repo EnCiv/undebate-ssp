@@ -4,16 +4,19 @@ import MongoModels from 'mongo-models'
 import { Iota, User } from 'civil-server'
 import iotas from '../../../iotas.json'
 import createCandidateRecorder from '../create-candidate-recorder'
-import { merge } from 'lodash'
+import { merge, cloneDeep } from 'lodash'
 
 const ObjectID = Iota.ObjectId
 
 // dummy out logger for tests
 global.logger = { error: jest.fn(e => e) }
 
-const testDoc = iotas.filter(iota => iota.subject === 'Undebate SSP Test Iota')[0]
+// a clone with a unique _id so multiple jest tests can run in parallel
+const testDoc = cloneDeep(iotas.filter(iota => iota.subject === 'Undebate SSP Test Iota')[0])
+testDoc._id = ObjectID('62c8f80565128d16c8a62590')
 
 const exampleUser = {
+    _id: ObjectID('62c8f8311a8fb35854104949'),
     firstName: 'Example',
     lastName: 'User2',
     email: 'example.user2@example.com',
@@ -36,12 +39,10 @@ beforeAll(async () => {
     apisThis.synuser.id = MongoModels.ObjectID(user._id).toString()
 
     testDoc.userId = apisThis.synuser.id
-    testDoc._id = ObjectID()
     await Iota.create(testDoc)
 })
 
 afterAll(async () => {
-    await Iota.deleteOne({ id: testDoc._id })
     MongoModels.disconnect()
 })
 
@@ -60,7 +61,7 @@ test('it should create a viewer', done => {
                 'webComponent.webComponent': 'CandidateConversation',
             })
             expect(iotas).toHaveLength(1)
-            viewerId = ObjectID(iotas[0]._id).toString
+            viewerId = ObjectID(iotas[0]._id).toString()
             expect(iotas[0]).toMatchInlineSnapshot(
                 { _id: expect.any(ObjectID), parentId: expect.stringMatching(objectIdPattern) },
                 `
