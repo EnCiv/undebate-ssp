@@ -6,21 +6,28 @@ import ObjectID from 'isomorphic-mongo-objectid'
 import getElectionStatusMethods from '../lib/get-election-status-methods'
 import cx from 'classnames'
 
-import { useTable } from 'react-table'
+import { useTable, useSortBy } from 'react-table'
 
-function Table({ columns, data, onRowClicked }) {
-    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
-        columns,
-        data,
-    })
+function Table({ columns, data, onRowClicked, classes }) {
+    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
+        {
+            columns,
+            data,
+        },
+        useSortBy
+    )
+    console.log('classes', classes)
 
     return (
-        <table {...getTableProps()}>
+        <table {...getTableProps()} className={classes.table}>
             <thead>
                 {headerGroups.map(headerGroup => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map(column => (
-                            <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                            <th {...column.getHeaderProps(column.getSortByToggleProps())} className={classes.th}>
+                                {column.render('Header')}
+                                <span>{column.isSorted ? (column.isSortedDesc ? ' v' : ' ^') : ''}</span>
+                            </th>
                         ))}
                     </tr>
                 ))}
@@ -30,12 +37,17 @@ function Table({ columns, data, onRowClicked }) {
                     prepareRow(row)
                     return (
                         <tr
+                            className={classes.tr}
                             {...row.getRowProps({
                                 onClick: e => onRowClicked && onRowClicked(row, e),
                             })}
                         >
                             {row.cells.map(cell => {
-                                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                return (
+                                    <td {...cell.getCellProps()} className={classes.td}>
+                                        {cell.render('Cell')}
+                                    </td>
+                                )
                             })}
                         </tr>
                     )
@@ -47,6 +59,7 @@ function Table({ columns, data, onRowClicked }) {
 
 export default function UndebatesList({ className, style, electionObjs, onDone }) {
     const classes = useStyles()
+    console.log(classes)
 
     const onRowClicked = (row, e) => {
         onDone({ value: row.original.id, valid: true })
@@ -59,6 +72,7 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     if (!electionOMs.length) return null
 
     const getFormattedDate = (originalRow, rowIndex) => {
+        // todo use ElectionCategory
         const createDate = moment(ObjectID(originalRow.id).getDate())
         const formattedCreateDate = createDate.format('DD.MM.YY')
         const endDate = moment(new Date(originalRow.electionDate))
@@ -110,31 +124,40 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         },
     ])
 
-    return <Table columns={columns} data={electionObjs} onRowClicked={onRowClicked} />
+    return (
+        <div className={classes.container}>
+            <Table columns={columns} data={electionObjs} onRowClicked={onRowClicked} classes={classes} />
+        </div>
+    )
 }
 
 const useStyles = createUseStyles(theme => ({
+    container: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     table: {
         borderSpacing: '0',
-        border: '1px solid black',
-
-        tr: {
-            lastChild: {
-                td: {
-                    borderBottom: '0',
-                },
-            },
+        width: '90%',
+    },
+    th: {
+        color: theme.colorText,
+        opacity: theme.secondaryTextOpacity,
+    },
+    tr: {
+        height: '6rem',
+        padding: '1rem !important',
+        backgroundColor: 'white',
+        '&:hover': {
+            background: theme.backgroundColorComponent,
         },
-
-        tr: {
-            margin: '0',
-            padding: '0.5rem',
-            borderBottom: '1px solid black',
-            borderRight: '1px solid black',
-
-            lastChild: {
-                borderRight: '0',
-            },
-        },
+    },
+    td: {
+        borderColor: theme.backgroundColorApp,
+        borderStyle: 'solid',
+        borderWidth: '0.5rem 0',
+        textAlign: 'center',
     },
 }))
