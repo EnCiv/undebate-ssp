@@ -39,6 +39,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
+    await Iota.deleteMany({})
     MongoModels.disconnect()
 })
 

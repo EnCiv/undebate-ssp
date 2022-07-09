@@ -87,7 +87,6 @@ export default async function createCandidateRecorder(id, userId, cb) {
             }
             logger.debug('iota', iota)
             const electionObj = iota.webComponent
-            console.log('electionObj', JSON.stringify(electionObj, null, 4))
             let msgs
             if ((msgs = reasonsNotReadyForCandidateRecorder(electionObj)).length) {
                 logger.error('not ready for candidate recorder:', msgs)
@@ -118,14 +117,11 @@ export default async function createCandidateRecorder(id, userId, cb) {
             candidateViewerRecorder.candidateRecorder.component.participants.moderator.speaking = speaking
             candidateViewerRecorder.candidateRecorder.component.participants.moderator.listening =
                 moderatorComponent.participant.listening
-            candidateViewerRecorder.candidateRecorder.component.participants.human.name = candidate.name
 
             candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking
             candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.name =
                 electionObj.moderator.name
-            candidateViewerRecorder.candidateViewer.bp_info.name = candidate.name
-            candidateViewerRecorder.candidateViewer.bp_info.email = candidate.email
-            candidateViewerRecorder.candidateViewer.bp_info.uniqueId = candidate.uniqueId
+            candidateViewerRecorder.candidateViewer.parentId = id
 
             const inRowObjs = Object.values(electionObj.candidates).map(candidate => {
                 return {
