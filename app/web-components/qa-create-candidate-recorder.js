@@ -4,7 +4,7 @@ export default function QaCreateCandidateRecorder(props) {
     const { user, subject, id, description } = props
     const [results, setResults] = useState({ rowObjs: [], messages: [] })
     const createCandidateRecorder = e => {
-        window.socket.emit('create-candidate-recorder', id, user.id, r => setResults(r))
+        window.socket.emit('create-candidate-recorder', id, r => setResults(r))
     }
     return (
         <div style={{ width: '100vw', height: '100vh' }}>
