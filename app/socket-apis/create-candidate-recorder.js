@@ -61,7 +61,7 @@ const viewer = {
     },
 }
 
-export default async function createCandidateRecorder(id, userId, cb) {
+export default async function createCandidateRecorder(id, cb) {
     logger.debug('createCandidateRecorder called')
     if (!this.synuser) {
         logger.error('createCandidateRecorder called, but no user ', this.synuser)
@@ -70,11 +70,6 @@ export default async function createCandidateRecorder(id, userId, cb) {
     }
     if (!/^[0-9a-fA-F]{24}$/.test(id)) {
         logger.error('createCandidateRecorder called, but bad id:', id)
-        if (cb) cb() // no user
-        return
-    }
-    if (!/^[0-9a-fA-F]{24}$/.test(userId)) {
-        logger.error('createCandidateRecorder called, but bad userId:', userId)
         if (cb) cb() // no user
         return
     }
@@ -100,15 +95,8 @@ export default async function createCandidateRecorder(id, userId, cb) {
 
             const timeLimits = sortedQuestionPairs.map(([key, obj]) => [obj.time])
 
-            const candidate = electionObj.candidates[userId]
-            if (!candidate) {
-                logger.error('no candidate found for userId:', userId)
-                if (cb) cb()
-                return
-            }
             logger.debug('agenda', agenda)
             logger.debug('timeLimits', timeLimits)
-            logger.debug('candidate', candidate)
 
             const moderatorComponent = getLatestIota(electionObj.moderator.submissions).component
             const speaking = moderatorComponent.participant.speaking.slice()
@@ -160,9 +148,10 @@ function reasonsNotReadyForCandidateRecorder(electionObj) {
     if (qLength + 1 !== sLength) {
         errorMsgs.push(`length of script ${sLength} was not one more than length of questions ${qLength}.`)
     }
-    ;['name', 'email', 'message'].forEach(prop => {
-        // todo change this to specific candidate
-        if (!(electionObj.moderator || {})[prop]) errorMsgs.push(`candidate ${prop} required`)
+    ;['name', 'email'].forEach(prop => {
+        Object.values(electionObj.candidates).forEach(candidate => {
+            if (!(candidate || {})[prop]) errorMsgs.push(`candidate ${prop} required`)
+        })
     })
     return errorMsgs
 }

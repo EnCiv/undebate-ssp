@@ -26,14 +26,6 @@ export default function SubscribeElectionInfo(props) {
             },
             sendInvitation() {
                 window.socket.emit('create-moderator-recorder', id)
-                /* dispatch(
-                 *     merge(
-                 *         {},
-                 *         state,
-                 *         { _sendInvitation: (state._sendInvitation || 0) + 1 },
-                 *         { _count: state._count + 1 }
-                 *     )
-                 * ) */
             },
             sendCandidateInvitations() {
                 dispatch(
