@@ -9,11 +9,8 @@ import { merge } from 'lodash'
 const ObjectID = Iota.ObjectId
 
 // dummy out logger for tests
-// todo remove debug logger
-global.logger = { error: jest.fn(e => e), debug: jest.fn() }
-/* global.logger = { error: jest.fn((...vals) => console.error(vals)), debug: jest.fn((...vals) => console.log(vals)) } */
+global.logger = { error: jest.fn(e => e) }
 
-// todo find way to ensure this test doesn't break if create-moderator-recorder is run with this
 const testDoc = iotas.filter(iota => iota.subject === 'Undebate SSP Test Iota')[0]
 
 const exampleUser = {
@@ -26,6 +23,8 @@ const exampleUser = {
 // apis are called with 'this' that has synuser defined
 const apisThis = { synuser: {} }
 
+const objectIdPattern = /^[0-9a-fA-F]{24}$/
+
 beforeAll(async () => {
     await MongoModels.connect({ uri: global.__MONGO_URI__ }, { useUnifiedTopology: true })
     // run the init functions that models require - after the connection is setup
@@ -37,18 +36,17 @@ beforeAll(async () => {
     apisThis.synuser.id = MongoModels.ObjectID(user._id).toString()
 
     testDoc.userId = apisThis.synuser.id
-    testDoc._id = ObjectID(testDoc._id.$oid || testDoc._id)
+    testDoc._id = ObjectID()
     await Iota.create(testDoc)
 })
 
 afterAll(async () => {
-    await Iota.deleteMany({})
+    await Iota.deleteOne({ id: testDoc._id })
     MongoModels.disconnect()
 })
 
 afterEach(() => {
     global.logger.error.mockReset()
-    global.logger.debug.mockReset()
 })
 
 let viewerId
@@ -64,7 +62,7 @@ test('it should create a viewer', done => {
             expect(iotas).toHaveLength(1)
             viewerId = ObjectID(iotas[0]._id).toString
             expect(iotas[0]).toMatchInlineSnapshot(
-                { _id: expect.any(ObjectID) },
+                { _id: expect.any(ObjectID), parentId: expect.stringMatching(objectIdPattern) },
                 `
                 Object {
                   "_id": Any<ObjectID>,
@@ -80,7 +78,7 @@ test('it should create a viewer', done => {
                     "component": "MergeParticipants",
                   },
                   "description": "A Candidate Conversation for: President of the U.S.",
-                  "parentId": "62196fd6b2eff30b70ba36e0",
+                  "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
                   "path": "/country:us/organization:cfa/office:president-of-the-u-s/2021-03-21",
                   "subject": "President of the U.S.",
                   "webComponent": Object {
@@ -150,8 +148,6 @@ test('it should create a viewer', done => {
     }
     createCandidateRecorder.call(apisThis, ObjectID(testDoc._id).toString(), callback)
 })
-
-const objectIdPattern = /^[0-9a-fA-F]{24}$/
 
 test('it should create a recorder', async () => {
     const iotas = await Iota.find({ 'webComponent.webComponent': 'Undebate', parentId: viewerId })

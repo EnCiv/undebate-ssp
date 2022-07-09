@@ -13,6 +13,8 @@ global.logger = { error: jest.fn(e => e) }
 
 const testDoc = iotas.filter(iota => iota.subject === 'Undebate SSP Test Iota')[0]
 
+const objectIdPattern = /^[0-9a-fA-F]{24}$/
+
 const exampleUser = {
     firstName: 'Example',
     lastName: 'User',
@@ -34,12 +36,12 @@ beforeAll(async () => {
     apisThis.synuser.id = MongoModels.ObjectID(user._id).toString()
 
     testDoc.userId = apisThis.synuser.id
-    testDoc._id = ObjectID(testDoc._id.$oid || testDoc._id)
+    testDoc._id = ObjectID()
     await Iota.create(testDoc)
 })
 
 afterAll(async () => {
-    await Iota.deleteMany({})
+    await Iota.deleteOne({ id: testDoc._id })
     MongoModels.disconnect()
 })
 
@@ -58,6 +60,7 @@ test('it should create a viewer', done => {
             expect(iotas[0]).toMatchInlineSnapshot(
                 {
                     _id: expect.any(ObjectID),
+                    parentId: expect.stringMatching(objectIdPattern),
                 },
                 `
                 Object {
@@ -74,7 +77,7 @@ test('it should create a viewer', done => {
                     "component": "MergeParticipants",
                   },
                   "description": "A Candidate Conversation for: Moderator",
-                  "parentId": "62196fd6b2eff30b70ba36e0",
+                  "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
                   "path": "/country:us/organization:cfa/office:moderator/2021-03-21",
                   "subject": "Moderator",
                   "webComponent": Object {
@@ -136,8 +139,6 @@ test('it should create a viewer', done => {
     }
     createModeratorRecorder.call(apisThis, ObjectID(testDoc._id).toString(), callback)
 })
-const OBJECTID = /^[0-9a-fA-F]{24}$/
-
 test('it should create a recorder', async () => {
     const iotas = await Iota.find({ 'webComponent.webComponent': 'Undebate', parentId: viewerId })
     expect(iotas).toHaveLength(1)
@@ -145,10 +146,10 @@ test('it should create a recorder', async () => {
         {
             _id: expect.any(ObjectID),
             bp_info: {
-                unique_id: expect.stringMatching(OBJECTID),
+                unique_id: expect.stringMatching(objectIdPattern),
             },
 
-            parentId: expect.stringMatching(OBJECTID),
+            parentId: expect.stringMatching(objectIdPattern),
             path: expect.stringMatching(
                 /\/country:us\/organization:cfa\/office:moderator\/2021-03-21-recorder-[0-9a-fA-F]{24}$/
             ),

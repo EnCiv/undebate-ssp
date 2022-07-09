@@ -1,6 +1,4 @@
 // https://github.com/EnCiv/undebate-ssp/issues/127
-
-import { Iota } from 'civil-server'
 import { undebatesFromTemplateAndRows } from 'undebate'
 import candidateViewerRecorder from '../components/lib/candidate-viewer-recorder'
 import { getElectionDocById } from './get-election-docs'
@@ -62,7 +60,6 @@ const viewer = {
 }
 
 export default async function createCandidateRecorder(id, cb) {
-    logger.debug('createCandidateRecorder called')
     if (!this.synuser) {
         logger.error('createCandidateRecorder called, but no user ', this.synuser)
         if (cb) cb() // no user
@@ -80,7 +77,6 @@ export default async function createCandidateRecorder(id, cb) {
                 if (cb) cb()
                 return
             }
-            logger.debug('iota', iota)
             const electionObj = iota.webComponent
             let msgs
             if ((msgs = reasonsNotReadyForCandidateRecorder(electionObj)).length) {
@@ -88,15 +84,6 @@ export default async function createCandidateRecorder(id, cb) {
                 if (cb) cb()
                 return
             }
-            const sortedQuestionPairs = Object.entries(electionObj.questions).sort(
-                ([aKey, aObj], [bKey, bObj]) => aKey - bKey
-            )
-            const agenda = sortedQuestionPairs.map(([key, obj]) => [obj.text])
-
-            const timeLimits = sortedQuestionPairs.map(([key, obj]) => [obj.time])
-
-            logger.debug('agenda', agenda)
-            logger.debug('timeLimits', timeLimits)
 
             const moderatorComponent = getLatestIota(electionObj.moderator.submissions).component
             const speaking = moderatorComponent.participant.speaking.slice()
@@ -119,10 +106,7 @@ export default async function createCandidateRecorder(id, cb) {
                     unique_id: candidate.uniqueId,
                 }
             })
-            logger.debug('inRowObjs passed in:', inRowObjs)
             const { rowObjs, messages } = await undebatesFromTemplateAndRows(candidateViewerRecorder, inRowObjs)
-            logger.debug('rowObjs', rowObjs)
-            logger.debug('messages', messages)
             if (!rowObjs) {
                 if (cb) cb()
                 return
