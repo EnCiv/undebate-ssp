@@ -5,6 +5,8 @@ import moment from 'moment'
 import ObjectID from 'isomorphic-mongo-objectid'
 import getElectionStatusMethods from '../lib/get-election-status-methods'
 import cx from 'classnames'
+import ArrowSvg from '../svgr/arrow'
+import ChevronDown from '../svgr/chevron-down'
 
 import { useTable, useSortBy } from 'react-table'
 
@@ -18,15 +20,31 @@ function Table({ columns, data, onRowClicked, classes }) {
     )
     console.log('classes', classes)
 
+    // todo fix styling of arrows
+    // todo check arrow direction for sorts
+    // todo use ChevronDown for filters
     return (
         <table {...getTableProps()} className={classes.table}>
             <thead>
                 {headerGroups.map(headerGroup => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map(column => (
-                            <th {...column.getHeaderProps(column.getSortByToggleProps())} className={classes.th}>
-                                {column.render('Header')}
-                                <span>{column.isSorted ? (column.isSortedDesc ? ' v' : ' ^') : ''}</span>
+                            <th
+                                {...column.getHeaderProps(column.getSortByToggleProps())}
+                                className={cx(classes.th, classes.secondaryText)}
+                            >
+                                <span>
+                                    {column.isSorted ? (
+                                        column.isSortedDesc ? (
+                                            <ArrowSvg style={{ transform: 'rotate(180deg)' }} />
+                                        ) : (
+                                            <ArrowSvg />
+                                        )
+                                    ) : (
+                                        ''
+                                    )}
+                                </span>
+                                {' ' + column.render('Header') + ' '}
                             </th>
                         ))}
                     </tr>
@@ -57,9 +75,30 @@ function Table({ columns, data, onRowClicked, classes }) {
     )
 }
 
+function DateCell({ value }) {
+    const classes = useStyles()
+    const { originalRow, rowIndex } = value
+
+    const createDate = moment(ObjectID(originalRow.id).getDate())
+    const formattedCreateDate = createDate.format('DD.MM.YY')
+    const endDate = moment(new Date(originalRow.electionDate))
+    const formattedEndDate = endDate ? endDate.format('DD.MM.YY') : ''
+    const today = moment()
+    // todo change this to last update date
+    const daysBetween = today.diff(createDate, 'days')
+
+    return (
+        <div>
+            <div className={classes.formattedDates}>
+                {formattedCreateDate} - {formattedEndDate}
+            </div>
+            <div className={classes.secondaryText}>Last Update - {daysBetween} Days Ago</div>
+        </div>
+    )
+}
+
 export default function UndebatesList({ className, style, electionObjs, onDone }) {
     const classes = useStyles()
-    console.log(classes)
 
     const onRowClicked = (row, e) => {
         onDone({ value: row.original.id, valid: true })
@@ -71,13 +110,8 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     )
     if (!electionOMs.length) return null
 
-    const getFormattedDate = (originalRow, rowIndex) => {
-        // todo use ElectionCategory
-        const createDate = moment(ObjectID(originalRow.id).getDate())
-        const formattedCreateDate = createDate.format('DD.MM.YY')
-        const endDate = moment(new Date(originalRow.electionDate))
-        const formattedEndDate = endDate.format('DD.MM.YY')
-        return `${formattedCreateDate} - ${formattedEndDate}`
+    const getEntireRow = (originalRow, rowIndex) => {
+        return { originalRow, rowIndex }
     }
 
     const getModeratorStatus = (originalRow, rowIndex) => {
@@ -108,7 +142,8 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         },
         {
             Header: 'Date',
-            accessor: getFormattedDate,
+            accessor: getEntireRow,
+            Cell: DateCell,
         },
         {
             Header: 'Moderator',
@@ -143,8 +178,7 @@ const useStyles = createUseStyles(theme => ({
         width: '90%',
     },
     th: {
-        color: theme.colorText,
-        opacity: theme.secondaryTextOpacity,
+        fontWeight: '500',
     },
     tr: {
         height: '6rem',
@@ -159,5 +193,12 @@ const useStyles = createUseStyles(theme => ({
         borderStyle: 'solid',
         borderWidth: '0.5rem 0',
         textAlign: 'center',
+    },
+    formattedDates: {
+        fontWeight: '400',
+    },
+    secondaryText: {
+        color: theme.colorText,
+        opacity: theme.secondaryTextOpacity,
     },
 }))
