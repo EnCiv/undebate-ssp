@@ -16,6 +16,8 @@ import ElectionGrid from '../svgr/election-grid'
 import ChevronDown from '../svgr/chevron-down'
 import { useTable, useFilters, useSortBy } from 'react-table'
 
+const DAYS_LEFT_DANGER = 3
+
 function Table({ columns, data, onRowClicked, classes }) {
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
         {
@@ -98,9 +100,10 @@ function DateCell({ value }) {
     const endDate = moment(new Date(electionObj.electionDate))
     const formattedEndDate = endDate ? endDate.format('DD.MM.YY') : ''
     const today = moment()
-    // todo change this to last update date
+    // todo change this to last update date (needs new electionMethod)
     const daysBetween = today.diff(createDate, 'days')
 
+    // todo styling
     return (
         <div>
             <div className={classes.formattedDates}>
@@ -118,7 +121,7 @@ function ModeratorCell({ value, electionOMs }) {
     const moderatorStatus = electionMethods.getModeratorStatus()
     let Icon
     switch (moderatorStatus) {
-        case 'Script Pending':
+        case 'Script Pending...':
         // intentional fall through here
         case 'Script Sent':
             Icon = ElectionPaper
@@ -139,12 +142,24 @@ function ModeratorCell({ value, electionOMs }) {
             Icon = DeadlineMissed
             break
     }
+    let daysText
+    const daysRemaining = electionMethods.countDayLeft()
+    const dangerZone = daysRemaining >= 0 && daysRemaining <= DAYS_LEFT_DANGER
+    if (daysRemaining > 0) {
+        daysText = daysRemaining + ' days left'
+    } else if (daysRemaining === 0) {
+        daysText = 'Today'
+    } else {
+        daysText = daysRemaining * -1 + ' days ago'
+    }
 
+    // todo styling
     return (
-        <div>
+        <span className={classes.moderatorCell}>
             {Icon ? <Icon /> : ''}
             <div>{moderatorStatus}</div>
-        </div>
+            <div className={dangerZone ? classes.dangerZoneDays : classes.secondaryText}>{daysText}</div>
+        </span>
     )
 }
 
@@ -163,13 +178,6 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
 
     const getEntireRow = (electionObj, rowIndex) => {
         return { electionObj, rowIndex }
-    }
-
-    const getModeratorStatus = (electionObj, rowIndex) => {
-        // todo use ElectionCategory
-        // todo use dynamic classes from react table to handle the different "urgency" states
-        const [obj, electionMethods] = electionOMs[rowIndex]
-        return electionMethods.getModeratorStatus()
     }
 
     const getCandidatesStatus = (electionObj, rowIndex) => {
@@ -254,5 +262,8 @@ const useStyles = createUseStyles(theme => ({
     secondaryText: {
         color: theme.colorText,
         opacity: theme.secondaryTextOpacity,
+    },
+    dangerZoneDays: {
+        color: theme.colorWarning,
     },
 }))

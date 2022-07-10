@@ -230,7 +230,7 @@ function getElectionStatusMethods(dispatch, state) {
         const inviteStatus = getInvitationStatus()
         const submissionStatus = getSubmissionStatus()
         if (scriptStatus !== 'completed') {
-            return 'Script Pending'
+            return 'Script Pending...'
         } else if (scriptStatus === 'completed' && inviteStatus === 'sent') {
             return 'Script Sent'
         }
