@@ -120,7 +120,7 @@ function ModeratorCell({ value, electionOMs }) {
     switch (moderatorStatus) {
         case 'Script Pending':
         // intentional fall through here
-        case 'ScriptSent':
+        case 'Script Sent':
             Icon = ElectionPaper
             break
         case 'Invite Accepted':
@@ -142,7 +142,7 @@ function ModeratorCell({ value, electionOMs }) {
 
     return (
         <div>
-            <Icon />
+            {Icon ? <Icon /> : ''}
             <div>{moderatorStatus}</div>
         </div>
     )

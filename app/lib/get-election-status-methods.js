@@ -228,17 +228,17 @@ function getElectionStatusMethods(dispatch, state) {
         }
         const scriptStatus = getScriptStatus()
         const inviteStatus = getInvitationStatus()
+        const submissionStatus = getSubmissionStatus()
         if (scriptStatus !== 'completed') {
             return 'Script Pending'
         } else if (scriptStatus === 'completed' && inviteStatus === 'sent') {
             return 'Script Sent'
         }
-        if (inviteStatus === 'accepted') {
-            return 'Invite Accepted'
-        } else if (inviteStatus === 'declined') {
+        if (inviteStatus === 'declined') {
             return 'Invite Declined'
+        } else if (inviteStatus === 'accepted' && submissionStatus === 'default') {
+            return 'Invite Accepted'
         }
-        const submissionStatus = getSubmissionStatus()
         if (submissionStatus === 'sent') {
             return 'Reminder Sent'
         } else if (submissionStatus === 'submitted') {

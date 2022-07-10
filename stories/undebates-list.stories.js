@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import UndebatesList from '../app/components/undebates-list'
 import { cloneDeep } from 'lodash'
 
+// todo various dates, archived elections, all candidate options, all statuses
+
 export default {
     title: 'Undebates List',
     component: UndebatesList,
@@ -136,21 +138,52 @@ const defaultElectionObject = {
 }
 let defaultElectionObject1 = cloneDeep(defaultElectionObject)
 defaultElectionObject1.id = '627e9dbd9ec85b0e440b6a3d'
-;(defaultElectionObject1.organizationName = 'San Diego Government Elections'),
-    (defaultElectionObject1.electionName = 'SD County Supervisor')
+defaultElectionObject1.organizationName = 'San Diego Government Elections'
+defaultElectionObject1.electionName = 'SD County Supervisor'
+defaultElectionObject1.timeline.moderatorDeadlineReminderEmails[0].sent = false
 
 let defaultElectionObject2 = cloneDeep(defaultElectionObject)
 defaultElectionObject2.id = '627ecafe4c12b659a8b954de'
-;(defaultElectionObject2.organizationName = 'San Diego Government Elections'),
-    (defaultElectionObject2.electionName = 'SD City Council')
+defaultElectionObject2.organizationName = 'San Diego Government Elections'
+defaultElectionObject2.electionName = 'SD City Council'
+defaultElectionObject2.moderator.invitations[0].status = 'Declined'
 
 let defaultElectionObject3 = cloneDeep(defaultElectionObject)
-defaultElectionObject3.id = '627ecafe4c12b659a8b954de'
-;(defaultElectionObject3.organizationName = 'San Diego Government Elections'),
-    (defaultElectionObject3.electionName = 'SD City Council')
+defaultElectionObject3.id = '62cb350e480f6535c1ec9b5e'
+defaultElectionObject3.organizationName = 'San Diego Government Elections'
+defaultElectionObject3.electionName = 'SD Mayor'
+delete defaultElectionObject3.script
 
-export const UndebatesListDefault = Template.bind({})
-UndebatesListDefault.args = { electionObjs: [defaultElectionObject, defaultElectionObject1, defaultElectionObject2] }
+let defaultElectionObject4 = cloneDeep(defaultElectionObject)
+defaultElectionObject4.id = '62cb35fddc380a594cff7126'
+defaultElectionObject4.organizationName = 'Los Angeles Government Elections'
+defaultElectionObject4.electionName = 'LA Mayor'
+delete defaultElectionObject4.moderator.invitations[0].status
+
+let defaultElectionObject5 = cloneDeep(defaultElectionObject)
+defaultElectionObject5.id = '62cb365f384f59688794ae9c'
+defaultElectionObject5.organizationName = 'Los Angeles Government Elections'
+defaultElectionObject5.electionName = 'LA City Council'
+defaultElectionObject5.timeline.moderatorSubmissionDeadline[0].sent = false
+
+let defaultElectionObject6 = cloneDeep(defaultElectionObject)
+defaultElectionObject6.id = '62cb365f86a78c68bbaacc52'
+defaultElectionObject6.organizationName = 'Los Angeles Government Elections'
+defaultElectionObject6.electionName = 'LA County Supervisor'
+defaultElectionObject6.moderator.submissions[0].url = 'not null'
+
+export const AllModeratorOptions = Template.bind({})
+AllModeratorOptions.args = {
+    electionObjs: [
+        defaultElectionObject, // Reminder sent
+        defaultElectionObject1, // Invite Accepted
+        defaultElectionObject2, // Invite Declined
+        defaultElectionObject3, // Script Pending
+        defaultElectionObject4, // Script Sent
+        defaultElectionObject5, // Deadline Missed
+        defaultElectionObject6, // Video Submitted
+    ],
+}
 
 export const Empty = Template.bind({})
 Empty.args = { electionObjs: [] }
