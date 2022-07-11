@@ -13,6 +13,10 @@ import ReminderSent from '../svgr/reminder-sent'
 import VideoSubmitted from '../svgr/video-submitted'
 import DeadlineMissed from '../svgr/deadline-missed'
 import ElectionGrid from '../svgr/election-grid'
+import ElectionCreated from '../svgr/election-created'
+import ElectionLive from '../svgr/election-live'
+import InProgress from '../svgr/election-in-progress'
+import Container from '../svgr/container'
 import ChevronDown from '../svgr/chevron-down'
 import { useTable, useFilters, useSortBy } from 'react-table'
 
@@ -114,8 +118,23 @@ function DateCell({ value }) {
     )
 }
 
-function ModeratorCell({ value, electionOMs }) {
+function IconCell({ Icon, text, textClass, daysRemaining }) {
     const classes = useStyles()
+    const daysText = getDaysText(daysRemaining)
+    const dangerZone = daysRemaining >= 0 && daysRemaining <= DAYS_LEFT_DANGER
+
+    // todo styling
+    // todo create component for icon/text/days left - move daysText to that and danger
+    return (
+        <span className={classes.iconCell}>
+            {Icon ? <Icon /> : ''}
+            <div className={textClass}>{text}</div>
+            <div className={dangerZone ? classes.dangerZoneDays : classes.secondaryText}>{daysText}</div>
+        </span>
+    )
+}
+
+function ModeratorCell({ value, electionOMs }) {
     const { rowIndex } = value
     const [obj, electionMethods] = electionOMs[rowIndex]
     const moderatorStatus = electionMethods.getModeratorStatus()
@@ -142,9 +161,43 @@ function ModeratorCell({ value, electionOMs }) {
             Icon = DeadlineMissed
             break
     }
-    let daysText
+
     const daysRemaining = electionMethods.countDayLeft()
-    const dangerZone = daysRemaining >= 0 && daysRemaining <= DAYS_LEFT_DANGER
+    return <IconCell Icon={Icon} text={moderatorStatus} daysRemaining={daysRemaining} />
+}
+
+function StatusCell({ value, electionOMs }) {
+    const classes = useStyles()
+    const { rowIndex } = value
+    const [obj, electionMethods] = electionOMs[rowIndex]
+    const statusText = electionMethods.getElectionListStatus()
+    let Icon
+    let textClass = ''
+    switch (statusText) {
+        case 'Configuring':
+            Icon = ElectionCreated
+            break
+        case 'In Progress':
+            Icon = InProgress
+            break
+        case 'Live':
+            Icon = ElectionLive
+            textClass = 'statusCellLive'
+            break
+        case 'Archived':
+            Icon = Container
+            break
+    }
+
+    const daysRemaining = electionMethods.countDayLeft()
+    return <IconCell Icon={Icon} text={statusText} textClass={classes[textClass]} daysRemaining={daysRemaining} />
+}
+
+function getDaysText(daysRemaining) {
+    if (daysRemaining === undefined || daysRemaining === null || daysRemaining == '') {
+        return ''
+    }
+    let daysText
     if (daysRemaining > 0) {
         daysText = daysRemaining + ' days left'
     } else if (daysRemaining === 0) {
@@ -152,15 +205,7 @@ function ModeratorCell({ value, electionOMs }) {
     } else {
         daysText = daysRemaining * -1 + ' days ago'
     }
-
-    // todo styling
-    return (
-        <span className={classes.moderatorCell}>
-            {Icon ? <Icon /> : ''}
-            <div>{moderatorStatus}</div>
-            <div className={dangerZone ? classes.dangerZoneDays : classes.secondaryText}>{daysText}</div>
-        </span>
-    )
+    return daysText
 }
 
 export default function UndebatesList({ className, style, electionObjs, onDone }) {
@@ -184,12 +229,6 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         // todo use ElectionCategory
         const [obj, electionMethods] = electionOMs[rowIndex]
         return ''
-    }
-
-    const getElectionStatus = (electionObj, rowIndex) => {
-        // todo use ElectionCategory
-        const [obj, electionMethods] = electionOMs[rowIndex]
-        return electionMethods.getUndebateStatus()
     }
 
     const columns = useMemo(() => [
@@ -216,7 +255,8 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         },
         {
             Header: 'Status',
-            accessor: getElectionStatus,
+            accessor: getEntireRow,
+            Cell: value => <StatusCell value={value.value} electionOMs={electionOMs} />,
             disableSortBy: true,
         },
     ])
@@ -265,5 +305,9 @@ const useStyles = createUseStyles(theme => ({
     },
     dangerZoneDays: {
         color: theme.colorWarning,
+    },
+    statusCellLive: {
+        fontWeight: '600',
+        color: theme.colorSubmitted,
     },
 }))

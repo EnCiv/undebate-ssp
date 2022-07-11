@@ -165,13 +165,16 @@ defaultElectionObject5.id = '62cb365f384f59688794ae9c'
 defaultElectionObject5.organizationName = 'Los Angeles Government Elections'
 defaultElectionObject5.electionName = 'LA City Council'
 defaultElectionObject5.timeline.moderatorSubmissionDeadline[0].sent = false
+defaultElectionObject5.undebateDate = new Date('2023-01-09T23:59:59.999Z')
 
 let defaultElectionObject6 = cloneDeep(defaultElectionObject)
 defaultElectionObject6.id = '62cb365f86a78c68bbaacc52'
 defaultElectionObject6.organizationName = 'Los Angeles Government Elections'
 defaultElectionObject6.electionName = 'LA County Supervisor'
 defaultElectionObject6.moderator.submissions[0].url = 'not null'
+defaultElectionObject6.electionDate = new Date('2022-07-09T23:59:59.999Z')
 
+// todo add null electionDate for empty moderator option
 export const AllModeratorOptions = Template.bind({})
 AllModeratorOptions.args = {
     electionObjs: [

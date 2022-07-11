@@ -223,6 +223,7 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const getModeratorStatus = () => {
+        // todo validate this logic
         if (!checkTimelineCompleted()) {
             return '-'
         }
@@ -247,6 +248,22 @@ function getElectionStatusMethods(dispatch, state) {
             return 'Deadline Missed'
         }
         return 'unknown'
+    }
+
+    const getElectionListStatus = () => {
+        // todo validate this logic
+        // Configuring, In Progress, Live, Archived
+        const undebateStatus = getUndebateStatus()
+        const moderatorStatus = getModeratorStatus()
+        if (undebateStatus === 'archived') {
+            return 'Archived'
+        } else if (undebateStatus === 'isLive') {
+            return 'Live'
+        } else if (['Script Pending...', 'Script Sent'].includes(moderatorStatus)) {
+            return 'Configuring'
+        } else {
+            return 'In Progress'
+        }
     }
 
     return {
@@ -277,6 +294,7 @@ function getElectionStatusMethods(dispatch, state) {
         isModeratorReadyForCreateRecorder,
         isModeratorReadyToInvite,
         getModeratorStatus,
+        getElectionListStatus,
     }
 }
 
