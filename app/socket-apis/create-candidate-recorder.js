@@ -1,7 +1,12 @@
 // https://github.com/EnCiv/undebate-ssp/issues/127
-
-import { Iota } from 'civil-server'
 import { undebatesFromTemplateAndRows } from 'undebate'
+import candidateViewerRecorder from '../components/lib/candidate-viewer-recorder'
+import { getElectionDocById } from './get-election-docs'
+import { getLatestIota } from '../lib/get-election-status-methods'
+
+// todo eventually replace this video
+const introVideo =
+    'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893716/5d5b74751e3b194174cd9b94-1-speaking20210304T213504684Z.mp4'
 
 const viewer = {
     webComponent: 'CandidateConversation',
@@ -66,14 +71,71 @@ export default async function createCandidateRecorder(id, cb) {
         return
     }
     try {
-        const iota = await Iota.findOne({ _id: Iota.ObjectId(id) })
-        if (!iota) {
-            if (cb) cb()
-            return
-        }
-        const electionObj = iota.webComponent
+        getElectionDocById.call(this, id, async iota => {
+            if (!iota) {
+                logger.error('createCandidateRecorder called, but no iota found by id:', id)
+                if (cb) cb()
+                return
+            }
+            const electionObj = iota.webComponent
+            let msgs
+            if ((msgs = reasonsNotReadyForCandidateRecorder(electionObj)).length) {
+                logger.error('not ready for candidate recorder:', msgs)
+                if (cb) cb()
+                return
+            }
+
+            const moderatorComponent = getLatestIota(electionObj.moderator.submissions).component
+            const speaking = moderatorComponent.participant.speaking.slice()
+            speaking.unshift(introVideo)
+
+            candidateViewerRecorder.candidateRecorder.component.participants.moderator.speaking = speaking
+            candidateViewerRecorder.candidateRecorder.component.participants.moderator.listening =
+                moderatorComponent.participant.listening
+
+            candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking
+            candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.name =
+                electionObj.moderator.name
+            candidateViewerRecorder.candidateViewer.parentId = id
+
+            const inRowObjs = Object.values(electionObj.candidates).map(candidate => {
+                return {
+                    Seat: candidate.office,
+                    Name: candidate.name,
+                    Email: candidate.email,
+                    unique_id: candidate.uniqueId,
+                }
+            })
+            const { rowObjs, messages } = await undebatesFromTemplateAndRows(candidateViewerRecorder, inRowObjs)
+            if (!rowObjs) {
+                if (cb) cb()
+                return
+            }
+            if (cb) cb({ rowObjs, messages })
+        })
     } catch (err) {
         logger.error('err', err)
         if (cb) cb()
     }
+}
+
+function reasonsNotReadyForCandidateRecorder(electionObj) {
+    // todo add moderator.submissions not ready
+    const errorMsgs = []
+
+    ;['electionName', 'electionDate', 'organizationName', 'questions', 'script', 'moderator'].forEach(prop => {
+        if (!electionObj[prop]) errorMsgs.push(`${prop} required`)
+    })
+    const { script = {}, questions = {} } = electionObj
+    const sLength = Object.keys(script || {}).length // it could be null
+    const qLength = Object.keys(questions || {}).length // it cold be null
+    if (qLength + 1 !== sLength) {
+        errorMsgs.push(`length of script ${sLength} was not one more than length of questions ${qLength}.`)
+    }
+    ;['name', 'email'].forEach(prop => {
+        Object.values(electionObj.candidates).forEach(candidate => {
+            if (!(candidate || {})[prop]) errorMsgs.push(`candidate ${prop} required`)
+        })
+    })
+    return errorMsgs
 }
