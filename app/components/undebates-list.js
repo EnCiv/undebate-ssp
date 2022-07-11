@@ -17,6 +17,7 @@ import ElectionCreated from '../svgr/election-created'
 import ElectionLive from '../svgr/election-live'
 import InProgress from '../svgr/election-in-progress'
 import Container from '../svgr/container'
+import InviteSent from '../svgr/sent'
 import ChevronDown from '../svgr/chevron-down'
 import { useTable, useFilters, useSortBy } from 'react-table'
 
@@ -118,7 +119,7 @@ function DateCell({ value }) {
     )
 }
 
-function IconCell({ Icon, text, textClass, daysRemaining }) {
+function IconCell({ Icon, text, textClassName, daysRemaining }) {
     const classes = useStyles()
     const daysText = getDaysText(daysRemaining)
     const dangerZone = daysRemaining >= 0 && daysRemaining <= DAYS_LEFT_DANGER
@@ -128,7 +129,7 @@ function IconCell({ Icon, text, textClass, daysRemaining }) {
     return (
         <span className={classes.iconCell}>
             {Icon ? <Icon /> : ''}
-            <div className={textClass}>{text}</div>
+            <div className={classes[textClassName]}>{text}</div>
             <div className={dangerZone ? classes.dangerZoneDays : classes.secondaryText}>{daysText}</div>
         </span>
     )
@@ -138,10 +139,12 @@ function ModeratorCell({ value, electionOMs }) {
     const { rowIndex } = value
     const [obj, electionMethods] = electionOMs[rowIndex]
     const moderatorStatus = electionMethods.getModeratorStatus()
+    let daysRemaining = electionMethods.countDayLeft()
     let Icon
+    let textClass
     switch (moderatorStatus) {
         case 'Script Pending...':
-        // intentional fall through here
+        // intentional fall through here since they share Icons
         case 'Script Sent':
             Icon = ElectionPaper
             break
@@ -150,6 +153,7 @@ function ModeratorCell({ value, electionOMs }) {
             break
         case 'Invite Declined':
             Icon = Declined
+            textClass = 'moderatorCellDeclined'
             break
         case 'Reminder Sent':
             Icon = ReminderSent
@@ -160,14 +164,15 @@ function ModeratorCell({ value, electionOMs }) {
         case 'Deadline Missed':
             Icon = DeadlineMissed
             break
+        case '-':
+            daysRemaining = null
+            break
     }
 
-    const daysRemaining = electionMethods.countDayLeft()
-    return <IconCell Icon={Icon} text={moderatorStatus} daysRemaining={daysRemaining} />
+    return <IconCell Icon={Icon} text={moderatorStatus} textClassName={textClass} daysRemaining={daysRemaining} />
 }
 
 function StatusCell({ value, electionOMs }) {
-    const classes = useStyles()
     const { rowIndex } = value
     const [obj, electionMethods] = electionOMs[rowIndex]
     const statusText = electionMethods.getElectionListStatus()
@@ -190,7 +195,38 @@ function StatusCell({ value, electionOMs }) {
     }
 
     const daysRemaining = electionMethods.countDayLeft()
-    return <IconCell Icon={Icon} text={statusText} textClass={classes[textClass]} daysRemaining={daysRemaining} />
+    return <IconCell Icon={Icon} text={statusText} textClassName={textClass} daysRemaining={daysRemaining} />
+}
+
+function CandidateCell({ value, electionOMs }) {
+    // todo use NavigationPanel Submissions for candidates state
+    const { rowIndex } = value
+    const [obj, electionMethods] = electionOMs[rowIndex]
+    const candidatesStatus = electionMethods.getCandidatesStatus()
+    let daysRemaining = electionMethods.countDayLeft()
+    let Icon
+    let textClass
+    switch (true) {
+        case candidatesStatus === 'Election Table Pending...':
+            Icon = ElectionGrid
+            break
+        case candidatesStatus === 'Invite Pending...':
+            Icon = InviteSent
+            break
+        case candidatesStatus.includes('Missed Deadline'):
+            Icon = DeadlineMissed
+            break
+        case candidatesStatus === undefined || candidatesStatus === null || candidatesStatus === '':
+            break
+        case candidatesStatus === '-':
+            daysRemaining = null
+            break
+        default:
+            Icon = VideoSubmitted
+            break
+    }
+
+    return <IconCell Icon={Icon} text={candidatesStatus} textClassName={textClass} daysRemaining={daysRemaining} />
 }
 
 function getDaysText(daysRemaining) {
@@ -225,12 +261,6 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         return { electionObj, rowIndex }
     }
 
-    const getCandidatesStatus = (electionObj, rowIndex) => {
-        // todo use ElectionCategory
-        const [obj, electionMethods] = electionOMs[rowIndex]
-        return ''
-    }
-
     const columns = useMemo(() => [
         {
             Header: 'Election Name',
@@ -250,7 +280,8 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         },
         {
             Header: 'Candidates',
-            accessor: getCandidatesStatus,
+            accessor: getEntireRow,
+            Cell: value => <CandidateCell value={value.value} electionOMs={electionOMs} />,
             disableSortBy: true,
         },
         {
@@ -309,5 +340,9 @@ const useStyles = createUseStyles(theme => ({
     statusCellLive: {
         fontWeight: '600',
         color: theme.colorSubmitted,
+    },
+    moderatorCellDeclined: {
+        fontWeight: '600',
+        color: theme.colorWarning,
     },
 }))

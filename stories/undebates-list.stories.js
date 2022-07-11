@@ -136,55 +136,98 @@ const defaultElectionObject = {
     },
     undebateDate: '2022-01-07T22:09:32.952Z',
 }
-let defaultElectionObject1 = cloneDeep(defaultElectionObject)
-defaultElectionObject1.id = '627e9dbd9ec85b0e440b6a3d'
-defaultElectionObject1.organizationName = 'San Diego Government Elections'
-defaultElectionObject1.electionName = 'SD County Supervisor'
-defaultElectionObject1.timeline.moderatorDeadlineReminderEmails[0].sent = false
 
-let defaultElectionObject2 = cloneDeep(defaultElectionObject)
-defaultElectionObject2.id = '627ecafe4c12b659a8b954de'
-defaultElectionObject2.organizationName = 'San Diego Government Elections'
-defaultElectionObject2.electionName = 'SD City Council'
-defaultElectionObject2.moderator.invitations[0].status = 'Declined'
+let moderatorElectionObject1 = cloneDeep(defaultElectionObject)
+moderatorElectionObject1.id = '627e9dbd9ec85b0e440b6a3d'
+moderatorElectionObject1.organizationName = 'San Diego Government Elections'
+moderatorElectionObject1.electionName = 'SD County Supervisor'
+moderatorElectionObject1.timeline.moderatorDeadlineReminderEmails[0].sent = false
 
-let defaultElectionObject3 = cloneDeep(defaultElectionObject)
-defaultElectionObject3.id = '62cb350e480f6535c1ec9b5e'
-defaultElectionObject3.organizationName = 'San Diego Government Elections'
-defaultElectionObject3.electionName = 'SD Mayor'
-delete defaultElectionObject3.script
+let moderatorElectionObject2 = cloneDeep(defaultElectionObject)
+moderatorElectionObject2.id = '627ecafe4c12b659a8b954de'
+moderatorElectionObject2.organizationName = 'San Diego Government Elections'
+moderatorElectionObject2.electionName = 'SD City Council'
+moderatorElectionObject2.moderator.invitations[0].status = 'Declined'
 
-let defaultElectionObject4 = cloneDeep(defaultElectionObject)
-defaultElectionObject4.id = '62cb35fddc380a594cff7126'
-defaultElectionObject4.organizationName = 'Los Angeles Government Elections'
-defaultElectionObject4.electionName = 'LA Mayor'
-delete defaultElectionObject4.moderator.invitations[0].status
+let moderatorElectionObject3 = cloneDeep(defaultElectionObject)
+moderatorElectionObject3.id = '62cb350e480f6535c1ec9b5e'
+moderatorElectionObject3.organizationName = 'San Diego Government Elections'
+moderatorElectionObject3.electionName = 'SD Mayor'
+delete moderatorElectionObject3.script
 
-let defaultElectionObject5 = cloneDeep(defaultElectionObject)
-defaultElectionObject5.id = '62cb365f384f59688794ae9c'
-defaultElectionObject5.organizationName = 'Los Angeles Government Elections'
-defaultElectionObject5.electionName = 'LA City Council'
-defaultElectionObject5.timeline.moderatorSubmissionDeadline[0].sent = false
-defaultElectionObject5.undebateDate = new Date('2023-01-09T23:59:59.999Z')
+let moderatorElectionObject4 = cloneDeep(defaultElectionObject)
+moderatorElectionObject4.id = '62cb35fddc380a594cff7126'
+moderatorElectionObject4.organizationName = 'Los Angeles Government Elections'
+moderatorElectionObject4.electionName = 'LA Mayor'
+delete moderatorElectionObject4.moderator.invitations[0].status
 
-let defaultElectionObject6 = cloneDeep(defaultElectionObject)
-defaultElectionObject6.id = '62cb365f86a78c68bbaacc52'
-defaultElectionObject6.organizationName = 'Los Angeles Government Elections'
-defaultElectionObject6.electionName = 'LA County Supervisor'
-defaultElectionObject6.moderator.submissions[0].url = 'not null'
-defaultElectionObject6.electionDate = new Date('2022-07-09T23:59:59.999Z')
+let moderatorElectionObject5 = cloneDeep(defaultElectionObject)
+moderatorElectionObject5.id = '62cb365f384f59688794ae9c'
+moderatorElectionObject5.organizationName = 'Los Angeles Government Elections'
+moderatorElectionObject5.electionName = 'LA City Council'
+moderatorElectionObject5.timeline.moderatorSubmissionDeadline[0].sent = false
+moderatorElectionObject5.undebateDate = new Date('2023-01-09T23:59:59.999Z')
 
-// todo add null electionDate for empty moderator option
+let moderatorElectionObject6 = cloneDeep(defaultElectionObject)
+moderatorElectionObject6.id = '62cb365f86a78c68bbaacc52'
+moderatorElectionObject6.organizationName = 'Los Angeles Government Elections'
+moderatorElectionObject6.electionName = 'LA County Supervisor'
+moderatorElectionObject6.moderator.submissions[0].url = 'not null'
+moderatorElectionObject6.electionDate = new Date('2022-07-09T23:59:59.999Z')
+
+let moderatorElectionObject7 = cloneDeep(defaultElectionObject)
+moderatorElectionObject7.id = '62cb365f86a78c68bbaacc52'
+moderatorElectionObject7.organizationName = 'Sacramento Government Elections'
+moderatorElectionObject7.electionName = 'Sacramento County Supervisor'
+moderatorElectionObject7.timeline.moderatorDeadlineReminderEmails[0].date = ''
+moderatorElectionObject7.timeline.moderatorDeadlineReminderEmails[1].date = ''
+
 export const AllModeratorOptions = Template.bind({})
 AllModeratorOptions.args = {
     electionObjs: [
         defaultElectionObject, // Reminder sent
-        defaultElectionObject1, // Invite Accepted
-        defaultElectionObject2, // Invite Declined
-        defaultElectionObject3, // Script Pending
-        defaultElectionObject4, // Script Sent
-        defaultElectionObject5, // Deadline Missed
-        defaultElectionObject6, // Video Submitted
+        moderatorElectionObject1, // Invite Accepted
+        moderatorElectionObject2, // Invite Declined
+        moderatorElectionObject3, // Script Pending
+        moderatorElectionObject4, // Script Sent
+        moderatorElectionObject5, // Deadline Missed
+        moderatorElectionObject6, // Video Submitted
+        moderatorElectionObject7, // dash/blank
+    ],
+}
+
+let candidatesElectionObject1 = cloneDeep(defaultElectionObject)
+candidatesElectionObject1.id = '627e9dbd9ec85b0e440b6a3d'
+candidatesElectionObject1.organizationName = 'San Diego Government Elections'
+candidatesElectionObject1.electionName = 'SD County Supervisor'
+candidatesElectionObject1.timeline.moderatorDeadlineReminderEmails[0].date = ''
+candidatesElectionObject1.timeline.moderatorDeadlineReminderEmails[1].date = ''
+
+let candidatesElectionObject2 = cloneDeep(defaultElectionObject)
+candidatesElectionObject2.id = '627ecafe4c12b659a8b954de'
+candidatesElectionObject2.organizationName = 'San Diego Government Elections'
+candidatesElectionObject2.electionName = 'SD City Council'
+delete candidatesElectionObject2.candidates
+
+let candidatesElectionObject3 = cloneDeep(defaultElectionObject)
+candidatesElectionObject3.id = '62cb350e480f6535c1ec9b5e'
+candidatesElectionObject3.organizationName = 'San Diego Government Elections'
+candidatesElectionObject3.electionName = 'SD Mayor'
+candidatesElectionObject3.moderator.invitations[0].sentDate = ''
+
+let candidatesElectionObject4 = cloneDeep(defaultElectionObject)
+candidatesElectionObject4.id = '62cb35fddc380a594cff7126'
+candidatesElectionObject4.organizationName = 'Los Angeles Government Elections'
+candidatesElectionObject4.electionName = 'LA Mayor'
+
+export const AllCandidatesOptions = Template.bind({})
+AllCandidatesOptions.args = {
+    electionObjs: [
+        defaultElectionObject,
+        candidatesElectionObject1, // dash/blank
+        candidatesElectionObject2, // Election Table Pending
+        candidatesElectionObject3, // Invite Pending
+        candidatesElectionObject4,
     ],
 }
 
