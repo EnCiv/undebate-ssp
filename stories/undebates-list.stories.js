@@ -58,18 +58,14 @@ const defaultElectionObject = {
         email: 'billsmith@gmail.com',
         message: 'Please be a moderator',
         invitations: [
-            // derived data, list may be empty or not present
             {
-                _id: '123',
+                _id: '1',
                 sentDate: '2022-01-07T22:09:32.952Z',
                 responseDate: '2022-01-07T22:09:32.952Z',
                 status: 'Accepted',
             },
         ],
-        submissions: [
-            // derived data, list may be empty or not present
-            { _id: '', url: '', date: '' },
-        ],
+        submissions: [{ _id: '', url: '', date: '' }],
     },
     candidates: {
         '61e76bbefeaa4a25840d85d0': {
@@ -79,7 +75,6 @@ const defaultElectionObject = {
             office: 'President of the U.S.',
             region: 'United States',
             invitations: [
-                // derived data - list may be empty or not present
                 {
                     _id: '',
                     sentDate: '2022-01-07T22:09:32.952Z',
@@ -219,6 +214,22 @@ let candidatesElectionObject4 = cloneDeep(defaultElectionObject)
 candidatesElectionObject4.id = '62cb35fddc380a594cff7126'
 candidatesElectionObject4.organizationName = 'Los Angeles Government Elections'
 candidatesElectionObject4.electionName = 'LA Mayor'
+const cand2 = { uniqueId: '62cbb1cf916df6cdbcfd8244' }
+const cand3 = { uniqueId: '62cbb1d07b8265ce0ee6f2e6' }
+candidatesElectionObject4.candidates[cand2.uniqueId] = cand2
+candidatesElectionObject4.candidates[cand3.uniqueId] = cand3
+candidatesElectionObject4.moderator.invitations.push({
+    _id: '2',
+    sentDate: '2022-01-08T22:09:32.952Z',
+    responseDate: '2022-01-08T22:09:32.952Z',
+    status: 'Declined',
+})
+candidatesElectionObject4.moderator.invitations.push({
+    _id: '3',
+    sentDate: '2022-01-09T22:09:32.952Z',
+    responseDate: '2022-01-09T22:09:32.952Z',
+    status: 'Accepted',
+})
 
 export const AllCandidatesOptions = Template.bind({})
 AllCandidatesOptions.args = {

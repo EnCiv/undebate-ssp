@@ -285,7 +285,7 @@ function getElectionStatusMethods(dispatch, state) {
         }
         if (getSubmissionsStatus !== 'default') {
             console.log(getSubmissionsStatus())
-            const totalCandidatesCount = Object.values(state?.candidates).length + 1
+            const totalCandidatesCount = Object.values(state?.candidates).length
             const completeCandidatesCount = getSubmissionsStatus()?.accepted
             return completeCandidatesCount + '/' + totalCandidatesCount
         }
