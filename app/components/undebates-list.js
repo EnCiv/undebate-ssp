@@ -4,6 +4,7 @@ import { createUseStyles } from 'react-jss'
 import moment from 'moment'
 import ObjectID from 'isomorphic-mongo-objectid'
 import getElectionStatusMethods from '../lib/get-election-status-methods'
+import CandidateStatusTable from './candidate-status-table'
 import cx from 'classnames'
 import ArrowSvg from '../svgr/arrow'
 import Accepted from '../svgr/accepted'
@@ -202,31 +203,44 @@ function CandidateCell({ value, electionOMs }) {
     // todo use NavigationPanel Submissions for candidates state
     const { rowIndex } = value
     const [obj, electionMethods] = electionOMs[rowIndex]
-    const candidatesStatus = electionMethods.getCandidatesStatus()
+    const candidatesStatusText = electionMethods.getCandidatesStatus()
     let daysRemaining = electionMethods.countDayLeft()
     let Icon
     let textClass
+    let shouldShowStatusTable = false
     switch (true) {
-        case candidatesStatus === 'Election Table Pending...':
+        case candidatesStatusText === 'Election Table Pending...':
             Icon = ElectionGrid
             break
-        case candidatesStatus === 'Invite Pending...':
+        case candidatesStatusText === 'Invite Pending...':
             Icon = InviteSent
             break
-        case candidatesStatus.includes('Missed Deadline'):
+        case candidatesStatusText.includes('Missed Deadline'):
             Icon = DeadlineMissed
             break
-        case candidatesStatus === undefined || candidatesStatus === null || candidatesStatus === '':
+        case candidatesStatusText === undefined || candidatesStatusText === null || candidatesStatusText === '':
             break
-        case candidatesStatus === '-':
+        case candidatesStatusText === '-':
             daysRemaining = null
             break
         default:
             Icon = VideoSubmitted
+            shouldShowStatusTable = true
             break
     }
+    const candidateStatuses = electionMethods.getSubmissionsStatus()
+    const renderStatusTable = () => {
+        if (shouldShowStatusTable && candidateStatuses !== 'default') {
+            return <CandidateStatusTable statusObj={candidateStatuses} />
+        }
+    }
 
-    return <IconCell Icon={Icon} text={candidatesStatus} textClassName={textClass} daysRemaining={daysRemaining} />
+    return (
+        <span>
+            <IconCell Icon={Icon} text={candidatesStatusText} textClassName={textClass} daysRemaining={daysRemaining} />
+            {renderStatusTable()}
+        </span>
+    )
 }
 
 function getDaysText(daysRemaining) {

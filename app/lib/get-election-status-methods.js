@@ -1,6 +1,14 @@
 // https://github.com/EnCiv/undebate-ssp/issues/105
-
-import { isArray } from 'lodash'
+import {
+    SvgAccepted,
+    SvgCompleted,
+    SvgDeadlineMissed,
+    SvgDeclined,
+    SvgLock,
+    SvgReminderSent,
+    SvgSent,
+    SvgVideoSubmitted,
+} from '../components/lib/svg'
 
 const checkDateCompleted = obj => {
     for (const key in obj) {
@@ -30,6 +38,32 @@ const getLatestObjByDate = oList => {
     )
     if (!latest.date) return undefined
     return latest
+}
+
+function ProgressBar(props) {
+    const classes = useStyles(props)
+    return <div className={classes.progressBar} />
+}
+
+export const statusInfoEnum = {
+    completed: { icon: <SvgCompleted /> },
+    pending: { text: 'Pending…' },
+    daysLeft: v => ({
+        text: `${v} days left…`,
+    }),
+    reminderSent: {
+        icon: <SvgReminderSent />,
+        text: 'Reminder Sent',
+    },
+    percentComplete: v => ({
+        text: <ProgressBar percentDone={v} />,
+    }),
+    videoSubmitted: { icon: <SvgVideoSubmitted />, text: 'Video Submitted' },
+    deadlineMissed: { icon: <SvgDeadlineMissed />, text: 'Deadline Missed' },
+    accepted: { icon: <SvgAccepted />, text: 'Accepted' },
+    declined: { icon: <SvgDeclined />, text: 'Declined' },
+    sent: { icon: <SvgSent />, text: 'Sent' },
+    locked: { icon: <SvgLock /> },
 }
 
 function idCompare(a, b) {
@@ -293,7 +327,7 @@ function getElectionStatusMethods(dispatch, state) {
         if (areCandidatesReadyToInvite() && getSubmissionsStatus() === 'default') {
             return 'Invite Pending...'
         }
-        if (getSubmissionsStatus !== 'default') {
+        if (getSubmissionsStatus() !== 'default') {
             const totalCandidatesCount = Object.values(state?.candidates).length
             let completeCandidatesCount = 0
             Object.values(state?.candidates)?.forEach(candidate => {
