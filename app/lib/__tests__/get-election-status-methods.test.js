@@ -1,4 +1,4 @@
-import getElectionStatusMethods from '../get-election-status-methods'
+import getElectionStatusMethods, { checkCandidateVideoSubmitted } from '../get-election-status-methods'
 
 describe('election status methods', () => {
     describe('date completed status', () => {
@@ -236,7 +236,7 @@ describe('election status methods', () => {
                 0: { text: 'hello' },
             }
             const { checkObjCompleted } = getElectionStatusMethods()
-            expect(checkObjCompleted(obj))
+            expect(checkObjCompleted(obj)).toBeTruthy()
         })
         it('should not be complete', () => {
             const obj = {
@@ -282,7 +282,7 @@ describe('election status methods', () => {
                 },
             }
             const { checkVideoSubmitted } = getElectionStatusMethods(null, state)
-            expect(checkVideoSubmitted())
+            expect(checkVideoSubmitted()).toBeTruthy()
         })
         it('should return false', () => {
             const state = {
@@ -292,6 +292,21 @@ describe('election status methods', () => {
             }
             const { checkVideoSubmitted } = getElectionStatusMethods(null, state)
             expect(checkVideoSubmitted()).toBe(false)
+        })
+    })
+
+    describe('check candidate video submitted', () => {
+        it('should return true', () => {
+            const candidate = {
+                submissions: [{ _id: '', url: 'link', date: '' }],
+            }
+            expect(checkCandidateVideoSubmitted(candidate)).toBeTruthy()
+        })
+        it('should return false', () => {
+            const candidate = {
+                submissions: [{ _id: '', url: '', date: '' }],
+            }
+            expect(checkCandidateVideoSubmitted(candidate)).toBeFalsy()
         })
     })
 
@@ -308,7 +323,7 @@ describe('election status methods', () => {
                 },
             }
             const { checkSubmissionBeforeDeadline } = getElectionStatusMethods(null, state)
-            expect(checkSubmissionBeforeDeadline())
+            expect(checkSubmissionBeforeDeadline()).toBeTruthy()
         })
         it('should not be submitted on time', () => {
             const state = {
@@ -900,7 +915,7 @@ describe('election status methods', () => {
                 },
             }
             const { checkReminderSent } = getElectionStatusMethods(null, state)
-            expect(checkReminderSent())
+            expect(checkReminderSent()).toBeTruthy()
         })
         it("hasn't sent the reminder yet", () => {
             const state = {

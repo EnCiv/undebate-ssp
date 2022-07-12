@@ -47,6 +47,16 @@ export const getLatestIota = iotas => {
     if (!latest._id) return undefined
     return latest
 }
+export const checkCandidateVideoSubmitted = candidate => {
+    let result = false
+    candidate?.submissions?.forEach(submission => {
+        if (submission.url && submission.url !== '') {
+            result = true
+        }
+    })
+    return result
+}
+
 function getElectionStatusMethods(dispatch, state) {
     const recentInvitationStatus = () => {
         if (!state?.moderator?.invitations || !state?.moderator?.invitations[0]) return {}
@@ -284,9 +294,13 @@ function getElectionStatusMethods(dispatch, state) {
             return 'Invite Pending...'
         }
         if (getSubmissionsStatus !== 'default') {
-            console.log(getSubmissionsStatus())
             const totalCandidatesCount = Object.values(state?.candidates).length
-            const completeCandidatesCount = getSubmissionsStatus()?.accepted
+            let completeCandidatesCount = 0
+            Object.values(state?.candidates)?.forEach(candidate => {
+                if (checkCandidateVideoSubmitted(candidate)) {
+                    completeCandidatesCount += 1
+                }
+            })
             return completeCandidatesCount + '/' + totalCandidatesCount
         }
         return 'unknown'

@@ -214,22 +214,28 @@ let candidatesElectionObject4 = cloneDeep(defaultElectionObject)
 candidatesElectionObject4.id = '62cb35fddc380a594cff7126'
 candidatesElectionObject4.organizationName = 'Los Angeles Government Elections'
 candidatesElectionObject4.electionName = 'LA Mayor'
-const cand2 = { uniqueId: '62cbb1cf916df6cdbcfd8244' }
-const cand3 = { uniqueId: '62cbb1d07b8265ce0ee6f2e6' }
+const cand2 = {
+    uniqueId: '62cbb1cf916df6cdbcfd8244',
+    submissions: [
+        {
+            _id: '2',
+            url: 'link1',
+            date: '',
+        },
+    ],
+}
+const cand3 = {
+    uniqueId: '62cbb1d07b8265ce0ee6f2e6',
+    submissions: [
+        {
+            _id: '2',
+            url: 'link2',
+            date: '',
+        },
+    ],
+}
 candidatesElectionObject4.candidates[cand2.uniqueId] = cand2
 candidatesElectionObject4.candidates[cand3.uniqueId] = cand3
-candidatesElectionObject4.moderator.invitations.push({
-    _id: '2',
-    sentDate: '2022-01-08T22:09:32.952Z',
-    responseDate: '2022-01-08T22:09:32.952Z',
-    status: 'Declined',
-})
-candidatesElectionObject4.moderator.invitations.push({
-    _id: '3',
-    sentDate: '2022-01-09T22:09:32.952Z',
-    responseDate: '2022-01-09T22:09:32.952Z',
-    status: 'Accepted',
-})
 
 export const AllCandidatesOptions = Template.bind({})
 AllCandidatesOptions.args = {
@@ -238,7 +244,8 @@ AllCandidatesOptions.args = {
         candidatesElectionObject1, // dash/blank
         candidatesElectionObject2, // Election Table Pending
         candidatesElectionObject3, // Invite Pending
-        candidatesElectionObject4,
+        candidatesElectionObject4, // In Progress
+        /* candidatesElectionObject5, // Ready */
     ],
 }
 
