@@ -4,16 +4,21 @@ import MongoModels from 'mongo-models'
 import { Iota, User } from 'civil-server'
 import iotas from '../../../iotas.json'
 import createModeratorRecorder from '../create-moderator-recorder'
-import { merge } from 'lodash'
+import { merge, cloneDeep } from 'lodash'
 
 const ObjectID = Iota.ObjectId
 
 // dummy out logger for tests
 global.logger = { error: jest.fn(e => e) }
 
-const testDoc = iotas.filter(iota => iota.subject === 'Undebate SSP Test Iota')[0]
+// making a clone so giving it it's own unique id so jest tests can run in parallel
+const testDoc = cloneDeep(iotas.filter(iota => iota.subject === 'Undebate SSP Test Iota')[0])
+testDoc._id = ObjectID('62c8f51b002a10563c43d205')
+
+const objectIdPattern = /^[0-9a-fA-F]{24}$/
 
 const exampleUser = {
+    _id: ObjectID('62c8f58a7e5866104cc793b4'),
     firstName: 'Example',
     lastName: 'User',
     email: 'example.user@example.com',
@@ -31,14 +36,14 @@ beforeAll(async () => {
     // eslint-disable-next-line no-restricted-syntax
     for await (const init of toInit) await init()
     const user = await User.create(exampleUser)
-    apisThis.synuser.id = MongoModels.ObjectID(user._id).toString()
+    apisThis.synuser.id = ObjectID(user._id).toString()
 
     testDoc.userId = apisThis.synuser.id
-    testDoc._id = ObjectID(testDoc._id.$oid || testDoc._id)
     await Iota.create(testDoc)
 })
 
 afterAll(async () => {
+    await Iota.deleteOne({ id: testDoc._id })
     MongoModels.disconnect()
 })
 
@@ -57,6 +62,7 @@ test('it should create a viewer', done => {
             expect(iotas[0]).toMatchInlineSnapshot(
                 {
                     _id: expect.any(ObjectID),
+                    parentId: expect.stringMatching(objectIdPattern),
                 },
                 `
                 Object {
@@ -73,7 +79,7 @@ test('it should create a viewer', done => {
                     "component": "MergeParticipants",
                   },
                   "description": "A Candidate Conversation for: Moderator",
-                  "parentId": "62196fd6b2eff30b70ba36e0",
+                  "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
                   "path": "/country:us/organization:cfa/office:moderator/2021-03-21",
                   "subject": "Moderator",
                   "webComponent": Object {
@@ -135,8 +141,6 @@ test('it should create a viewer', done => {
     }
     createModeratorRecorder.call(apisThis, ObjectID(testDoc._id).toString(), callback)
 })
-const OBJECTID = /^[0-9a-fA-F]{24}$/
-
 test('it should create a recorder', async () => {
     const iotas = await Iota.find({ 'webComponent.webComponent': 'Undebate', parentId: viewerId })
     expect(iotas).toHaveLength(1)
@@ -144,10 +148,10 @@ test('it should create a recorder', async () => {
         {
             _id: expect.any(ObjectID),
             bp_info: {
-                unique_id: expect.stringMatching(OBJECTID),
+                unique_id: expect.stringMatching(objectIdPattern),
             },
 
-            parentId: expect.stringMatching(OBJECTID),
+            parentId: expect.stringMatching(objectIdPattern),
             path: expect.stringMatching(
                 /\/country:us\/organization:cfa\/office:moderator\/2021-03-21-recorder-[0-9a-fA-F]{24}$/
             ),

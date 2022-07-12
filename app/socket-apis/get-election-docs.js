@@ -2,6 +2,7 @@
 // https://github.com/EnCiv/undebate-ssp/issues/52
 
 import { Iota } from 'civil-server'
+import S from 'underscore.string'
 
 // get all the ElectionDoc component belonging to the user, and all of the children of those docs
 // up to depth 2. but depth can be extended by extending the aggregation operators
@@ -161,7 +162,7 @@ function intoArrayAtObjPathPushDoc(obj, path, doc) {
 
 // an object of docs is an object where each key is a doc's _id and the value is the doc
 // { '62a17c01635c4c4700ced877': {_id: '62a17c01635c4c4700ced877, subject: "an iota doc", description: 'this is an iota in an object of docs, ...}}
-function intoObjOfDocsAtObjPathMergeDoc(obj, path, doc) {
+export function intoObjOfDocsAtObjPathMergeDoc(obj, path, doc) {
     let o = obj
     const keys = path.split('.')
     let key
@@ -198,12 +199,12 @@ function doesArrayAtObjPathContainDocWithId(obj, path, id) {
 // return a function if merge successful and more work needs to be done, after the child is marked used
 const mergeOps = {
     // iotas and usedIndexes are props in case the op needs to run recursively
-    moderatorRecorder(dst, root, child, iotas, usedIndexes) {
+    moderatorRecorders(dst, root, child, iotas, usedIndexes) {
         if (!(child?.component?.component === 'undebateCreator' && child?.bp_info?.office === 'Moderator')) return false
         intoObjOfDocsAtObjPathMergeDoc(dst, 'webComponent.moderator.recorders', child)
         return true
     },
-    moderatorViewer(dst, root, child, iotas, usedIndexes) {
+    moderatorViewers(dst, root, child, iotas, usedIndexes) {
         if (!(child?.webComponent?.webComponent === 'CandidateConversation' && child?.bp_info?.office === 'Moderator'))
             return false
         intoObjOfDocsAtObjPathMergeDoc(dst, 'webComponent.moderator.viewers', child)
@@ -234,5 +235,39 @@ const mergeOps = {
             ...child.component,
         })
         return true
+    },
+    candidatesRecorders(dst, root, child, iotas, usedIndexes) {
+        if (!(child?.component?.component === 'undebateCreator' && child?.bp_info?.office !== 'Moderator')) return false
+        intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${child.bp_info.unique_id}.recorders`, child)
+        return true
+    },
+    candidatesSubmissions(dst, root, child, iotas, usedIndexes) {
+        if (child?.component?.component !== 'MergeParticipants') {
+            return false
+        }
+        const candidateName = child?.component?.participant?.name
+        if (!candidateName) return false
+        const candidate = Object.values(root?.webComponent?.candidates || {}).find(cand => cand.name === candidateName)
+        if (!candidate) return false
+        intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${candidate.uniqueId}.submissions`, child)
+        return true
+    },
+    officesViewers(dst, root, child, iotas, usedIndexes) {
+        if (
+            !(child?.webComponent?.webComponent === 'CandidateConversation' && child?.bp_info?.office !== 'Moderator')
+        ) {
+            return false
+        }
+        const bpInfoOffice = child?.bp_info?.office
+        if (!bpInfoOffice) return false
+        intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.offices.${S(bpInfoOffice).slugify().value()}.viewers`, child)
+        return () =>
+            intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(
+                dst,
+                root,
+                getId(child._id),
+                iotas,
+                usedIndexes
+            )
     },
 }

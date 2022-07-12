@@ -94,13 +94,27 @@
                         "status": "Accepted"
                     }
                 ],
-                "submissions": [
-                    {
-                        "_id": "62196ecdd0d14837a471c977",
-                        "url": "url",
-                        "date": "2022-02-10T00:50:16.802Z"
+                "submissions": {
+                    "628d2d25c945f836b8be0901": {
+                        "_id": "628d2d25c945f836b8be0901",
+                        "component": {
+                            "component": "MergeParticipants",
+                            "participant": {
+                                "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
+                                "name": "david",
+                                "speaking": [
+                                    "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm",
+                                    "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510659/5d5b73c01e3b194174cd9b92-2-speaking.webm",
+                                    "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510665/5d5b73c01e3b194174cd9b92-3-speaking.webm"
+                                ]
+                            }
+                        },
+                        "description": "Moderator Recording for #4",
+                        "parentId": "628d0b225f7a7746488c0bff",
+                        "subject": "Moderator Recording for #4",
+                        "userId": "628d0a2afacbb605f4d8e6ac"
                     }
-                ]
+                }
             },
             "candidates": {
                 "61e76bbefeaa4a25840d85d0": {
@@ -217,6 +231,18 @@
         "description": "QA Test for creating the moderator recorder",
         "webComponent": {
             "webComponent": "QaCreateModeratorRecorder",
+            "id": "62196fd6b2eff30b70ba36e0"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "62af9ffc3697ffc787df55be"
+        },
+        "path": "/qa-create-candidate-recorder",
+        "subject": "Create Candidate Recorder",
+        "description": "QA Test for creating the candidate recorder",
+        "webComponent": {
+            "webComponent": "QaCreateCandidateRecorder",
             "id": "62196fd6b2eff30b70ba36e0"
         }
     },

@@ -38,7 +38,7 @@ function idCompare(a, b) {
     return a.localeCompare(b)
 }
 
-const getLatestIota = iotas => {
+export const getLatestIota = iotas => {
     if (!iotas) return undefined
     if (typeof iotas !== 'object') return undefined
     const latest = Object.values(iotas).reduce((latest, obj) => (idCompare(latest._id, obj._id) < 0 ? obj : latest), {
