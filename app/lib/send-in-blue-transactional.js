@@ -28,8 +28,11 @@ async function SibCreateTemplate(name, templateName, htmlContent) {
         const data = await SibSMTPApi.createSmtpTemplate(smtpTemplate)
         return data?.id
     } catch (error) {
-        console.error('SendInBlueCreateTemplate caught error', error.message ? error.message : error)
-        console.error(error?.response?.res?.text)
+        logger.error(
+            'SendInBlueCreateTemplate caught error',
+            error?.response?.res?.text,
+            error?.message ? error.message : error
+        )
     }
 }
 
@@ -44,15 +47,20 @@ async function SibGetTemplate(name, htmlContent) {
             let j = 0
             let error = false
             for (; i < template.htmlContent.length && j < htmlContent.length; i++, j++) {
-                // SendInBlue seems to instert some spaces so we need to skip them
-                if (template.htmlContent[i] !== htmlContent[j] && template.htmlContent[i] === ' ') i++
                 if (template.htmlContent[i] !== htmlContent[j]) {
-                    logger.error(template.htmlContent.charCodeAt(i), '!==', htmlContent.charCodeAt(j), 'at', i)
-                    error = true
-                    break
+                    // SendInBlue seems to instert some spaces so we need to skip them
+                    if (template.htmlContent[i] === ' ') i++
+                    // SendInBlue seems to remove carriage returns so ignore them
+                    else if (template.htmlContent[i] === '\r') i++
+                    else {
+                        logger.error(template.htmlContent.charCodeAt(i), '!==', htmlContent.charCodeAt(j), 'at', i)
+                        error = true
+                        break
+                    }
                 }
             }
-            if (error) logger.error('sendModeratorInvite SendInBlue template does not match repo')
+            if (error)
+                logger.error('sendModeratorInvite SendInBlue template does not match repo, but usirng', template?.id)
             const localParams = uniqueParams(htmlContent)
             const remoteParams = uniqueParams(template.htmlContent)
             for (const param of remoteParams) {
