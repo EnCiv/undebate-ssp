@@ -1,13 +1,12 @@
 // https://github.com/EnCiv/undebate-ssp/issues/71
 import { expect, test, beforeAll, afterAll } from '@jest/globals'
-import MongoModels, { ObjectID } from 'mongo-models'
+import MongoModels from 'mongo-models'
 import { Iota, User } from 'civil-server'
 import subscribeElectionInfo from '../subscribe-election-info'
 import jestSocketApiSetup from '../../lib/jest-socket-api-setup'
 const handle = 'subscribe-election-info'
 const socketApiUnderTest = subscribeElectionInfo
 import socketApiSubscribe from '../../components/lib/socket-api-subscribe'
-import { doc } from 'prettier'
 
 if (!global.logger) global.logger = console
 global.logger = { error: jest.fn((...args) => args) }
@@ -20,9 +19,16 @@ Date.prototype.addDays = function (days) {
     return this
 }
 
+// if making a copy of this, you need new node_modules/.bin/mongo-id 's here
+// because multiple tests using the DB will run in parallel
+const electionObjId = '629950b73100ea171064d4b7'
+const recorderId = '629952046bf16a07dc69e2d5'
+const viewerId = '62995210214f715b3c3084c8'
+const userId = '62995151f50a0d478415d6f1'
+
 const iotas = [
     {
-        _id: Iota.ObjectID('629950b73100ea171064d4b7'),
+        _id: Iota.ObjectID(electionObjId),
         subject: 'Election document',
         description: 'Election document #4',
         webComponent: {
@@ -83,7 +89,7 @@ const iotas = [
         },
     },
     {
-        _id: Iota.ObjectID('629952046bf16a07dc69e2d5'),
+        _id: Iota.ObjectID(recorderId),
         subject: 'Moderator Recorder for #4',
         description: 'Moderator Recorder for #4',
         bp_info: {
@@ -93,10 +99,10 @@ const iotas = [
             component: 'undebateCreator',
         },
         path: '/moderator-recorder',
-        parentId: '629950b73100ea171064d4b7',
+        parentId: electionObjId,
     },
     {
-        _id: Iota.ObjectID('62995210214f715b3c3084c8'),
+        _id: Iota.ObjectID(viewerId),
         subject: 'Moderator Viewer for #4',
         description: 'Moderator Viewer for #4',
         bp_info: {
@@ -106,12 +112,12 @@ const iotas = [
             webComponent: 'CandidateConversation',
         },
         path: '/moderator-viewer',
-        parentId: '629950b73100ea171064d4b7',
+        parentId: electionObjId,
     },
 ]
 
 const exampleUser = {
-    _id: User.ObjectID('62995151f50a0d478415d6f1'),
+    _id: User.ObjectID(userId),
     firstName: 'Example',
     lastName: 'User',
     email: 'example.user2@example.com',
@@ -167,7 +173,7 @@ maybe('Test the send moderator invite API', () => {
             if (!updatedDoc) updatedDoc = doc
             else updatedDoc(doc)
         }
-        socketApiSubscribe(handle, '629950b73100ea171064d4b7', requestHandler, updateHandler)
+        socketApiSubscribe(handle, electionObjId, requestHandler, updateHandler)
     })
 
     afterAll(async () => {
@@ -184,7 +190,7 @@ maybe('Test the send moderator invite API', () => {
                 done(error)
             }
         }
-        sendModeratorInvite.call({}, '629950b73100ea171064d4b7', callback)
+        sendModeratorInvite.call({}, electionObjId, callback)
     })
     test('should send an email', done => {
         function callback(messageId) {
@@ -195,7 +201,7 @@ maybe('Test the send moderator invite API', () => {
                 done(error)
             }
         }
-        sendModeratorInvite.call(apisThis, '629950b73100ea171064d4b7', callback)
+        sendModeratorInvite.call(apisThis, electionObjId, callback)
     })
     test('subscribeElectionInfo update should receive update', done => {
         // this asynchronous update from the socket api may have already happend, or we may need to wait for it.
