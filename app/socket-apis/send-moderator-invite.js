@@ -15,7 +15,11 @@ export default async function sendModeratorInvite(id, cb) {
     }
     if (!templateId) {
         templateId = await SibGetTemplateId('moderator-invitation')
-        if (!templateId) logger.error('send-moderator-invite template not found')
+        if (!templateId) {
+            logger.error('send-moderator-invite template not found')
+            cb && cb()
+            return
+        }
     }
     getElectionDocById.call(this, id, async iota => {
         if (!iota) {
