@@ -1,0 +1,126 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <!-- Facebook sharing information tags h_85 -->
+    <meta property="og:title" content="You are invited to answer questions in an Undebate" />
+    <title>You are invited to answer questions in an Undebate</title>
+</head>
+
+<body style="font-size: 16px">
+    <div style="width: 100%; max-width: 40rem; margin: 1em auto 1em auto;">
+        <table
+            style="width: 100%; padding-top: 1em; padding-bottom: 1em; border-top: 1px solid gray; border-bottom: 1px solid gray" ">
+          <tr>
+            <td style=" text-align: left; vertical-align: top">
+            <img height="75px" src="{{ params.organizationLogo }}" />
+            </td>
+            <td style="text-align: right; vertical-align: top">
+                <img height="75px"
+                    src="https://res.cloudinary.com/hf6mryjpf/image/upload/h_75/v1587935029/assets/enciv-logo.png" />
+            </td>
+            </tr>
+        </table>
+        <div style="margin-top: 1em">
+            Hello {{ params.candidate.name }},<br /><br />
+            {{ params.organizationName }} is holding an election and inviting the candidates to participate in online
+            video debates using EnCiv's undebate platform. You are running for {{ params.candidate.office }}.
+            Participation is simple, just follow this <a href={{ params.candidate.recorder_url }}>link</a> and
+            review the questions, and when you are read, use your browsers and record yourself asking the questions and
+            post it.
+            <br><br>
+            To be ready in time, your posting is needed by {{ params.candidate.submissionDeadline }} but sooner is
+            better.
+            And don't worry, you can review your answers and re-record until they are just right.
+            <br /><br />
+            See the questions, and record at <a href="{{ params.candidate.recorder_url }}" target="_blank">
+                {{ params.candidate.recorder_url }}</a><br />
+            <br />
+            If you have any questions, please contact your election administrator, {{ params.name }} at
+            <a href={{ params.email }}>{{ params.email }}</a><br />
+            <br />
+            Best,<br /><br />
+            EnCiv
+            <br />
+            <br />
+            <div style="margin-top: 1em; padding: 1em; font-size: 12px; background-color: #F0F0F0;">
+                EnCiv, Inc Is a 501(c)(3) nonprofit bringing structure to online democratic discourse.
+            </div>
+            <table border="0" cellpadding="0" cellspacing="0" style="
+                        -ms-text-size-adjust: 100%;
+                        -webkit-text-size-adjust: 100%;
+                        background-color: #ffffff;
+                        border-collapse: collapse !important;
+                        border-top-color: #ffffff;
+                        border-top-style: solid;
+                        border-top-width: 1px;
+                        mso-table-lspace: 0pt;
+                        mso-table-rspace: 0pt;
+                      " width="100%">
+                <tbody>
+                    <tr>
+                        <td align="left" style="
+                              -webkit-text-size-adjust: 100%;
+                              -ms-text-size-adjust: 100%;
+                              mso-table-lspace: 0pt;
+                              mso-table-rspace: 0pt;
+                              color: #808080;
+                              font-family: Helvetica;
+                              font-size: 10px;
+                              line-height: 15px;
+                              text-align: left;
+                              padding: 20px;
+                            " valign="top">
+                            <div style="text-align: center;">
+                                <a href="https://twitter.com/_EnCiv" style="
+                                  -webkit-text-size-adjust: 100%;
+                                  -ms-text-size-adjust: 100%;
+                                  font-weight: normal;
+                                  color: #606060;
+                                ">Follow on Twitter</a>   <a href="https://www.facebook.com/EnCiv.org" style="
+                                  -webkit-text-size-adjust: 100%;
+                                  -ms-text-size-adjust: 100%;
+                                  font-weight: normal;
+                                  color: #606060;
+                                ">Friend on Facebook</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" style="
+                              -webkit-text-size-adjust: 100%;
+                              -ms-text-size-adjust: 100%;
+                              mso-table-lspace: 0pt;
+                              mso-table-rspace: 0pt;
+                              color: #808080;
+                              font-family: Helvetica;
+                              font-size: 10px;
+                              line-height: 15px;
+                              text-align: left;
+                              padding: 0 20px 20px;
+                            " valign="top">
+                            <div style="text-align: center;">
+                                <span style="font-size: 11px;">Decide which emails you want from EnCiv, Inc..<br />
+                                    <a href="{{ unsubscribe }}" style="
+                                    -webkit-text-size-adjust: 100%;
+                                    -ms-text-size-adjust: 100%;
+                                    color: #606060;
+                                    font-weight: normal;
+                                    text-decoration: underline;
+                                  ">Unsubscribe</a></span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
