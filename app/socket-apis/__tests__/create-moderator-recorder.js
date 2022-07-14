@@ -58,7 +58,7 @@ test('it should create a viewer', done => {
                 'webComponent.webComponent': 'CandidateConversation',
             })
             expect(iotas).toHaveLength(1)
-            viewerId = ObjectID(iotas[0]._id).toString
+            viewerId = ObjectID(iotas[0]._id).toString()
             expect(iotas[0]).toMatchInlineSnapshot(
                 {
                     _id: expect.any(ObjectID),
