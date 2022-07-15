@@ -23,12 +23,32 @@ import ChevronDown from '../svgr/chevron-down'
 import { useTable, useFilters, useSortBy } from 'react-table'
 
 const DAYS_LEFT_DANGER = 3
+function DefaultColumnFilter({ column: { filterValue, preFilteredRows, setFilter } }) {
+    const count = preFilteredRows.length
+
+    return (
+        <input
+            value={filterValue || ''}
+            onChange={e => {
+                setFilter(e.target.value || undefined)
+            }}
+            placeholder={`Search ${count} records...`}
+        />
+    )
+}
 
 function Table({ columns, data, onRowClicked, classes }) {
+    const defaultColumn = useMemo(
+        () => ({
+            Filter: DefaultColumnFilter,
+        }),
+        []
+    )
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
         {
             columns,
             data,
+            defaultColumn,
             initialState: {
                 sortBy: [
                     {
@@ -38,6 +58,7 @@ function Table({ columns, data, onRowClicked, classes }) {
                 ],
             },
         },
+        useFilters,
         useSortBy
     )
 
@@ -67,6 +88,7 @@ function Table({ columns, data, onRowClicked, classes }) {
                                     )}
                                 </span>
                                 {' ' + column.render('Header') + ' '}
+                                <div>{column.canFilter ? column.render('Filter') : null}</div>
                             </th>
                         ))}
                     </tr>
@@ -173,10 +195,10 @@ function ModeratorCell({ value, electionOMs }) {
     return <IconCell Icon={Icon} text={moderatorStatus} textClassName={textClass} daysRemaining={daysRemaining} />
 }
 
-function StatusCell({ value, electionOMs }) {
-    const { rowIndex } = value
+function StatusCell({ statusText, electionOMs, rowIndex }) {
+    /* console.log('value', value) */
     const [obj, electionMethods] = electionOMs[rowIndex]
-    const statusText = electionMethods.getElectionListStatus()
+    /* const statusText = electionMethods.getElectionListStatus() */
     let Icon
     let textClass = ''
     switch (statusText) {
@@ -197,6 +219,29 @@ function StatusCell({ value, electionOMs }) {
 
     const daysRemaining = electionMethods.countDayLeft()
     return <IconCell Icon={Icon} text={statusText} textClassName={textClass} daysRemaining={daysRemaining} />
+}
+
+function StatusFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
+    const options = React.useMemo(() => {
+        const options = new Set()
+        preFilteredRows.forEach(row => {
+            options.add(row.values[id])
+        })
+        return [...options.values()]
+    }, [id, preFilteredRows])
+
+    console.log('options', options)
+
+    return (
+        <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
+            <option value=''>All</option>
+            {options.map((option, i) => (
+                <option key={i} value={option}>
+                    {option}
+                </option>
+            ))}
+        </select>
+    )
 }
 
 function CandidateCell({ value, electionOMs }) {
@@ -275,6 +320,11 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         return { electionObj, rowIndex }
     }
 
+    const getStatusValue = (electionObj, rowIndex) => {
+        const [obj, electionMethods] = electionOMs[rowIndex]
+        return electionMethods.getElectionListStatus()
+    }
+
     const columns = useMemo(() => [
         {
             Header: 'Election Name',
@@ -285,24 +335,35 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
             Header: 'Date',
             accessor: getEntireRow,
             Cell: DateCell,
+            /* filter: 'between', */
+            canFilter: false,
         },
         {
             Header: 'Moderator',
             accessor: getEntireRow,
             Cell: value => <ModeratorCell value={value.value} electionOMs={electionOMs} />,
             disableSortBy: true,
+            /* filter: 'equals', */
+            canFilter: false,
         },
         {
             Header: 'Candidates',
             accessor: getEntireRow,
             Cell: value => <CandidateCell value={value.value} electionOMs={electionOMs} />,
             disableSortBy: true,
+            /* filter: 'equals', */
+            canFilter: false,
         },
         {
             Header: 'Status',
-            accessor: getEntireRow,
-            Cell: value => <StatusCell value={value.value} electionOMs={electionOMs} />,
+            accessor: getStatusValue,
+            Cell: value => {
+                return <StatusCell statusText={value.value} electionOMs={electionOMs} rowIndex={value.row.index} />
+            },
             disableSortBy: true,
+            /* Filter: StatusFilter, */
+            filter: 'equals',
+            /* canFilter: true, */
         },
     ])
 
