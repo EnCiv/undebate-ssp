@@ -84,19 +84,38 @@ export default async function createCandidateRecorder(id, cb) {
                 if (cb) cb()
                 return
             }
+            const sortedQuestionPairs = Object.entries(electionObj.questions).sort(
+                ([aKey, aObj], [bKey, bObj]) => aKey - bKey
+            )
+            const agenda = sortedQuestionPairs.map(([key, Obj]) => [Obj.text])
+            const timeLimits = sortedQuestionPairs.map(([key, Obj]) => Obj.time)
 
             const moderatorComponent = getLatestIota(electionObj.moderator.submissions).component
             const speaking = moderatorComponent.participant.speaking.slice()
-            speaking.unshift(introVideo)
 
-            candidateViewerRecorder.candidateRecorder.component.participants.moderator.speaking = speaking
+            // for the candidate recorder, there is an enciv prepared segment at the beginning introducing how this works
+            // and asking them to record a placeholder video
+            const recorderSpeaking = speaking.slice()
+            recorderSpeaking.unshift(introVideo)
+            const recorderAgenda = agenda.slice()
+            recorderAgenda.unshift(['How this works', 'Placeholder'])
+            const recorderTimeLimits = timeLimits.slice()
+            recorderTimeLimits.unshift(15)
+
+            candidateViewerRecorder.candidateRecorder.component.participants.moderator.speaking = recorderSpeaking
             candidateViewerRecorder.candidateRecorder.component.participants.moderator.listening =
                 moderatorComponent.participant.listening
+            candidateViewerRecorder.candidateRecorder.component.participants.moderator.agenda = recorderAgenda
+            candidateViewerRecorder.candidateRecorder.component.participants.moderator.timeLimits = recorderTimeLimits
 
             candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking
             candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.name =
                 electionObj.moderator.name
+            candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.listening =
+                moderatorComponent.participant.listening
             candidateViewerRecorder.candidateViewer.parentId = id
+            candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.agenda = agenda
+            candidateViewerRecorder.candidateRecorder.webComponent.participants.moderator.timeLimits = timeLimits
 
             const inRowObjs = Object.values(electionObj.candidates).map(candidate => {
                 return {
@@ -132,7 +151,7 @@ function reasonsNotReadyForCandidateRecorder(electionObj) {
     if (qLength + 1 !== sLength) {
         errorMsgs.push(`length of script ${sLength} was not one more than length of questions ${qLength}.`)
     }
-    ;['name', 'email'].forEach(prop => {
+    ;['name', 'email', 'office'].forEach(prop => {
         Object.values(electionObj.candidates).forEach(candidate => {
             if (!(candidate || {})[prop]) errorMsgs.push(`candidate ${prop} required`)
         })

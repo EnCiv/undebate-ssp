@@ -12,24 +12,6 @@ const MongoModels = require('mongo-models')
 const hostName = process.env.HOST_NAME || 'https://cc.enciv.org'
 
 // todo export this from common package
-const getIotaPropertyFromCSVColumn = {
-    type_name: () => 'organization',
-    type_id: row => 'cfa',
-    election_date: row => '03/21/2021',
-    candidate_name: row => row['Name'],
-    office: row => row['Seat'],
-    candidate_emails: row => [row['Email']],
-    unique_id: row => row['unique_id'],
-    set: {
-        unique_id: (row, val) => (row['unique_id'] = val),
-    },
-    party: row => '',
-    viewer_url_name: () => 'viewer_url',
-    recorder_url_name: () => 'recorder_url',
-    url_update_name: name => name + '_updated',
-    lastname: row => row['Name'].split(' ').reduce((acc, word) => word, ''), // the last word in the full name will be the last name
-    election_source: () => 'CodeForAmerica.NAC',
-}
 
 function date_dash(date) {
     if (date.split('/').length > 1) {
@@ -39,34 +21,53 @@ function date_dash(date) {
     return date
 }
 
-const moderatorViewerRecorder = {
-    electionList: [],
-    setup: function (csvRowObjList) {
+class moderatorViewerRecorder {
+    // getIotaPropertyFromCSVColumn shortened to gFC
+    gFC = {
+        type_name: () => 'org',
+        type_id: row => 'cfa',
+        election_date: row => '03/21/2021',
+        candidate_name: row => row['Name'],
+        office: row => row['Seat'],
+        candidate_emails: row => [row['Email']],
+        unique_id: row => row['unique_id'],
+        set: {
+            unique_id: (row, val) => (row['unique_id'] = val),
+        },
+        party: row => '',
+        viewer_url_name: () => 'viewer_url',
+        recorder_url_name: () => 'recorder_url',
+        url_update_name: name => name + '_updated',
+        lastname: row => row['Name'].split(' ').reduce((acc, word) => word, ''), // the last word in the full name will be the last name
+        election_source: () => 'CodeForAmerica.NAC',
+    }
+    electionList = []
+    setup = function (csvRowObjList) {
         // make a list of all the elections in the table, so each viewer can navigate to other ones
         this.electionList = csvRowObjList.reduce((acc, rowObj) => {
             let viewer_path = this.viewerPath(rowObj)
             if (!acc.includes(viewer_path)) acc.push(viewer_path)
             return acc
         }, [])
-    },
-    viewerPath: function (csvRowObj) {
+    }
+    viewerPath = function (csvRowObj) {
         // ()=> here will not get 'this'
-        return `/country:us/${getIotaPropertyFromCSVColumn.type_name()}:${getIotaPropertyFromCSVColumn
-            .type_id(csvRowObj)
-            .toLowerCase()}/office:${S(getIotaPropertyFromCSVColumn.office(csvRowObj)).slugify().value()}/${date_dash(
-            getIotaPropertyFromCSVColumn.election_date(csvRowObj)
-        )}`
-    },
-    recorderPath: function (csvRowObj) {
-        return this.viewerPath(csvRowObj) + '-recorder-' + getIotaPropertyFromCSVColumn.unique_id(csvRowObj)
-    },
-    overWriteViewerInfo: function (newViewer, csvRowObj) {
+        return `/country:us/${this.gFC.type_name()}:${this.gFC.type_id(csvRowObj).toLowerCase()}/office:${S(
+            this.gFC.office(csvRowObj)
+        )
+            .slugify()
+            .value()}/${date_dash(this.gFC.election_date(csvRowObj))}`
+    }
+    recorderPath = function (csvRowObj) {
+        return this.viewerPath(csvRowObj) + '-recorder-' + this.gFC.unique_id(csvRowObj)
+    }
+    overWriteViewerInfo = function (newViewer, csvRowObj) {
         newViewer.path = this.viewerPath(csvRowObj)
-        newViewer.subject = getIotaPropertyFromCSVColumn.office(csvRowObj)
-        newViewer.description = 'A Candidate Conversation for: ' + getIotaPropertyFromCSVColumn.office(csvRowObj)
+        newViewer.subject = this.gFC.office(csvRowObj)
+        newViewer.description = 'A Candidate Conversation for: ' + this.gFC.office(csvRowObj)
         newViewer.bp_info.electionList = this.electionList
-        newViewer.bp_info.office = getIotaPropertyFromCSVColumn.office(csvRowObj)
-        newViewer.bp_info.election_date = getIotaPropertyFromCSVColumn.election_date(csvRowObj)
+        newViewer.bp_info.office = this.gFC.office(csvRowObj)
+        newViewer.bp_info.election_date = this.gFC.election_date(csvRowObj)
         let nextPrev = this.electionList.reduce((acc, viewerPath) => {
             if (acc.nextElection);
             else if (acc.found)
@@ -78,65 +79,60 @@ const moderatorViewerRecorder = {
         }, {})
         if (nextPrev.nextElection) newViewer.bp_info.nextElection = nextPrev.nextElection
         if (nextPrev.prevElection) newViewer.bp_info.prevElection = nextPrev.prevElection
-        newViewer.bp_info.election_source = getIotaPropertyFromCSVColumn.election_source(csvRowObj)
-    },
-    overWriteRecorderInfo: function (newRecorder, viewerObj, csvRowObj) {
-        newRecorder.subject = getIotaPropertyFromCSVColumn.office(csvRowObj) + '-Candidate Recorder'
-        newRecorder.description =
-            'A Candidate Recorder for the undebate: ' + getIotaPropertyFromCSVColumn.office(csvRowObj)
-        newRecorder.bp_info.office = getIotaPropertyFromCSVColumn.office(csvRowObj)
-        newRecorder.bp_info.election_date = getIotaPropertyFromCSVColumn.election_date(csvRowObj)
-        newRecorder.bp_info.candidate_name = getIotaPropertyFromCSVColumn.candidate_name(csvRowObj)
-        newRecorder.bp_info.last_name = getIotaPropertyFromCSVColumn.lastname(csvRowObj)
-        if (getIotaPropertyFromCSVColumn.unique_id(csvRowObj))
-            newRecorder.bp_info.unique_id = getIotaPropertyFromCSVColumn.unique_id(csvRowObj)
+        newViewer.bp_info.election_source = this.gFC.election_source(csvRowObj)
+    }
+    overWriteRecorderInfo = function (newRecorder, viewerObj, csvRowObj) {
+        newRecorder.subject = this.gFC.office(csvRowObj) + '-Candidate Recorder'
+        newRecorder.description = 'A Candidate Recorder for the undebate: ' + this.gFC.office(csvRowObj)
+        newRecorder.bp_info.office = this.gFC.office(csvRowObj)
+        newRecorder.bp_info.election_date = this.gFC.election_date(csvRowObj)
+        newRecorder.bp_info.candidate_name = this.gFC.candidate_name(csvRowObj)
+        newRecorder.bp_info.last_name = this.gFC.lastname(csvRowObj)
+        if (this.gFC.unique_id(csvRowObj)) newRecorder.bp_info.unique_id = this.gFC.unique_id(csvRowObj)
         else if (newRecorder.bp_info.unique_id) {
-            if (getIotaPropertyFromCSVColumn.unique_id(csvRowObj) !== newRecorder.bp_info.unique_id)
+            if (this.gFC.unique_id(csvRowObj) !== newRecorder.bp_info.unique_id)
                 console.error(
                     'overWriteRecorderInfo',
-                    getIotaPropertyFromCSVColumn.unique_id(csvRowObj),
+                    this.gFC.unique_id(csvRowObj),
                     '!==',
                     newRecorder.bp_info.unique_id
                 )
-            getIotaPropertyFromCSVColumn.set.unique_id(csvRowObj, newRecorder.bp_info.unique_id)
+            this.gFC.set.unique_id(csvRowObj, newRecorder.bp_info.unique_id)
         } else {
-            newRecorder.bp_info.unique_id = getIotaPropertyFromCSVColumn.set.unique_id(
-                csvRowObj,
-                new MongoModels.ObjectID().toString()
-            ) // if no id make a unique one
+            newRecorder.bp_info.unique_id = this.gFC.set.unique_id(csvRowObj, new MongoModels.ObjectID().toString()) // if no id make a unique one
         }
         newRecorder.path = this.recorderPath(csvRowObj) // must set raceObject.unique_id before calling this
-        newRecorder.bp_info.candidate_emails = getIotaPropertyFromCSVColumn.candidate_emails(csvRowObj)
-        newRecorder.bp_info.party = getIotaPropertyFromCSVColumn.party(csvRowObj)
-        newRecorder.bp_info.election_source = getIotaPropertyFromCSVColumn.election_source(csvRowObj)
+        newRecorder.bp_info.candidate_emails = this.gFC.candidate_emails(csvRowObj)
+        newRecorder.bp_info.party = this.gFC.party(csvRowObj)
+        newRecorder.bp_info.election_source = this.gFC.election_source(csvRowObj)
         newRecorder.parentId = viewerObj._id.toString()
-    },
-    updateLinkProperty: function (csvRowObj, property, path) {
+    }
+    updateLinkProperty = function (csvRowObj, property, path) {
         if (csvRowObj[property] && csvRowObj[property].length) {
             if (csvRowObj[property] !== hostName + path) {
                 csvRowObj[property] = hostName + path
-                csvRowObj[getIotaPropertyFromCSVColumn.url_update_name(property)] = 'yes'
+                csvRowObj[this.gFC.url_update_name(property)] = 'yes'
             } else {
-                csvRowObj[getIotaPropertyFromCSVColumn.url_update_name(property)] = ''
+                csvRowObj[this.gFC.url_update_name(property)] = ''
             }
         } else {
             csvRowObj[property] = hostName + path
-            csvRowObj[getIotaPropertyFromCSVColumn.url_update_name(property)] = 'yes'
+            csvRowObj[this.gFC.url_update_name(property)] = 'yes'
         }
-    },
-    updateProperties: function (csvRowObj, viewerObj, recorderObj) {
-        this.updateLinkProperty(csvRowObj, getIotaPropertyFromCSVColumn.recorder_url_name(), recorderObj.path)
-        this.updateLinkProperty(csvRowObj, getIotaPropertyFromCSVColumn.viewer_url_name(), viewerObj.path)
-        if (!getIotaPropertyFromCSVColumn.unique_id(csvRowObj))
-            getIotaPropertyFromCSVColumn.set.unique_id(csvRowObj, recorderObj.bp_info.unique_id)
-    },
-    getViewer: function (csvRowObj) {
+    }
+    updateProperties = function (csvRowObj, viewerObj, recorderObj) {
+        this.updateLinkProperty(csvRowObj, this.gFC.recorder_url_name(), recorderObj.path)
+        this.updateLinkProperty(csvRowObj, this.gFC.viewer_url_name(), viewerObj.path)
+        if (!this.gFC.unique_id(csvRowObj) && recorderObj.bp_info.unique_id)
+            this.gFC.set.unique_id(csvRowObj, recorderObj.bp_info.unique_id)
+    }
+    getViewer = function (csvRowObj) {
         return this['candidateViewer']
-    },
-    getRecorder: function (csvRowObj) {
+    }
+    getRecorder = function (csvRowObj) {
         return this['candidateRecorder']
-    },
-    candidateViewer: {
+    }
+    candidateViewer = {
         // properties that are commented out so prevent messages about their are being changed when they are overwriten by whats in the CSV file
         //"path": "",
         //"subject": "",
@@ -159,17 +155,9 @@ const moderatorViewerRecorder = {
             shuffle: true,
             participants: {
                 moderator: {
-                    speaking: [
-                        'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154168/604549e51d2e1a001789b536-0-speaking20210307T215547934Z.mp4',
-                        'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154169/604549e51d2e1a001789b536-1-speaking20210307T215608159Z.mp4',
-                        'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154173/604549e51d2e1a001789b536-2-speaking20210307T215609530Z.mp4',
-                        'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154178/604549e51d2e1a001789b536-3-speaking20210307T215613030Z.mp4',
-                        'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154181/604549e51d2e1a001789b536-4-speaking20210307T215618429Z.mp4',
-                        'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154185/604549e51d2e1a001789b536-5-speaking20210307T215621703Z.mp4',
-                    ],
-                    name: 'Thad (Boston + NAC)',
-                    listening:
-                        'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154190/604549e51d2e1a001789b536-0-listening20210307T215625550Z.mp4',
+                    speaking: [],
+                    name: '',
+                    listening: '',
                     agenda: [
                         [
                             'Introductions',
@@ -198,9 +186,9 @@ const moderatorViewerRecorder = {
             //election_source:
             //election_list: []
         },
-    },
+    }
 
-    candidateRecorder: {
+    candidateRecorder = {
         //"path": "",
         //"subject": "",
         //"description": "",
@@ -249,7 +237,7 @@ const moderatorViewerRecorder = {
             //"person_emails": []
         },
         //        "parentId": ""
-    },
+    }
 }
 
 export default moderatorViewerRecorder

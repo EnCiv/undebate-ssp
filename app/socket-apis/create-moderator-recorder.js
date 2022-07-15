@@ -26,6 +26,7 @@ const listening =
 const enCivModeratorName = 'David Fridley, EnCiv'
 
 export default async function createModeratorRecorder(id, cb) {
+    debugger
     if (!this.synuser) {
         logger.error('createModeratorRecorder called, but no user ', this.synuser)
         if (cb) cb() // no user
@@ -70,9 +71,24 @@ export default async function createModeratorRecorder(id, cb) {
         speaking.push(awesomeClosing)
         // then instruct how to finish
         speaking.push(allDone)
-        moderatorViewerRecorder.candidateRecorder.component.participants.moderator.name = enCivModeratorName
-        moderatorViewerRecorder.candidateRecorder.component.participants.moderator.speaking = speaking
-        moderatorViewerRecorder.candidateRecorder.component.participants.moderator.listening = listening
+
+        const viewerRecorder = new moderatorViewerRecorder()
+        // customize viewerRecorder.gFC for this applicatin / data source
+        const YYYY_MM_DD = electionObj.electionDate.split('T')[0].split('-')
+        const electionDate = YYYY_MM_DD[1] + '/' + YYYY_MM_DD[2] + '/' + YYYY_MM_DD[0]
+        viewerRecorder.gFC.election_date = row => electionDate
+        // !!! type_id needs to be global unique we need the system to implement that
+        const type_id = [...electionObj.organizationName].reduce(
+            (type_id, c) => (c >= 'A' && c <= 'Z' ? type_id + c : type_id),
+            ''
+        )
+        viewerRecorder.gFC.type_id = row => type_id
+        viewerRecorder.gFC.election_source = row => electionObj.organizationName
+        viewerRecorder.gFC.set.unique_id = (row, val) => (row['uniqueId'] = val)
+
+        viewerRecorder.candidateRecorder.component.participants.moderator.name = enCivModeratorName
+        viewerRecorder.candidateRecorder.component.participants.moderator.speaking = speaking
+        viewerRecorder.candidateRecorder.component.participants.moderator.listening = listening
 
         agenda.unshift(['How this works', 'Placeholder'])
         agenda.push(['Make your closing - to the audience'])
@@ -80,19 +96,19 @@ export default async function createModeratorRecorder(id, cb) {
 
         const recorderTimeLimits = [15].concat(timeLimits.map((t, i) => 60)).concat(60) // moderater gets 15 seconds for placeholder, 60 seconds to ask every question and 60 seconds for the closing
 
-        moderatorViewerRecorder.candidateRecorder.component.participants.moderator.agenda = agenda
-        moderatorViewerRecorder.candidateRecorder.component.participants.moderator.timeLimits = recorderTimeLimits
-        moderatorViewerRecorder.candidateRecorder.component.participants.human.name = electionObj.moderator.name
+        viewerRecorder.candidateRecorder.component.participants.moderator.agenda = agenda
+        viewerRecorder.candidateRecorder.component.participants.moderator.timeLimits = recorderTimeLimits
+        viewerRecorder.candidateRecorder.component.participants.human.name = electionObj.moderator.name
 
-        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.name = enCivModeratorName
-        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking.slice(1)
-        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.listening = listening
-        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.agenda = agenda.slice(1)
-        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.timeLimits = timeLimits
-        moderatorViewerRecorder.candidateViewer.parentId = id
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.name = enCivModeratorName
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking.slice(1)
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.listening = listening
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.agenda = agenda.slice(1)
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.timeLimits = timeLimits
+        viewerRecorder.candidateViewer.parentId = id
 
         const inRowObjs = [{ Seat: 'Moderator', Name: electionObj.moderator.name, Email: electionObj.moderator.email }]
-        const { rowObjs, messages } = await undebatesFromTemplateAndRows(moderatorViewerRecorder, inRowObjs)
+        const { rowObjs, messages } = await undebatesFromTemplateAndRows(viewerRecorder, inRowObjs)
         if (!rowObjs) {
             if (cb) cb()
             return
