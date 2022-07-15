@@ -236,6 +236,16 @@ const mergeOps = {
         })
         return true
     },
+    candidateInvitations(dst, root, child, iotas, usedIndexes) {
+        if (!(child?.component?.component === 'CandidateInviteSent')) return false
+        const uniqueId = child?.component?.params?.candidate?.uniqueId
+        if (!uniqueId) return false
+        intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${uniqueId}.invitations`, {
+            _id: child._id,
+            ...child.component,
+        })
+        return true
+    },
     candidatesRecorders(dst, root, child, iotas, usedIndexes) {
         if (!(child?.component?.component === 'undebateCreator' && child?.bp_info?.office !== 'Moderator')) return false
         intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${child.bp_info.unique_id}.recorders`, child)
