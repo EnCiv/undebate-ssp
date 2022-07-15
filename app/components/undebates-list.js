@@ -250,7 +250,30 @@ function StatusCell({ statusText, daysRemaining }) {
     return <IconCell Icon={Icon} text={statusText} textClassName={textClass} daysRemaining={daysRemaining} />
 }
 
-function StatusFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
+function DateFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
+    // todo fix issue where clicking filter causes sorting
+    const options = React.useMemo(() => {
+        const options = new Set()
+        options.add('Last year')
+        options.add('Last 6 months')
+        options.add('Last month')
+        return [...options.values()]
+    }, [id, preFilteredRows])
+
+    // todo make this filter work
+    return (
+        <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
+            <option value=''>All</option>
+            {options.map((option, i) => (
+                <option key={i} value={option}>
+                    {option}
+                </option>
+            ))}
+        </select>
+    )
+}
+
+function ModeratorFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
     const options = React.useMemo(() => {
         const options = new Set()
         preFilteredRows.forEach(row => {
@@ -259,7 +282,52 @@ function StatusFilter({ column: { filterValue, setFilter, preFilteredRows, id } 
         return [...options.values()]
     }, [id, preFilteredRows])
 
-    /* console.log('options', options) */
+    return (
+        <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
+            <option value=''>All</option>
+            {options.map((option, i) => (
+                <option key={i} value={option}>
+                    {option}
+                </option>
+            ))}
+        </select>
+    )
+}
+
+function CandidatesFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
+    const options = React.useMemo(() => {
+        const options = new Set()
+        preFilteredRows.forEach(row => {
+            // todo update
+            /* if (row.values[id] === 'default') {
+             *     options.add('other')
+             * } else { */
+            options.add(row.values[id])
+            /* } */
+        })
+        return [...options.values()]
+    }, [id, preFilteredRows])
+
+    return (
+        <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
+            <option value=''>All</option>
+            {options.map((option, i) => (
+                <option key={i} value={option}>
+                    {option}
+                </option>
+            ))}
+        </select>
+    )
+}
+
+function StatusFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
+    const options = React.useMemo(() => {
+        const options = new Set()
+        preFilteredRows.forEach(row => {
+            options.add(row.values[id])
+        })
+        return [...options.values()]
+    }, [id, preFilteredRows])
 
     return (
         <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
@@ -355,33 +423,29 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
             Header: 'Date',
             accessor: getDateValue,
             Cell: value => <DateCell electionObj={value.row.original} />,
+            Filter: DateFilter,
             /* filter: 'between', */
-            canFilter: false,
         },
         {
             Header: 'Moderator',
             accessor: getModeratorValue,
             Cell: renderModeratorCell,
             disableSortBy: true,
-            /* filter: 'equals', */
-            canFilter: false,
+            Filter: ModeratorFilter,
         },
         {
             Header: 'Candidates',
             accessor: getCandidatesValue,
             Cell: renderCandidatesCell,
             disableSortBy: true,
-            /* filter: 'equals', */
-            canFilter: false,
+            Filter: CandidatesFilter,
         },
         {
             Header: 'Status',
             accessor: getStatusValue,
             Cell: renderStatusCell,
             disableSortBy: true,
-            /* Filter: StatusFilter, */
-            filter: 'equals',
-            /* canFilter: true, */
+            Filter: StatusFilter,
         },
     ])
 

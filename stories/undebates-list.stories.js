@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import UndebatesList from '../app/components/undebates-list'
 import { cloneDeep } from 'lodash'
 
-// todo various dates, archived elections, all candidate options, all statuses
+// todo various dates to test filtering, archived elections, all candidate options, all statuses
 
 export default {
     title: 'Undebates List',
