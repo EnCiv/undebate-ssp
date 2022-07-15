@@ -119,9 +119,8 @@ function Table({ columns, data, onRowClicked, classes }) {
     )
 }
 
-function DateCell({ value }) {
+function DateCell({ electionObj }) {
     const classes = useStyles()
-    const { electionObj, rowIndex } = value
 
     const createDate = moment(ObjectID(electionObj.id).getDate())
     const formattedCreateDate = createDate.format('DD.MM.YY')
@@ -158,11 +157,7 @@ function IconCell({ Icon, text, textClassName, daysRemaining }) {
     )
 }
 
-function ModeratorCell({ value, electionOMs }) {
-    const { rowIndex } = value
-    const [obj, electionMethods] = electionOMs[rowIndex]
-    const moderatorStatus = electionMethods.getModeratorStatus()
-    let daysRemaining = electionMethods.countDayLeft()
+function ModeratorCell({ moderatorStatus, daysRemaining }) {
     let Icon
     let textClass
     switch (moderatorStatus) {
@@ -195,10 +190,45 @@ function ModeratorCell({ value, electionOMs }) {
     return <IconCell Icon={Icon} text={moderatorStatus} textClassName={textClass} daysRemaining={daysRemaining} />
 }
 
-function StatusCell({ statusText, electionOMs, rowIndex }) {
-    /* console.log('value', value) */
-    const [obj, electionMethods] = electionOMs[rowIndex]
-    /* const statusText = electionMethods.getElectionListStatus() */
+function CandidateCell({ candidatesStatusText, daysRemaining, candidateStatuses }) {
+    let Icon
+    let textClass
+    let shouldShowStatusTable = false
+    switch (true) {
+        case candidatesStatusText === undefined || candidatesStatusText === null || candidatesStatusText === '':
+            break
+        case candidatesStatusText === 'Election Table Pending...':
+            Icon = ElectionGrid
+            break
+        case candidatesStatusText === 'Invite Pending...':
+            Icon = InviteSent
+            break
+        case candidatesStatusText.includes('Missed Deadline'):
+            Icon = DeadlineMissed
+            break
+        case candidatesStatusText === '-':
+            daysRemaining = null
+            break
+        default:
+            Icon = VideoSubmitted
+            shouldShowStatusTable = true
+            break
+    }
+    const renderStatusTable = () => {
+        if (shouldShowStatusTable && candidateStatuses !== 'default') {
+            return <CandidateStatusTable statusObj={candidateStatuses} />
+        }
+    }
+
+    return (
+        <span>
+            <IconCell Icon={Icon} text={candidatesStatusText} textClassName={textClass} daysRemaining={daysRemaining} />
+            {renderStatusTable()}
+        </span>
+    )
+}
+
+function StatusCell({ statusText, daysRemaining }) {
     let Icon
     let textClass = ''
     switch (statusText) {
@@ -217,7 +247,6 @@ function StatusCell({ statusText, electionOMs, rowIndex }) {
             break
     }
 
-    const daysRemaining = electionMethods.countDayLeft()
     return <IconCell Icon={Icon} text={statusText} textClassName={textClass} daysRemaining={daysRemaining} />
 }
 
@@ -230,7 +259,7 @@ function StatusFilter({ column: { filterValue, setFilter, preFilteredRows, id } 
         return [...options.values()]
     }, [id, preFilteredRows])
 
-    console.log('options', options)
+    /* console.log('options', options) */
 
     return (
         <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
@@ -241,50 +270,6 @@ function StatusFilter({ column: { filterValue, setFilter, preFilteredRows, id } 
                 </option>
             ))}
         </select>
-    )
-}
-
-function CandidateCell({ value, electionOMs }) {
-    // todo use NavigationPanel Submissions for candidates state
-    const { rowIndex } = value
-    const [obj, electionMethods] = electionOMs[rowIndex]
-    const candidatesStatusText = electionMethods.getCandidatesStatus()
-    let daysRemaining = electionMethods.countDayLeft()
-    let Icon
-    let textClass
-    let shouldShowStatusTable = false
-    switch (true) {
-        case candidatesStatusText === 'Election Table Pending...':
-            Icon = ElectionGrid
-            break
-        case candidatesStatusText === 'Invite Pending...':
-            Icon = InviteSent
-            break
-        case candidatesStatusText.includes('Missed Deadline'):
-            Icon = DeadlineMissed
-            break
-        case candidatesStatusText === undefined || candidatesStatusText === null || candidatesStatusText === '':
-            break
-        case candidatesStatusText === '-':
-            daysRemaining = null
-            break
-        default:
-            Icon = VideoSubmitted
-            shouldShowStatusTable = true
-            break
-    }
-    const candidateStatuses = electionMethods.getSubmissionsStatus()
-    const renderStatusTable = () => {
-        if (shouldShowStatusTable && candidateStatuses !== 'default') {
-            return <CandidateStatusTable statusObj={candidateStatuses} />
-        }
-    }
-
-    return (
-        <span>
-            <IconCell Icon={Icon} text={candidatesStatusText} textClassName={textClass} daysRemaining={daysRemaining} />
-            {renderStatusTable()}
-        </span>
     )
 }
 
@@ -316,13 +301,48 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     )
     if (!electionOMs.length) return null
 
-    const getEntireRow = (electionObj, rowIndex) => {
-        return { electionObj, rowIndex }
+    const getDateValue = (electionObj, rowIndex) => {
+        return moment(new Date(electionObj.electionDate))
+    }
+
+    const getModeratorValue = (electionObj, rowIndex) => {
+        const [obj, electionMethods] = electionOMs[rowIndex]
+        return electionMethods.getModeratorStatus()
+    }
+
+    const renderModeratorCell = value => {
+        const [obj, electionMethods] = electionOMs[value.row.index]
+        let daysRemaining = electionMethods.countDayLeft()
+        return <ModeratorCell moderatorStatus={value.value} daysRemaining={daysRemaining} />
+    }
+
+    const getCandidatesValue = (electionObj, rowIndex) => {
+        const [obj, electionMethods] = electionOMs[rowIndex]
+        return electionMethods.getCandidatesStatus()
+    }
+
+    const renderCandidatesCell = value => {
+        const [obj, electionMethods] = electionOMs[value.row.index]
+        let daysRemaining = electionMethods.countDayLeft()
+        const candidateStatuses = electionMethods.getSubmissionsStatus()
+        return (
+            <CandidateCell
+                candidatesStatusText={value.value}
+                daysRemaining={daysRemaining}
+                candidateStatuses={candidateStatuses}
+            />
+        )
     }
 
     const getStatusValue = (electionObj, rowIndex) => {
         const [obj, electionMethods] = electionOMs[rowIndex]
         return electionMethods.getElectionListStatus()
+    }
+
+    const renderStatusCell = value => {
+        const [obj, electionMethods] = electionOMs[value.row.index]
+        let daysRemaining = electionMethods.countDayLeft()
+        return <StatusCell statusText={value.value} daysRemaining={daysRemaining} />
     }
 
     const columns = useMemo(() => [
@@ -333,23 +353,23 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         },
         {
             Header: 'Date',
-            accessor: getEntireRow,
-            Cell: DateCell,
+            accessor: getDateValue,
+            Cell: value => <DateCell electionObj={value.row.original} />,
             /* filter: 'between', */
             canFilter: false,
         },
         {
             Header: 'Moderator',
-            accessor: getEntireRow,
-            Cell: value => <ModeratorCell value={value.value} electionOMs={electionOMs} />,
+            accessor: getModeratorValue,
+            Cell: renderModeratorCell,
             disableSortBy: true,
             /* filter: 'equals', */
             canFilter: false,
         },
         {
             Header: 'Candidates',
-            accessor: getEntireRow,
-            Cell: value => <CandidateCell value={value.value} electionOMs={electionOMs} />,
+            accessor: getCandidatesValue,
+            Cell: renderCandidatesCell,
             disableSortBy: true,
             /* filter: 'equals', */
             canFilter: false,
@@ -357,9 +377,7 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         {
             Header: 'Status',
             accessor: getStatusValue,
-            Cell: value => {
-                return <StatusCell statusText={value.value} electionOMs={electionOMs} rowIndex={value.row.index} />
-            },
+            Cell: renderStatusCell,
             disableSortBy: true,
             /* Filter: StatusFilter, */
             filter: 'equals',
