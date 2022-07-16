@@ -53,7 +53,7 @@ function Table({ columns, data, onRowClicked, classes }) {
                 sortBy: [
                     {
                         id: 'Date',
-                        desc: false,
+                        desc: false, // todo this seems to not be working correctly? fix this
                     },
                 ],
             },
@@ -62,7 +62,7 @@ function Table({ columns, data, onRowClicked, classes }) {
         useSortBy
     )
 
-    // todo fix styling of arrows
+    // todo fix styling of sorting arrows
     // todo check arrow direction for sorts
     // todo use ChevronDown for filters, and flip it for when the filter is visible
     // todo TableHeader component, receives column and classes
@@ -97,9 +97,11 @@ function Table({ columns, data, onRowClicked, classes }) {
             <tbody {...getTableBodyProps()}>
                 {rows.map((row, i) => {
                     prepareRow(row)
+                    const rowStatus = row.cells.find(cell => cell.column.Header == 'Status')?.value
+                    const isRowArchived = rowStatus === 'Archived'
                     return (
                         <tr
-                            className={classes.tr}
+                            className={isRowArchived ? cx(classes.tr, classes.archivedTr) : classes.tr}
                             {...row.getRowProps({
                                 onClick: e => onRowClicked && onRowClicked(row, e),
                             })}
@@ -141,7 +143,7 @@ function DateCell({ electionObj }) {
     )
 }
 
-function IconCell({ Icon, text, textClassName, daysRemaining }) {
+function IconCell({ className, Icon, text, textClassName, daysRemaining }) {
     const classes = useStyles()
     const daysText = getDaysText(daysRemaining)
     const dangerZone = daysRemaining >= 0 && daysRemaining <= DAYS_LEFT_DANGER
@@ -149,7 +151,7 @@ function IconCell({ Icon, text, textClassName, daysRemaining }) {
     // todo styling
     // todo create component for icon/text/days left - move daysText to that and danger
     return (
-        <span className={classes.iconCell}>
+        <span className={cx(className, classes.iconCell)}>
             {Icon ? <Icon /> : ''}
             <div className={classes[textClassName]}>{text}</div>
             <div className={dangerZone ? classes.dangerZoneDays : classes.secondaryText}>{daysText}</div>
@@ -228,7 +230,7 @@ function CandidateCell({ candidatesStatusText, daysRemaining, candidateStatuses 
     )
 }
 
-function StatusCell({ statusText, daysRemaining }) {
+function StatusCell({ className, statusText, daysRemaining }) {
     let Icon
     let textClass = ''
     switch (statusText) {
@@ -247,7 +249,15 @@ function StatusCell({ statusText, daysRemaining }) {
             break
     }
 
-    return <IconCell Icon={Icon} text={statusText} textClassName={textClass} daysRemaining={daysRemaining} />
+    return (
+        <IconCell
+            className={className}
+            Icon={Icon}
+            text={statusText}
+            textClassName={textClass}
+            daysRemaining={daysRemaining}
+        />
+    )
 }
 
 function DateFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
@@ -410,9 +420,10 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     const renderStatusCell = value => {
         const [obj, electionMethods] = electionOMs[value.row.index]
         let daysRemaining = electionMethods.countDayLeft()
-        return <StatusCell statusText={value.value} daysRemaining={daysRemaining} />
+        return <StatusCell className={classes.statusCell} statusText={value.value} daysRemaining={daysRemaining} />
     }
 
+    // todo add ElectionName cell to handle multiple offices per election
     const columns = useMemo(() => [
         {
             Header: 'Election Name',
@@ -471,6 +482,7 @@ const useStyles = createUseStyles(theme => ({
         fontWeight: '500',
     },
     tr: {
+        cursor: 'pointer',
         height: '6rem',
         padding: '1rem !important',
         backgroundColor: 'white',
@@ -478,6 +490,17 @@ const useStyles = createUseStyles(theme => ({
             background: theme.backgroundColorComponent,
         },
     },
+    archivedTr: {
+        color: 'white',
+        backgroundColor: theme.colorSecondary,
+        '&:hover': {
+            background: theme.backgroundColorComponent, // todo check hover color for archived elections
+        },
+        '& $statusCell svg path': {
+            stroke: 'white',
+        },
+    },
+    statusCell: {},
     td: {
         borderColor: theme.backgroundColorApp,
         borderStyle: 'solid',
@@ -489,7 +512,10 @@ const useStyles = createUseStyles(theme => ({
     },
     secondaryText: {
         color: theme.colorText,
-        opacity: theme.secondaryTextOpacity,
+        opacity: '0.5',
+        '$archivedTr &': {
+            color: 'white',
+        },
     },
     dangerZoneDays: {
         color: theme.colorWarning,
