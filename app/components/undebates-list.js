@@ -65,7 +65,6 @@ function Table({ columns, data, onRowClicked, classes }) {
     // todo fix styling of sorting arrows
     // todo check arrow direction for sorts
     // todo use ChevronDown for filters, and flip it for when the filter is visible
-    // todo TableHeader component, receives column and classes
     return (
         <table {...getTableProps()} className={classes.table}>
             <thead>
@@ -118,6 +117,17 @@ function Table({ columns, data, onRowClicked, classes }) {
                 })}
             </tbody>
         </table>
+    )
+}
+
+function ElectionNameCell({ electionName, state }) {
+    const classes = useStyles()
+
+    return (
+        <div className={classes.electionNameCell}>
+            <div className={cx(classes.electionStateIndicator, classes['state' + state])} />
+            <div className={classes.electionName}>{electionName}</div>
+        </div>
     )
 }
 
@@ -379,6 +389,14 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     )
     if (!electionOMs.length) return null
 
+    const renderElectionNameCell = (electionObj, rowIndex) => {
+        // todo get office count here
+        // todo set state here
+        const state = 'default'
+        /* const state = 'Urgent' */
+        return <ElectionNameCell electionName={electionObj.value} state={state} />
+    }
+
     const getDateValue = (electionObj, rowIndex) => {
         return moment(new Date(electionObj.electionDate))
     }
@@ -428,6 +446,7 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         {
             Header: 'Election Name',
             accessor: 'electionName',
+            Cell: renderElectionNameCell,
             disableFilters: true,
         },
         {
@@ -494,7 +513,7 @@ const useStyles = createUseStyles(theme => ({
         color: 'white',
         backgroundColor: theme.colorSecondary,
         '&:hover': {
-            background: theme.backgroundColorComponent, // todo check hover color for archived elections
+            background: theme.backgroundColorComponent, // todo check hover color for archived/live elections
         },
         '& $statusCell svg path': {
             stroke: 'white',
@@ -506,6 +525,7 @@ const useStyles = createUseStyles(theme => ({
         borderStyle: 'solid',
         borderWidth: '0.5rem 0',
         textAlign: 'center',
+        height: '100%',
     },
     formattedDates: {
         fontWeight: '400',
@@ -527,5 +547,24 @@ const useStyles = createUseStyles(theme => ({
     moderatorCellDeclined: {
         fontWeight: '600',
         color: theme.colorWarning,
+    },
+    electionNameCell: {
+        height: '100%',
+    },
+    electionName: {
+        height: '100%',
+        fontWeight: '500',
+    },
+    electionStateIndicator: {
+        width: '0.625rem',
+        height: '100%', // todo fix
+        /* height: '6rem', */
+        float: 'left',
+    },
+    stateUrgent: {
+        backgroundColor: theme.colorWarning,
+    },
+    stateLive: {
+        backgroundColor: theme.colorPrimary,
     },
 }))
