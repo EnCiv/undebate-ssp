@@ -161,14 +161,14 @@ moderatorElectionObject5.id = '62cb365f384f59688794ae9c'
 moderatorElectionObject5.organizationName = 'Los Angeles Government Elections'
 moderatorElectionObject5.electionName = 'LA City Council'
 moderatorElectionObject5.timeline.moderatorSubmissionDeadline[0].sent = false
-moderatorElectionObject5.undebateDate = new Date('2023-01-09T23:59:59.999Z')
+moderatorElectionObject5.undebateDate = '2023-01-09T23:59:59.999Z'
 
 let moderatorElectionObject6 = cloneDeep(defaultElectionObject)
 moderatorElectionObject6.id = '62cb365f86a78c68bbaacc52'
 moderatorElectionObject6.organizationName = 'Los Angeles Government Elections'
 moderatorElectionObject6.electionName = 'LA County Supervisor'
 moderatorElectionObject6.moderator.submissions[0].url = 'not null'
-moderatorElectionObject6.electionDate = new Date('2022-07-09T23:59:59.999Z')
+moderatorElectionObject6.electionDate = '2021-10-09T23:59:59.999Z'
 
 let moderatorElectionObject7 = cloneDeep(defaultElectionObject)
 moderatorElectionObject7.id = '62cb365f86a78c68bbaacc52'

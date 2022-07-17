@@ -1,7 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issue/21
-import React, { useState, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { createUseStyles } from 'react-jss'
-import moment from 'moment'
 import ObjectID from 'isomorphic-mongo-objectid'
 import getElectionStatusMethods from '../lib/get-election-status-methods'
 import CandidateStatusTable from './candidate-status-table'
@@ -21,6 +20,11 @@ import Container from '../svgr/container'
 import InviteSent from '../svgr/sent'
 import ChevronDown from '../svgr/chevron-down'
 import { useTable, useFilters, useSortBy } from 'react-table'
+
+function daysBetweenDates(date1, date2) {
+    const diffInTime = date2.getTime() - date1.getTime()
+    return Math.floor(diffInTime / (1000 * 3600 * 24))
+}
 
 const DAYS_LEFT_DANGER = 3
 function DefaultColumnFilter({ column: { filterValue, preFilteredRows, setFilter } }) {
@@ -134,13 +138,21 @@ function ElectionNameCell({ electionName, state }) {
 function DateCell({ electionObj }) {
     const classes = useStyles()
 
-    const createDate = moment(ObjectID(electionObj.id).getDate())
-    const formattedCreateDate = createDate.format('DD.MM.YY')
-    const endDate = moment(new Date(electionObj.electionDate))
-    const formattedEndDate = endDate ? endDate.format('DD.MM.YY') : ''
-    const today = moment()
+    const formatDate = date => {
+        new Date().getDate()
+
+        return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1)
+            .toString()
+            .padStart(2, '0')}.${date.getFullYear().toString().slice(-2).padStart(2, '0')}`
+    }
+
+    const createDate = ObjectID(electionObj.id).getDate()
+    const formattedCreateDate = formatDate(createDate)
+    const endDate = new Date(electionObj.electionDate)
+    const formattedEndDate = endDate ? formatDate(endDate) : ''
+    const today = new Date()
     // todo change this to last update date (needs new electionMethod)
-    const daysBetween = today.diff(createDate, 'days')
+    const daysBetween = daysBetweenDates(createDate, today)
 
     // todo styling
     return (
@@ -159,7 +171,6 @@ function IconCell({ className, Icon, text, textClassName, daysRemaining }) {
     const dangerZone = daysRemaining >= 0 && daysRemaining <= DAYS_LEFT_DANGER
 
     // todo styling
-    // todo create component for icon/text/days left - move daysText to that and danger
     return (
         <span className={cx(className, classes.iconCell)}>
             {Icon ? <Icon /> : ''}
@@ -398,7 +409,7 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     }
 
     const getDateValue = (electionObj, rowIndex) => {
-        return moment(new Date(electionObj.electionDate))
+        return new Date(electionObj.electionDate)
     }
 
     const getModeratorValue = (electionObj, rowIndex) => {
@@ -430,6 +441,25 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         )
     }
 
+    const dateFilterFunction = (rows, columnIds, filterValue) => {
+        const subtractMonths = (date, numMonths) => {
+            return new Date(date.setMonth(date.getMonth() - numMonths))
+        }
+        let filterStartDate
+        switch (filterValue) {
+            case 'Last year':
+                filterStartDate = subtractMonths(new Date(), 12)
+                break
+            case 'Last 6 months':
+                filterStartDate = subtractMonths(new Date(), 6)
+                break
+            case 'Last month':
+                filterStartDate = subtractMonths(new Date(), 1)
+                break
+        }
+        return rows.filter(row => row.values.Date >= filterStartDate)
+    }
+
     const getStatusValue = (electionObj, rowIndex) => {
         const [obj, electionMethods] = electionOMs[rowIndex]
         return electionMethods.getElectionListStatus()
@@ -454,7 +484,9 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
             accessor: getDateValue,
             Cell: value => <DateCell electionObj={value.row.original} />,
             Filter: DateFilter,
-            /* filter: 'between', */
+            filter: dateFilterFunction,
+            sortType: 'datetime',
+            sortInverted: true,
         },
         {
             Header: 'Moderator',
