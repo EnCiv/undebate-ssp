@@ -126,7 +126,6 @@ function Table({ columns, data, onRowClicked, classes }) {
 
 function ElectionNameCell({ electionName, state }) {
     const classes = useStyles()
-
     return (
         <div className={classes.electionNameCell}>
             <div className={cx(classes.electionStateIndicator, classes['state' + state])} />
@@ -135,7 +134,7 @@ function ElectionNameCell({ electionName, state }) {
     )
 }
 
-function DateCell({ electionObj }) {
+function DateCell({ createDate, endDate, daysRemaining, isArchived = false }) {
     const classes = useStyles()
 
     const formatDate = date => {
@@ -146,21 +145,17 @@ function DateCell({ electionObj }) {
             .padStart(2, '0')}.${date.getFullYear().toString().slice(-2).padStart(2, '0')}`
     }
 
-    const createDate = ObjectID(electionObj.id).getDate()
     const formattedCreateDate = formatDate(createDate)
-    const endDate = new Date(electionObj.electionDate)
     const formattedEndDate = endDate ? formatDate(endDate) : ''
-    const today = new Date()
-    // todo change this to last update date (needs new electionMethod)
-    const daysBetween = daysBetweenDates(createDate, today)
 
     // todo styling
+    /* <div className = { classes.secondaryText }> Last Update - { daysBetween } Days Ago</div> */
     return (
         <div>
             <div className={classes.formattedDates}>
                 {formattedCreateDate} - {formattedEndDate}
             </div>
-            <div className={classes.secondaryText}>Last Update - {daysBetween} Days Ago</div>
+            {isArchived ? '' : <div className={classes.secondaryText}>{getDaysText(daysRemaining)}</div>}
         </div>
     )
 }
@@ -291,7 +286,6 @@ function DateFilter({ column: { filterValue, setFilter, preFilteredRows, id } })
         return [...options.values()]
     }, [id, preFilteredRows])
 
-    // todo make this filter work
     return (
         <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
             <option value=''>All</option>
@@ -402,7 +396,7 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
 
     const renderElectionNameCell = (electionObj, rowIndex) => {
         // todo get office count here
-        // todo set state here
+        // todo set actual state here
         const state = 'default'
         /* const state = 'Urgent' */
         return <ElectionNameCell electionName={electionObj.value} state={state} />
@@ -415,6 +409,18 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     const getModeratorValue = (electionObj, rowIndex) => {
         const [obj, electionMethods] = electionOMs[rowIndex]
         return electionMethods.getModeratorStatus()
+    }
+
+    const renderDateCell = value => {
+        const [electionObj, electionMethods] = electionOMs[value.row.index]
+        const daysRemaining = electionMethods.countDayLeft()
+        const createDate = ObjectID(electionObj.id).getDate()
+        const endDate = new Date(electionObj.electionDate)
+        const isArchived = electionMethods.getElectionListStatus() === 'Archived'
+
+        return (
+            <DateCell createDate={createDate} endDate={endDate} daysRemaining={daysRemaining} isArchived={isArchived} />
+        )
     }
 
     const renderModeratorCell = value => {
@@ -445,6 +451,8 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         const subtractMonths = (date, numMonths) => {
             return new Date(date.setMonth(date.getMonth() - numMonths))
         }
+        // todo add story to storybook to display multiple election dates
+        // todo update to remove future dates, add separate future date option
         let filterStartDate
         switch (filterValue) {
             case 'Last year':
@@ -471,7 +479,6 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         return <StatusCell className={classes.statusCell} statusText={value.value} daysRemaining={daysRemaining} />
     }
 
-    // todo add ElectionName cell to handle multiple offices per election
     const columns = useMemo(() => [
         {
             Header: 'Election Name',
@@ -482,7 +489,7 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         {
             Header: 'Date',
             accessor: getDateValue,
-            Cell: value => <DateCell electionObj={value.row.original} />,
+            Cell: renderDateCell,
             Filter: DateFilter,
             filter: dateFilterFunction,
             sortType: 'datetime',
@@ -528,6 +535,7 @@ const useStyles = createUseStyles(theme => ({
     table: {
         borderSpacing: '0',
         width: '90%',
+        height: '100%',
     },
     th: {
         fontWeight: '500',
@@ -589,8 +597,7 @@ const useStyles = createUseStyles(theme => ({
     },
     electionStateIndicator: {
         width: '0.625rem',
-        height: '100%', // todo fix
-        /* height: '6rem', */
+        height: '100%',
         float: 'left',
     },
     stateUrgent: {
