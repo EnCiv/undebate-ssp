@@ -235,6 +235,17 @@ function getElectionStatusMethods(dispatch, state) {
         if (recentInvitationStatus()?.sentDate) return countDayLeft()
         return 'default'
     }
+    const areCandidatesReadyForInvites = () =>
+        Object.values(state.candidates).every(candidate => {
+            return (
+                candidate.name &&
+                candidate.email &&
+                candidate.uniqueId &&
+                candidate.office &&
+                candidate.recorders &&
+                Object.keys(candidate.recorders).length > 0
+            )
+        })
     const getSubmissionsStatus = () => {
         if (recentInvitationStatus()?.sentDate)
             return {
@@ -370,6 +381,7 @@ function getElectionStatusMethods(dispatch, state) {
         getModeratorStatus,
         getElectionListStatus,
         getCandidatesStatus,
+        areCandidatesReadyForInvites,
     }
 }
 

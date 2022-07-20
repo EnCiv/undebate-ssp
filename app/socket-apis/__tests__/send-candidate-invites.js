@@ -1,18 +1,21 @@
-// https://github.com/EnCiv/undebate-ssp/issues/71
+// https://github.com/EnCiv/undebate-ssp/issues/146
 import { expect, test, beforeAll, afterAll } from '@jest/globals'
 import MongoModels from 'mongo-models'
-import { Iota, User } from 'civil-server'
+import { Iota, User, serverEvents } from 'civil-server'
 import subscribeElectionInfo from '../subscribe-election-info'
 import jestSocketApiSetup from '../../lib/jest-socket-api-setup'
 const handle = 'subscribe-election-info'
 const socketApiUnderTest = subscribeElectionInfo
 import socketApiSubscribe from '../../components/lib/socket-api-subscribe'
 
-if (!global.logger) global.logger = console
-global.logger = { error: jest.fn((...args) => args) }
+if (!global.logger) global.logger = { ...console }
+if (process.env.JEST_LOGGER_ERRORS_TO_CONSOLE)
+    // see the error messages during jest tests
+    global.logger = { error: jest.fn((...args) => (console.error(args), args)) }
+else global.logger = { error: jest.fn((...args) => args) }
 
 // has to be require so it happens after global.logger gets set above. imports would hoist
-const sendModeratorInvite = require('../send-moderator-invite').default
+const sendCandidateInvites = require('../send-candidate-invites').default
 
 Date.prototype.addDays = function (days) {
     this.setDate(this.getDate() + parseInt(days))
@@ -21,14 +24,16 @@ Date.prototype.addDays = function (days) {
 
 // if making a copy of this, you need new node_modules/.bin/mongo-id 's here
 // because multiple tests using the DB will run in parallel
-const electionObjId = '629950b73100ea171064d4b7'
-const recorderId = '629952046bf16a07dc69e2d5'
-const viewerId = '62995210214f715b3c3084c8'
-const userId = '62995151f50a0d478415d6f1'
+const ELECTIONOBJID = '62cda55d1be44429847a9ee9'
+
+const USERID = '62cda71a4a594b5ba8edc8f8'
+
+// this doesn't have to be changed if copied, but it's used a lot so it's here
+const SARAHID = '61e76bbefeaa4a25840d85d0'
 
 const iotas = [
     {
-        _id: Iota.ObjectID(electionObjId),
+        _id: Iota.ObjectID(ELECTIONOBJID),
         subject: 'Election document',
         description: 'Election document #4',
         webComponent: {
@@ -86,38 +91,40 @@ const iotas = [
                     text: 'Thanks everyone for watching this!',
                 },
             },
+            candidates: {
+                [SARAHID]: {
+                    uniqueId: SARAHID,
+                    name: 'Sarah Jones',
+                    email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
+                    office: 'President of the U.S.',
+                    region: 'United States',
+                    recorders: {
+                        '62cdd0c8d9427f290444a152': {
+                            _id: '62cdd0c8d9427f290444a152',
+                            path: `/country:us/organization:cfa/office:president-of-the-u-s/2021-03-21-recorder-${SARAHID}`,
+                        },
+                    },
+                },
+                '61e76bfc8a82733d08f0cf12': {
+                    uniqueId: '61e76bfc8a82733d08f0cf12',
+                    name: 'Michael Jefferson',
+                    email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
+                    office: 'President of the U.S.',
+                    region: 'United States',
+                    recorders: {
+                        '62cdd19c68091e6060898f00': {
+                            _id: '62cdd19c68091e6060898f00',
+                            path: '/country:us/organization:cfa/office:president-of-the-u-s/2021-03-21-recorder-61e76bfc8a82733d08f0cf12',
+                        },
+                    },
+                },
+            },
         },
-    },
-    {
-        _id: Iota.ObjectID(recorderId),
-        subject: 'Moderator Recorder for #4',
-        description: 'Moderator Recorder for #4',
-        bp_info: {
-            office: 'Moderator',
-        },
-        component: {
-            component: 'undebateCreator',
-        },
-        path: '/moderator-recorder',
-        parentId: electionObjId,
-    },
-    {
-        _id: Iota.ObjectID(viewerId),
-        subject: 'Moderator Viewer for #4',
-        description: 'Moderator Viewer for #4',
-        bp_info: {
-            office: 'Moderator',
-        },
-        webComponent: {
-            webComponent: 'CandidateConversation',
-        },
-        path: '/moderator-viewer',
-        parentId: electionObjId,
     },
 ]
 
 const exampleUser = {
-    _id: User.ObjectID(userId),
+    _id: User.ObjectID(USERID),
     firstName: 'Example',
     lastName: 'User',
     email: 'example.user2@example.com',
@@ -146,10 +153,11 @@ maybeNot('Is Sendinblue environment setup for testing?', () => {
         `)
     })
 })
-maybe('Test the send moderator invite API', () => {
+maybe('Test the send candidate invites API', () => {
     let requestedDoc
     let updatedDoc
     beforeAll(async () => {
+        serverEvents.eNameAdd('ParticipantCreated') // event names need to be added before socketApiUnderTest subscribes to them
         await MongoModels.connect({ uri: global.__MONGO_URI__ }, { useUnifiedTopology: true })
         // run the init functions that models require - after the connection is setup
         const { toInit = [] } = MongoModels.toInit
@@ -173,7 +181,7 @@ maybe('Test the send moderator invite API', () => {
             if (!updatedDoc) updatedDoc = doc
             else updatedDoc(doc)
         }
-        socketApiSubscribe(handle, electionObjId, requestHandler, updateHandler)
+        socketApiSubscribe(handle, ELECTIONOBJID, requestHandler, updateHandler)
     })
 
     afterAll(async () => {
@@ -182,34 +190,34 @@ maybe('Test the send moderator invite API', () => {
     })
 
     test('should return undefined if no user logged in', done => {
-        function callback(messageId) {
+        function callback(messageIds) {
             try {
-                expect(messageId).toEqual(undefined)
+                expect(messageIds).toEqual(undefined)
                 done()
             } catch (error) {
                 done(error)
             }
         }
-        sendModeratorInvite.call({}, electionObjId, callback)
+        sendCandidateInvites.call({}, ELECTIONOBJID, callback)
     })
     test('should send an email', done => {
-        function callback(messageId) {
+        function callback(messageIds) {
             try {
-                expect(messageId).toMatch(/.+/)
+                expect(messageIds.length).toEqual(2)
                 done()
             } catch (error) {
                 done(error)
             }
         }
-        sendModeratorInvite.call(apisThis, electionObjId, callback)
+        sendCandidateInvites.call(apisThis, ELECTIONOBJID, callback)
     })
     test('subscribeElectionInfo update should receive update', done => {
         // this asynchronous update from the socket api may have already happend, or we may need to wait for it.
         function updated(doc) {
             // invitations is an object of key: doc, where the key could be anything
             // can't create a matcher for that in toMatchInlinSnapshot so pull it out manually
-            expect(doc.moderator.invitations).toBeDefined()
-            let invitations = Object.values(doc.moderator.invitations)
+            expect(doc.candidates[SARAHID].invitations).toBeDefined()
+            let invitations = Object.values(doc.candidates[SARAHID].invitations)
             expect(invitations.length).toEqual(1)
             let invitation = invitations[0]
             expect(invitation).toMatchInlineSnapshot(
@@ -219,38 +227,67 @@ maybe('Test the send moderator invite API', () => {
                     sentDate: ISODate,
                     templateId: expect.any(Number),
                     params: {
-                        moderator: {
+                        candidate: {
                             submissionDeadline: expect.any(String),
+                            recorder_url: `localhost:3011/country:us/organization:cfa/office:president-of-the-u-s/2021-03-21-recorder-${SARAHID}`,
+                            uniqueId: SARAHID,
                         },
                     },
                 },
                 `
                 Object {
                   "_id": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-                  "component": "ModeratorEmailSent",
+                  "cc": Array [
+                    Object {
+                      "email": "ddfridley@yahoo.com",
+                      "name": "bob",
+                    },
+                  ],
+                  "component": "CandidateInviteSent",
                   "messageId": Any<String>,
                   "params": Object {
+                    "candidate": Object {
+                      "email": "ddfridley@yahoo.com",
+                      "name": "Sarah Jones",
+                      "office": "President of the U.S.",
+                      "recorder_url": "localhost:3011/country:us/organization:cfa/office:president-of-the-u-s/2021-03-21-recorder-61e76bbefeaa4a25840d85d0",
+                      "submissionDeadline": Any<String>,
+                      "uniqueId": "61e76bbefeaa4a25840d85d0",
+                    },
                     "email": "admin@email.com",
                     "moderator": Object {
                       "email": "ddfridley@yahoo.com",
                       "name": "bob",
-                      "recorder_url": "localhost:3011/moderator-recorder",
-                      "submissionDeadline": Any<String>,
                     },
                     "name": "admin name",
                     "organizationLogo": "https://www.bringfido.com/assets/images/bfi-logo-new.jpg",
                     "organizationName": "The Organization",
+                    "questions": Object {
+                      "0": Object {
+                        "text": "What is your favorite color?",
+                        "time": "30",
+                      },
+                      "1": Object {
+                        "text": "Do you have a pet?",
+                        "time": "60",
+                      },
+                      "2": Object {
+                        "text": "Should we try to fix income inequality?",
+                        "time": "90",
+                      },
+                    },
                   },
                   "sentDate": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
                   "tags": Array [
-                    "id:629950b73100ea171064d4b7",
-                    "role:moderator",
+                    "id:62cda55d1be44429847a9ee9",
+                    "role:candidate",
+                    "office:President of the U.S.",
                   ],
                   "templateId": Any<Number>,
                   "to": Array [
                     Object {
                       "email": "ddfridley@yahoo.com",
-                      "name": "bob",
+                      "name": "Sarah Jones",
                     },
                   ],
                 }
