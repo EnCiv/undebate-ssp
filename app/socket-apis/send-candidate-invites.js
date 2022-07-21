@@ -5,6 +5,7 @@ import { getElectionDocById } from './get-election-docs'
 import { Iota } from 'civil-server'
 import { updateElectionInfo } from './subscribe-election-info'
 import { cloneDeep } from 'lodash'
+import scheme from '../lib/scheme'
 
 var templateId
 
@@ -58,7 +59,8 @@ export default async function sendCandidateInvites(id, cb) {
                     email: candidate.email,
                     uniqueId: candidate.uniqueId,
                     office: candidate.office,
-                    recorder_url: process.env.HOSTNAME + electionMethods.getLatestIota(candidate.recorders).path,
+                    recorder_url:
+                        scheme() + process.env.HOSTNAME + electionMethods.getLatestIota(candidate.recorders).path,
                     submissionDeadline,
                 },
             }

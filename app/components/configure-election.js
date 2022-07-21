@@ -12,12 +12,14 @@ import ElectionTable from './candidate-table'
 import Submissions from './submissions'
 import Submission from './submission'
 import Undebate from './undebate'
+import ModeratorRecorder from './moderator-recorder'
 
 const components = {
     Election: ElectionComponent,
     Timeline: Timeline,
     Questions: Questions,
     Script: Script,
+    Recorder: ModeratorRecorder,
     Invitation: Invitation,
     Submission: Submission,
     'Election Table': ElectionTable,

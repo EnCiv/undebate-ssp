@@ -24,20 +24,14 @@ export default function SubscribeElectionInfo(props) {
                     logger.info('upsert: no updates until state has been populated')
                 }
             },
-            sendInvitation() {
+            createModeratorRecorder() {
                 window.socket.emit('create-moderator-recorder', id)
             },
+            sendModeratorInvitation() {
+                window.socket.emit('send-moderator-invite', id)
+            },
             sendCandidateInvitations() {
-                dispatch(
-                    merge(
-                        {},
-                        state,
-                        {
-                            _sendCandidateInvitations: (state._sendCandidateInvitations || 0) + 1,
-                        },
-                        { _count: (state._count | 0) + 1 }
-                    )
-                )
+                window.socket.emit('send-candidate-invitations', id)
             },
         }),
         {}, // empty because the data won't come until later, but react won't let us call new hooks later

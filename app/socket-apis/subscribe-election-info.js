@@ -109,7 +109,7 @@ export function updateSubscribers(rootId, update) {
     }
     const { electionIota, sockets } = electionIotaSubscribers[rootId]
     if (sockets.length === 0) {
-        logger.warn('updateSubscribers expected subscibers of', drootI, 'to have . deleting the object')
+        logger.warn('updateSubscribers expected subscibers of', rootId, 'to have . deleting the object')
         delete electionIotaSubscribers[rootId]
         return
     }

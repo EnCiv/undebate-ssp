@@ -1,7 +1,5 @@
 // https://github.com/EnCiv/undebate-ssp/issues/105
 
-import { isArray } from 'lodash'
-
 const checkDateCompleted = obj => {
     for (const key in obj) {
         if (obj[key].date !== '') {
@@ -82,8 +80,9 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const checkVideoSubmitted = () => {
+        if (!state?.moderator?.submissions) return false
         let result = false
-        state?.moderator?.submissions?.forEach(submission => {
+        Object.values(state.moderator.submissions).forEach(submission => {
             if (submission.url !== '') {
                 result = true
             }
@@ -91,14 +90,8 @@ function getElectionStatusMethods(dispatch, state) {
         return result
     }
     const checkSubmissionBeforeDeadline = () => {
-        let result = false
-        const submission = state?.timeline?.moderatorSubmissionDeadline
-        for (const key in submission) {
-            if (submission[key]?.date && submission[key]?.sent) {
-                result = true
-            }
-        }
-        return result
+        const deadline = getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)?.date
+        return new Date().toISOString() < deadline
     }
     const countSubmissionAccepted = () => {
         let count = 0
@@ -171,6 +164,13 @@ function getElectionStatusMethods(dispatch, state) {
     const getScriptStatus = () => {
         if (getQuestionsStatus() === 'completed' && !checkObjCompleted(state?.script)) return countDayLeft()
         if (getQuestionsStatus() === 'completed' && checkObjCompleted(state?.script)) return 'completed'
+        return 'default'
+    }
+    const getRecorderStatus = () => {
+        if (getScriptStatus() === 'completed') {
+            if (Object.keys(state?.moderator?.recorders || {}).length) return 'completed'
+            else return 'ready'
+        }
         return 'default'
     }
     const getInvitationStatus = () => {
@@ -246,6 +246,7 @@ function getElectionStatusMethods(dispatch, state) {
         recentInvitationStatus,
         getQuestionsStatus,
         getScriptStatus,
+        getRecorderStatus,
         getInvitationStatus,
         checkVideoSubmitted,
         checkSubmissionBeforeDeadline,

@@ -63,16 +63,19 @@ test('it should create a viewer', done => {
             expect(iotas).toHaveLength(1)
             viewerId = ObjectID(iotas[0]._id).toString()
             expect(iotas[0]).toMatchInlineSnapshot(
-                { _id: expect.any(ObjectID), parentId: expect.stringMatching(objectIdPattern) },
+                {
+                    _id: expect.any(ObjectID),
+                    parentId: expect.stringMatching(objectIdPattern),
+                },
                 `
                 Object {
                   "_id": Any<ObjectID>,
                   "bp_info": Object {
                     "electionList": Array [
-                      "/country:us/organization:cfa/office:president-of-the-u-s/2021-03-21",
+                      "/country:us/org:usfg/office:president-of-the-u-s/2022-11-07",
                     ],
-                    "election_date": "03/21/2021",
-                    "election_source": "CodeForAmerica.NAC",
+                    "election_date": "11/07/2022",
+                    "election_source": "United States Federal Government",
                     "office": "President of the U.S.",
                   },
                   "component": Object {
@@ -80,7 +83,7 @@ test('it should create a viewer', done => {
                   },
                   "description": "A Candidate Conversation for: President of the U.S.",
                   "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-                  "path": "/country:us/organization:cfa/office:president-of-the-u-s/2021-03-21",
+                  "path": "/country:us/org:usfg/office:president-of-the-u-s/2022-11-07",
                   "subject": "President of the U.S.",
                   "webComponent": Object {
                     "closing": Object {
@@ -97,42 +100,26 @@ test('it should create a viewer', done => {
                       "moderator": Object {
                         "agenda": Array [
                           Array [
-                            "Introductions",
-                            "1- Name",
-                            "2- City and State",
-                            "3- One word to describe yourself",
-                            "4- What role are you running for?",
+                            "What is your favorite color?",
                           ],
                           Array [
-                            "How did you get started with your brigade?",
+                            "Do you have a pet?",
                           ],
                           Array [
-                            "A prospective volunteer comes to you and asks \\"what can I do as part of the CfA Brigade Network that I can’t accomplish anywhere else?\\" How would you answer?",
-                          ],
-                          Array [
-                            "Brigades of all sizes struggle with attracting and retaining volunteers, but this is especially draining for small brigades in less populous communities. What ideas do you have for supporting participation in situations where the Brigade model is not thriving?",
-                          ],
-                          Array [
-                            "What is the one thing you want us to know about your candidacy that was not covered by the candidate questions provided?",
-                          ],
-                          Array [
-                            "Thank you!",
+                            "Should we try to fix income inequality?",
                           ],
                         ],
-                        "listening": "",
+                        "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
                         "name": "Bill Smith",
                         "speaking": Array [
-                          "https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893716/5d5b74751e3b194174cd9b94-1-speaking20210304T213504684Z.mp4",
                           "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm",
                           "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510659/5d5b73c01e3b194174cd9b92-2-speaking.webm",
                           "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510665/5d5b73c01e3b194174cd9b92-3-speaking.webm",
                         ],
                         "timeLimits": Array [
-                          15,
-                          60,
-                          60,
-                          60,
-                          60,
+                          "30",
+                          "60",
+                          "90",
                         ],
                       },
                     },
@@ -162,7 +149,7 @@ test('it should create a recorder', async () => {
 
             parentId: expect.stringMatching(objectIdPattern),
             path: expect.stringMatching(
-                /\/country:us\/organization:cfa\/office:president-of-the-u-s\/2021-03-21-recorder-[0-9-a-fA-F]{24}$/
+                /\/country:us\/org:usfg\/office:president-of-the-u-s\/2022-11-07-recorder-[0-9-a-fA-F]{24}$/
             ),
         },
         `
@@ -173,8 +160,8 @@ test('it should create a recorder', async () => {
               "sarahjones@mail.com",
             ],
             "candidate_name": "Sarah Jones",
-            "election_date": "03/21/2021",
-            "election_source": "CodeForAmerica.NAC",
+            "election_date": "11/07/2022",
+            "election_source": "United States Federal Government",
             "last_name": "Jones",
             "office": "President of the U.S.",
             "party": "",
@@ -191,7 +178,19 @@ test('it should create a recorder', async () => {
               },
               "moderator": Object {
                 "agenda": Array [
-                  Array [],
+                  Array [
+                    "How this works",
+                    "Placeholder",
+                  ],
+                  Array [
+                    "What is your favorite color?",
+                  ],
+                  Array [
+                    "Do you have a pet?",
+                  ],
+                  Array [
+                    "Should we try to fix income inequality?",
+                  ],
                 ],
                 "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
                 "name": "",
@@ -202,14 +201,17 @@ test('it should create a recorder', async () => {
                   "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510665/5d5b73c01e3b194174cd9b92-3-speaking.webm",
                 ],
                 "timeLimits": Array [
-                  30,
+                  15,
+                  "30",
+                  "60",
+                  "90",
                 ],
               },
             },
           },
           "description": "A Candidate Recorder for the undebate: President of the U.S.",
           "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-          "path": StringMatching /\\\\/country:us\\\\/organization:cfa\\\\/office:president-of-the-u-s\\\\/2021-03-21-recorder-\\[0-9-a-fA-F\\]\\{24\\}\\$/,
+          "path": StringMatching /\\\\/country:us\\\\/org:usfg\\\\/office:president-of-the-u-s\\\\/2022-11-07-recorder-\\[0-9-a-fA-F\\]\\{24\\}\\$/,
           "subject": "President of the U.S.-Candidate Recorder",
           "webComponent": Object {
             "closing": Object {
@@ -240,7 +242,7 @@ test('it should create a recorder', async () => {
 
             parentId: expect.stringMatching(objectIdPattern),
             path: expect.stringMatching(
-                /\/country:us\/organization:cfa\/office:president-of-the-u-s\/2021-03-21-recorder-[0-9-a-fA-F]{24}$/
+                /\/country:us\/org:usfg\/office:president-of-the-u-s\/2022-11-07-recorder-[0-9-a-fA-F]{24}$/
             ),
         },
         `
@@ -251,8 +253,8 @@ test('it should create a recorder', async () => {
               "mikejeff@mail.com",
             ],
             "candidate_name": "Michael Jefferson",
-            "election_date": "03/21/2021",
-            "election_source": "CodeForAmerica.NAC",
+            "election_date": "11/07/2022",
+            "election_source": "United States Federal Government",
             "last_name": "Jefferson",
             "office": "President of the U.S.",
             "party": "",
@@ -269,7 +271,19 @@ test('it should create a recorder', async () => {
               },
               "moderator": Object {
                 "agenda": Array [
-                  Array [],
+                  Array [
+                    "How this works",
+                    "Placeholder",
+                  ],
+                  Array [
+                    "What is your favorite color?",
+                  ],
+                  Array [
+                    "Do you have a pet?",
+                  ],
+                  Array [
+                    "Should we try to fix income inequality?",
+                  ],
                 ],
                 "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
                 "name": "",
@@ -280,14 +294,17 @@ test('it should create a recorder', async () => {
                   "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510665/5d5b73c01e3b194174cd9b92-3-speaking.webm",
                 ],
                 "timeLimits": Array [
-                  30,
+                  15,
+                  "30",
+                  "60",
+                  "90",
                 ],
               },
             },
           },
           "description": "A Candidate Recorder for the undebate: President of the U.S.",
           "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-          "path": StringMatching /\\\\/country:us\\\\/organization:cfa\\\\/office:president-of-the-u-s\\\\/2021-03-21-recorder-\\[0-9-a-fA-F\\]\\{24\\}\\$/,
+          "path": StringMatching /\\\\/country:us\\\\/org:usfg\\\\/office:president-of-the-u-s\\\\/2022-11-07-recorder-\\[0-9-a-fA-F\\]\\{24\\}\\$/,
           "subject": "President of the U.S.-Candidate Recorder",
           "webComponent": Object {
             "closing": Object {

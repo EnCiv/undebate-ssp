@@ -3,7 +3,7 @@
 import { Iota } from 'civil-server'
 import { undebatesFromTemplateAndRows } from 'undebate'
 
-import moderatorViewerRecorder from '../components/lib/moderator-viewer-recorder'
+import sspViewerRecorder from '../lib/ssp-viewer-recorder'
 
 const introAndPlaceHolder =
     'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893716/5d5b74751e3b194174cd9b94-1-speaking20210304T213504684Z.mp4'
@@ -26,7 +26,6 @@ const listening =
 const enCivModeratorName = 'David Fridley, EnCiv'
 
 export default async function createModeratorRecorder(id, cb) {
-    debugger
     if (!this.synuser) {
         logger.error('createModeratorRecorder called, but no user ', this.synuser)
         if (cb) cb() // no user
@@ -53,7 +52,6 @@ export default async function createModeratorRecorder(id, cb) {
             ([aKey, aObj], [bKey, bObj]) => aKey - bKey
         )
         const agenda = sortedQuestionPairs.map(([key, Obj]) => [Obj.text])
-
         const timeLimits = sortedQuestionPairs.map(([key, Obj]) => Obj.time)
 
         // the sequence of videos of the EnCiv moderator instucting the election moderator goes like this
@@ -72,20 +70,9 @@ export default async function createModeratorRecorder(id, cb) {
         // then instruct how to finish
         speaking.push(allDone)
 
-        const viewerRecorder = new moderatorViewerRecorder()
-        // customize viewerRecorder.gFC for this applicatin / data source
-        const YYYY_MM_DD = electionObj.electionDate.split('T')[0].split('-')
-        const electionDate = YYYY_MM_DD[1] + '/' + YYYY_MM_DD[2] + '/' + YYYY_MM_DD[0]
-        viewerRecorder.gFC.election_date = row => electionDate
-        // !!! type_id needs to be global unique we need the system to implement that
-        const type_id = [...electionObj.organizationName].reduce(
-            (type_id, c) => (c >= 'A' && c <= 'Z' ? type_id + c : type_id),
-            ''
-        )
-        viewerRecorder.gFC.type_id = row => type_id
-        viewerRecorder.gFC.election_source = row => electionObj.organizationName
-        viewerRecorder.gFC.set.unique_id = (row, val) => (row['uniqueId'] = val)
+        const viewerRecorder = new sspViewerRecorder(electionObj)
 
+        // customize the viewer recorder for this election
         viewerRecorder.candidateRecorder.component.participants.moderator.name = enCivModeratorName
         viewerRecorder.candidateRecorder.component.participants.moderator.speaking = speaking
         viewerRecorder.candidateRecorder.component.participants.moderator.listening = listening
@@ -107,12 +94,15 @@ export default async function createModeratorRecorder(id, cb) {
         viewerRecorder.candidateViewer.webComponent.participants.moderator.timeLimits = timeLimits
         viewerRecorder.candidateViewer.parentId = id
 
-        const inRowObjs = [{ Seat: 'Moderator', Name: electionObj.moderator.name, Email: electionObj.moderator.email }]
-        const { rowObjs, messages } = await undebatesFromTemplateAndRows(viewerRecorder, inRowObjs)
+        const { rowObjs, messages } = await undebatesFromTemplateAndRows(viewerRecorder, [
+            { office: 'Moderator', ...electionObj.moderator },
+        ])
         if (!rowObjs) {
             if (cb) cb()
             return
         }
+        // to do: rowObjs has the mofrtsyot ingo plud yhr viewer and recorder links, plus an indicator if they'v changed
+        // do we add that info to electionObj.moderator ???
         if (cb) cb({ rowObjs, messages })
     } catch (err) {
         logger.error('err', err)

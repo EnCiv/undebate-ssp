@@ -1,63 +1,12 @@
 // https://github.com/EnCiv/undebate-ssp/issues/127
 import { undebatesFromTemplateAndRows } from 'undebate'
-import candidateViewerRecorder from '../components/lib/candidate-viewer-recorder'
+import sspViewerRecorder from '../lib/ssp-viewer-recorder'
 import { getElectionDocById } from './get-election-docs'
 import { getLatestIota } from '../lib/get-election-status-methods'
 
 // todo eventually replace this video
 const introVideo =
     'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893716/5d5b74751e3b194174cd9b94-1-speaking20210304T213504684Z.mp4'
-
-const viewer = {
-    webComponent: 'CandidateConversation',
-    logo: 'undebate',
-    instructionLink: '',
-    closing: {
-        thanks: 'Thank You.',
-        iframe: {
-            src: 'https://docs.google.com/forms/d/e/1FAIpQLSdDJIcMltkYr5_KRTS9q1-eQd3g79n0yym9yCmTkKpR61uPLA/viewform?embedded=true',
-            width: '640',
-            height: '4900',
-        },
-    },
-    shuffle: true,
-    participants: {
-        moderator: {
-            speaking: [
-                'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154168/604549e51d2e1a001789b536-0-speaking20210307T215547934Z.mp4',
-                'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154169/604549e51d2e1a001789b536-1-speaking20210307T215608159Z.mp4',
-                'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154173/604549e51d2e1a001789b536-2-speaking20210307T215609530Z.mp4',
-                'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154178/604549e51d2e1a001789b536-3-speaking20210307T215613030Z.mp4',
-                'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154181/604549e51d2e1a001789b536-4-speaking20210307T215618429Z.mp4',
-                'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154185/604549e51d2e1a001789b536-5-speaking20210307T215621703Z.mp4',
-            ],
-            name: 'Thad (Boston + NAC)',
-            listening:
-                'https://res.cloudinary.com/hf6mryjpf/video/upload/q_auto/v1615154190/604549e51d2e1a001789b536-0-listening20210307T215625550Z.mp4',
-            agenda: [
-                [
-                    'Introductions',
-                    '1- Name',
-                    '2- City and State',
-                    '3- One word to describe yourself',
-                    '4- What role are you running for?',
-                ],
-                ['How did you get started with your brigade?'],
-                [
-                    'A prospective volunteer comes to you and asks "what can I do as part of the CfA Brigade Network that I can’t accomplish anywhere else?" How would you answer?',
-                ],
-                [
-                    'Brigades of all sizes struggle with attracting and retaining volunteers, but this is especially draining for small brigades in less populous communities. What ideas do you have for supporting participation in situations where the Brigade model is not thriving?',
-                ],
-                [
-                    'What is the one thing you want us to know about your candidacy that was not covered by the candidate questions provided?',
-                ],
-                ['Thank you!'],
-            ],
-            timeLimits: [15, 60, 60, 60, 60],
-        },
-    },
-}
 
 export default async function createCandidateRecorder(id, cb) {
     if (!this.synuser) {
@@ -88,6 +37,7 @@ export default async function createCandidateRecorder(id, cb) {
                 ([aKey, aObj], [bKey, bObj]) => aKey - bKey
             )
             const agenda = sortedQuestionPairs.map(([key, Obj]) => [Obj.text])
+            agenda.push(['Thank You'])
             const timeLimits = sortedQuestionPairs.map(([key, Obj]) => Obj.time)
 
             const moderatorComponent = getLatestIota(electionObj.moderator.submissions).component
@@ -98,38 +48,36 @@ export default async function createCandidateRecorder(id, cb) {
             const recorderSpeaking = speaking.slice()
             recorderSpeaking.unshift(introVideo)
             const recorderAgenda = agenda.slice()
-            recorderAgenda.unshift(['How this works', 'Placeholder'])
+            recorderAgenda.unshift(['How this works', 'Record placeholder'])
             const recorderTimeLimits = timeLimits.slice()
             recorderTimeLimits.unshift(15)
 
-            candidateViewerRecorder.candidateRecorder.component.participants.moderator.speaking = recorderSpeaking
-            candidateViewerRecorder.candidateRecorder.component.participants.moderator.listening =
-                moderatorComponent.participant.listening
-            candidateViewerRecorder.candidateRecorder.component.participants.moderator.agenda = recorderAgenda
-            candidateViewerRecorder.candidateRecorder.component.participants.moderator.timeLimits = recorderTimeLimits
+            const viewerRecorder = new sspViewerRecorder(electionObj)
 
-            candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking
-            candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.name =
-                electionObj.moderator.name
-            candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.listening =
+            viewerRecorder.candidateRecorder.component.participants.moderator.speaking = recorderSpeaking
+            viewerRecorder.candidateRecorder.component.participants.moderator.listening =
                 moderatorComponent.participant.listening
-            candidateViewerRecorder.candidateViewer.parentId = id
-            candidateViewerRecorder.candidateViewer.webComponent.participants.moderator.agenda = agenda
-            candidateViewerRecorder.candidateRecorder.webComponent.participants.moderator.timeLimits = timeLimits
+            viewerRecorder.candidateRecorder.component.participants.moderator.agenda = recorderAgenda
+            viewerRecorder.candidateRecorder.component.participants.moderator.timeLimits = recorderTimeLimits
 
-            const inRowObjs = Object.values(electionObj.candidates).map(candidate => {
-                return {
-                    Seat: candidate.office,
-                    Name: candidate.name,
-                    Email: candidate.email,
-                    unique_id: candidate.uniqueId,
-                }
-            })
-            const { rowObjs, messages } = await undebatesFromTemplateAndRows(candidateViewerRecorder, inRowObjs)
+            viewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking
+            viewerRecorder.candidateViewer.webComponent.participants.moderator.name = electionObj.moderator.name
+            viewerRecorder.candidateViewer.webComponent.participants.moderator.listening =
+                moderatorComponent.participant.listening
+            viewerRecorder.candidateViewer.parentId = id
+            viewerRecorder.candidateViewer.webComponent.participants.moderator.agenda = agenda
+            viewerRecorder.candidateViewer.webComponent.participants.moderator.timeLimits = timeLimits
+
+            const { rowObjs, messages } = await undebatesFromTemplateAndRows(
+                viewerRecorder,
+                Object.values(electionObj.candidates)
+            )
             if (!rowObjs) {
                 if (cb) cb()
                 return
             }
+            // to do: rowObjs has the candidates table plus the viewer and recorder links, plus an indicator if they'v changed
+            // do we add that info to the candidates table
             if (cb) cb({ rowObjs, messages })
         })
     } catch (err) {

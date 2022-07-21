@@ -26,12 +26,22 @@ export const decorators = [
                 upsert(obj) {
                     dispatch(merge({}, state, obj, { _count: state._count + 1 }))
                 },
-                sendInvitation() {
+                createModeratorRecorder() {
                     dispatch(
                         merge(
                             {},
                             state,
-                            { _sendInvitation: (state._sendInvitation || 0) + 1 },
+                            { _createModeratorRecorder: (state._createModeratorRecorder || 0) + 1 },
+                            { _count: state._count + 1 }
+                        )
+                    )
+                },
+                sendModeratorInvitation() {
+                    dispatch(
+                        merge(
+                            {},
+                            state,
+                            { _sendModeratorInvitation: (state._sendModeratorInvitation || 0) + 1 },
                             { _count: state._count + 1 }
                         )
                     )

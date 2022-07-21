@@ -23,7 +23,7 @@ module.exports = {
         })
         if (!config.plugins) config.plugins = []
         config.plugins.push(new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }))
-        config.plugins.push(new webpack.ProvidePlugin({ process: 'process/browser' })) // fix "process is not defined" error: // (do "npm install process" before running the build)
+        //        config.plugins.push(new webpack.ProvidePlugin({ process: 'process/browser' })) // fix "process is not defined" error: // (do "npm install process" before running the build)
         for (const plugin of config.plugins) {
             if (plugin.definitions) {
                 if (plugin.definitions['process.env']) {
