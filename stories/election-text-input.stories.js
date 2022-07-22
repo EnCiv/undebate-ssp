@@ -21,14 +21,14 @@ export const Default = Template.bind({})
 Default.args = {
     name: 'Input Name',
     defaultValue: '',
-    checkIsEmail: false,
+    type: 'test',
 }
 
 export const DefaultValueSet = Template.bind({})
 DefaultValueSet.args = {
     name: 'Input Name',
     defaultValue: 'Default value',
-    checkIsEmail: false,
+    type: 'test',
 }
 
 export const EmailValidation = Template.bind({})
@@ -36,7 +36,7 @@ export const EmailValidation = Template.bind({})
 EmailValidation.args = {
     name: 'Email Address',
     defaultValue: 'user@example.com',
-    checkIsEmail: true,
+    type: 'email',
 }
 
 export const IsDoneValidation = Template.bind({})
@@ -44,5 +44,13 @@ export const IsDoneValidation = Template.bind({})
 IsDoneValidation.args = {
     name: 'Name',
     defaultValue: 'Default value',
-    checkIsEmail: false,
+    type: 'text',
+}
+
+export const Number = Template.bind({})
+
+Number.args = {
+    name: 'Name',
+    defaultValue: '42',
+    type: 'number',
 }

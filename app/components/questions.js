@@ -4,6 +4,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import CountLimitedTextInput from './count-limited-text-input'
 import Submit from './submit'
+import ElectionTextInput from './election-text-input'
 
 export default function Questions({ className, style, electionOM, onDone }) {
     const classes = useStyles()
@@ -15,7 +16,7 @@ export default function Questions({ className, style, electionOM, onDone }) {
     const { questions = {} } = electionObj
 
     const [validInputs, setValidInputs] = useReducer((state, action) => ({ ...state, ...action }), {
-        0: { text: null },
+        0: { text: null, time: null },
     })
 
     // side effects to do after the component rerenders from a state change
@@ -89,23 +90,44 @@ export default function Questions({ className, style, electionOM, onDone }) {
             </div>
             <div className={classes.questionBox}>
                 {Object.entries(questions).map((key, qIndex) => (
-                    <CountLimitedTextInput
-                        key={key}
-                        name={`Question ${qIndex + 1}`}
-                        maxCount={250}
-                        defaultValue={questions[qIndex].text}
-                        onDone={({ valid, value }) => {
-                            if (
-                                (validInputs[qIndex] !== null || valid) &&
-                                electionObj.questions[qIndex].text !== value
-                            ) {
-                                sideEffects.push(() =>
-                                    electionMethods.upsert({ questions: { [qIndex]: { text: value } } })
-                                )
-                            }
-                            setValidInputs({ [qIndex]: { text: value } })
-                        }}
-                    />
+                    <div className={classes.questionTime}>
+                        <CountLimitedTextInput
+                            className={classes.questionInput}
+                            key={key}
+                            name={`Question ${qIndex + 1}`}
+                            maxCount={250}
+                            defaultValue={questions[qIndex].text}
+                            onDone={({ valid, value }) => {
+                                if (
+                                    (validInputs[qIndex] !== null || valid) &&
+                                    electionObj.questions[qIndex].text !== value
+                                ) {
+                                    sideEffects.push(() =>
+                                        electionMethods.upsert({ questions: { [qIndex]: { text: value } } })
+                                    )
+                                }
+                                setValidInputs({ [qIndex]: { text: value } })
+                            }}
+                        />
+                        <ElectionTextInput
+                            className={classes.timeInput}
+                            key={key + 'time'}
+                            name='Seconds'
+                            type='number'
+                            defaultValue={questions[qIndex].time}
+                            onDone={({ valid, value }) => {
+                                if (
+                                    (validInputs[qIndex] !== null || valid) &&
+                                    electionObj.questions[qIndex].time !== value
+                                ) {
+                                    sideEffects.push(() =>
+                                        electionMethods.upsert({ questions: { [qIndex]: { time: value } } })
+                                    )
+                                }
+                                setValidInputs({ [qIndex]: { time: value } })
+                            }}
+                        />
+                    </div>
                 ))}
             </div>
             <button className={classes.addQuestionBtn} disabled={!isValid} onClick={addQuestion} type='button'>
@@ -127,11 +149,21 @@ const useStyles = createUseStyles(theme => ({
     send: {
         display: 'flex',
         justifyContent: 'space-between',
-        marginBottom: '1rem',
     },
     questionBox: {
         width: '70%',
         fontFamily: theme.defaultFontFamily,
+    },
+    questionTime: {
+        display: 'flex',
+        columnGap: '1rem',
+        marginTop: '1.5rem',
+    },
+    questionInput: {
+        flexGrow: 1,
+    },
+    timeInput: {
+        width: '6rem',
     },
     addQuestionBtn: {
         color: theme.colorSecondary,

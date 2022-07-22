@@ -45,6 +45,7 @@ export default async function createModeratorRecorder(id, cb) {
         const electionObj = iota.webComponent
         let msgs
         if ((msgs = reasonsNotReadyForModeratorRecorder(electionObj)).length) {
+            logger.error("crete-moderator-recorder counldn't because:", id, msgs)
             if (cb) cb()
             return
         }

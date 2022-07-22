@@ -62,7 +62,7 @@ export function Invitation(props) {
                     <ElectionTextInput
                         name='Email Address'
                         defaultValue={email}
-                        checkIsEmail
+                        type='email'
                         onDone={({ valid, value }) => {
                             if ((validInputs.email !== null || valid) && email !== value)
                                 sideEffects.push(() => electionMethods.upsert({ moderator: { email: value } }))
