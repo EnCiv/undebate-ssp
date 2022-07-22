@@ -177,6 +177,13 @@ moderatorElectionObject7.electionName = 'Sacramento County Supervisor'
 moderatorElectionObject7.timeline.moderatorDeadlineReminderEmails[0].date = ''
 moderatorElectionObject7.timeline.moderatorDeadlineReminderEmails[1].date = ''
 
+let moderatorElectionObject8 = cloneDeep(defaultElectionObject)
+moderatorElectionObject8.id = '62da0528d44c6b6443dad2b7'
+moderatorElectionObject8.organizationName = 'Sacramento Government Elections'
+moderatorElectionObject8.electionName = 'Sacramento Mayor'
+moderatorElectionObject8.moderator.submissions[0].url = 'not null'
+moderatorElectionObject8.undebateDate = '2023-01-09T23:59:59.999Z'
+
 export const AllModeratorOptions = Template.bind({})
 AllModeratorOptions.args = {
     electionObjs: [
@@ -188,6 +195,7 @@ AllModeratorOptions.args = {
         moderatorElectionObject5, // Deadline Missed
         moderatorElectionObject6, // Video Submitted
         moderatorElectionObject7, // dash/blank
+        moderatorElectionObject8, // Video Submitted and live
     ],
 }
 

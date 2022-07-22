@@ -392,12 +392,25 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     )
     if (!electionOMs.length) return null
 
-    const renderElectionNameCell = (electionObj, rowIndex) => {
+    const renderElectionNameCell = value => {
         // todo get office count here
-        // todo set actual state here
-        const state = 'default'
-        /* const state = 'Urgent' */
-        return <ElectionNameCell electionName={electionObj.value} state={state} />
+        /* console.log(value) */
+        const [obj, electionMethods] = electionOMs[value.row.index]
+        let state = 'default'
+        // todo move to isElectionLive method in electionMethods
+        if (value.row.values.Status === 'Live') {
+            state = 'Live'
+        }
+        // todo move to isElectionUrgent method in electionMethods
+        if (['Invite Declined', 'Reminder Sent', 'Deadline Missed'].includes(value.row.values.Moderator)) {
+            // todo handle dates for Script Pending?
+            state = 'Urgent'
+        } else if (false) {
+            // todo handle Candidates 'Election Table Pending...' and past moderator reminder day
+            // todo or is this already handled because past moderator reminder day means Reminder Sent, therefore already urgent?
+        }
+
+        return <ElectionNameCell electionName={value.value} state={state} />
     }
 
     const getDateValue = (electionObj, rowIndex) => {
@@ -571,7 +584,7 @@ const useStyles = createUseStyles(theme => ({
         color: 'white',
         backgroundColor: theme.colorSecondary,
         '&:hover': {
-            background: theme.backgroundColorComponent, // todo check hover color for archived/live elections
+            background: theme.backgroundColorComponent,
         },
         '& $statusCell svg path': {
             stroke: 'white',
