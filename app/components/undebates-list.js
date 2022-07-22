@@ -283,6 +283,7 @@ function DateFilter({ column: { filterValue, setFilter, preFilteredRows, id } })
         options.add('Last year')
         options.add('Last 6 months')
         options.add('Last month')
+        options.add('Future')
         return [...options.values()]
     }, [id, preFilteredRows])
 
@@ -448,24 +449,30 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     }
 
     const dateFilterFunction = (rows, columnIds, filterValue) => {
-        const subtractMonths = (date, numMonths) => {
-            return new Date(date.setMonth(date.getMonth() - numMonths))
+        const addMonths = (date, numMonths) => {
+            return new Date(date.setMonth(date.getMonth() + numMonths))
         }
         // todo add story to storybook to display multiple election dates
-        // todo update to remove future dates, add separate future date option
-        let filterStartDate
+        let filterStartDate = new Date()
+        let filterEndDate = new Date()
         switch (filterValue) {
             case 'Last year':
-                filterStartDate = subtractMonths(new Date(), 12)
+                filterStartDate = addMonths(new Date(), -12)
                 break
             case 'Last 6 months':
-                filterStartDate = subtractMonths(new Date(), 6)
+                filterStartDate = addMonths(new Date(), -6)
                 break
             case 'Last month':
-                filterStartDate = subtractMonths(new Date(), 1)
+                filterStartDate = addMonths(new Date(), -1)
+                break
+            case 'Future':
+                filterEndDate = null
                 break
         }
-        return rows.filter(row => row.values.Date >= filterStartDate)
+
+        return rows.filter(
+            row => row.values.Date >= filterStartDate && (filterEndDate ? row.values.Date <= filterEndDate : true)
+        )
     }
 
     const getStatusValue = (electionObj, rowIndex) => {
