@@ -323,14 +323,11 @@ function ModeratorFilter({ column: { filterValue, setFilter, preFilteredRows, id
 function CandidatesFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
     const options = React.useMemo(() => {
         const options = new Set()
-        preFilteredRows.forEach(row => {
-            // todo update
-            /* if (row.values[id] === 'default') {
-             *     options.add('other')
-             * } else { */
-            options.add(row.values[id])
-            /* } */
-        })
+        options.add('-')
+        options.add('Election Table Pending...')
+        options.add('Invite Pending...')
+        // todo add <VideoSubmitted/> icon to in progress
+        options.add('In Progress')
         return [...options.values()]
     }, [id, preFilteredRows])
 
@@ -475,6 +472,19 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         )
     }
 
+    const candidatesFilterFunction = (rows, columnIds, filterValue) => {
+        // todo remove hardcodes from In Progress filter
+        // todo handle "Completed" filter if added
+        switch (filterValue) {
+            case 'In Progress':
+                return rows.filter(
+                    row => !['-', 'Election Table Pending...', 'unknown'].includes(row.values.Candidates)
+                )
+            default:
+                return rows.filter(row => row.values.Candidates === filterValue)
+        }
+    }
+
     const getStatusValue = (electionObj, rowIndex) => {
         const [obj, electionMethods] = electionOMs[rowIndex]
         return electionMethods.getElectionListStatus()
@@ -515,6 +525,7 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
             Cell: renderCandidatesCell,
             disableSortBy: true,
             Filter: CandidatesFilter,
+            filter: candidatesFilterFunction,
         },
         {
             Header: 'Status',
