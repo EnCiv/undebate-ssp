@@ -66,6 +66,8 @@ export const statusInfoEnum = {
     locked: { icon: <SvgLock /> },
 }
 
+export const urgentModeratorStatuses = ['Invite Declined', 'Deadline Missed', 'Reminder Sent']
+
 function idCompare(a, b) {
     if (typeof a === 'object') a = a.toString()
     if (typeof b === 'object') b = b.toString()

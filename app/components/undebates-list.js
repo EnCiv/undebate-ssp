@@ -1,9 +1,10 @@
 // https://github.com/EnCiv/undebate-ssp/issue/21
-import React, { useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { createUseStyles } from 'react-jss'
 import ObjectID from 'isomorphic-mongo-objectid'
-import getElectionStatusMethods from '../lib/get-election-status-methods'
+import getElectionStatusMethods, { urgentModeratorStatuses } from '../lib/get-election-status-methods'
 import CandidateStatusTable from './candidate-status-table'
+import ElectionUrgentLiveFilters from './election-urgent-live-filters'
 import cx from 'classnames'
 import ArrowSvg from '../svgr/arrow'
 import Accepted from '../svgr/accepted'
@@ -27,7 +28,7 @@ function daysBetweenDates(date1, date2) {
 }
 
 const DAYS_LEFT_DANGER = 3
-function DefaultColumnFilter({ column: { filterValue, preFilteredRows, setFilter } }) {
+function DefaultColumnFilterComponent({ column: { filterValue, preFilteredRows, setFilter } }) {
     const count = preFilteredRows.length
 
     return (
@@ -40,15 +41,30 @@ function DefaultColumnFilter({ column: { filterValue, preFilteredRows, setFilter
         />
     )
 }
+const defaultColumnFilterFunction = (rows, id, filterValue) => {
+    return rows.filter(row => {
+        if (typeof filterValue === 'string' || filterValue instanceof String) {
+            return row.values[id] === filterValue
+        } else if (filterValue instanceof Array) {
+            if (filterValue.length) {
+                return filterValue.includes(row.values[id])
+            } else {
+                return true
+            }
+        }
+    })
+}
 
-function Table({ columns, data, onRowClicked, classes }) {
+function Table({ columns, data, preFilters, onRowClicked, classes }) {
     const defaultColumn = useMemo(
         () => ({
-            Filter: DefaultColumnFilter,
+            Filter: DefaultColumnFilterComponent,
+            filter: defaultColumnFilterFunction,
         }),
         []
     )
-    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
+
+    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, state, setFilter } = useTable(
         {
             columns,
             data,
@@ -65,6 +81,23 @@ function Table({ columns, data, onRowClicked, classes }) {
         useFilters,
         useSortBy
     )
+
+    useEffect(() => {
+        if (state.filters) {
+            state.filters.forEach(filter => {
+                // todo fix Column dropdown showing wrong value? (if still an issue after custom filter components)
+                if (filter.id === 'Status' && filter.value === 'Live') {
+                    setFilter('Status', [])
+                } else if (filter.id === 'Moderator') {
+                    setFilter('Moderator', [])
+                }
+            })
+        }
+
+        if (Object.keys(preFilters).length) {
+            setFilter(preFilters['column'], preFilters['value'])
+        }
+    }, [preFilters])
 
     // todo fix styling of sorting arrows
     // todo check arrow direction for sorts
@@ -381,6 +414,7 @@ function getDaysText(daysRemaining) {
 
 export default function UndebatesList({ className, style, electionObjs, onDone }) {
     const classes = useStyles()
+    const [preFilters, setPreFilters] = useState({})
 
     const onRowClicked = (row, e) => {
         onDone({ value: row.original.id, valid: true })
@@ -402,12 +436,13 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
             state = 'Live'
         }
         // todo move to isElectionUrgent method in electionMethods
-        if (['Invite Declined', 'Reminder Sent', 'Deadline Missed'].includes(value.row.values.Moderator)) {
+        if (
+            urgentModeratorStatuses.includes(value.row.values.Moderator) ||
+            value.row.values.Candidates.includes('Deadline Missed')
+        ) {
             // todo handle dates for Script Pending?
+            // todo create story for all candidates missed deadline
             state = 'Urgent'
-        } else if (false) {
-            // todo handle Candidates 'Election Table Pending...' and past moderator reminder day
-            // todo or is this already handled because past moderator reminder day means Reminder Sent, therefore already urgent?
         }
 
         return <ElectionNameCell electionName={value.value} state={state} />
@@ -509,6 +544,18 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         return <StatusCell className={classes.statusCell} statusText={value.value} daysRemaining={daysRemaining} />
     }
 
+    const filterElectionState = ({ value, valid }) => {
+        if (valid) {
+            if (value == 'Live') {
+                setPreFilters({ column: 'Status', value: value })
+            } else if (value == 'Urgent') {
+                setPreFilters({ column: 'Moderator', value: urgentModeratorStatuses })
+            } else {
+                setPreFilters({})
+            }
+        }
+    }
+
     const columns = useMemo(() => [
         {
             Header: 'Election Name',
@@ -550,8 +597,15 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     ])
 
     return (
-        <div className={classes.container}>
-            <Table columns={columns} data={electionObjs} onRowClicked={onRowClicked} classes={classes} />
+        <div className={cx(className, classes.container)} style={style}>
+            <ElectionUrgentLiveFilters onDone={filterElectionState} />
+            <Table
+                columns={columns}
+                data={electionObjs}
+                preFilters={preFilters}
+                onRowClicked={onRowClicked}
+                classes={classes}
+            />
         </div>
     )
 }
@@ -561,7 +615,6 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center',
     },
     table: {
         borderSpacing: '0',
@@ -625,6 +678,9 @@ const useStyles = createUseStyles(theme => ({
     electionName: {
         height: '100%',
         fontWeight: '500',
+    },
+    electionStateFilters: {
+        // todo fix styling of ElectionUrgentLiveFilters
     },
     electionStateIndicator: {
         width: '0.625rem',

@@ -161,7 +161,6 @@ moderatorElectionObject5.id = '62cb365f384f59688794ae9c'
 moderatorElectionObject5.organizationName = 'Los Angeles Government Elections'
 moderatorElectionObject5.electionName = 'LA City Council'
 moderatorElectionObject5.timeline.moderatorSubmissionDeadline[0].sent = false
-moderatorElectionObject5.undebateDate = '2023-01-09T23:59:59.999Z'
 
 let moderatorElectionObject6 = cloneDeep(defaultElectionObject)
 moderatorElectionObject6.id = '62cb365f86a78c68bbaacc52'
