@@ -109,7 +109,7 @@ function Table({ columns, data, preFilters, onRowClicked, classes }) {
     // todo check arrow direction for sorts
     // todo use ChevronDown for filters, and flip it for when the filter is visible
     return (
-        <table {...getTableProps()} className={classes.table}>
+        <table {...getTableProps()} className={classes.electionTable}>
             <thead>
                 {headerGroups.map(headerGroup => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
@@ -190,7 +190,7 @@ function DateCell({ createDate, endDate, daysRemaining, isArchived = false }) {
     // todo styling
     /* <div className = { classes.secondaryText }> Last Update - { daysBetween } Days Ago</div> */
     return (
-        <div>
+        <div className={classes.dateCell}>
             <div className={classes.formattedDates}>
                 {formattedCreateDate} - {formattedEndDate}
             </div>
@@ -207,9 +207,11 @@ function IconCell({ className, Icon, text, textClassName, daysRemaining }) {
     // todo styling
     return (
         <span className={cx(className, classes.iconCell)}>
-            {Icon ? <Icon /> : ''}
-            <div className={classes[textClassName]}>{text}</div>
-            <div className={dangerZone ? classes.dangerZoneDays : classes.secondaryText}>{daysText}</div>
+            <div className={classes.iconContainer}>{Icon ? <Icon className={classes.iconCellIcon} /> : ''}</div>
+            <div>
+                <div className={classes[textClassName]}>{text}</div>
+                <div className={dangerZone ? classes.dangerZoneDays : classes.secondaryText}>{daysText}</div>
+            </div>
         </span>
     )
 }
@@ -248,6 +250,8 @@ function ModeratorCell({ moderatorStatus, daysRemaining }) {
 }
 
 function CandidateCell({ candidatesStatusText, daysRemaining, candidateStatuses }) {
+    const classes = useStyles()
+
     let Icon
     let textClass
     let shouldShowStatusTable = false
@@ -273,12 +277,12 @@ function CandidateCell({ candidatesStatusText, daysRemaining, candidateStatuses 
     }
     const renderStatusTable = () => {
         if (shouldShowStatusTable && candidateStatuses !== 'default') {
-            return <CandidateStatusTable statusObj={candidateStatuses} />
+            return <CandidateStatusTable className={classes.candidateStatusTable} statusObj={candidateStatuses} />
         }
     }
 
     return (
-        <span>
+        <span className={classes.candidateCell}>
             <IconCell Icon={Icon} text={candidatesStatusText} textClassName={textClass} daysRemaining={daysRemaining} />
             {renderStatusTable()}
         </span>
@@ -623,13 +627,31 @@ const useStyles = createUseStyles(theme => ({
         flexDirection: 'row',
         justifyContent: 'center',
     },
-    table: {
+    electionTable: {
         borderSpacing: '0',
         width: '90%',
         height: '100%',
+        '& $tr': {
+            '&:first-child td:first-child, &:first-child $electionStateIndicator': {
+                borderTopLeftRadius: '1rem',
+            },
+            '&:first-child td:last-child': {
+                // note that this is getting cutoff for some reason. I couldn't figure out how to fix this
+                borderTopRightRadius: '1rem',
+            },
+            '&:last-child td:first-child, &:last-child $electionStateIndicator': {
+                borderBottomLeftRadius: '1rem',
+            },
+            '&:last-child td:last-child': {
+                // note that this is getting cutoff for some reason. I couldn't figure out how to fix this
+                borderBottomRightRadius: '1rem',
+            },
+        },
     },
     th: {
         fontWeight: '500',
+        textAlign: 'left',
+        paddingLeft: '2rem',
     },
     tr: {
         cursor: 'pointer',
@@ -638,6 +660,11 @@ const useStyles = createUseStyles(theme => ({
         backgroundColor: 'white',
         '&:hover': {
             background: theme.backgroundColorComponent,
+        },
+        '& td': {
+            '&:first-child': {
+                paddingLeft: '0',
+            },
         },
     },
     archivedTr: {
@@ -650,13 +677,30 @@ const useStyles = createUseStyles(theme => ({
             stroke: 'white',
         },
     },
-    statusCell: {},
+    candidateCell: {
+        display: 'flex',
+    },
     td: {
         borderColor: theme.backgroundColorApp,
         borderStyle: 'solid',
         borderWidth: '0.5rem 0',
-        textAlign: 'center',
         height: '100%',
+        paddingLeft: '2rem',
+    },
+    iconCell: {
+        display: 'flex',
+    },
+    iconContainer: {
+        display: 'flex',
+        marginRight: '0.625rem',
+        alignItems: 'center',
+    },
+    iconCellIcon: {
+        height: '2rem',
+        width: '2rem',
+    },
+    candidateStatusTable: {
+        paddingLeft: '1rem',
     },
     formattedDates: {
         fontWeight: '400',
@@ -683,8 +727,11 @@ const useStyles = createUseStyles(theme => ({
         height: '100%',
     },
     electionName: {
+        display: 'flex',
+        alignItems: 'center',
         height: '100%',
         fontWeight: '500',
+        paddingLeft: '2rem',
     },
     electionStateFilters: {
         // todo fix styling of ElectionUrgentLiveFilters

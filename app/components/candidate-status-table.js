@@ -3,7 +3,7 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { statusInfoEnum } from '../lib/get-election-status-methods'
 
-export default function CandidateStatusTable({ tableArray, statusObj }) {
+export default function CandidateStatusTable({ className, style, tableArray, statusObj }) {
     let displayArray = tableArray ? [...tableArray] : []
     // tableArray was used in ElectionCategory when it was written, but this wasn't very flexible
     // statusArray is a simplified way to use this component that extracted only the relevent
@@ -22,7 +22,7 @@ export default function CandidateStatusTable({ tableArray, statusObj }) {
 
     if (displayArray && displayArray.length) {
         return (
-            <table>
+            <table className={className} style={style}>
                 <thead>
                     <tr>
                         {displayArray.map(v => (
