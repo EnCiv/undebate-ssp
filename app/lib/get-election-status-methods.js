@@ -66,7 +66,20 @@ export const statusInfoEnum = {
     locked: { icon: <SvgLock /> },
 }
 
+export const allDateFilterOptions = ['Last year', 'Last 6 months', 'Last month', 'Future']
 export const urgentModeratorStatuses = ['Invite Declined', 'Deadline Missed', 'Reminder Sent']
+export const allModeratorStatusTexts = [
+    '-',
+    'Script Pending...',
+    'Script Sent',
+    'Invite Accepted',
+    'Invite Declined',
+    'Reminder Sent',
+    'Video Submitted',
+    'Deadline Missed',
+]
+export const allCandidatesStatusTexts = ['-', 'Election Table Pending...', 'Invite Pending...', 'In Progress']
+export const allElectionStatusTexts = ['Configuring', 'In Progress', 'Live', 'Archived']
 
 function idCompare(a, b) {
     if (typeof a === 'object') a = a.toString()

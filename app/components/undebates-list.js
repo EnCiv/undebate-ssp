@@ -2,7 +2,13 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { createUseStyles } from 'react-jss'
 import ObjectID from 'isomorphic-mongo-objectid'
-import getElectionStatusMethods, { urgentModeratorStatuses } from '../lib/get-election-status-methods'
+import getElectionStatusMethods, {
+    allCandidatesStatusTexts,
+    allDateFilterOptions,
+    allElectionStatusTexts,
+    allModeratorStatusTexts,
+    urgentModeratorStatuses,
+} from '../lib/get-election-status-methods'
 import CandidateStatusTable from './candidate-status-table'
 import ElectionUrgentLiveFilters from './election-urgent-live-filters'
 import cx from 'classnames'
@@ -94,7 +100,7 @@ function Table({ columns, data, preFilters, onRowClicked, classes }) {
             })
         }
 
-        if (Object.keys(preFilters).length) {
+        if (preFilters && Object.keys(preFilters).length) {
             setFilter(preFilters['column'], preFilters['value'])
         }
     }, [preFilters])
@@ -313,10 +319,9 @@ function DateFilter({ column: { filterValue, setFilter, preFilteredRows, id } })
     // todo fix issue where clicking filter causes sorting
     const options = React.useMemo(() => {
         const options = new Set()
-        options.add('Last year')
-        options.add('Last 6 months')
-        options.add('Last month')
-        options.add('Future')
+        allDateFilterOptions.forEach(status => {
+            options.add(status)
+        })
         return [...options.values()]
     }, [id, preFilteredRows])
 
@@ -335,8 +340,8 @@ function DateFilter({ column: { filterValue, setFilter, preFilteredRows, id } })
 function ModeratorFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
     const options = React.useMemo(() => {
         const options = new Set()
-        preFilteredRows.forEach(row => {
-            options.add(row.values[id])
+        allModeratorStatusTexts.forEach(status => {
+            options.add(status)
         })
         return [...options.values()]
     }, [id, preFilteredRows])
@@ -356,11 +361,10 @@ function ModeratorFilter({ column: { filterValue, setFilter, preFilteredRows, id
 function CandidatesFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
     const options = React.useMemo(() => {
         const options = new Set()
-        options.add('-')
-        options.add('Election Table Pending...')
-        options.add('Invite Pending...')
         // todo add <VideoSubmitted/> icon to in progress
-        options.add('In Progress')
+        allCandidatesStatusTexts.forEach(status => {
+            options.add(status)
+        })
         return [...options.values()]
     }, [id, preFilteredRows])
 
@@ -379,8 +383,8 @@ function CandidatesFilter({ column: { filterValue, setFilter, preFilteredRows, i
 function StatusFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
     const options = React.useMemo(() => {
         const options = new Set()
-        preFilteredRows.forEach(row => {
-            options.add(row.values[id])
+        allElectionStatusTexts.forEach(status => {
+            options.add(status)
         })
         return [...options.values()]
     }, [id, preFilteredRows])
@@ -420,10 +424,11 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         onDone({ value: row.original.id, valid: true })
     }
 
-    const electionOMs = React.useMemo(
-        () => electionObjs.map(obj => [obj, getElectionStatusMethods(null, obj)]),
-        [electionObjs]
-    )
+    /* const electionOMs = React.useMemo( */
+    /* () => electionObjs.map(obj => [obj, getElectionStatusMethods(null, obj)]), */
+    /* [electionObjs] */
+    /* ) */
+    const electionOMs = electionObjs.map(obj => [obj, getElectionStatusMethods(null, obj)])
     if (!electionOMs.length) return null
 
     const renderElectionNameCell = value => {
@@ -556,7 +561,9 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         }
     }
 
-    const columns = useMemo(() => [
+    /* const columns = useMemo(() => [ */
+    const columns = [
+        /* { Header: 'Stuff', accessor: 'electionName' }, */
         {
             Header: 'Election Name',
             accessor: 'electionName',
@@ -594,7 +601,7 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
             disableSortBy: true,
             Filter: StatusFilter,
         },
-    ])
+    ]
 
     return (
         <div className={cx(className, classes.container)} style={style}>
