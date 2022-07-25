@@ -256,7 +256,7 @@ function CandidateCell({ candidatesStatusText, daysRemaining, candidateStatuses 
         case candidatesStatusText === undefined || candidatesStatusText === null || candidatesStatusText === '':
             break
         case candidatesStatusText === 'Election Table Pending...':
-            Icon = ElectionGrid
+            Icon = ({ className }) => <ElectionGrid className={cx(className, classes.electionGridIcon)} />
             break
         case candidatesStatusText === 'Invite Pending...':
             Icon = InviteSent
@@ -689,6 +689,13 @@ const useStyles = createUseStyles(theme => ({
     iconCellIcon: {
         height: '1.5rem',
         width: '1.5rem',
+    },
+    electionGridIcon: {
+        borderRadius: '0.3rem',
+        backgroundSize: '1rem 1rem',
+        '& path': {
+            fill: theme.colorGray,
+        },
     },
     candidateStatusTable: {
         paddingLeft: '1rem',
