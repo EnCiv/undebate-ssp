@@ -244,6 +244,21 @@ const cand3 = {
 candidatesElectionObject4.candidates[cand2.uniqueId] = cand2
 candidatesElectionObject4.candidates[cand3.uniqueId] = cand3
 
+let candidatesElectionObject5 = cloneDeep(defaultElectionObject)
+candidatesElectionObject5.id = '62cb35fddc380a594cff7126'
+candidatesElectionObject5.organizationName = 'Sacrament Government Elections'
+candidatesElectionObject5.electionName = 'Sacramento Mayor'
+candidatesElectionObject5.moderator.submissions[0].url = 'not null'
+const cand4 = {
+    uniqueId: '62cbb1cf916df6cdbcfd8244',
+    submissions: [],
+}
+candidatesElectionObject5.candidates[cand4.uniqueId] = cand4
+// todo update to candidate if the count methods are supposed to be candidates
+candidatesElectionObject5.timeline.moderatorSubmissionDeadline[0].sent = false
+candidatesElectionObject5.timeline.moderatorSubmissionDeadline[1] = cloneDeep(
+    candidatesElectionObject5.timeline.moderatorSubmissionDeadline[0]
+)
 export const AllCandidatesOptions = Template.bind({})
 AllCandidatesOptions.args = {
     electionObjs: [
@@ -252,7 +267,8 @@ AllCandidatesOptions.args = {
         candidatesElectionObject2, // Election Table Pending
         candidatesElectionObject3, // Invite Pending
         candidatesElectionObject4, // In Progress
-        /* candidatesElectionObject5, // Ready */
+        candidatesElectionObject5, // All missed deadline
+        /* candidatesElectionObject6, // Ready (if needed) */
     ],
 }
 

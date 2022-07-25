@@ -5,6 +5,11 @@ import { createUseStyles } from 'react-jss'
 import { statusInfoEnum } from '../lib/get-election-status-methods'
 import CandidateStatusTable from './candidate-status-table'
 
+export function ProgressBar(props) {
+    const classes = useStyles(props)
+    return <div className={classes.progressBar} />
+}
+
 function ElectionCategory(props) {
     const classes = useStyles(props)
     const { categoryName = '', statusObjs = [], className = '' } = props

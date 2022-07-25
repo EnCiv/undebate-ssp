@@ -9,6 +9,7 @@ import {
     SvgSent,
     SvgVideoSubmitted,
 } from '../components/lib/svg'
+import { ProgressBar } from '../components/election-category'
 
 const checkDateCompleted = obj => {
     for (const key in obj) {
@@ -38,11 +39,6 @@ const getLatestObjByDate = oList => {
     )
     if (!latest.date) return undefined
     return latest
-}
-
-function ProgressBar(props) {
-    const classes = useStyles(props)
-    return <div className={classes.progressBar} />
 }
 
 export const statusInfoEnum = {
@@ -179,6 +175,7 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const countSubmissionReminderSet = () => {
+        // todo is this supposed to be candidateDeadlineReminderEmails?
         let count = 0
         const reminder = state?.timeline?.moderatorDeadlineReminderEmails
         for (const key in reminder) {
@@ -190,6 +187,7 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const countSubmissionDeadlineMissed = () => {
+        // todo is this supposed to be candidateSubmissionDeadline?
         let count = 0
         const submission = state?.timeline?.moderatorSubmissionDeadline
         for (const key in submission) {
@@ -244,6 +242,12 @@ function getElectionStatusMethods(dispatch, state) {
         if (state?.moderator?.submissions && checkVideoSubmitted()) return 'submitted'
         if (state?.timeline?.moderatorDeadlineReminderEmails && checkReminderSent()) return 'sent'
         return 'default'
+    }
+    const countCandidates = () => {
+        if (state?.candidates) {
+            return Object.keys(state?.candidates)?.length
+        }
+        return -1
     }
     const getElectionTableStatus = () => {
         if (state?.candidates && Object.keys(state?.candidates)?.length >= 1) return 'filled'
@@ -353,6 +357,10 @@ function getElectionStatusMethods(dispatch, state) {
         if (areCandidatesReadyToInvite() && getSubmissionsStatus() === 'default') {
             return 'Invite Pending...'
         }
+        const candidateCount = countCandidates()
+        if (countSubmissionDeadlineMissed() === candidateCount) {
+            return `All ${candidateCount} Candidates Missed Deadline`
+        }
         if (getSubmissionsStatus() !== 'default') {
             const totalCandidatesCount = Object.values(state?.candidates).length
             let completeCandidatesCount = 0
@@ -364,6 +372,24 @@ function getElectionStatusMethods(dispatch, state) {
             return completeCandidatesCount + '/' + totalCandidatesCount
         }
         return 'unknown'
+    }
+
+    const isElectionLive = () => {
+        return getElectionListStatus() === 'Live'
+    }
+
+    const isElectionUrgent = () => {
+        let isUrgent = false
+        if (urgentModeratorStatuses.includes(getModeratorStatus())) {
+            isUrgent = true
+        } else if (getCandidatesStatus().includes('Candidates Missed Deadline')) {
+            // candidate string is "All X Candidates Missed Deadline"
+            isUrgent = true
+        } else if (countSubmissionDeadlineMissed() > 10) {
+            isUrgent = true
+        }
+        // todo handle dates for Script Pending?
+        return isUrgent
     }
 
     return {
@@ -397,6 +423,8 @@ function getElectionStatusMethods(dispatch, state) {
         getElectionListStatus,
         getCandidatesStatus,
         areCandidatesReadyForInvites,
+        isElectionLive,
+        isElectionUrgent,
     }
 }
 

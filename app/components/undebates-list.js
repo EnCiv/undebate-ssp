@@ -79,7 +79,7 @@ function Table({ columns, data, preFilters, onRowClicked, classes }) {
                 sortBy: [
                     {
                         id: 'Date',
-                        desc: false, // todo this seems to not be working correctly? fix this
+                        desc: false,
                     },
                 ],
             },
@@ -187,8 +187,6 @@ function DateCell({ createDate, endDate, daysRemaining, isArchived = false }) {
     const formattedCreateDate = formatDate(createDate)
     const formattedEndDate = endDate ? formatDate(endDate) : ''
 
-    // todo styling
-    /* <div className = { classes.secondaryText }> Last Update - { daysBetween } Days Ago</div> */
     return (
         <div className={classes.dateCell}>
             <div className={classes.formattedDates}>
@@ -204,7 +202,6 @@ function IconCell({ className, Icon, text, textClassName, daysRemaining }) {
     const daysText = getDaysText(daysRemaining)
     const dangerZone = daysRemaining >= 0 && daysRemaining <= DAYS_LEFT_DANGER
 
-    // todo styling
     return (
         <span className={cx(className, classes.iconCell)}>
             <div className={classes.iconContainer}>{Icon ? <Icon className={classes.iconCellIcon} /> : ''}</div>
@@ -365,7 +362,7 @@ function ModeratorFilter({ column: { filterValue, setFilter, preFilteredRows, id
 function CandidatesFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
     const options = React.useMemo(() => {
         const options = new Set()
-        // todo add <VideoSubmitted/> icon to in progress
+        // todo add icons to filter values
         allCandidatesStatusTexts.forEach(status => {
             options.add(status)
         })
@@ -440,17 +437,12 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         /* console.log(value) */
         const [obj, electionMethods] = electionOMs[value.row.index]
         let state = 'default'
-        // todo move to isElectionLive method in electionMethods
-        if (value.row.values.Status === 'Live') {
+        if (electionMethods.isElectionLive()) {
             state = 'Live'
         }
-        // todo move to isElectionUrgent method in electionMethods
-        if (
-            urgentModeratorStatuses.includes(value.row.values.Moderator) ||
-            value.row.values.Candidates.includes('Deadline Missed')
-        ) {
-            // todo handle dates for Script Pending?
+        if (electionMethods.isElectionUrgent()) {
             // todo create story for all candidates missed deadline
+            // todo add candidates filter value for all missed deadline
             state = 'Urgent'
         }
 
@@ -530,7 +522,6 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
     }
 
     const candidatesFilterFunction = (rows, columnIds, filterValue) => {
-        // todo remove hardcodes from In Progress filter
         // todo handle "Completed" filter if added
         switch (filterValue) {
             case 'In Progress':
@@ -696,8 +687,8 @@ const useStyles = createUseStyles(theme => ({
         alignItems: 'center',
     },
     iconCellIcon: {
-        height: '2rem',
-        width: '2rem',
+        height: '1.5rem',
+        width: '1.5rem',
     },
     candidateStatusTable: {
         paddingLeft: '1rem',
