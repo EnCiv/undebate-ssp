@@ -80,18 +80,11 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const checkVideoSubmitted = () => {
-        if (!state?.moderator?.submissions) return false
-        let result = false
-        Object.values(state.moderator.submissions).forEach(submission => {
-            if (submission.url !== '') {
-                result = true
-            }
-        })
-        return result
+        return !!Object.keys(state?.moderator?.submissions || {}).length
     }
     const checkSubmissionBeforeDeadline = () => {
         const deadline = getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)?.date
-        return new Date().toISOString() < deadline
+        return new Date().toISOString() < deadline && !checkVideoSubmitted()
     }
     const countSubmissionAccepted = () => {
         let count = 0

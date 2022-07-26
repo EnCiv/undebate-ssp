@@ -278,7 +278,7 @@ describe('election status methods', () => {
         it('should return true', () => {
             const state = {
                 moderator: {
-                    submissions: [{ _id: '', url: 'link', date: '' }],
+                    submissions: { 123: { _id: '', url: 'link', date: '' } },
                 },
             }
             const { checkVideoSubmitted } = getElectionStatusMethods(null, state)
@@ -286,9 +286,7 @@ describe('election status methods', () => {
         })
         it('should return false', () => {
             const state = {
-                moderator: {
-                    submissions: [{ _id: '', url: '', date: '' }],
-                },
+                moderator: {},
             }
             const { checkVideoSubmitted } = getElectionStatusMethods(null, state)
             expect(checkVideoSubmitted()).toBe(false)
@@ -936,7 +934,9 @@ describe('election status methods', () => {
         it('returns submitted', () => {
             const state = {
                 moderator: {
-                    submissions: [{ _id: '', url: 'link', date: '' }],
+                    submissions: {
+                        123: { _id: '123', url: 'link', date: '' },
+                    },
                 },
                 timeline: {
                     moderatorSubmissionDeadline: {

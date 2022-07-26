@@ -103,6 +103,7 @@
         "@babel/runtime": "^7.16.3",
         "classnames": "^2.3.1",
         "color": "^4.2.3",
+        "deep-object-diff": "^1.1.7",
         "git-repo-name": "^1.0.1",
         "googleapis": "^100.0.0",
         "isemail": "^3.2.0",

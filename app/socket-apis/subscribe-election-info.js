@@ -3,6 +3,7 @@ import { serverEvents, Iota } from 'civil-server'
 import { merge } from 'lodash'
 import { subscribeEventName } from '../components/lib/socket-api-subscribe'
 import { getElectionDocById, intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs } from './get-election-docs'
+import { diff } from 'deep-object-diff'
 
 // there could be multiple subscribers to changes on the same id.  When a change is made to an id, be careful to only update the electionIota once, and then send the update to all the subscribers.
 // currently, updates are the entire iota, in the ideal, only what's changed will be send in the update.
@@ -58,19 +59,29 @@ export default function subscribeElectionInfo(id, cb) {
         return
     }
     const socket = this
-    if (electionIotaSubscribers[id]) finishSubscribe(socket, id, cb)
-    else {
-        getElectionDocById.call(this, id, electionIota => {
-            if (!electionIota) {
-                cb & cb()
-                return
+    getElectionDocById.call(this, id, electionIota => {
+        if (!electionIota) {
+            logger.error('subscribeElectionInfo: id not found:', id)
+            cb & cb()
+            return
+        }
+        if (!electionIotaSubscribers[id])
+            // checking in callback because things could have changed
+            electionIotaSubscribers[id] = { electionIota, sockets: [] }
+        else {
+            if (!electionIotaSubscribers[id].sockets.length) {
+                electionIotaSubscribers[id].electionIota = electionIota
+            } else {
+                const updatedIota = diff(electionIotaSubscribers[id].electionIota, electionIota)
+                if (updatedIota.webComponent) {
+                    // there has been changes in the db that hasn't been sent to the subscribes yet - example undebates-from-templates-and-rows makes changes without sending notifications
+                    // to do - .watch() the iota collection for updates
+                    updateSubscribers.call(this, id, updatedIota)
+                }
             }
-            if (!electionIotaSubscribers[id])
-                // checking in callback because things could have changed
-                electionIotaSubscribers[id] = { electionIota, sockets: [] }
-            finishSubscribe(socket, id, cb)
-        })
-    }
+        }
+        finishSubscribe(socket, id, cb)
+    })
 }
 
 export function updateElectionInfo(rootId, parentId, iotas) {
