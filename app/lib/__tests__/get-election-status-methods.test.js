@@ -278,7 +278,9 @@ describe('election status methods', () => {
         it('should return true', () => {
             const state = {
                 moderator: {
-                    submissions: { 123: { _id: '', url: 'link', date: '' } },
+                    submissions: {
+                        '62e03e0a816fe43084a26775': { _id: '62e03e0a816fe43084a26775', url: 'link', date: '' },
+                    },
                 },
             }
             const { checkVideoSubmitted } = getElectionStatusMethods(null, state)
@@ -935,13 +937,13 @@ describe('election status methods', () => {
             const state = {
                 moderator: {
                     submissions: {
-                        123: { _id: '123', url: 'link', date: '' },
+                        '62e03e0a816fe43084a26775': { _id: '62e03e0a816fe43084a26775', url: 'link', date: '' },
                     },
                 },
                 timeline: {
                     moderatorSubmissionDeadline: {
                         0: {
-                            date: '2022-01-07T22:09:32.952Z',
+                            date: '2022-09-07T22:09:32.952Z',
                             sent: true,
                         },
                     },

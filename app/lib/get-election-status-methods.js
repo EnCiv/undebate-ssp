@@ -1,4 +1,16 @@
 // https://github.com/EnCiv/undebate-ssp/issues/105
+import {
+    SvgAccepted,
+    SvgCompleted,
+    SvgDeadlineMissed,
+    SvgDeclined,
+    SvgLock,
+    SvgReminderSent,
+    SvgSent,
+    SvgVideoSubmitted,
+} from '../components/lib/svg'
+import { ProgressBar } from '../components/election-category'
+import ObjectID from 'isomorphic-mongo-objectid'
 
 const checkDateCompleted = obj => {
     for (const key in obj) {
@@ -30,6 +42,42 @@ const getLatestObjByDate = oList => {
     return latest
 }
 
+export const statusInfoEnum = {
+    completed: { icon: <SvgCompleted /> },
+    pending: { text: 'Pending…' },
+    daysLeft: v => ({
+        text: `${v} days left…`,
+    }),
+    reminderSent: {
+        icon: <SvgReminderSent />,
+        text: 'Reminder Sent',
+    },
+    percentComplete: v => ({
+        text: <ProgressBar percentDone={v} />,
+    }),
+    videoSubmitted: { icon: <SvgVideoSubmitted />, text: 'Video Submitted' },
+    deadlineMissed: { icon: <SvgDeadlineMissed />, text: 'Deadline Missed' },
+    accepted: { icon: <SvgAccepted />, text: 'Accepted' },
+    declined: { icon: <SvgDeclined />, text: 'Declined' },
+    sent: { icon: <SvgSent />, text: 'Sent' },
+    locked: { icon: <SvgLock /> },
+}
+
+export const allDateFilterOptions = ['Last year', 'Last 6 months', 'Last month', 'Future']
+export const urgentModeratorStatuses = ['Invite Declined', 'Deadline Missed', 'Reminder Sent']
+export const allModeratorStatusTexts = [
+    '-',
+    'Script Pending...',
+    'Script Sent',
+    'Invite Accepted',
+    'Invite Declined',
+    'Reminder Sent',
+    'Video Submitted',
+    'Deadline Missed',
+]
+export const allCandidatesStatusTexts = ['-', 'Election Table Pending...', 'Invite Pending...', 'In Progress']
+export const allElectionStatusTexts = ['Configuring', 'In Progress', 'Live', 'Archived']
+
 function idCompare(a, b) {
     if (typeof a === 'object') a = a.toString()
     if (typeof b === 'object') b = b.toString()
@@ -45,6 +93,16 @@ export const getLatestIota = iotas => {
     if (!latest._id) return undefined
     return latest
 }
+export const checkCandidateVideoSubmitted = candidate => {
+    let result = false
+    candidate?.submissions?.forEach(submission => {
+        if (submission.url && submission.url !== '') {
+            result = true
+        }
+    })
+    return result
+}
+
 function getElectionStatusMethods(dispatch, state) {
     const recentInvitationStatus = () => {
         if (!state?.moderator?.invitations || !state?.moderator?.invitations[0]) return {}
@@ -82,10 +140,20 @@ function getElectionStatusMethods(dispatch, state) {
     const checkVideoSubmitted = () => {
         return !!Object.keys(state?.moderator?.submissions || {}).length
     }
-    const checkSubmissionBeforeDeadline = () => {
-        const deadline = getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)?.date
-        return new Date().toISOString() < deadline && !checkVideoSubmitted()
+
+    const getDateOfLatestIota = iotas => {
+        const _id = getLatestIota(iotas)?._id
+        if (!_id) return undefined
+        return ObjectID(_id).getDate().toISOString()
     }
+
+    const checkSubmissionBeforeDeadline = () => {
+        const submissionDate = getDateOfLatestIota(state?.moderator?.submissions)
+        if (!submissionDate) return false
+        const deadline = getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)?.date
+        return submissionDate < deadline
+    }
+
     const countSubmissionAccepted = () => {
         let count = 0
         state?.moderator?.invitations?.forEach(invitation => {
@@ -106,6 +174,7 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const countSubmissionReminderSet = () => {
+        // todo is this supposed to be candidateDeadlineReminderEmails?
         let count = 0
         const reminder = state?.timeline?.moderatorDeadlineReminderEmails
         for (const key in reminder) {
@@ -117,6 +186,7 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const countSubmissionDeadlineMissed = () => {
+        // todo is this supposed to be candidateSubmissionDeadline?
         let count = 0
         const submission = state?.timeline?.moderatorSubmissionDeadline
         for (const key in submission) {
@@ -128,15 +198,9 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const checkReminderSent = () => {
-        let result = false
-        const reminder = state?.timeline?.moderatorDeadlineReminderEmails
-        // eslint-disable-next-line no-restricted-syntax
-        for (const key in reminder) {
-            if (reminder[key]?.sent) {
-                result = true
-            }
-        }
-        return result
+        const reminders = state?.timeline?.moderatorDeadlineReminderEmails
+        if (!reminders) return false
+        return Object.values(reminders).some(r => r.sent)
     }
 
     const areQuestionsLocked = () => {
@@ -174,10 +238,18 @@ function getElectionStatusMethods(dispatch, state) {
         return countDayLeft()
     }
     const getSubmissionStatus = () => {
-        if (state?.timeline?.moderatorSubmissionDeadline && !checkSubmissionBeforeDeadline()) return 'missed'
-        if (state?.moderator?.submissions && checkVideoSubmitted()) return 'submitted'
-        if (state?.timeline?.moderatorDeadlineReminderEmails && checkReminderSent()) return 'sent'
+        if (checkVideoSubmitted()) return 'submitted'
+        if (state?.timeline?.moderatorSubmissionDeadline && !checkSubmissionBeforeDeadline()) {
+            if (state?.timeline?.moderatorDeadlineReminderEmails && checkReminderSent()) return 'sent'
+            else return 'missed'
+        }
         return 'default'
+    }
+    const countCandidates = () => {
+        if (state?.candidates) {
+            return Object.keys(state?.candidates)?.length
+        }
+        return -1
     }
     const getElectionTableStatus = () => {
         if (state?.candidates && Object.keys(state?.candidates)?.length >= 1) return 'filled'
@@ -226,6 +298,102 @@ function getElectionStatusMethods(dispatch, state) {
         return true
     }
 
+    const areCandidatesReadyToInvite = () => {
+        // todo
+        return false
+    }
+
+    const getModeratorStatus = () => {
+        // todo validate this logic
+        if (!checkTimelineCompleted()) {
+            return '-'
+        }
+        const scriptStatus = getScriptStatus()
+        const inviteStatus = getInvitationStatus()
+        const submissionStatus = getSubmissionStatus()
+        if (scriptStatus !== 'completed') {
+            return 'Script Pending...'
+        } else if (scriptStatus === 'completed' && inviteStatus === 'sent') {
+            return 'Script Sent'
+        }
+        if (inviteStatus === 'declined') {
+            return 'Invite Declined'
+        } else if (inviteStatus === 'accepted' && submissionStatus === 'default') {
+            return 'Invite Accepted'
+        }
+        if (submissionStatus === 'sent') {
+            return 'Reminder Sent'
+        } else if (submissionStatus === 'submitted') {
+            return 'Video Submitted'
+        } else if (submissionStatus === 'missed') {
+            return 'Deadline Missed'
+        }
+        return 'unknown'
+    }
+
+    const getElectionListStatus = () => {
+        // todo validate this logic
+        const undebateStatus = getUndebateStatus()
+        const moderatorStatus = getModeratorStatus()
+        if (undebateStatus === 'archived') {
+            return 'Archived'
+        } else if (undebateStatus === 'isLive') {
+            return 'Live'
+        } else if (['Script Pending...', 'Script Sent'].includes(moderatorStatus)) {
+            return 'Configuring'
+        } else {
+            return 'In Progress'
+        }
+    }
+
+    const getCandidatesStatus = () => {
+        // todo validate this logic
+        // Election Table Pending..., Invite Pending..., All Submitted, All Missed Deadline, x/y
+        if (!checkTimelineCompleted()) {
+            return '-'
+        }
+        if (getElectionTableStatus() !== 'filled') {
+            return 'Election Table Pending...'
+        }
+        // todo fix this - any candidate doesn't have invitations list?
+        if (areCandidatesReadyToInvite() && getSubmissionsStatus() === 'default') {
+            return 'Invite Pending...'
+        }
+        const candidateCount = countCandidates()
+        if (countSubmissionDeadlineMissed() === candidateCount) {
+            return `All ${candidateCount} Candidates Missed Deadline`
+        }
+        if (getSubmissionsStatus() !== 'default') {
+            const totalCandidatesCount = Object.values(state?.candidates).length
+            let completeCandidatesCount = 0
+            Object.values(state?.candidates)?.forEach(candidate => {
+                if (checkCandidateVideoSubmitted(candidate)) {
+                    completeCandidatesCount += 1
+                }
+            })
+            return completeCandidatesCount + '/' + totalCandidatesCount
+        }
+        return 'unknown'
+    }
+
+    const isElectionLive = () => {
+        return getElectionListStatus() === 'Live'
+    }
+
+    const isElectionUrgent = () => {
+        let isUrgent = false
+        if (urgentModeratorStatuses.includes(getModeratorStatus())) {
+            isUrgent = true
+        } else if (getCandidatesStatus().includes('Candidates Missed Deadline')) {
+            // candidate string is "All X Candidates Missed Deadline"
+            isUrgent = true
+        } else if (countSubmissionDeadlineMissed() > 10) {
+            isUrgent = true
+        }
+        // todo handle dates for Script Pending?
+        return isUrgent
+    }
+
     return {
         getLatestObj: getLatestObjByDate,
         getLatestIota,
@@ -254,7 +422,12 @@ function getElectionStatusMethods(dispatch, state) {
         areQuestionsLocked,
         isModeratorReadyForCreateRecorder,
         isModeratorReadyToInvite,
+        getModeratorStatus,
+        getElectionListStatus,
+        getCandidatesStatus,
         areCandidatesReadyForInvites,
+        isElectionLive,
+        isElectionUrgent,
     }
 }
 
