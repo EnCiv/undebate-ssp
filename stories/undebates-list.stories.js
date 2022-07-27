@@ -272,5 +272,21 @@ AllCandidatesOptions.args = {
     ],
 }
 
+export const GlobalSearch = Template.bind({})
+GlobalSearch.args = {
+    electionObjs: [
+        defaultElectionObject, // Reminder sent
+        moderatorElectionObject1, // Invite Accepted
+        moderatorElectionObject2, // Invite Declined
+        moderatorElectionObject3, // Script Pending
+        moderatorElectionObject4, // Script Sent
+        moderatorElectionObject5, // Deadline Missed
+        moderatorElectionObject6, // Video Submitted
+        moderatorElectionObject7, // dash/blank
+        moderatorElectionObject8, // Video Submitted and live
+    ],
+    globalFilter: 'Sacramento',
+}
+
 export const Empty = Template.bind({})
 Empty.args = { electionObjs: [] }
