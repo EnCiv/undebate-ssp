@@ -1,5 +1,8 @@
 import getElectionStatusMethods from '../get-election-status-methods'
-
+Date.prototype.addDays = function (days) {
+    this.setDate(this.getDate() + parseInt(days))
+    return this
+}
 describe('election status methods', () => {
     describe('date completed status', () => {
         it('should be completed', () => {
@@ -957,7 +960,7 @@ describe('election status methods', () => {
                 timeline: {
                     moderatorSubmissionDeadline: {
                         0: {
-                            date: '2022-01-07T22:09:32.952Z',
+                            date: new Date().addDays(1).toISOString(),
                             sent: true,
                         },
                     },

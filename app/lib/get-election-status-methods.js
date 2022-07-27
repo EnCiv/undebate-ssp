@@ -239,10 +239,10 @@ function getElectionStatusMethods(dispatch, state) {
     }
     const getSubmissionStatus = () => {
         if (checkVideoSubmitted()) return 'submitted'
-        if (state?.timeline?.moderatorSubmissionDeadline && !checkSubmissionBeforeDeadline()) {
-            if (state?.timeline?.moderatorDeadlineReminderEmails && checkReminderSent()) return 'sent'
-            else return 'missed'
-        }
+        if (!state?.timeline?.moderatorSubmissionDeadline) return 'default'
+        if (getLatestObjByDate(state.timeline.moderatorSubmissionDeadline).date < new Date().toISOString())
+            return 'missed'
+        if (checkReminderSent()) return 'sent'
         return 'default'
     }
     const countCandidates = () => {
