@@ -26,7 +26,7 @@ import InProgress from '../svgr/election-in-progress'
 import Container from '../svgr/container'
 import InviteSent from '../svgr/sent'
 import ChevronDown from '../svgr/chevron-down'
-import { useTable, useFilters, useSortBy } from 'react-table'
+import { useTable, useFilters, useGlobalFilter, useSortBy } from 'react-table'
 
 function daysBetweenDates(date1, date2) {
     const diffInTime = date2.getTime() - date1.getTime()
@@ -61,7 +61,7 @@ const defaultColumnFilterFunction = (rows, id, filterValue) => {
     })
 }
 
-function Table({ columns, data, preFilters, onRowClicked, classes }) {
+function Table({ columns, data, preFilters, globalFilter, onRowClicked, classes }) {
     const defaultColumn = useMemo(
         () => ({
             Filter: DefaultColumnFilterComponent,
@@ -82,9 +82,11 @@ function Table({ columns, data, preFilters, onRowClicked, classes }) {
                         desc: false,
                     },
                 ],
+                globalFilter: globalFilter,
             },
         },
         useFilters,
+        useGlobalFilter,
         useSortBy
     )
 
@@ -417,7 +419,7 @@ function getDaysText(daysRemaining) {
     return daysText
 }
 
-export default function UndebatesList({ className, style, electionObjs, onDone }) {
+export default function UndebatesList({ className, style, electionObjs, globalFilter, onDone }) {
     const classes = useStyles()
     const [preFilters, setPreFilters] = useState({})
 
@@ -425,10 +427,6 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         onDone({ value: row.original.id, valid: true })
     }
 
-    /* const electionOMs = React.useMemo( */
-    /* () => electionObjs.map(obj => [obj, getElectionStatusMethods(null, obj)]), */
-    /* [electionObjs] */
-    /* ) */
     const electionOMs = electionObjs.map(obj => [obj, getElectionStatusMethods(null, obj)])
     if (!electionOMs.length) return null
 
@@ -556,9 +554,7 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
         }
     }
 
-    /* const columns = useMemo(() => [ */
     const columns = [
-        /* { Header: 'Stuff', accessor: 'electionName' }, */
         {
             Header: 'Election Name',
             accessor: 'electionName',
@@ -605,6 +601,7 @@ export default function UndebatesList({ className, style, electionObjs, onDone }
                 columns={columns}
                 data={electionObjs}
                 preFilters={preFilters}
+                globalFilter={globalFilter}
                 onRowClicked={onRowClicked}
                 classes={classes}
             />
