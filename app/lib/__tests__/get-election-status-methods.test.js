@@ -1,4 +1,4 @@
-import getElectionStatusMethods, { checkCandidateVideoSubmitted } from '../get-election-status-methods'
+import getElectionStatusMethods from '../get-election-status-methods'
 
 describe('election status methods', () => {
     describe('date completed status', () => {
@@ -236,7 +236,7 @@ describe('election status methods', () => {
                 0: { text: 'hello' },
             }
             const { checkObjCompleted } = getElectionStatusMethods()
-            expect(checkObjCompleted(obj)).toBeTruthy()
+            expect(checkObjCompleted(obj))
         })
         it('should not be complete', () => {
             const obj = {
@@ -278,35 +278,20 @@ describe('election status methods', () => {
         it('should return true', () => {
             const state = {
                 moderator: {
-                    submissions: [{ _id: '', url: 'link', date: '' }],
+                    submissions: {
+                        '62e03e0a816fe43084a26775': { _id: '62e03e0a816fe43084a26775', url: 'link', date: '' },
+                    },
                 },
             }
             const { checkVideoSubmitted } = getElectionStatusMethods(null, state)
-            expect(checkVideoSubmitted()).toBeTruthy()
+            expect(checkVideoSubmitted())
         })
         it('should return false', () => {
             const state = {
-                moderator: {
-                    submissions: [{ _id: '', url: '', date: '' }],
-                },
+                moderator: {},
             }
             const { checkVideoSubmitted } = getElectionStatusMethods(null, state)
             expect(checkVideoSubmitted()).toBe(false)
-        })
-    })
-
-    describe('check candidate video submitted', () => {
-        it('should return true', () => {
-            const candidate = {
-                submissions: [{ _id: '', url: 'link', date: '' }],
-            }
-            expect(checkCandidateVideoSubmitted(candidate)).toBeTruthy()
-        })
-        it('should return false', () => {
-            const candidate = {
-                submissions: [{ _id: '', url: '', date: '' }],
-            }
-            expect(checkCandidateVideoSubmitted(candidate)).toBeFalsy()
         })
     })
 
@@ -323,7 +308,7 @@ describe('election status methods', () => {
                 },
             }
             const { checkSubmissionBeforeDeadline } = getElectionStatusMethods(null, state)
-            expect(checkSubmissionBeforeDeadline()).toBeTruthy()
+            expect(checkSubmissionBeforeDeadline())
         })
         it('should not be submitted on time', () => {
             const state = {
@@ -915,7 +900,7 @@ describe('election status methods', () => {
                 },
             }
             const { checkReminderSent } = getElectionStatusMethods(null, state)
-            expect(checkReminderSent()).toBeTruthy()
+            expect(checkReminderSent())
         })
         it("hasn't sent the reminder yet", () => {
             const state = {
@@ -951,12 +936,14 @@ describe('election status methods', () => {
         it('returns submitted', () => {
             const state = {
                 moderator: {
-                    submissions: [{ _id: '', url: 'link', date: '' }],
+                    submissions: {
+                        '62e03e0a816fe43084a26775': { _id: '62e03e0a816fe43084a26775', url: 'link', date: '' },
+                    },
                 },
                 timeline: {
                     moderatorSubmissionDeadline: {
                         0: {
-                            date: '2022-01-07T22:09:32.952Z',
+                            date: '2022-09-07T22:09:32.952Z',
                             sent: true,
                         },
                     },

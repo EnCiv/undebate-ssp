@@ -10,6 +10,7 @@ import {
     SvgVideoSubmitted,
 } from '../components/lib/svg'
 import { ProgressBar } from '../components/election-category'
+import ObjectID from 'isomorphic-mongo-objectid'
 
 const checkDateCompleted = obj => {
     for (const key in obj) {
@@ -137,24 +138,22 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const checkVideoSubmitted = () => {
-        let result = false
-        state?.moderator?.submissions?.forEach(submission => {
-            if (submission.url !== '') {
-                result = true
-            }
-        })
-        return result
+        return !!Object.keys(state?.moderator?.submissions || {}).length
     }
+
+    const getDateOfLatestIota = iotas => {
+        const _id = getLatestIota(iotas)?._id
+        if (!_id) return undefined
+        return ObjectID(_id).getDate().toISOString()
+    }
+
     const checkSubmissionBeforeDeadline = () => {
-        let result = false
-        const submission = state?.timeline?.moderatorSubmissionDeadline
-        for (const key in submission) {
-            if (submission[key]?.date && submission[key]?.sent) {
-                result = true
-            }
-        }
-        return result
+        const submissionDate = getDateOfLatestIota(state?.moderator?.submissions)
+        if (!submissionDate) return false
+        const deadline = getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)?.date
+        return submissionDate < deadline
     }
+
     const countSubmissionAccepted = () => {
         let count = 0
         state?.moderator?.invitations?.forEach(invitation => {
@@ -199,15 +198,9 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const checkReminderSent = () => {
-        let result = false
-        const reminder = state?.timeline?.moderatorDeadlineReminderEmails
-        // eslint-disable-next-line no-restricted-syntax
-        for (const key in reminder) {
-            if (reminder[key]?.sent) {
-                result = true
-            }
-        }
-        return result
+        const reminders = state?.timeline?.moderatorDeadlineReminderEmails
+        if (!reminders) return false
+        return Object.values(reminders).some(r => r.sent)
     }
 
     const areQuestionsLocked = () => {
@@ -230,6 +223,13 @@ function getElectionStatusMethods(dispatch, state) {
         if (getQuestionsStatus() === 'completed' && checkObjCompleted(state?.script)) return 'completed'
         return 'default'
     }
+    const getRecorderStatus = () => {
+        if (getScriptStatus() === 'completed') {
+            if (Object.keys(state?.moderator?.recorders || {}).length) return 'completed'
+            else return 'ready'
+        }
+        return 'default'
+    }
     const getInvitationStatus = () => {
         if (getScriptStatus() !== 'completed') return 'default'
         if (recentInvitationStatus()?.status === 'Accepted') return 'accepted'
@@ -238,9 +238,11 @@ function getElectionStatusMethods(dispatch, state) {
         return countDayLeft()
     }
     const getSubmissionStatus = () => {
-        if (state?.timeline?.moderatorSubmissionDeadline && !checkSubmissionBeforeDeadline()) return 'missed'
-        if (state?.moderator?.submissions && checkVideoSubmitted()) return 'submitted'
-        if (state?.timeline?.moderatorDeadlineReminderEmails && checkReminderSent()) return 'sent'
+        if (checkVideoSubmitted()) return 'submitted'
+        if (state?.timeline?.moderatorSubmissionDeadline && !checkSubmissionBeforeDeadline()) {
+            if (state?.timeline?.moderatorDeadlineReminderEmails && checkReminderSent()) return 'sent'
+            else return 'missed'
+        }
         return 'default'
     }
     const countCandidates = () => {
@@ -405,6 +407,7 @@ function getElectionStatusMethods(dispatch, state) {
         recentInvitationStatus,
         getQuestionsStatus,
         getScriptStatus,
+        getRecorderStatus,
         getInvitationStatus,
         checkVideoSubmitted,
         checkSubmissionBeforeDeadline,
