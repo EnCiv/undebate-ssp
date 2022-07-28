@@ -49,7 +49,7 @@ function DefaultColumnFilterComponent({ column: { filterValue, preFilteredRows, 
 }
 const defaultColumnFilterFunction = (rows, id, filterValue) => {
     return rows.filter(row => {
-        if (typeof filterValue === 'string' || filterValue instanceof String) {
+        if ((typeof filterValue === 'string' || filterValue instanceof String) && filterValue.length) {
             return row.values[id] === filterValue
         } else if (filterValue instanceof Array) {
             if (filterValue.length) {
@@ -57,6 +57,8 @@ const defaultColumnFilterFunction = (rows, id, filterValue) => {
             } else {
                 return true
             }
+        } else {
+            return true
         }
     })
 }
@@ -76,6 +78,7 @@ function Table({ columns, data, preFilters, globalFilter, onRowClicked, classes 
             data,
             defaultColumn,
             initialState: {
+                hiddenColumns: ['State'],
                 sortBy: [
                     {
                         id: 'Date',
@@ -93,11 +96,8 @@ function Table({ columns, data, preFilters, globalFilter, onRowClicked, classes 
     useEffect(() => {
         if (state.filters) {
             state.filters.forEach(filter => {
-                // todo fix Column dropdown showing wrong value? (if still an issue after custom filter components)
-                if (filter.id === 'Status' && filter.value === 'Live') {
-                    setFilter('Status', [])
-                } else if (filter.id === 'Moderator') {
-                    setFilter('Moderator', [])
+                if (filter.id === 'State') {
+                    setFilter('State', [])
                 }
             })
         }
@@ -430,21 +430,29 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
     const electionOMs = electionObjs.map(obj => [obj, getElectionStatusMethods(null, obj)])
     if (!electionOMs.length) return null
 
-    const renderElectionNameCell = value => {
-        // todo get office count here
-        /* console.log(value) */
-        const [obj, electionMethods] = electionOMs[value.row.index]
+    const getElectionState = electionMethods => {
         let state = 'default'
         if (electionMethods.isElectionLive()) {
             state = 'Live'
         }
         if (electionMethods.isElectionUrgent()) {
             // todo create story for all candidates missed deadline
-            // todo add candidates filter value for all missed deadline
             state = 'Urgent'
         }
+        return state
+    }
+
+    const renderElectionNameCell = value => {
+        // todo get office count here
+        const [obj, electionMethods] = electionOMs[value.row.index]
+        const state = getElectionState(electionMethods)
 
         return <ElectionNameCell electionName={value.value} state={state} />
+    }
+
+    const getStateValue = (electionObj, rowIndex) => {
+        const [obj, electionMethods] = electionOMs[rowIndex]
+        return getElectionState(electionMethods)
     }
 
     const getDateValue = (electionObj, rowIndex) => {
@@ -544,17 +552,15 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
 
     const filterElectionState = ({ value, valid }) => {
         if (valid) {
-            if (value == 'Live') {
-                setPreFilters({ column: 'Status', value: value })
-            } else if (value == 'Urgent') {
-                setPreFilters({ column: 'Moderator', value: urgentModeratorStatuses })
-            } else {
-                setPreFilters({})
-            }
+            setPreFilters({ column: 'State', value: value })
         }
     }
 
     const columns = [
+        {
+            Header: 'State',
+            accessor: getStateValue,
+        },
         {
             Header: 'Election Name',
             accessor: 'electionName',
