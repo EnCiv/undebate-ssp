@@ -34,18 +34,8 @@ function daysBetweenDates(date1, date2) {
 }
 
 const DAYS_LEFT_DANGER = 3
-function DefaultColumnFilterComponent({ column: { filterValue, preFilteredRows, setFilter } }) {
-    const count = preFilteredRows.length
-
-    return (
-        <input
-            value={filterValue || ''}
-            onChange={e => {
-                setFilter(e.target.value || undefined)
-            }}
-            placeholder={`Search ${count} records...`}
-        />
-    )
+function DefaultColumnFilterComponent() {
+    return ''
 }
 const defaultColumnFilterFunction = (rows, id, filterValue) => {
     return rows.filter(row => {
@@ -72,26 +62,27 @@ function Table({ columns, data, preFilters, globalFilter, onRowClicked, classes 
         []
     )
 
-    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, state, setFilter } = useTable(
-        {
-            columns,
-            data,
-            defaultColumn,
-            initialState: {
-                hiddenColumns: ['State'],
-                sortBy: [
-                    {
-                        id: 'Date',
-                        desc: false,
-                    },
-                ],
-                globalFilter: globalFilter,
+    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, state, setFilter, setGlobalFilter } =
+        useTable(
+            {
+                columns,
+                data,
+                defaultColumn,
+                initialState: {
+                    hiddenColumns: ['State'],
+                    sortBy: [
+                        {
+                            id: 'Date',
+                            desc: false,
+                        },
+                    ],
+                    globalFilter: globalFilter,
+                },
             },
-        },
-        useFilters,
-        useGlobalFilter,
-        useSortBy
-    )
+            useFilters,
+            useGlobalFilter,
+            useSortBy
+        )
 
     useEffect(() => {
         if (state.filters) {
@@ -105,7 +96,8 @@ function Table({ columns, data, preFilters, globalFilter, onRowClicked, classes 
         if (preFilters && Object.keys(preFilters).length) {
             setFilter(preFilters['column'], preFilters['value'])
         }
-    }, [preFilters])
+        setGlobalFilter(globalFilter)
+    }, [preFilters, globalFilter])
 
     // todo fix styling of sorting arrows
     // todo check arrow direction for sorts
@@ -560,6 +552,7 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
         {
             Header: 'State',
             accessor: getStateValue,
+            disableFilters: true,
         },
         {
             Header: 'Election Name',
