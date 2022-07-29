@@ -44,7 +44,7 @@ export function Invitation(props) {
                     disabled={inputsInvalid}
                     disableOnClick
                     onDone={({ valid, value }) => {
-                        if (valid) electionMethods.sendInvitation(value)
+                        if (valid) electionMethods.sendModeratorInvitation(value)
                     }}
                 />
             </div>

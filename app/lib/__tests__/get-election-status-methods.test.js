@@ -922,6 +922,27 @@ describe('election status methods', () => {
     })
 
     describe('get submission status', () => {
+        it('is empty', () => {
+            const state = {}
+            const { getSubmissionStatus } = getElectionStatusMethods(null, state)
+            expect(getSubmissionStatus()).toBe('default')
+        })
+        it('has no deadling', () => {
+            const state = {
+                timeline: {},
+            }
+            const { getSubmissionStatus } = getElectionStatusMethods(null, state)
+            expect(getSubmissionStatus()).toBe('default')
+        })
+        it('has an empty deadline', () => {
+            const state = {
+                timeline: {
+                    moderatorSubmissionDeadline: {},
+                },
+            }
+            const { getSubmissionStatus } = getElectionStatusMethods(null, state)
+            expect(getSubmissionStatus()).toBe('default')
+        })
         it('missed a deadline', () => {
             const state = {
                 timeline: {
@@ -1158,15 +1179,15 @@ describe('election status methods', () => {
         it('should be locked since invite sent', () => {
             const state = {
                 moderator: {
-                    invitations: [
+                    invitations: {
                         // derived data, list may be empty or not present
-                        {
-                            _id: '21934788293',
+                        '62e35a8a55ee3c575821f594': {
+                            _id: '62e35a8a55ee3c575821f594',
                             sentDate: new Date(Date.now() - 3600 * 1000 * 24),
                             responseDate: new Date(Date.now() - 3600 * 1000),
                             status: 'Accepted',
                         },
-                    ],
+                    },
                 },
             }
             const { areQuestionsLocked } = getElectionStatusMethods(null, state)

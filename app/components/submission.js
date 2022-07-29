@@ -7,44 +7,18 @@ import SvgDeadlineMissed from '../svgr/deadline-missed'
 import SvgCheck from '../svgr/check'
 import SvgReminder from '../svgr/reminder-sent'
 import SvgFeelingBlue from '../svgr/feeling-blue'
+import { getLatestIota } from '../lib/get-election-status-methods'
+import ObjectID from 'isomorphic-mongo-objectid'
+import scheme from '../lib/scheme'
 
 export default function Submission(props) {
     const { className, style, electionOM } = props
     const [electionObj, electionMethods] = electionOM
     const classes = useStyles(props)
-    const emptySubmission = {
-        moderator: {
-            submissions: [],
-        },
-        timeline: {
-            moderatorDeadlineReminderEmails: {},
-            moderatorSubmissionDeadline: {},
-        },
-    }
 
-    const getSubmission = () => {
-        if (!electionObj?.moderator?.submissions) return emptySubmission
-        const sortedSubmissions = electionObj.moderator?.submissions.sort(function (a, b) {
-            return ('' + b.date).localeCompare(a.date)
-        })
-        if (sortedSubmissions === undefined) {
-            return emptySubmission
-        }
-        return sortedSubmissions[0]
-    }
-
-    const submission = getSubmission()
-    const checkVideoSubmitted = () => {
-        return submission !== undefined && submission.url !== ''
-    }
-
-    const getSubmissionStatus = () => {
-        if (submission === emptySubmission) return 'empty'
-        if (!electionMethods.checkSubmissionBeforeDeadline()) return 'missed'
-        if (checkVideoSubmitted()) return 'submitted'
-        if (electionMethods.checkReminderSent()) return 'sent'
-        return 'default'
-    }
+    const submission = getLatestIota(electionObj?.moderator?.submissions)
+    const viewer = getLatestIota(electionObj?.moderator?.viewers)
+    const src = viewer ? scheme() + process.env.HOSTNAME + viewer?.path : undefined
 
     const getSubmissionDaysLeft = () => {
         const dueDate = Date.parse(electionObj.timeline.moderatorSubmissionDeadline[0].date)
@@ -53,7 +27,8 @@ export default function Submission(props) {
     }
 
     const getSubmissionDaysAgo = () => {
-        const sentDate = Date.parse(submission.date)
+        if (!submission?._id) return 100 * 365.25 * 24 * 60 * 60
+        const sentDate = ObjectID(submission?._id).getDate()
         const currDate = Date.now()
         return Math.round((currDate - sentDate) / 86400000)
     }
@@ -64,7 +39,8 @@ export default function Submission(props) {
     let cornerPic
     let missed = false
     let empty = false
-    switch (getSubmissionStatus()) {
+    const submissionStatus = electionMethods.getSubmissionStatus()
+    switch (submissionStatus) {
         case 'missed':
             statusTitle = 'Deadline Missed!'
             prevIcon = <SvgDeadlineMissed />
@@ -97,12 +73,14 @@ export default function Submission(props) {
                 <>
                     <div className={cx(classes.card, { [classes.backgroundRed]: missed })}>
                         <div className={classes.preview}>
-                            {submission?.url && getSubmissionStatus() === 'submitted' ? (
-                                <iframe src={submission?.url} frameBorder='0'>
+                            {src ? (
+                                <iframe width={'100%'} height={'100%'} src={src} frameBorder='0' key='iframe'>
                                     {icon}
                                 </iframe>
                             ) : (
-                                <div className={classes.placeholder}>{icon}</div>
+                                <div className={classes.placeholder} key='placeholder'>
+                                    {icon}
+                                </div>
                             )}
                         </div>
                         <div className={classes.meta}>
@@ -123,14 +101,14 @@ const useStyles = createUseStyles(theme => ({
         backgroundColor: theme.backgroundColorApp,
     },
     card: {
-        width: '18.75rem',
+        maxWidth: '60rem',
         backgroundColor: theme.colorLightGray,
         padding: '.5rem',
         borderRadius: '0.625rem',
     },
     preview: {
         backgroundColor: 'white',
-        height: '10rem',
+        height: '40rem',
     },
     title: {
         paddingTop: '.5rem',

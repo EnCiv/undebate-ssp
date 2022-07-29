@@ -23,8 +23,8 @@ export default function ModeratorRecorder(props) {
 
     const getRecorderStatus = () => {
         if (viewer) return 'submitted'
-        if (!electionMethods.checkSubmissionBeforeDeadline()) return 'missed'
-        if (electionMethods.checkReminderSent()) return 'sent'
+        const date = electionObj?.timeline?.moderatorSubmissionDeadline?.[0]?.date
+        if (date < new Date().toISOString()) return 'missed'
         return 'default'
     }
 
@@ -53,14 +53,9 @@ export default function ModeratorRecorder(props) {
             missed = true
             break
         case 'submitted':
-            statusTitle = 'Video Submitted!'
+            statusTitle = 'Recorder Created!'
             statusDesc = getSubmissionDaysAgo() + ' days ago'
             prevIcon = <SvgCheck />
-            break
-        case 'sent':
-            statusTitle = 'Reminder Sent!'
-            statusDesc = getSubmissionDaysLeft() + ' days left'
-            prevIcon = <SvgReminder />
             break
         case 'default':
             statusDesc = getSubmissionDaysLeft() + ' days left'

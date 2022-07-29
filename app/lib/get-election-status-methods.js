@@ -204,13 +204,9 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const areQuestionsLocked = () => {
-        const invites = state?.moderator?.invitations
-        if (invites) {
-            for (const inv of invites) {
-                if (inv.sentDate) return true
-            }
-        }
-        return false
+        const invite = getLatestIota(state?.moderator?.invitations)
+        if (!invite) return false
+        return !!invite?.sentDate
     }
 
     const getQuestionsStatus = () => {
@@ -240,7 +236,7 @@ function getElectionStatusMethods(dispatch, state) {
     const getSubmissionStatus = () => {
         if (checkVideoSubmitted()) return 'submitted'
         if (!state?.timeline?.moderatorSubmissionDeadline) return 'default'
-        if (getLatestObjByDate(state.timeline.moderatorSubmissionDeadline).date < new Date().toISOString())
+        if (getLatestObjByDate(state.timeline.moderatorSubmissionDeadline)?.date < new Date().toISOString())
             return 'missed'
         if (checkReminderSent()) return 'sent'
         return 'default'

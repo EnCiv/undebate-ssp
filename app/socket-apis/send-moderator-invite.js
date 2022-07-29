@@ -74,6 +74,6 @@ export default async function sendModeratorInvite(id, cb) {
                 logger.error("send-moderator-invite couldn't create Iota for ModeratorEmailSent", error)
             }
         }
-        cb(result.messageId)
+        cb && cb(result.messageId)
     })
 }
