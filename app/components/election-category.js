@@ -2,40 +2,10 @@
 
 import React from 'react'
 import { createUseStyles } from 'react-jss'
-import {
-    SvgAccepted,
-    SvgCompleted,
-    SvgDeadlineMissed,
-    SvgDeclined,
-    SvgLock,
-    SvgReminderSent,
-    SvgSent,
-    SvgVideoSubmitted,
-} from './lib/svg'
+import { statusInfoEnum } from '../lib/get-election-status-methods'
+import CandidateStatusTable from './candidate-status-table'
 
-// TODO: Consider moving
-export const statusInfoEnum = {
-    completed: { icon: <SvgCompleted /> },
-    pending: { text: 'Pending…' },
-    daysLeft: v => ({
-        text: `${v} days left…`,
-    }),
-    reminderSent: {
-        icon: <SvgReminderSent />,
-        text: 'Reminder Sent',
-    },
-    percentComplete: v => ({
-        text: <ProgressBar percentDone={v} />,
-    }),
-    videoSubmitted: { icon: <SvgVideoSubmitted />, text: 'Video Submitted' },
-    deadlineMissed: { icon: <SvgDeadlineMissed />, text: 'Deadline Missed' },
-    accepted: { icon: <SvgAccepted />, text: 'Accepted' },
-    declined: { icon: <SvgDeclined />, text: 'Declined' },
-    sent: { icon: <SvgSent />, text: 'Sent' },
-    locked: { icon: <SvgLock /> },
-}
-
-function ProgressBar(props) {
+export function ProgressBar(props) {
     const classes = useStyles(props)
     return <div className={classes.progressBar} />
 }
@@ -59,7 +29,6 @@ function ElectionCategory(props) {
     }
 
     const cleanStatusObj = toCleanStatusObj(statusObjs)
-
     // What shows up as the status text based on the values in cleanStatusObj:
     // If a value === false, don't show
     // Else if the key is unknown and its value === true, show key
@@ -95,26 +64,7 @@ function ElectionCategory(props) {
         })
 
     const tableArray = statusArray.filter(v => Array.isArray(v))
-    const statusTable = tableArray.length ? (
-        <table>
-            <thead>
-                <tr>
-                    {tableArray.map(v => (
-                        <th className={classes.tableItem}>{v[0]}</th>
-                    ))}
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    {tableArray.map(v => (
-                        <td className={classes.tableItem}>{v[1]}</td>
-                    ))}
-                </tr>
-            </tbody>
-        </table>
-    ) : (
-        ''
-    )
+
     const statusTextArray = statusArray
         .filter(v => React.isValidElement(v))
         .reduce((previous, v, index, source) => {
@@ -129,7 +79,7 @@ function ElectionCategory(props) {
         <div className={`${classes.category} ${className}`}>
             <span className={classes.categoryText}>{categoryName}</span>
             {statusTextArray}
-            {statusTable}
+            <CandidateStatusTable tableArray={tableArray} />
         </div>
     )
 }
@@ -198,10 +148,6 @@ const useStyles = createUseStyles(theme => ({
         width: '100%',
         border: 'none',
         marginTop: '.1rem',
-    },
-    tableItem: {
-        textAlign: 'center',
-        padding: '0px .2rem',
     },
     progressBar: props => {
         const { percentDone } = props

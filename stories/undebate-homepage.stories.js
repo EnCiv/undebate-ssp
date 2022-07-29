@@ -182,18 +182,18 @@ const defaultElectionObject = {
 }
 let defaultElectionObject1 = cloneDeep(defaultElectionObject)
 defaultElectionObject1.id = '627e9dbd9ec85b0e440b6a3d'
-;(defaultElectionObject1.organizationName = 'San Diego Government Elections'),
-    (defaultElectionObject1.electionName = 'SD County Supervisor')
+defaultElectionObject1.organizationName = 'San Diego Government Elections'
+defaultElectionObject1.electionName = 'SD County Supervisor'
 
 let defaultElectionObject2 = cloneDeep(defaultElectionObject)
 defaultElectionObject2.id = '627ecafe4c12b659a8b954de'
-;(defaultElectionObject2.organizationName = 'San Diego Government Elections'),
-    (defaultElectionObject2.electionName = 'SD City Council')
+defaultElectionObject2.organizationName = 'San Diego Government Elections'
+defaultElectionObject2.electionName = 'SD City Council'
 
 let defaultElectionObject3 = cloneDeep(defaultElectionObject)
 defaultElectionObject3.id = '627ecafe4c12b659a8b954de'
-;(defaultElectionObject3.organizationName = 'San Diego Government Elections'),
-    (defaultElectionObject3.electionName = 'SD City Council')
+defaultElectionObject3.organizationName = 'San Diego Government Elections'
+defaultElectionObject3.electionName = 'SD City Council'
 
 export const WithData = Template.bind({})
 WithData.args = {
