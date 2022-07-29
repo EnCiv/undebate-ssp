@@ -44,23 +44,31 @@ function UndebatesHeaderBar(props) {
     }
 
     const closeSearch = () => {
+        handleSearchChange('')
         setIsSearching(false)
     }
 
-    const handleSearchChange = e => {
-        setSearchValue(e.target.value)
-        onDone({ valid: true, value: e.target.value })
+    const handleSearchChange = value => {
+        setSearchValue(value)
+        onDone({ valid: true, value: value })
     }
 
     const renderSearchBar = () => {
-        // todo
         return (
-            <>
-                <input autoFocus type={'text'} value={searchValue} onChange={handleSearchChange} ref={searchInputRef} />
+            <span className={classes.searchBar}>
+                <input
+                    autoFocus
+                    type={'text'}
+                    placeholder={'Search'}
+                    value={searchValue}
+                    className={classes.searchInput}
+                    onChange={e => handleSearchChange(e.target.value)}
+                    ref={searchInputRef}
+                />
                 <MagnifyingGlassSVG
                     className={cx(classes.svg, isSearching ? classes.searchIcon : classes.searchButton)}
                 />
-            </>
+            </span>
         )
     }
 
@@ -85,16 +93,35 @@ export default UndebatesHeaderBar
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
     undebatesHeader: {
+        height: '9.125rem',
         display: 'flex',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        padding: '1rem 1rem 1rem 1rem',
+        padding: '0 1rem',
     },
     buttonGroup: {
         display: 'flex',
         justifyContent: 'space-around',
         gap: '2rem',
         alignItems: 'center',
+    },
+    searchBar: {
+        backgroundColor: 'white',
+        height: '4rem',
+        borderRadius: '2rem',
+        display: 'flex',
+        alignItems: 'center',
+    },
+    searchInput: {
+        marginLeft: '1.5rem',
+        border: 'none',
+        fontSize: '1.125rem',
+        outline: 'none',
+        minWidth: '20rem',
+        maxWidth: '44rem',
+    },
+    searchIcon: {
+        marginRight: '1.5rem',
     },
     searchButton: {
         cursor: 'pointer',

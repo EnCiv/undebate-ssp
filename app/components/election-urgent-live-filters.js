@@ -24,20 +24,22 @@ function ElectionUrgentLiveFilters({ onDone, style, className, filterState = '' 
     }
 
     return (
-        <div className={cx(className, classes.electionUrgentLiveFilter)} style={style}>
-            <div className={classes.circleContainer} title='urgent'>
-                <SvgElectionUrgentFilter
-                    className={cx(className, classes.circle, filter === 'Urgent' && classes.selected)}
-                    onClick={handleUrgentFilterSelection}
-                />
-                <span className={classes.tooltiptext}>Urgent</span>
-            </div>
-            <div className={classes.circleContainer} title='live'>
-                <SvgElectionLiveFilter
-                    className={cx(className, classes.circle, filter === 'Live' && classes.selected)}
-                    onClick={handleLiveFilterSelection}
-                />
-                <span className={classes.tooltiptext}>Live</span>
+        <div className={cx(className, classes.consrtainer)} style={style}>
+            <div className={cx(className, classes.electionUrgentLiveFilter)}>
+                <div className={classes.circleContainer} title='urgent'>
+                    <SvgElectionUrgentFilter
+                        className={cx(classes.circle, filter === 'Urgent' && classes.selected)}
+                        onClick={handleUrgentFilterSelection}
+                    />
+                    <span className={classes.tooltiptext}>Urgent</span>
+                </div>
+                <div className={classes.circleContainer} title='live'>
+                    <SvgElectionLiveFilter
+                        className={cx(classes.circle, filter === 'Live' && classes.selected)}
+                        onClick={handleLiveFilterSelection}
+                    />
+                    <span className={classes.tooltiptext}>Live</span>
+                </div>
             </div>
         </div>
     )
@@ -49,6 +51,7 @@ const useStyles = createUseStyles(theme => ({
         flexDirection: 'column',
         padding: 0,
         margin: 0,
+        position: 'relative',
     },
     circle: {
         opacity: '0.7',

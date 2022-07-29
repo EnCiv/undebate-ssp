@@ -69,7 +69,5 @@ export default function UndebateHomepage(props) {
 
 const useStyles = createUseStyles(theme => ({
     undebateHomePage: {},
-    header: {
-        height: '100%',
-    },
+    header: {},
 }))

@@ -595,7 +595,7 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
 
     return (
         <div className={cx(className, classes.container)} style={style}>
-            <ElectionUrgentLiveFilters onDone={filterElectionState} />
+            <ElectionUrgentLiveFilters className={classes.electionLiveFilters} onDone={filterElectionState} />
             <Table
                 columns={columns}
                 data={electionObjs}
@@ -613,10 +613,17 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
+        position: 'relative',
+    },
+    electionLiveFilters: {
+        left: '1rem',
+        position: 'absolute',
+        zIndex: '500',
     },
     electionTable: {
         borderSpacing: '0',
-        width: '90%',
+        width: '100%',
+        padding: '0 2.5rem',
         height: '100%',
         '& $tr': {
             '&:first-child td:first-child, &:first-child $electionStateIndicator': {
@@ -638,7 +645,7 @@ const useStyles = createUseStyles(theme => ({
     th: {
         fontWeight: '500',
         textAlign: 'left',
-        paddingLeft: '2rem',
+        paddingLeft: '3.5rem',
     },
     tr: {
         cursor: 'pointer',
