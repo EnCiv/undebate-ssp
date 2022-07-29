@@ -96,7 +96,7 @@ const iotas = [
             office: 'Moderator',
         },
         component: {
-            component: 'undebateCreator',
+            component: 'UndebateCreator',
         },
         path: '/moderator-recorder',
         parentId: electionObjId,

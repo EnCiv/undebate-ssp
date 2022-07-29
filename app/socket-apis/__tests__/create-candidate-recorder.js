@@ -108,6 +108,9 @@ test('it should create a viewer', done => {
                           Array [
                             "Should we try to fix income inequality?",
                           ],
+                          Array [
+                            "Thank You",
+                          ],
                         ],
                         "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
                         "name": "Bill Smith",
@@ -180,7 +183,7 @@ test('it should create a recorder', async () => {
                 "agenda": Array [
                   Array [
                     "How this works",
-                    "Placeholder",
+                    "Record placeholder",
                   ],
                   Array [
                     "What is your favorite color?",
@@ -190,6 +193,9 @@ test('it should create a recorder', async () => {
                   ],
                   Array [
                     "Should we try to fix income inequality?",
+                  ],
+                  Array [
+                    "Thank You",
                   ],
                 ],
                 "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
@@ -273,7 +279,7 @@ test('it should create a recorder', async () => {
                 "agenda": Array [
                   Array [
                     "How this works",
-                    "Placeholder",
+                    "Record placeholder",
                   ],
                   Array [
                     "What is your favorite color?",
@@ -283,6 +289,9 @@ test('it should create a recorder', async () => {
                   ],
                   Array [
                     "Should we try to fix income inequality?",
+                  ],
+                  Array [
+                    "Thank You",
                   ],
                 ],
                 "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
