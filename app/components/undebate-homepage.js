@@ -13,6 +13,7 @@ export default function UndebateHomepage(props) {
     const [electionObjs, setElectionObjs] = useState([])
     const classes = useStyles(props)
     const [selectedId, setSelectedId] = useState('')
+    const [searchValue, setSearchValue] = useState('')
     const index = selectedId ? electionObjs.findIndex(eObj => eObj.id === selectedId) : -1
     const electionNames = useMemo(() => electionObjs.map(obj => obj.electionName), [electionObjs])
     useEffect(() => {
@@ -48,15 +49,12 @@ export default function UndebateHomepage(props) {
                                 electionOM={[, { createNew }]}
                                 className={classes.header}
                                 user={user}
-                                onDone={({ valid, value }) =>
-                                    setSelectedId(
-                                        electionObjs.find(obj => obj.electionName === electionNames[value]).id
-                                    )
-                                }
+                                onDone={({ valid, value }) => setSearchValue(value)}
                             />
                             <UndebatesList
                                 electionObjs={electionObjs}
                                 onDone={({ value, valid }) => setSelectedId(value)}
+                                globalFilter={searchValue}
                                 key='list'
                             />
                         </>
@@ -71,7 +69,5 @@ export default function UndebateHomepage(props) {
 
 const useStyles = createUseStyles(theme => ({
     undebateHomePage: {},
-    header: {
-        height: '100%',
-    },
+    header: {},
 }))

@@ -278,7 +278,9 @@ describe('election status methods', () => {
         it('should return true', () => {
             const state = {
                 moderator: {
-                    submissions: [{ _id: '', url: 'link', date: '' }],
+                    submissions: {
+                        '62e03e0a816fe43084a26775': { _id: '62e03e0a816fe43084a26775', url: 'link', date: '' },
+                    },
                 },
             }
             const { checkVideoSubmitted } = getElectionStatusMethods(null, state)
@@ -286,9 +288,7 @@ describe('election status methods', () => {
         })
         it('should return false', () => {
             const state = {
-                moderator: {
-                    submissions: [{ _id: '', url: '', date: '' }],
-                },
+                moderator: {},
             }
             const { checkVideoSubmitted } = getElectionStatusMethods(null, state)
             expect(checkVideoSubmitted()).toBe(false)
@@ -936,12 +936,14 @@ describe('election status methods', () => {
         it('returns submitted', () => {
             const state = {
                 moderator: {
-                    submissions: [{ _id: '', url: 'link', date: '' }],
+                    submissions: {
+                        '62e03e0a816fe43084a26775': { _id: '62e03e0a816fe43084a26775', url: 'link', date: '' },
+                    },
                 },
                 timeline: {
                     moderatorSubmissionDeadline: {
                         0: {
-                            date: '2022-01-07T22:09:32.952Z',
+                            date: '2022-09-07T22:09:32.952Z',
                             sent: true,
                         },
                     },
