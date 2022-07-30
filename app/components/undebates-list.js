@@ -104,27 +104,35 @@ function Table({ columns, data, preFilters, globalFilter, onRowClicked, classes 
     // todo use ChevronDown for filters, and flip it for when the filter is visible
     return (
         <table {...getTableProps()} className={classes.electionTable}>
-            <thead>
+            <thead className={classes.thead}>
                 {headerGroups.map(headerGroup => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map(column => (
                             <th className={cx(classes.th, classes.secondaryText)}>
-                                <div {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                    <span>
+                                <div className={classes.thDiv}>
+                                    <span
+                                        className={classes.thContent}
+                                        {...column.getHeaderProps(column.getSortByToggleProps())}
+                                    >
                                         {column.isSorted ? (
                                             column.isSortedDesc ? (
-                                                <ArrowSvg style={{ transform: 'rotate(180deg)' }} />
+                                                <ArrowSvg
+                                                    className={classes.basicIcon}
+                                                    style={{ transform: 'rotate(180deg)' }}
+                                                />
                                             ) : (
-                                                <ArrowSvg />
+                                                <ArrowSvg className={classes.basicIcon} />
                                             )
                                         ) : (
                                             ''
                                         )}
-                                    </span>
-                                    {' ' + column.render('Header') + ' '}
-                                </div>
 
-                                <div>{column.canFilter ? column.render('Filter') : null}</div>
+                                        <span className={classes.headerText}>{column.render('Header')}</span>
+                                    </span>
+                                    <span className={classes.thContent}>
+                                        {column.canFilter ? column.render('Filter') : null}
+                                    </span>
+                                </div>
                             </th>
                         ))}
                     </tr>
@@ -310,8 +318,14 @@ function StatusCell({ className, statusText, daysRemaining }) {
     )
 }
 
+function DropdownFilter({ values, onSetFilter }) {
+    const classes = useStyles()
+    const [isDroppedDown, setIsDroppedDown] = useState(false)
+
+    return isDroppedDown ? '' : <ChevronDown className={classes.basicIcon} />
+}
+
 function DateFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
-    // todo fix issue where clicking filter causes sorting
     const options = React.useMemo(() => {
         const options = new Set()
         allDateFilterOptions.forEach(status => {
@@ -321,14 +335,15 @@ function DateFilter({ column: { filterValue, setFilter, preFilteredRows, id } })
     }, [id, preFilteredRows])
 
     return (
-        <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
-            <option value=''>All</option>
-            {options.map((option, i) => (
-                <option key={i} value={option}>
-                    {option}
-                </option>
-            ))}
-        </select>
+        <DropdownFilter />
+        /* <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
+         *     <option value=''>All</option>
+         *     {options.map((option, i) => (
+         *         <option key={i} value={option}>
+         *             {option}
+         *         </option>
+         *     ))}
+         * </select> */
     )
 }
 
@@ -642,10 +657,27 @@ const useStyles = createUseStyles(theme => ({
             },
         },
     },
+    thead: {
+        height: '3rem',
+    },
     th: {
         fontWeight: '500',
         textAlign: 'left',
         paddingLeft: '3.5rem',
+    },
+    thDiv: {
+        display: 'flex',
+    },
+    thContent: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    headerText: {
+        padding: '0 0.75rem',
+    },
+    basicIcon: {
+        height: theme.iconSize,
+        width: theme.iconSize,
     },
     tr: {
         cursor: 'pointer',
