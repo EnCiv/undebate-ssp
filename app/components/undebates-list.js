@@ -108,22 +108,22 @@ function Table({ columns, data, preFilters, globalFilter, onRowClicked, classes 
                 {headerGroups.map(headerGroup => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map(column => (
-                            <th
-                                {...column.getHeaderProps(column.getSortByToggleProps())}
-                                className={cx(classes.th, classes.secondaryText)}
-                            >
-                                <span>
-                                    {column.isSorted ? (
-                                        column.isSortedDesc ? (
-                                            <ArrowSvg style={{ transform: 'rotate(180deg)' }} />
+                            <th className={cx(classes.th, classes.secondaryText)}>
+                                <div {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                    <span>
+                                        {column.isSorted ? (
+                                            column.isSortedDesc ? (
+                                                <ArrowSvg style={{ transform: 'rotate(180deg)' }} />
+                                            ) : (
+                                                <ArrowSvg />
+                                            )
                                         ) : (
-                                            <ArrowSvg />
-                                        )
-                                    ) : (
-                                        ''
-                                    )}
-                                </span>
-                                {' ' + column.render('Header') + ' '}
+                                            ''
+                                        )}
+                                    </span>
+                                    {' ' + column.render('Header') + ' '}
+                                </div>
+
                                 <div>{column.canFilter ? column.render('Filter') : null}</div>
                             </th>
                         ))}
@@ -716,6 +716,7 @@ const useStyles = createUseStyles(theme => ({
     dangerZoneDays: {
         color: theme.colorWarning,
     },
+    statusCell: {},
     statusCellLive: {
         fontWeight: '600',
         color: theme.colorSubmitted,
@@ -733,9 +734,6 @@ const useStyles = createUseStyles(theme => ({
         height: '100%',
         fontWeight: '500',
         paddingLeft: '2rem',
-    },
-    electionStateFilters: {
-        // todo fix styling of ElectionUrgentLiveFilters
     },
     electionStateIndicator: {
         width: '0.625rem',
