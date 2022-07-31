@@ -99,9 +99,6 @@ function Table({ columns, data, preFilters, globalFilter, onRowClicked, classes 
         setGlobalFilter(globalFilter)
     }, [preFilters, globalFilter])
 
-    // todo fix styling of sorting arrows
-    // todo check arrow direction for sorts
-    // todo use ChevronDown for filters, and flip it for when the filter is visible
     return (
         <table {...getTableProps()} className={classes.electionTable}>
             <thead className={classes.thead}>
@@ -325,10 +322,26 @@ function StatusCell({ className, statusText, daysRemaining }) {
 function DropdownFilter({ values, selectedValues, onItemClick }) {
     const classes = useStyles()
     const [isDroppedDown, setIsDroppedDown] = useState(false)
+    const dropdownRef = React.createRef()
+
+    useEffect(() => {
+        if (isDroppedDown) {
+            const handleClick = e => {
+                if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                    setIsDroppedDown(false)
+                }
+            }
+
+            document.addEventListener('mousedown', handleClick)
+
+            return () => {
+                document.removeEventListener('mousedown', handleClick)
+            }
+        }
+    }, [dropdownRef])
 
     // todo styling
     // todo Select All option for multiselect?
-    // todo click off closes this?
     return isDroppedDown ? (
         <>
             <ChevronDown
@@ -336,7 +349,7 @@ function DropdownFilter({ values, selectedValues, onItemClick }) {
                 className={cx(classes.basicIcon, classes.clickable)}
                 style={{ transform: 'rotate(180deg)' }}
             />
-            <div>
+            <div ref={dropdownRef}>
                 {['Clear'].concat(values).map(value => {
                     return (
                         <div style={{ backgroundColor: selectedValues[value] ? 'blue' : 'red' }} onClick={onItemClick}>
