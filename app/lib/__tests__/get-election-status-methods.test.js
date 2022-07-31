@@ -263,17 +263,25 @@ describe('election status methods', () => {
     })
     describe('recent invitation status', () => {
         it('should get the latest invitation which is declined', () => {
-            const expected = { _id: 'id', responseDate: new Date(Date.now() - 1000), status: 'Declined' }
+            const expected = {
+                _id: '62e5ffa31a471334904bae62',
+                responseDate: '2022-07-31T04:08:05.940Z',
+                status: 'Declined',
+            }
             const state = {
                 moderator: {
-                    invitations: [
-                        { _id: 'id', responseDate: new Date(Date.now() - 2000), status: 'Accepted' },
+                    invitations: {
+                        '62e5ffa31a471334904bae62': {
+                            _id: '62e5ffa31a471334904bae62',
+                            responseDate: '2022-07-31T04:08:05.940Z',
+                            status: 'Declined',
+                        },
                         expected,
-                    ],
+                    },
                 },
             }
             const { recentInvitationStatus } = getElectionStatusMethods(null, state)
-            expect(recentInvitationStatus()).toBe(expected)
+            expect(recentInvitationStatus()).toStrictEqual(expected)
         })
     })
 
@@ -333,10 +341,18 @@ describe('election status methods', () => {
         it('should be 2 accepted', () => {
             const state = {
                 moderator: {
-                    invitations: [
-                        { _id: 'id', responseDate: new Date(Date.now() - 2000), status: 'Accepted' },
-                        { _id: 'id', responseDate: new Date(Date.now() - 2000), status: 'Accepted' },
-                    ],
+                    invitations: {
+                        '62e602be60ee8944086c42b7': {
+                            _id: '62e602be60ee8944086c42b7',
+                            responseDate: new Date(Date.now() - 2000),
+                            status: 'Accepted',
+                        },
+                        '62e602f73d79581224b85edf': {
+                            _id: '62e602f73d79581224b85edf',
+                            responseDate: new Date(Date.now() - 2000),
+                            status: 'Accepted',
+                        },
+                    },
                 },
             }
             const { countSubmissionAccepted } = getElectionStatusMethods(null, state)
@@ -345,10 +361,18 @@ describe('election status methods', () => {
         it('should be 0 accepted', () => {
             const state = {
                 moderator: {
-                    invitations: [
-                        { _id: 'id', responseDate: new Date(Date.now() - 2000), status: 'Declined' },
-                        { _id: 'id', responseDate: new Date(Date.now() - 2000), status: 'Declined' },
-                    ],
+                    invitations: {
+                        '62e602be60ee8944086c42b7': {
+                            _id: '62e602be60ee8944086c42b7',
+                            responseDate: new Date(Date.now() - 2000),
+                            status: 'Declined',
+                        },
+                        '62e602f73d79581224b85edf': {
+                            _id: '62e602f73d79581224b85edf',
+                            responseDate: new Date(Date.now() - 2000),
+                            status: 'Declined',
+                        },
+                    },
                 },
             }
             const { countSubmissionAccepted } = getElectionStatusMethods(null, state)
@@ -360,10 +384,18 @@ describe('election status methods', () => {
         it('should be 2 declined', () => {
             const state = {
                 moderator: {
-                    invitations: [
-                        { _id: 'id', responseDate: new Date(Date.now() - 2000), status: 'Declined' },
-                        { _id: 'id', responseDate: new Date(Date.now() - 2000), status: 'Declined' },
-                    ],
+                    invitations: {
+                        '62e602be60ee8944086c42b7': {
+                            _id: '62e602be60ee8944086c42b7',
+                            responseDate: new Date(Date.now() - 2000),
+                            status: 'Declined',
+                        },
+                        '62e602f73d79581224b85edf': {
+                            _id: '62e602f73d79581224b85edf',
+                            responseDate: new Date(Date.now() - 2000),
+                            status: 'Declined',
+                        },
+                    },
                 },
             }
             const { countSubmissionDeclined } = getElectionStatusMethods(null, state)
@@ -372,10 +404,18 @@ describe('election status methods', () => {
         it('should be 0 declined', () => {
             const state = {
                 moderator: {
-                    invitations: [
-                        { _id: 'id', responseDate: new Date(Date.now() - 2000), status: 'Accepted' },
-                        { _id: 'id', responseDate: new Date(Date.now() - 2000), status: 'Accepted' },
-                    ],
+                    invitations: {
+                        '62e602be60ee8944086c42b7': {
+                            _id: '62e602be60ee8944086c42b7',
+                            responseDate: new Date(Date.now() - 2000),
+                            status: 'Accepted',
+                        },
+                        '62e602f73d79581224b85edf': {
+                            _id: '62e602f73d79581224b85edf',
+                            responseDate: new Date(Date.now() - 2000),
+                            status: 'Accepted',
+                        },
+                    },
                 },
             }
             const { countSubmissionDeclined } = getElectionStatusMethods(null, state)
@@ -655,7 +695,15 @@ describe('election status methods', () => {
                 questions: {},
                 script: {},
                 moderator: {
-                    invitations: [{ _id: 'id', responseDate: new Date(Date.now() - 2000), status: 'Accepted' }],
+                    invitations: {
+                        // derived data, list may be empty or not present
+                        '62e35a8a55ee3c575821f594': {
+                            _id: '62e35a8a55ee3c575821f594',
+                            sentDate: new Date(Date.now() - 3600 * 1000 * 24),
+                            responseDate: new Date(Date.now() - 3600 * 1000),
+                            status: 'Accepted',
+                        },
+                    },
                 },
                 timeline: {},
             }
@@ -679,7 +727,15 @@ describe('election status methods', () => {
                     },
                 },
                 moderator: {
-                    invitations: [{ _id: 'id', responseDate: new Date(Date.now() - 2000), status: 'Accepted' }],
+                    invitations: {
+                        // derived data, list may be empty or not present
+                        '62e35a8a55ee3c575821f594': {
+                            _id: '62e35a8a55ee3c575821f594',
+                            sentDate: new Date(Date.now() - 3600 * 1000 * 24),
+                            responseDate: new Date(Date.now() - 3600 * 1000),
+                            status: 'Accepted',
+                        },
+                    },
                 },
                 timeline: {
                     moderatorDeadlineReminderEmails: {
@@ -736,7 +792,15 @@ describe('election status methods', () => {
                     },
                 },
                 moderator: {
-                    invitations: [{ _id: 'id', responseDate: new Date(Date.now() - 2000), status: 'Declined' }],
+                    invitations: {
+                        // derived data, list may be empty or not present
+                        '62e35a8a55ee3c575821f594': {
+                            _id: '62e35a8a55ee3c575821f594',
+                            sentDate: new Date(Date.now() - 3600 * 1000 * 24),
+                            responseDate: new Date(Date.now() - 3600 * 1000),
+                            status: 'Declined',
+                        },
+                    },
                 },
                 timeline: {
                     moderatorDeadlineReminderEmails: {
@@ -793,7 +857,13 @@ describe('election status methods', () => {
                     },
                 },
                 moderator: {
-                    invitations: [{ _id: 'id', sentDate: new Date(Date.now() - 3600 * 1000 * 24) }],
+                    invitations: {
+                        // derived data, list may be empty or not present
+                        '62e35a8a55ee3c575821f594': {
+                            _id: '62e35a8a55ee3c575821f594',
+                            sentDate: new Date(Date.now() - 3600 * 1000 * 24),
+                        },
+                    },
                 },
                 timeline: {
                     moderatorDeadlineReminderEmails: {
@@ -1021,12 +1091,13 @@ describe('election status methods', () => {
                 electionDate: new Date(Date.now() + 3600 * 1000 * 24),
                 candidates: {},
                 moderator: {
-                    invitations: [
-                        {
-                            _id: 'id',
+                    invitations: {
+                        // derived data, list may be empty or not present
+                        '62e35a8a55ee3c575821f594': {
+                            _id: '62e35a8a55ee3c575821f594',
                             sentDate: new Date(Date.now() - 3600 * 1000 * 24),
                         },
-                    ],
+                    },
                 },
             }
             const { getElectionTableStatus } = getElectionStatusMethods(null, state)
@@ -1037,7 +1108,7 @@ describe('election status methods', () => {
                 electionDate: new Date(Date.now() + 3600 * 1000 * 24),
                 candidates: {},
                 moderator: {
-                    invitations: [],
+                    invitations: {},
                 },
             }
             const { getElectionTableStatus } = getElectionStatusMethods(null, state)
@@ -1063,12 +1134,31 @@ describe('election status methods', () => {
                     },
                 },
                 moderator: {
-                    invitations: [
-                        { _id: 'id', sentDate: new Date(Date.now() - 2000) },
-                        { _id: 'id', responseDate: new Date(Date.now() - 4000), status: 'Declined' },
-                        { _id: 'id', responseDate: new Date(Date.now() - 4000), status: 'Accepted' },
-                        { _id: 'id', responseDate: new Date(Date.now() - 4000), status: 'Accepted' },
-                    ],
+                    invitations: {
+                        // derived data, list may be empty or not present
+                        '62e35a8a55ee3c575821f594': {
+                            _id: '62e35a8a55ee3c575821f594',
+                            sentDate: new Date(Date.now() - 2000),
+                        },
+                        '62e607a9c1592e09b44fd1e1': {
+                            _id: '62e607a9c1592e09b44fd1e1',
+                            sentDate: new Date(Date.now() - 2000),
+                            responseDate: new Date(Date.now() - 4000),
+                            status: 'Declined',
+                        },
+                        '62e607d4c40ef115f4e47c17': {
+                            _id: '62e607d4c40ef115f4e47c17',
+                            sentDate: new Date(Date.now() - 2000),
+                            responseDate: new Date(Date.now() - 4000),
+                            status: 'Accepted',
+                        },
+                        '62e607f6fc3ef52410c64bd5': {
+                            _id: '62e607f6fc3ef52410c64bd5',
+                            sentDate: new Date(Date.now() - 2000),
+                            responseDate: new Date(Date.now() - 4000),
+                            status: 'Accepted',
+                        },
+                    },
                 },
                 timeline: {
                     moderatorDeadlineReminderEmails: {
@@ -1130,11 +1220,18 @@ describe('election status methods', () => {
                     },
                 },
                 moderator: {
-                    invitations: [
-                        { _id: 'id', responseDate: new Date(Date.now() - 4000), status: 'Declined' },
-                        { _id: 'id', responseDate: new Date(Date.now() - 4000), status: 'Accepted' },
-                        { _id: 'id', responseDate: new Date(Date.now() - 4000), status: 'Accepted' },
-                    ],
+                    invitations: {
+                        // derived data, list may be empty or not present
+                        '62e607a9c1592e09b44fd1e1': {
+                            _id: '62e607a9c1592e09b44fd1e1',
+                        },
+                        '62e607d4c40ef115f4e47c17': {
+                            _id: '62e607d4c40ef115f4e47c17',
+                        },
+                        '62e607f6fc3ef52410c64bd5': {
+                            _id: '62e607f6fc3ef52410c64bd5',
+                        },
+                    },
                 },
                 timeline: {
                     moderatorDeadlineReminderEmails: {
@@ -1196,7 +1293,7 @@ describe('election status methods', () => {
         it('should not be locked since no invites', () => {
             let state = {
                 moderator: {
-                    invitations: [{ _id: '', sentDate: null }],
+                    invitations: {},
                 },
             }
             const { areQuestionsLocked } = getElectionStatusMethods(null, state)

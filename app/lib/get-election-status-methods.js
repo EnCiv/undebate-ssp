@@ -104,16 +104,7 @@ export const checkCandidateVideoSubmitted = candidate => {
 }
 
 function getElectionStatusMethods(dispatch, state) {
-    const recentInvitationStatus = () => {
-        if (!state?.moderator?.invitations || !state?.moderator?.invitations[0]) return {}
-        let recent = state?.moderator?.invitations[0]
-        state?.moderator?.invitations.forEach(invitation => {
-            if (new Date(invitation?.responseDate).getTime() > new Date(recent?.responseDate).getTime()) {
-                recent = invitation
-            }
-        })
-        return recent
-    }
+    const recentInvitationStatus = () => getLatestIota(state?.moderator?.invitations)
     const checkTimelineCompleted = () => {
         return (
             checkDateCompleted(state?.timeline?.moderatorDeadlineReminderEmails) &&
@@ -154,24 +145,17 @@ function getElectionStatusMethods(dispatch, state) {
         return submissionDate < deadline
     }
 
-    const countSubmissionAccepted = () => {
-        let count = 0
-        state?.moderator?.invitations?.forEach(invitation => {
-            if (invitation?.status === 'Accepted') {
-                count += 1
-            }
-        })
-        return count
-    }
-    const countSubmissionDeclined = () => {
-        let count = 0
-        state?.moderator?.invitations?.forEach(invitation => {
-            if (invitation?.status === 'Declined') {
-                count += 1
-            }
-        })
-        return count
-    }
+    const countSubmissionAccepted = () =>
+        Object.values(state?.moderator?.invitations || {}).reduce(
+            (count, invitation) => (invitation.status === 'Accepted' ? count + 1 : count),
+            0
+        )
+
+    const countSubmissionDeclined = () =>
+        Object.values(state?.moderator?.invitations || {}).reduce(
+            (count, invitation) => (invitation.status === 'Declined' ? count + 1 : count),
+            0
+        )
 
     const countSubmissionReminderSet = () => {
         // todo is this supposed to be candidateDeadlineReminderEmails?
@@ -197,15 +181,11 @@ function getElectionStatusMethods(dispatch, state) {
         return count
     }
 
-    const checkReminderSent = () => {
-        const reminders = state?.timeline?.moderatorDeadlineReminderEmails
-        if (!reminders) return false
-        return Object.values(reminders).some(r => r.sent)
-    }
+    const checkReminderSent = () =>
+        Object.values(state?.timeline?.moderatorDeadlineReminderEmails || {}).some(r => r.sent)
 
     const areQuestionsLocked = () => {
         const invite = getLatestIota(state?.moderator?.invitations)
-        if (!invite) return false
         return !!invite?.sentDate
     }
 
