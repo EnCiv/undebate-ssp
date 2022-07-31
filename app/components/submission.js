@@ -11,23 +11,25 @@ import { getLatestIota } from '../lib/get-election-status-methods'
 import ObjectID from 'isomorphic-mongo-objectid'
 import scheme from '../lib/scheme'
 
+const CENTURY = 100 * 365.25 * 24 * 60 * 60
 export default function Submission(props) {
     const { className, style, electionOM } = props
     const [electionObj, electionMethods] = electionOM
     const classes = useStyles(props)
 
     const submission = getLatestIota(electionObj?.moderator?.submissions)
-    const viewer = getLatestIota(electionObj?.moderator?.viewers)
+    const viewer = submission && getLatestIota(electionObj?.moderator?.viewers)
     const src = viewer ? scheme() + process.env.HOSTNAME + viewer?.path : undefined
 
     const getSubmissionDaysLeft = () => {
+        if (!electionObj?.timeline?.moderatorSubmissionDeadline?.[0]?.date) return CENTURY
         const dueDate = Date.parse(electionObj.timeline.moderatorSubmissionDeadline[0].date)
         const currDate = new Date()
         return Math.round((dueDate - currDate) / 86400000)
     }
 
     const getSubmissionDaysAgo = () => {
-        if (!submission?._id) return 100 * 365.25 * 24 * 60 * 60
+        if (!submission?._id) return CENTURY
         const sentDate = ObjectID(submission?._id).getDate()
         const currDate = Date.now()
         return Math.round((currDate - sentDate) / 86400000)
@@ -38,7 +40,7 @@ export default function Submission(props) {
     let prevIcon
     let cornerPic
     let missed = false
-    let empty = false
+
     const submissionStatus = electionMethods.getSubmissionStatus()
     switch (submissionStatus) {
         case 'missed':
@@ -61,36 +63,29 @@ export default function Submission(props) {
             statusDesc = getSubmissionDaysLeft() + ' days left'
             statusTitle = 'No Submission Yet'
             break
-        case 'empty':
-            empty = true
-            break
     }
 
     const icon = <div className={classes.icon}>{prevIcon}</div>
     return (
         <div className={cx(className, classes.container)} style={style}>
-            {!empty && (
-                <>
-                    <div className={cx(classes.card, { [classes.backgroundRed]: missed })}>
-                        <div className={classes.preview}>
-                            {src ? (
-                                <iframe width={'100%'} height={'100%'} src={src} frameBorder='0' key='iframe'>
-                                    {icon}
-                                </iframe>
-                            ) : (
-                                <div className={classes.placeholder} key='placeholder'>
-                                    {icon}
-                                </div>
-                            )}
+            <div className={cx(classes.card, { [classes.backgroundRed]: missed })}>
+                <div className={classes.preview}>
+                    {src ? (
+                        <iframe width={'100%'} height={'100%'} src={src} frameBorder='0' key='iframe'>
+                            {icon}
+                        </iframe>
+                    ) : (
+                        <div className={classes.placeholder} key='placeholder'>
+                            {icon}
                         </div>
-                        <div className={classes.meta}>
-                            <p className={cx(classes.title, { [classes.colorWhite]: missed })}>{statusTitle}</p>
-                            <p className={cx(classes.desc, { [classes.colorLightRed]: missed })}>{statusDesc}</p>
-                        </div>
-                    </div>
-                    <div className={classes.cornerPic}>{cornerPic}</div>
-                </>
-            )}
+                    )}
+                </div>
+                <div className={classes.meta}>
+                    <p className={cx(classes.title, { [classes.colorWhite]: missed })}>{statusTitle}</p>
+                    <p className={cx(classes.desc, { [classes.colorLightRed]: missed })}>{statusDesc}</p>
+                </div>
+            </div>
+            <div className={classes.cornerPic}>{cornerPic}</div>
         </div>
     )
 }

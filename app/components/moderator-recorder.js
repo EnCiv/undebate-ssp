@@ -29,7 +29,7 @@ export default function ModeratorRecorder(props) {
     }
 
     const getSubmissionDaysLeft = () => {
-        const dueDate = Date.parse(electionObj.timeline.moderatorSubmissionDeadline[0].date)
+        const dueDate = Date.parse(electionObj?.timeline?.moderatorSubmissionDeadline?.[0]?.date)
         const currDate = new Date()
         return Math.round((dueDate - currDate) / 86400000)
     }

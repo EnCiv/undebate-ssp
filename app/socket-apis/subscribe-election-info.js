@@ -43,7 +43,11 @@ export default function subscribeElectionInfo(id, cb) {
             // The parent of the ParticipantCreate Iota is the viewer
             // we need to find if there is an electionIota with this viewer, and update that electionIota
             const electionIotaSubscriber = Object.values(electionIotaSubscribers).find(
-                ({ electionIota }) => !!electionIota?.webComponent?.moderator?.viewers?.[iota.parentId]
+                ({ electionIota }) =>
+                    !!(
+                        electionIota?.webComponent?.moderator?.viewers?.[iota.parentId] ||
+                        electionIota.webComponent?.candidates?.[iota?.bp_info?.uniqueId]
+                    )
             )
             if (!electionIotaSubscriber?.electionIota) {
                 logger.warn('subscribeElectionInfo ParticipantCreate event, no parent found for', iota)

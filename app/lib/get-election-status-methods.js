@@ -94,13 +94,7 @@ export const getLatestIota = iotas => {
     return latest
 }
 export const checkCandidateVideoSubmitted = candidate => {
-    let result = false
-    candidate?.submissions?.forEach(submission => {
-        if (submission.url && submission.url !== '') {
-            result = true
-        }
-    })
-    return result
+    return !!Object.values(candidate?.submissions || {}).length
 }
 
 function getElectionStatusMethods(dispatch, state) {

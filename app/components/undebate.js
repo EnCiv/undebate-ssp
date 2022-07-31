@@ -7,13 +7,16 @@ import QRCode from 'qrcode.react'
 import VideoUpload from '../svgr/video-upload'
 import Submit from './submit'
 import Clipboard from '../svgr/clipboard'
+import scheme from '../lib/scheme'
+import { getLatestIota } from '../lib/get-election-status-methods'
 
 export default function Undebate(props) {
     const { className, style, electionOM } = props
     const classes = useStyles(props)
     const [electionObj = {}] = electionOM
-    const { undebate = {} } = electionObj
-    const { url = '' } = undebate
+    const firstOffice = Object.values(electionObj?.offices || {})?.[0]
+    const viewer = getLatestIota(firstOffice?.viewers)
+    const url = viewer ? scheme() + process.env.HOSTNAME + viewer.path : ''
     const [copied, setCopied] = useState(false)
     const canvas = useRef(null)
 
@@ -25,8 +28,8 @@ export default function Undebate(props) {
         downloadLink.click()
     }
 
-    const copyNotify = text => {
-        navigator.clipboard.writeText(text)
+    const copyNotify = (valid, value) => {
+        navigator.clipboard.writeText(url)
         setCopied(true)
         setTimeout(() => {
             setCopied(false)

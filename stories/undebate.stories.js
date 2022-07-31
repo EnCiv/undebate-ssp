@@ -12,16 +12,31 @@ export default {
 
 export const Default = mC({
     defaultElectionObj: {
-        undebate: {
-            url: 'https://github.com',
+        offices: {
+            President: {
+                viewers: {
+                    '62e4b5dd56f1ca6584d8bce4': {
+                        _id: '62e4b5dd56f1ca6584d8bce4',
+                        path: '/candidate-conversation-5',
+                    },
+                },
+            },
         },
     },
 })
 
 export const Empty = mC({})
 
-export const NoUrl = mC({
+export const NoOffice = mC({
     defaultElectionObj: {
-        undebate: {},
+        offices: {},
+    },
+})
+
+export const NoPresident = mC({
+    defaultElectionObj: {
+        offices: {
+            President: {},
+        },
     },
 })

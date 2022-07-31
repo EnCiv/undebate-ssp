@@ -1,27 +1,19 @@
 // https://github.com/EnCiv/undebate-ssp/issues/51
 import React, { useEffect } from 'react'
-import Submission from '../app/components/submission'
+import component from '../app/components/submission'
+import makeChapter from './make-chapter'
+const mC = makeChapter(component)
 
 export default {
     title: 'Submission',
-    component: Submission,
+    component,
     argTypes: { electionOM: { type: 'object' } },
 }
 
-const Template = (args, context) => {
-    const { electionOM, onDone } = context
-    const { defaultElectionObj, customMethods = {}, ...otherArgs } = args
-    const [electionObj, electionMethods] = electionOM
-    Object.assign(electionMethods, customMethods)
-    useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
-    return <Submission electionOM={electionOM} {...args} />
-}
-
-export const Default = Template.bind({})
-Default.args = {
+export const Default = mC({
     defaultElectionObj: {
         moderator: {
-            submissions: [],
+            submissions: {},
         },
         timeline: {
             moderatorDeadlineReminderEmails: {
@@ -38,18 +30,16 @@ Default.args = {
             },
         },
     },
-}
+})
 
-export const Empty = Template.bind({})
-Empty.args = {
+export const Empty = mC({
     defaultElectionObj: {},
-}
+})
 
-export const ReminderSent = Template.bind({})
-ReminderSent.args = {
+export const ReminderSent = mC({
     defaultElectionObj: {
         moderator: {
-            submissions: [],
+            submissions: {},
         },
         timeline: {
             moderatorDeadlineReminderEmails: {
@@ -66,19 +56,23 @@ ReminderSent.args = {
             },
         },
     },
-}
+})
 
-export const VideoSubmitted = Template.bind({})
-VideoSubmitted.args = {
+export const VideoSubmitted = mC({
     defaultElectionObj: {
         moderator: {
-            submissions: [
-                {
-                    _id: 'some_id',
-                    url: 'https://cc.enciv.org/ucla-student-association-2021-moderator',
-                    date: new Date(Date.now() - 8 * 86400000).toISOString(),
+            submissions: {
+                '62e4b86056f305685c9f27d2': {
+                    _id: '62e4b86056f305685c9f27d2',
+                    parentId: '62e4b8ad044d8548346010f1',
                 },
-            ],
+            },
+            viewers: {
+                '62e4b8ad044d8548346010f1': {
+                    _id: '62e4b8ad044d8548346010f1',
+                    path: '/schoolboard-undebate',
+                },
+            },
         },
         timeline: {
             moderatorDeadlineReminderEmails: {
@@ -95,33 +89,24 @@ VideoSubmitted.args = {
             },
         },
     },
-}
+})
 
-export const DeadlineMissed = Template.bind({})
-DeadlineMissed.args = {
+export const DeadlineMissed = mC({
     defaultElectionObj: {
-        moderator: {
-            submissions: [
-                {
-                    _id: 'some_id',
-                    url: 'https://cc.enciv.org/ucla-student-association-2021-moderator',
-                    date: new Date(Date.now() + 8 * 86400000).toISOString(),
-                },
-            ],
-        },
+        moderator: {},
         timeline: {
             moderatorDeadlineReminderEmails: {
                 0: {
-                    date: new Date(Date.now() + 2 * 86400000).toISOString(),
+                    date: new Date(Date.now() - 2 * 86400000).toISOString(),
                     sent: true,
                 },
             },
             moderatorSubmissionDeadline: {
                 0: {
-                    date: new Date(Date.now() + 2 * 86400000).toISOString(),
+                    date: new Date(Date.now() - 2 * 86400000).toISOString(),
                     sent: false,
                 },
             },
         },
     },
-}
+})
