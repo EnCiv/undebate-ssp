@@ -75,7 +75,13 @@ export const allModeratorStatusTexts = [
     'Video Submitted',
     'Deadline Missed',
 ]
-export const allCandidatesStatusTexts = ['-', 'Election Table Pending...', 'Invite Pending...', 'In Progress']
+export const allCandidatesStatusTexts = [
+    '-',
+    'Election Table Pending...',
+    'Invite Pending...',
+    'In Progress',
+    'Missed Deadline',
+]
 export const allElectionStatusTexts = ['Configuring', 'In Progress', 'Live', 'Archived']
 
 function idCompare(a, b) {

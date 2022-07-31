@@ -7,7 +7,6 @@ import getElectionStatusMethods, {
     allDateFilterOptions,
     allElectionStatusTexts,
     allModeratorStatusTexts,
-    urgentModeratorStatuses,
 } from '../lib/get-election-status-methods'
 import CandidateStatusTable from './candidate-status-table'
 import ElectionUrgentLiveFilters from './election-urgent-live-filters'
@@ -26,6 +25,7 @@ import InProgress from '../svgr/election-in-progress'
 import Container from '../svgr/container'
 import InviteSent from '../svgr/sent'
 import ChevronDown from '../svgr/chevron-down'
+import CheckMark from '../svgr/check-mark'
 import { useTable, useFilters, useGlobalFilter, useSortBy } from 'react-table'
 
 function daysBetweenDates(date1, date2) {
@@ -114,11 +114,11 @@ function Table({ columns, data, preFilters, globalFilter, onRowClicked, classes 
                                         {column.isSorted ? (
                                             column.isSortedDesc ? (
                                                 <ArrowSvg
-                                                    className={classes.basicIcon}
+                                                    className={cx(classes.basicIcon, classes.sortIcon)}
                                                     style={{ transform: 'rotate(180deg)' }}
                                                 />
                                             ) : (
-                                                <ArrowSvg className={classes.basicIcon} />
+                                                <ArrowSvg className={cx(classes.basicIcon, classes.sortIcon)} />
                                             )
                                         ) : (
                                             ''
@@ -327,6 +327,7 @@ function DropdownFilter({ values, selectedValues, onItemClick }) {
     useEffect(() => {
         if (isDroppedDown) {
             const handleClick = e => {
+                // todo fix this when clicking chevron icon
                 if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
                     setIsDroppedDown(false)
                 }
@@ -340,7 +341,7 @@ function DropdownFilter({ values, selectedValues, onItemClick }) {
         }
     }, [dropdownRef])
 
-    // todo styling
+    // todo add icons to filter values
     // todo Select All option for multiselect?
     return isDroppedDown ? (
         <>
@@ -349,11 +350,12 @@ function DropdownFilter({ values, selectedValues, onItemClick }) {
                 className={cx(classes.basicIcon, classes.clickable)}
                 style={{ transform: 'rotate(180deg)' }}
             />
-            <div ref={dropdownRef}>
+            <div ref={dropdownRef} className={classes.dropdownFilter}>
                 {['Clear'].concat(values).map(value => {
                     return (
-                        <div style={{ backgroundColor: selectedValues[value] ? 'blue' : 'red' }} onClick={onItemClick}>
+                        <div className={classes.dropdownItem} onClick={onItemClick}>
                             {value}
+                            <CheckMark style={{ visibility: selectedValues[value] ? 'visible' : 'hidden' }} />
                         </div>
                     )
                 })}
@@ -369,6 +371,10 @@ function DropdownFilter({ values, selectedValues, onItemClick }) {
 
 function SingleselectFilter({ values, onSetFilter }) {
     const [selectedValue, setSelectedValue] = useState('')
+
+    useEffect(() => {
+        onSetFilter(selectedValue)
+    }, [selectedValue])
 
     const clickValue = event => {
         const value = event.target.textContent
@@ -435,14 +441,11 @@ function ModeratorFilter({ column: { filterValue, setFilter, preFilteredRows, id
 function CandidatesFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
     const options = React.useMemo(() => {
         const options = new Set()
-        // todo add icons to filter values
         allCandidatesStatusTexts.forEach(status => {
             options.add(status)
         })
         return [...options.values()]
     }, [id, preFilteredRows])
-
-    // todo add Missed Deadline option
 
     return <MultiselectFilter values={options} onSetFilter={values => setFilter(values)} />
 }
@@ -556,6 +559,9 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
     }
 
     const dateFilterFunction = (rows, columnIds, filterValue) => {
+        if (!filterValue || (filterValue && !filterValue.length)) {
+            return rows
+        }
         const addMonths = (date, numMonths) => {
             return new Date(date.setMonth(date.getMonth() + numMonths))
         }
@@ -591,11 +597,18 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
         filterValue.forEach(filter => {
             switch (filter) {
                 case 'In Progress':
-                    // todo filter out Missed Deadline
                     filteredRows = filteredRows.concat(
                         rows.filter(
-                            row => !['-', 'Election Table Pending...', 'unknown'].includes(row.values.Candidates)
+                            row =>
+                                !['-', 'Election Table Pending...', 'unknown'].includes(row.values.Candidates) &&
+                                !row.values.Candidates.match(/Missed Deadline$/g)
                         )
+                    )
+                    break
+                case 'Missed Deadline':
+                    console.log('missed')
+                    filteredRows = filteredRows.concat(
+                        rows.filter(row => row.values.Candidates.match(/.*Missed Deadline$/g))
                     )
                     break
                 default:
@@ -731,6 +744,14 @@ const useStyles = createUseStyles(theme => ({
     thContent: {
         display: 'flex',
         alignItems: 'center',
+        '& svg path': {
+            stroke: theme.colorSecondaryText,
+        },
+    },
+    sortIcon: {
+        '& path': {
+            fill: theme.colorSecondaryText,
+        },
     },
     headerText: {
         padding: '0 0.75rem',
@@ -801,8 +822,7 @@ const useStyles = createUseStyles(theme => ({
         fontWeight: '400',
     },
     secondaryText: {
-        color: theme.colorText,
-        opacity: '0.5',
+        color: theme.colorSecondaryText,
         '$archivedTr &': {
             color: 'white',
         },
@@ -839,5 +859,27 @@ const useStyles = createUseStyles(theme => ({
     },
     stateLive: {
         backgroundColor: theme.colorPrimary,
+    },
+    dropdownFilter: {
+        position: 'absolute',
+        backgroundColor: theme.colorSecondary,
+        color: 'white',
+        top: '2.5rem',
+        transform: 'translateX(-50%)',
+        borderRadius: '1rem',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    dropdownItem: {
+        padding: '0.5rem 1rem',
+        '& svg': {
+            paddingLeft: '3rem',
+        },
+        '& svg path': {
+            stroke: 'white',
+        },
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
 }))
