@@ -573,16 +573,24 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
         if (filterValue && !filterValue.length) {
             return rows
         }
-        // todo update to work with list
+        let filteredRows = []
         // todo handle "Completed" filter if added
-        switch (filterValue) {
-            case 'In Progress':
-                return rows.filter(
-                    row => !['-', 'Election Table Pending...', 'unknown'].includes(row.values.Candidates)
-                )
-            default:
-                return rows.filter(row => row.values.Candidates === filterValue)
-        }
+        filterValue.forEach(filter => {
+            switch (filter) {
+                case 'In Progress':
+                    // todo filter out Missed Deadline
+                    filteredRows = filteredRows.concat(
+                        rows.filter(
+                            row => !['-', 'Election Table Pending...', 'unknown'].includes(row.values.Candidates)
+                        )
+                    )
+                    break
+                default:
+                    filteredRows = filteredRows.concat(rows.filter(row => row.values.Candidates === filter))
+                    break
+            }
+        })
+        return filteredRows
     }
 
     const getStatusValue = (electionObj, rowIndex) => {
