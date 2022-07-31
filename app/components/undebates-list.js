@@ -322,30 +322,13 @@ function StatusCell({ className, statusText, daysRemaining }) {
     )
 }
 
-function MultiselectFilter({ values, onSetFilter }) {
+function DropdownFilter({ values, selectedValues, onItemClick }) {
     const classes = useStyles()
     const [isDroppedDown, setIsDroppedDown] = useState(false)
-    const [selectedValues, setSelectedValues] = useState({})
-
-    useEffect(() => {
-        values.forEach(value => (selectedValues[value] = false))
-    }, [])
-
-    useEffect(() => {
-        console.log('after effect')
-        onSetFilter(Object.keys(selectedValues).filter(key => selectedValues[key]))
-    }, [selectedValues])
-
-    const clickValue = event => {
-        const value = event.target.textContent
-        const updated = {}
-        updated[value] = !selectedValues[value]
-        setSelectedValues(current => ({ ...current, ...updated }))
-    }
 
     // todo styling
-    // todo add Clear option
-    // todo Select All option?
+    // todo Select All option for multiselect?
+    // todo click off closes this?
     return isDroppedDown ? (
         <>
             <ChevronDown
@@ -354,9 +337,9 @@ function MultiselectFilter({ values, onSetFilter }) {
                 style={{ transform: 'rotate(180deg)' }}
             />
             <div>
-                {values.map(value => {
+                {['Clear'].concat(values).map(value => {
                     return (
-                        <div style={{ backgroundColor: selectedValues[value] ? 'blue' : 'red' }} onClick={clickValue}>
+                        <div style={{ backgroundColor: selectedValues[value] ? 'blue' : 'red' }} onClick={onItemClick}>
                             {value}
                         </div>
                     )
@@ -371,6 +354,47 @@ function MultiselectFilter({ values, onSetFilter }) {
     )
 }
 
+function SingleselectFilter({ values, onSetFilter }) {
+    const [selectedValue, setSelectedValue] = useState('')
+
+    const clickValue = event => {
+        const value = event.target.textContent
+        if (value === 'Clear') {
+            setSelectedValue('')
+        } else {
+            setSelectedValue(value)
+        }
+    }
+
+    return <DropdownFilter values={values} selectedValues={{ [selectedValue]: true }} onItemClick={clickValue} />
+}
+
+function MultiselectFilter({ values, onSetFilter }) {
+    const [selectedValues, setSelectedValues] = useState({})
+
+    useEffect(() => {
+        values.forEach(value => (selectedValues[value] = false))
+    }, [])
+
+    useEffect(() => {
+        onSetFilter(Object.keys(selectedValues).filter(key => selectedValues[key]))
+    }, [selectedValues])
+
+    const clickValue = event => {
+        const value = event.target.textContent
+        const updated = {}
+        if (value === 'Clear') {
+            values.forEach(value => (updated[value] = false))
+            setSelectedValues(current => ({ ...current, ...updated }))
+        } else {
+            updated[value] = !selectedValues[value]
+            setSelectedValues(current => ({ ...current, ...updated }))
+        }
+    }
+
+    return <DropdownFilter values={values} selectedValues={selectedValues} onItemClick={clickValue} />
+}
+
 function DateFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
     const options = React.useMemo(() => {
         const options = new Set()
@@ -380,17 +404,7 @@ function DateFilter({ column: { filterValue, setFilter, preFilteredRows, id } })
         return [...options.values()]
     }, [id, preFilteredRows])
 
-    // todo single select filter
-    return (
-        <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
-            <option value=''>All</option>
-            {options.map((option, i) => (
-                <option key={i} value={option}>
-                    {option}
-                </option>
-            ))}
-        </select>
-    )
+    return <SingleselectFilter values={options} onSetFilter={values => setFilter(values)} />
 }
 
 function ModeratorFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
