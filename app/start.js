@@ -7,7 +7,9 @@ import scheme from './lib/scheme'
 
 const path = require('path')
 
-if (serverReactRender.head) serverReactRender.head.shift() // the first on in the head didles the font size and we don't want that
+// toDo the undebate web components need the font scaled to the viewport,
+// but other web components don't.  We need to make it work both ways
+// if (serverReactRender.head) serverReactRender.head.shift() // the first on in the head didles the font size and we don't want that
 
 Iota.load(civilIotas)
 Iota.load(undebateIotas)
