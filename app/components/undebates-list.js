@@ -145,7 +145,11 @@ function Table({ columns, data, preFilters, globalFilter, onRowClicked, classes 
                     const isRowArchived = rowStatus === 'Archived'
                     return (
                         <tr
-                            className={isRowArchived ? cx(classes.tr, classes.archivedTr) : classes.tr}
+                            className={
+                                isRowArchived
+                                    ? cx(classes.tr, classes.clickable, classes.archivedTr)
+                                    : cx(classes.tr, classes.clickable)
+                            }
                             {...row.getRowProps({
                                 onClick: e => onRowClicked && onRowClicked(row, e),
                             })}
@@ -318,11 +322,53 @@ function StatusCell({ className, statusText, daysRemaining }) {
     )
 }
 
-function DropdownFilter({ values, onSetFilter }) {
+function MultiselectFilter({ values, onSetFilter }) {
     const classes = useStyles()
     const [isDroppedDown, setIsDroppedDown] = useState(false)
+    const [selectedValues, setSelectedValues] = useState({})
 
-    return isDroppedDown ? '' : <ChevronDown className={classes.basicIcon} />
+    useEffect(() => {
+        values.forEach(value => (selectedValues[value] = false))
+    }, [])
+
+    useEffect(() => {
+        console.log('after effect')
+        onSetFilter(Object.keys(selectedValues).filter(key => selectedValues[key]))
+    }, [selectedValues])
+
+    const clickValue = event => {
+        const value = event.target.textContent
+        const updated = {}
+        updated[value] = !selectedValues[value]
+        setSelectedValues(current => ({ ...current, ...updated }))
+    }
+
+    // todo styling
+    // todo add Clear option
+    // todo Select All option?
+    return isDroppedDown ? (
+        <>
+            <ChevronDown
+                onClick={() => setIsDroppedDown(!isDroppedDown)}
+                className={cx(classes.basicIcon, classes.clickable)}
+                style={{ transform: 'rotate(180deg)' }}
+            />
+            <div>
+                {values.map(value => {
+                    return (
+                        <div style={{ backgroundColor: selectedValues[value] ? 'blue' : 'red' }} onClick={clickValue}>
+                            {value}
+                        </div>
+                    )
+                })}
+            </div>
+        </>
+    ) : (
+        <ChevronDown
+            onClick={() => setIsDroppedDown(!isDroppedDown)}
+            className={cx(classes.basicIcon, classes.clickable)}
+        />
+    )
 }
 
 function DateFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
@@ -334,16 +380,16 @@ function DateFilter({ column: { filterValue, setFilter, preFilteredRows, id } })
         return [...options.values()]
     }, [id, preFilteredRows])
 
+    // todo single select filter
     return (
-        <DropdownFilter />
-        /* <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
-         *     <option value=''>All</option>
-         *     {options.map((option, i) => (
-         *         <option key={i} value={option}>
-         *             {option}
-         *         </option>
-         *     ))}
-         * </select> */
+        <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
+            <option value=''>All</option>
+            {options.map((option, i) => (
+                <option key={i} value={option}>
+                    {option}
+                </option>
+            ))}
+        </select>
     )
 }
 
@@ -356,16 +402,7 @@ function ModeratorFilter({ column: { filterValue, setFilter, preFilteredRows, id
         return [...options.values()]
     }, [id, preFilteredRows])
 
-    return (
-        <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
-            <option value=''>All</option>
-            {options.map((option, i) => (
-                <option key={i} value={option}>
-                    {option}
-                </option>
-            ))}
-        </select>
-    )
+    return <MultiselectFilter values={options} onSetFilter={values => setFilter(values)} />
 }
 
 function CandidatesFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
@@ -378,16 +415,9 @@ function CandidatesFilter({ column: { filterValue, setFilter, preFilteredRows, i
         return [...options.values()]
     }, [id, preFilteredRows])
 
-    return (
-        <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
-            <option value=''>All</option>
-            {options.map((option, i) => (
-                <option key={i} value={option}>
-                    {option}
-                </option>
-            ))}
-        </select>
-    )
+    // todo add Missed Deadline option
+
+    return <MultiselectFilter values={options} onSetFilter={values => setFilter(values)} />
 }
 
 function StatusFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
@@ -399,16 +429,7 @@ function StatusFilter({ column: { filterValue, setFilter, preFilteredRows, id } 
         return [...options.values()]
     }, [id, preFilteredRows])
 
-    return (
-        <select value={filterValue} onChange={e => setFilter(e.target.value || undefined)}>
-            <option value=''>All</option>
-            {options.map((option, i) => (
-                <option key={i} value={option}>
-                    {option}
-                </option>
-            ))}
-        </select>
-    )
+    return <MultiselectFilter values={options} onSetFilter={values => setFilter(values)} />
 }
 
 function getDaysText(daysRemaining) {
@@ -535,6 +556,10 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
     }
 
     const candidatesFilterFunction = (rows, columnIds, filterValue) => {
+        if (filterValue && !filterValue.length) {
+            return rows
+        }
+        // todo update to work with list
         // todo handle "Completed" filter if added
         switch (filterValue) {
             case 'In Progress':
@@ -679,8 +704,10 @@ const useStyles = createUseStyles(theme => ({
         height: theme.iconSize,
         width: theme.iconSize,
     },
-    tr: {
+    clickable: {
         cursor: 'pointer',
+    },
+    tr: {
         height: '6rem',
         padding: '1rem !important',
         backgroundColor: 'white',
