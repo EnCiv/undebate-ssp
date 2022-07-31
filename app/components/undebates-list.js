@@ -216,30 +216,72 @@ function IconCell({ className, Icon, text, textClassName, daysRemaining }) {
     )
 }
 
-function ModeratorCell({ moderatorStatus, daysRemaining }) {
+function getIconFromText(text, classes) {
     let Icon
-    let textClass
-    switch (moderatorStatus) {
-        case 'Script Pending...':
-        // intentional fall through here since they share Icons
-        case 'Script Sent':
+    switch (true) {
+        case text === 'Script Pending...' || text === 'Script Sent':
             Icon = ElectionPaper
             break
-        case 'Invite Accepted':
+        case text === 'Invite Accepted':
             Icon = Accepted
             break
-        case 'Invite Declined':
+        case text === 'Invite Declined':
             Icon = Declined
-            textClass = 'moderatorCellDeclined'
             break
-        case 'Reminder Sent':
+        case text === 'Reminder Sent':
             Icon = ReminderSent
             break
-        case 'Video Submitted':
+        case text === 'Invite Sent' || text === 'Invite Pending...':
+            Icon = InviteSent
+            break
+        case text === 'Video Submitted':
             Icon = VideoSubmitted
             break
-        case 'Deadline Missed':
+        case text.includes('Missed Deadline') || text === 'Deadline Missed':
             Icon = DeadlineMissed
+            break
+        case text === 'Election Table Pending...':
+            Icon = ({ className }) => (
+                <ElectionGrid
+                    className={className}
+                    style={{
+                        borderRadius: '0.3rem',
+                        backgroundSize: '1rem 1rem',
+                        '& path': {
+                            fill: '#7d8084',
+                        },
+                    }}
+                />
+            )
+            break
+        case text === 'Configuring':
+            Icon = ({ className }) => <ElectionCreated className={cx(className, classes.invertedIcon)} />
+            break
+        case text === 'In Progress':
+            Icon = ({ className }) => <InProgress className={cx(className, classes.invertedIcon)} />
+            break
+        case text === 'Live':
+            Icon = ElectionLive
+            break
+        case text === 'Archived':
+            Icon = ({ className }) => <Container className={cx(className, classes.invertedIcon)} />
+            break
+        case text === '-' || text === 'unknown' || text === 'Clear':
+            break
+        default:
+            Icon = VideoSubmitted
+            break
+    }
+    return Icon
+}
+
+function ModeratorCell({ moderatorStatus, daysRemaining }) {
+    const classes = useStyles()
+    const Icon = getIconFromText(moderatorStatus, classes)
+    let textClass
+    switch (moderatorStatus) {
+        case 'Invite Declined':
+            textClass = 'moderatorCellDeclined'
             break
         case '-':
             daysRemaining = null
@@ -251,27 +293,17 @@ function ModeratorCell({ moderatorStatus, daysRemaining }) {
 
 function CandidateCell({ candidatesStatusText, daysRemaining, candidateStatuses }) {
     const classes = useStyles()
-
-    let Icon
+    const Icon = getIconFromText(candidatesStatusText, classes)
     let textClass
     let shouldShowStatusTable = false
     switch (true) {
-        case candidatesStatusText === undefined || candidatesStatusText === null || candidatesStatusText === '':
-            break
-        case candidatesStatusText === 'Election Table Pending...':
-            Icon = ({ className }) => <ElectionGrid className={cx(className, classes.electionGridIcon)} />
-            break
-        case candidatesStatusText === 'Invite Pending...':
-            Icon = InviteSent
-            break
-        case candidatesStatusText.includes('Missed Deadline'):
-            Icon = DeadlineMissed
-            break
         case candidatesStatusText === '-':
             daysRemaining = null
             break
+        case ['Election Table Pending...', 'Invite Pending...'].includes(candidatesStatusText) ||
+            candidatesStatusText.includes('Missed Deadline'):
+            break
         default:
-            Icon = VideoSubmitted
             shouldShowStatusTable = true
             break
     }
@@ -290,23 +322,9 @@ function CandidateCell({ candidatesStatusText, daysRemaining, candidateStatuses 
 }
 
 function StatusCell({ className, statusText, daysRemaining }) {
-    let Icon
-    let textClass = ''
-    switch (statusText) {
-        case 'Configuring':
-            Icon = ElectionCreated
-            break
-        case 'In Progress':
-            Icon = InProgress
-            break
-        case 'Live':
-            Icon = ElectionLive
-            textClass = 'statusCellLive'
-            break
-        case 'Archived':
-            Icon = Container
-            break
-    }
+    const classes = useStyles()
+    const Icon = getIconFromText(statusText, classes)
+    let textClass = statusText === 'Live' ? 'statusCellLive' : ''
 
     return (
         <IconCell
@@ -319,17 +337,17 @@ function StatusCell({ className, statusText, daysRemaining }) {
     )
 }
 
-function DropdownFilter({ values, selectedValues, onItemClick }) {
+function DropdownFilter({ values, selectedValues, onItemClick, includeIcon = false }) {
     const classes = useStyles()
     const [isDroppedDown, setIsDroppedDown] = useState(false)
     const dropdownRef = React.createRef()
-    const iconRef = React.createRef()
+    const dropdownIconRef = React.createRef()
 
     useEffect(() => {
         if (isDroppedDown) {
             const handleClick = e => {
                 if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-                    if (!iconRef || (iconRef.current && !iconRef.current.contains(e.target))) {
+                    if (!dropdownIconRef || (dropdownIconRef.current && !dropdownIconRef.current.contains(e.target))) {
                         setIsDroppedDown(false)
                     }
                 }
@@ -343,23 +361,46 @@ function DropdownFilter({ values, selectedValues, onItemClick }) {
         }
     }, [dropdownRef])
 
-    // todo add icons to filter values
+    // todo add red text for some
     // todo Select All option for multiselect?
     return (
         <>
-            <span ref={iconRef} className={classes.flexCenter}>
+            <span ref={dropdownIconRef} className={classes.flexCenter}>
                 <ChevronDown
                     onClick={() => setIsDroppedDown(!isDroppedDown)}
-                    className={cx(classes.basicIcon, classes.clickable, isDroppedDown ? classes.flipped : '')}
+                    className={cx(
+                        classes.basicIcon,
+                        classes.clickable,
+                        classes.filterDropdown,
+                        isDroppedDown ? classes.flipped : ''
+                    )}
                 />
             </span>
             {isDroppedDown ? (
                 <div ref={dropdownRef} className={classes.dropdownFilter}>
                     {['Clear'].concat(values).map(value => {
+                        const Icon = getIconFromText(value, classes)
+                        let isWhiteIcon = ['Configuring', 'In Progress', 'Archived'].includes(value)
                         return (
                             <div className={classes.dropdownItem} onClick={onItemClick}>
-                                {value}
-                                <CheckMark style={{ visibility: selectedValues[value] ? 'visible' : 'hidden' }} />
+                                <span className={classes.flexCenter}>
+                                    {includeIcon && Icon ? (
+                                        <Icon
+                                            className={cx(
+                                                classes.basicIcon,
+                                                classes.filterIcon,
+                                                isWhiteIcon ? classes.whiteIcon : ''
+                                            )}
+                                        />
+                                    ) : (
+                                        ''
+                                    )}
+                                    {value}
+                                </span>
+                                <CheckMark
+                                    className={classes.dropdownCheck}
+                                    style={{ visibility: selectedValues[value] ? 'visible' : 'hidden' }}
+                                />
                             </div>
                         )
                     })}
@@ -413,7 +454,9 @@ function MultiselectFilter({ values, onSetFilter }) {
         }
     }
 
-    return <DropdownFilter values={values} selectedValues={selectedValues} onItemClick={clickValue} />
+    return (
+        <DropdownFilter values={values} selectedValues={selectedValues} onItemClick={clickValue} includeIcon={true} />
+    )
 }
 
 function DateFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
@@ -745,7 +788,9 @@ const useStyles = createUseStyles(theme => ({
     thContent: {
         display: 'flex',
         alignItems: 'center',
-        '& svg path': {
+    },
+    filterDropdown: {
+        '& path': {
             stroke: theme.colorSecondaryText,
         },
     },
@@ -760,6 +805,20 @@ const useStyles = createUseStyles(theme => ({
     basicIcon: {
         height: theme.iconSize,
         width: theme.iconSize,
+    },
+    whiteIcon: {
+        '& path': {
+            stroke: 'white',
+            /* fill: 'white', */
+        },
+    },
+    invertedIcon: {
+        WebkitFilter: 'invert(100%)',
+        filter: 'invert(100%)',
+        '& path': {
+            WebkitFilter: 'invert(100%)',
+            filter: 'invert(100%)',
+        },
     },
     clickable: {
         cursor: 'pointer',
@@ -808,13 +867,6 @@ const useStyles = createUseStyles(theme => ({
     iconCellIcon: {
         height: '1.5rem',
         width: '1.5rem',
-    },
-    electionGridIcon: {
-        borderRadius: '0.3rem',
-        backgroundSize: '1rem 1rem',
-        '& path': {
-            fill: theme.colorGray,
-        },
     },
     candidateStatusTable: {
         paddingLeft: '1rem',
@@ -870,24 +922,28 @@ const useStyles = createUseStyles(theme => ({
     },
     dropdownFilter: {
         position: 'absolute',
+        top: '2.5rem',
         backgroundColor: theme.colorSecondary,
         color: 'white',
-        top: '2.5rem',
+        padding: '1rem 1.75rem',
         transform: 'translateX(-50%)',
         borderRadius: '1rem',
         display: 'flex',
         flexDirection: 'column',
     },
     dropdownItem: {
-        padding: '0.5rem 1rem',
-        '& svg': {
-            paddingLeft: '3rem',
-        },
-        '& svg path': {
-            stroke: 'white',
-        },
+        padding: '0.5rem 0',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
+    },
+    filterIcon: {
+        paddingRight: '1rem',
+    },
+    dropdownCheck: {
+        paddingLeft: '3rem',
+        '& path': {
+            stroke: 'white',
+        },
     },
 }))
