@@ -323,13 +323,15 @@ function DropdownFilter({ values, selectedValues, onItemClick }) {
     const classes = useStyles()
     const [isDroppedDown, setIsDroppedDown] = useState(false)
     const dropdownRef = React.createRef()
+    const iconRef = React.createRef()
 
     useEffect(() => {
         if (isDroppedDown) {
             const handleClick = e => {
-                // todo fix this when clicking chevron icon
                 if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-                    setIsDroppedDown(false)
+                    if (!iconRef || (iconRef.current && !iconRef.current.contains(e.target))) {
+                        setIsDroppedDown(false)
+                    }
                 }
             }
 
@@ -343,29 +345,29 @@ function DropdownFilter({ values, selectedValues, onItemClick }) {
 
     // todo add icons to filter values
     // todo Select All option for multiselect?
-    return isDroppedDown ? (
+    return (
         <>
-            <ChevronDown
-                onClick={() => setIsDroppedDown(!isDroppedDown)}
-                className={cx(classes.basicIcon, classes.clickable)}
-                style={{ transform: 'rotate(180deg)' }}
-            />
-            <div ref={dropdownRef} className={classes.dropdownFilter}>
-                {['Clear'].concat(values).map(value => {
-                    return (
-                        <div className={classes.dropdownItem} onClick={onItemClick}>
-                            {value}
-                            <CheckMark style={{ visibility: selectedValues[value] ? 'visible' : 'hidden' }} />
-                        </div>
-                    )
-                })}
-            </div>
+            <span ref={iconRef} className={classes.flexCenter}>
+                <ChevronDown
+                    onClick={() => setIsDroppedDown(!isDroppedDown)}
+                    className={cx(classes.basicIcon, classes.clickable, isDroppedDown ? classes.flipped : '')}
+                />
+            </span>
+            {isDroppedDown ? (
+                <div ref={dropdownRef} className={classes.dropdownFilter}>
+                    {['Clear'].concat(values).map(value => {
+                        return (
+                            <div className={classes.dropdownItem} onClick={onItemClick}>
+                                {value}
+                                <CheckMark style={{ visibility: selectedValues[value] ? 'visible' : 'hidden' }} />
+                            </div>
+                        )
+                    })}
+                </div>
+            ) : (
+                ''
+            )}
         </>
-    ) : (
-        <ChevronDown
-            onClick={() => setIsDroppedDown(!isDroppedDown)}
-            className={cx(classes.basicIcon, classes.clickable)}
-        />
     )
 }
 
@@ -606,7 +608,6 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
                     )
                     break
                 case 'Missed Deadline':
-                    console.log('missed')
                     filteredRows = filteredRows.concat(
                         rows.filter(row => row.values.Candidates.match(/.*Missed Deadline$/g))
                     )
@@ -859,6 +860,13 @@ const useStyles = createUseStyles(theme => ({
     },
     stateLive: {
         backgroundColor: theme.colorPrimary,
+    },
+    flipped: {
+        transform: 'rotate(180deg)',
+    },
+    flexCenter: {
+        display: 'flex',
+        alignItems: 'center',
     },
     dropdownFilter: {
         position: 'absolute',
