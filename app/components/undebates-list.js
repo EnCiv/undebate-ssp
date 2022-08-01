@@ -275,17 +275,37 @@ function getIconFromText(text, classes) {
     return Icon
 }
 
+function isRedText(text) {
+    const redStaticTexts = ['Invite Declined', 'Deadline Missed']
+    const redPatternTexts = ['missed deadline']
+    let isRed = false
+    if (redStaticTexts.includes(text)) {
+        isRed = true
+    } else {
+        redPatternTexts.forEach(pattern => {
+            if (text.toLowerCase().includes(pattern)) {
+                isRed = true
+            }
+        })
+    }
+    return isRed
+}
+
+function isPurpleText(text) {
+    const purpleStaticTexts = ['Live']
+    let isPurple = false
+    if (purpleStaticTexts.includes(text)) {
+        isPurple = true
+    }
+    return isPurple
+}
+
 function ModeratorCell({ moderatorStatus, daysRemaining }) {
     const classes = useStyles()
     const Icon = getIconFromText(moderatorStatus, classes)
-    let textClass
-    switch (moderatorStatus) {
-        case 'Invite Declined':
-            textClass = 'moderatorCellDeclined'
-            break
-        case '-':
-            daysRemaining = null
-            break
+    const textClass = isRedText(moderatorStatus) ? 'redText' : ''
+    if (moderatorStatus === '-') {
+        daysRemaining = null
     }
 
     return <IconCell Icon={Icon} text={moderatorStatus} textClassName={textClass} daysRemaining={daysRemaining} />
@@ -294,7 +314,7 @@ function ModeratorCell({ moderatorStatus, daysRemaining }) {
 function CandidateCell({ candidatesStatusText, daysRemaining, candidateStatuses }) {
     const classes = useStyles()
     const Icon = getIconFromText(candidatesStatusText, classes)
-    let textClass
+    const textClass = isRedText(candidatesStatusText) ? 'redText' : ''
     let shouldShowStatusTable = false
     switch (true) {
         case candidatesStatusText === '-':
@@ -324,7 +344,7 @@ function CandidateCell({ candidatesStatusText, daysRemaining, candidateStatuses 
 function StatusCell({ className, statusText, daysRemaining }) {
     const classes = useStyles()
     const Icon = getIconFromText(statusText, classes)
-    let textClass = statusText === 'Live' ? 'statusCellLive' : ''
+    let textClass = isPurpleText(statusText) ? 'liveText' : ''
 
     return (
         <IconCell
@@ -352,8 +372,14 @@ function DropdownFilter({ values, selectedValues, onItemClick, includeIcon = fal
                     }
                 }
             }
+            const handleEscapeKey = e => {
+                if (e.key === 'Escape') {
+                    setIsDroppedDown(false)
+                }
+            }
 
             document.addEventListener('mousedown', handleClick)
+            document.addEventListener('keyup', handleEscapeKey)
 
             return () => {
                 document.removeEventListener('mousedown', handleClick)
@@ -377,13 +403,18 @@ function DropdownFilter({ values, selectedValues, onItemClick, includeIcon = fal
                 />
             </span>
             {isDroppedDown ? (
-                <div ref={dropdownRef} className={classes.dropdownFilter}>
+                <div ref={dropdownRef} className={cx(classes.clickable, classes.dropdownFilter)}>
                     {['Clear'].concat(values).map(value => {
                         const Icon = getIconFromText(value, classes)
                         let isWhiteIcon = ['Configuring', 'In Progress', 'Archived'].includes(value)
                         return (
                             <div className={classes.dropdownItem} onClick={onItemClick}>
-                                <span className={classes.flexCenter}>
+                                <span
+                                    className={cx(
+                                        classes.flexCenter,
+                                        isRedText(value) ? classes.redText : isPurpleText(value) ? classes.liveText : ''
+                                    )}
+                                >
                                     {includeIcon && Icon ? (
                                         <Icon
                                             className={cx(
@@ -884,11 +915,11 @@ const useStyles = createUseStyles(theme => ({
         color: theme.colorWarning,
     },
     statusCell: {},
-    statusCellLive: {
+    liveText: {
         fontWeight: '600',
         color: theme.colorSubmitted,
     },
-    moderatorCellDeclined: {
+    redText: {
         fontWeight: '600',
         color: theme.colorWarning,
     },
@@ -930,6 +961,7 @@ const useStyles = createUseStyles(theme => ({
         borderRadius: '1rem',
         display: 'flex',
         flexDirection: 'column',
+        zIndex: '100',
     },
     dropdownItem: {
         padding: '0.5rem 0',
