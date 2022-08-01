@@ -56,7 +56,7 @@ const TimelinePoint = forwardRef((props, ref) => {
                                 validValues[i] = { valid, value }
                                 const isValid = areAllPairsValid()
                                 if (timelineKey) {
-                                    if (timeline[timelineKey][i].date !== value) {
+                                    if (timeline?.[timelineKey]?.[i]?.date !== value) {
                                         sideEffects.push(() => {
                                             electionMethods.upsert({
                                                 timeline: { [timelineKey]: { [i]: { date: value } } },

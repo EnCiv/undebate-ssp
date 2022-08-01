@@ -88,7 +88,7 @@ export default function CandidateTable(props) {
                     onDone={({ valid, value }) => {
                         if (
                             (typeof validInputs[value.uniqueId] !== 'undefined' || valid) &&
-                            !isEqual(electionObj.candidates[value.uniqueId], value)
+                            !isEqual(candidates[value.uniqueId], value)
                         )
                             sideEffects.push(() => electionMethods.upsert({ candidates: { [value.uniqueId]: value } }))
                         setValidInputs({ [value.uniqueId]: valid })

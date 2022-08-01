@@ -27,6 +27,20 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
         e.target.style.cursor = 'pointer'
     }
 
+    function RenderBar(props) {
+        const { name, statusObjs, valid } = props
+        return (
+            <div
+                onClick={e => {
+                    handleClick(e, valid, name)
+                }}
+                onMouseEnter={onMouseEnterHandler}
+            >
+                <ElectionCategory categoryName={name} statusObjs={statusObjs} selected={current === name} />
+            </div>
+        )
+    }
+
     return (
         <div className={cx(className, classes.container)} style={style}>
             <div className={classes.top}>
@@ -34,54 +48,36 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                 <div className={classes.line} />
             </div>
             <div className={classes.bottom}>
-                <div
-                    onClick={e => {
-                        handleClick(e, electionMethods.getElectionStatus() === 'completed', 'Election')
-                    }}
-                    onMouseEnter={onMouseEnterHandler}
-                >
-                    <ElectionCategory
-                        categoryName='Election'
-                        statusObjs={electionMethods.getElectionStatus() === 'completed' ? 'completed' : {}}
-                        selected={current?.includes('Election') && !current?.includes('Table')}
-                    />
-                </div>
-                <div
-                    onClick={e => {
-                        handleClick(e, electionMethods.getTimelineStatus() === 'completed', 'Timeline')
-                    }}
-                    onMouseEnter={onMouseEnterHandler}
-                >
-                    <ElectionCategory
-                        categoryName='Timeline'
-                        statusObjs={
-                            electionMethods.getTimelineStatus() === 'completed'
-                                ? 'completed'
-                                : electionMethods.getTimelineStatus() === 'default'
-                                ? {}
-                                : { pending: true }
-                        }
-                        selected={current?.includes('Timeline')}
-                    />
-                </div>
-                <div
-                    onClick={e => {
-                        handleClick(e, electionMethods.getQuestionsStatus() === 'completed', 'Questions')
-                    }}
-                    onMouseEnter={onMouseEnterHandler}
-                >
-                    <ElectionCategory
-                        categoryName='Questions'
-                        statusObjs={
-                            electionMethods.getQuestionsStatus() === 'completed'
-                                ? 'completed'
-                                : electionMethods.getQuestionsStatus() === 'default'
-                                ? {}
-                                : { daysLeft: electionMethods.getQuestionsStatus() }
-                        }
-                        selected={current?.includes('Questions')}
-                    />
-                </div>
+                <RenderBar
+                    key='Election'
+                    name='Election'
+                    valid={electionMethods.getElectionStatus() === 'completed'}
+                    statusObjs={electionMethods.getElectionStatus() === 'completed' ? 'completed' : {}}
+                />
+                <RenderBar
+                    key='Timeline'
+                    name='Timeline'
+                    valid={electionMethods.getTimelineStatus() === 'completed'}
+                    statusObjs={
+                        electionMethods.getTimelineStatus() === 'completed'
+                            ? 'completed'
+                            : electionMethods.getTimelineStatus() === 'default'
+                            ? {}
+                            : { pending: true }
+                    }
+                />
+                <RenderBar
+                    key='Questions'
+                    name='Questions'
+                    valid={electionMethods.getQuestionsStatus() === 'completed'}
+                    statusObjs={
+                        electionMethods.getQuestionsStatus() === 'completed'
+                            ? 'completed'
+                            : electionMethods.getQuestionsStatus() === 'default'
+                            ? {}
+                            : { daysLeft: electionMethods.getQuestionsStatus() }
+                    }
+                />
                 {/* <div onClick={handleClick} onMouseEnter={onMouseEnterHandler}>
                     <ElectionCategory categoryName='Danger Zone' selected={current?.includes('Danger Zone')} />
                 </div> */}
@@ -91,113 +87,92 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                 <div className={classes.line} />
             </div>
             <div className={classes.bottom}>
-                <div
-                    onClick={e => {
-                        handleClick(e, electionMethods.getScriptStatus() === 'completed', 'Script')
-                    }}
-                    onMouseEnter={onMouseEnterHandler}
-                >
-                    <ElectionCategory
-                        categoryName='Script'
-                        statusObjs={
-                            electionMethods.getScriptStatus() === 'completed'
-                                ? 'completed'
-                                : electionMethods.getScriptStatus() === 'default'
-                                ? {}
-                                : { daysLeft: electionMethods.getScriptStatus() }
-                        }
-                        selected={current?.includes('Script')}
-                    />
-                </div>
-                <div
-                    onClick={e => {
-                        handleClick(e, electionMethods.getInvitationStatus() === 'completed', 'Invitation')
-                    }}
-                    onMouseEnter={onMouseEnterHandler}
-                >
-                    <ElectionCategory
-                        categoryName='Invitation'
-                        statusObjs={
-                            electionMethods.getInvitationStatus() === 'default'
-                                ? {}
-                                : electionMethods.getInvitationStatus() === 'sent'
-                                ? { sent: true }
-                                : electionMethods.getInvitationStatus() === 'accepted'
-                                ? { accepted: true }
-                                : electionMethods.getInvitationStatus() === 'declined'
-                                ? { declined: true }
-                                : { daysLeft: electionMethods.getInvitationStatus() }
-                        }
-                        selected={current?.includes('Invitation')}
-                    />
-                </div>
-                <div
-                    onClick={e => {
-                        handleClick(e, electionMethods.getSubmissionStatus() === 'completed', 'Submission')
-                    }}
-                    onMouseEnter={onMouseEnterHandler}
-                >
-                    <ElectionCategory
-                        categoryName='Submission'
-                        statusObjs={
-                            electionMethods.getSubmissionStatus() === 'missed'
-                                ? { deadlineMissed: true }
-                                : electionMethods.getSubmissionStatus() === 'submitted'
-                                ? 'videoSubmitted'
-                                : electionMethods.getSubmissionStatus() === 'sent'
-                                ? { reminderSent: true }
-                                : {}
-                        }
-                        selected={current?.includes('Submission') && !current?.includes('Submissions')}
-                    />
-                </div>
+                <RenderBar
+                    name='Script'
+                    valid={electionMethods.getScriptStatus() === 'completed'}
+                    statusObjs={
+                        electionMethods.getScriptStatus() === 'completed'
+                            ? 'completed'
+                            : electionMethods.getScriptStatus() === 'default'
+                            ? {}
+                            : { daysLeft: electionMethods.getScriptStatus() }
+                    }
+                />
+                <RenderBar
+                    key='Recorder'
+                    name='Recorder'
+                    valid={true}
+                    statusObjs={
+                        electionMethods.getScriptStatus() === 'completed'
+                            ? 'completed'
+                            : electionMethods.getScriptStatus() === 'default'
+                            ? {}
+                            : { daysLeft: electionMethods.getScriptStatus() }
+                    }
+                />
+                <RenderBar
+                    key='Invitation'
+                    name='Invitation'
+                    valid={electionMethods.getInvitationStatus() === 'completed'}
+                    statusObjs={
+                        electionMethods.getInvitationStatus() === 'default'
+                            ? {}
+                            : electionMethods.getInvitationStatus() === 'sent'
+                            ? { sent: true }
+                            : electionMethods.getInvitationStatus() === 'accepted'
+                            ? { accepted: true }
+                            : electionMethods.getInvitationStatus() === 'declined'
+                            ? { declined: true }
+                            : { daysLeft: electionMethods.getInvitationStatus() }
+                    }
+                />
+                <RenderBar
+                    key='Submission'
+                    name='Submission'
+                    valid={electionMethods.getSubmissionStatus() === 'completed'}
+                    statusObjs={
+                        electionMethods.getSubmissionStatus() === 'missed'
+                            ? { deadlineMissed: true }
+                            : electionMethods.getSubmissionStatus() === 'submitted'
+                            ? 'videoSubmitted'
+                            : electionMethods.getSubmissionStatus() === 'sent'
+                            ? { reminderSent: true }
+                            : {}
+                    }
+                />
             </div>
-
             <div className={classes.top}>
-                <div className={classes.title}>candidate</div>
+                <div className={classes.title}>candidates</div>
                 <div className={classes.line} />
             </div>
-
             <div className={classes.bottom}>
-                <div
-                    onClick={e => {
-                        handleClick(e, electionMethods.getElectionTableStatus() === 'completed', 'Election Table')
-                    }}
-                    onMouseEnter={onMouseEnterHandler}
-                >
-                    <ElectionCategory
-                        categoryName='Election Table'
-                        statusObjs={
-                            electionMethods.getElectionTableStatus() === 'default'
-                                ? {}
-                                : electionMethods.getElectionTableStatus() === 'filled'
-                                ? 'completed'
-                                : { daysLeft: electionMethods.getElectionTableStatus() }
-                        }
-                        selected={current?.includes('Election Table')}
-                    />
-                </div>
-                <div
-                    onClick={e => {
-                        handleClick(e, electionMethods.getSubmissionsStatus() !== 'default', 'Submissions')
-                    }}
-                    onMouseEnter={onMouseEnterHandler}
-                >
-                    <ElectionCategory
-                        categoryName='Submissions'
-                        statusObjs={
-                            electionMethods.getSubmissionsStatus() === 'default'
-                                ? {}
-                                : [
-                                      { accepted: electionMethods.getSubmissionsStatus().accepted },
-                                      { declined: electionMethods.getSubmissionsStatus().declined },
-                                      { reminderSent: electionMethods.getSubmissionsStatus().reminderSent },
-                                      { deadlineMissed: electionMethods.getSubmissionsStatus().deadlineMissed },
-                                  ]
-                        }
-                        selected={current?.includes('Submissions')}
-                    />
-                </div>
+                <RenderBar
+                    key='Election Table'
+                    name='Election Table'
+                    valid={electionMethods.getElectionTableStatus() === 'completed'}
+                    statusObjs={
+                        electionMethods.getElectionTableStatus() === 'default'
+                            ? {}
+                            : electionMethods.getElectionTableStatus() === 'filled'
+                            ? 'completed'
+                            : { daysLeft: electionMethods.getElectionTableStatus() }
+                    }
+                />
+                <RenderBar
+                    key='Submissions'
+                    name='Submissions'
+                    valid={electionMethods.getSubmissionsStatus() !== 'default'}
+                    statusObjs={
+                        electionMethods.getSubmissionsStatus() === 'default'
+                            ? {}
+                            : [
+                                  { accepted: electionMethods.getSubmissionsStatus().accepted },
+                                  { declined: electionMethods.getSubmissionsStatus().declined },
+                                  { reminderSent: electionMethods.getSubmissionsStatus().reminderSent },
+                                  { deadlineMissed: electionMethods.getSubmissionsStatus().deadlineMissed },
+                              ]
+                    }
+                />
             </div>
             {electionObj?.electionDate && electionObj?.undebateDate && (
                 <div

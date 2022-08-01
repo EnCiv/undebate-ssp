@@ -68,6 +68,10 @@ export default function UndebateHomepage(props) {
 }
 
 const useStyles = createUseStyles(theme => ({
-    undebateHomePage: {},
+    undebateHomePage: {
+        minHeight: '75vh',
+        backgroundColor: theme.backgroundColorApp,
+        paddingBottom: '2rem',
+    },
     header: {},
 }))

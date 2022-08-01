@@ -3,7 +3,7 @@
 import { Iota } from 'civil-server'
 import { undebatesFromTemplateAndRows } from 'undebate'
 
-import moderatorViewerRecorder from '../components/lib/moderator-viewer-recorder'
+import sspViewerRecorder from '../lib/ssp-viewer-recorder'
 
 const introAndPlaceHolder =
     'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893716/5d5b74751e3b194174cd9b94-1-speaking20210304T213504684Z.mp4'
@@ -45,6 +45,7 @@ export default async function createModeratorRecorder(id, cb) {
         const electionObj = iota.webComponent
         let msgs
         if ((msgs = reasonsNotReadyForModeratorRecorder(electionObj)).length) {
+            logger.error("crete-moderator-recorder counldn't because:", id, msgs)
             if (cb) cb()
             return
         }
@@ -52,7 +53,6 @@ export default async function createModeratorRecorder(id, cb) {
             ([aKey, aObj], [bKey, bObj]) => aKey - bKey
         )
         const agenda = sortedQuestionPairs.map(([key, Obj]) => [Obj.text])
-
         const timeLimits = sortedQuestionPairs.map(([key, Obj]) => Obj.time)
 
         // the sequence of videos of the EnCiv moderator instucting the election moderator goes like this
@@ -70,9 +70,13 @@ export default async function createModeratorRecorder(id, cb) {
         speaking.push(awesomeClosing)
         // then instruct how to finish
         speaking.push(allDone)
-        moderatorViewerRecorder.candidateRecorder.component.participants.moderator.name = enCivModeratorName
-        moderatorViewerRecorder.candidateRecorder.component.participants.moderator.speaking = speaking
-        moderatorViewerRecorder.candidateRecorder.component.participants.moderator.listening = listening
+
+        const viewerRecorder = new sspViewerRecorder(electionObj)
+
+        // customize the viewer recorder for this election
+        viewerRecorder.candidateRecorder.component.participants.moderator.name = enCivModeratorName
+        viewerRecorder.candidateRecorder.component.participants.moderator.speaking = speaking
+        viewerRecorder.candidateRecorder.component.participants.moderator.listening = listening
 
         agenda.unshift(['How this works', 'Placeholder'])
         agenda.push(['Make your closing - to the audience'])
@@ -80,23 +84,26 @@ export default async function createModeratorRecorder(id, cb) {
 
         const recorderTimeLimits = [15].concat(timeLimits.map((t, i) => 60)).concat(60) // moderater gets 15 seconds for placeholder, 60 seconds to ask every question and 60 seconds for the closing
 
-        moderatorViewerRecorder.candidateRecorder.component.participants.moderator.agenda = agenda
-        moderatorViewerRecorder.candidateRecorder.component.participants.moderator.timeLimits = recorderTimeLimits
-        moderatorViewerRecorder.candidateRecorder.component.participants.human.name = electionObj.moderator.name
+        viewerRecorder.candidateRecorder.component.participants.moderator.agenda = agenda
+        viewerRecorder.candidateRecorder.component.participants.moderator.timeLimits = recorderTimeLimits
+        viewerRecorder.candidateRecorder.component.participants.human.name = electionObj.moderator.name
 
-        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.name = enCivModeratorName
-        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking.slice(1)
-        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.listening = listening
-        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.agenda = agenda.slice(1)
-        moderatorViewerRecorder.candidateViewer.webComponent.participants.moderator.timeLimits = timeLimits
-        moderatorViewerRecorder.candidateViewer.parentId = id
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.name = enCivModeratorName
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking.slice(1)
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.listening = listening
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.agenda = agenda.slice(1)
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.timeLimits = timeLimits
+        viewerRecorder.candidateViewer.parentId = id
 
-        const inRowObjs = [{ Seat: 'Moderator', Name: electionObj.moderator.name, Email: electionObj.moderator.email }]
-        const { rowObjs, messages } = await undebatesFromTemplateAndRows(moderatorViewerRecorder, inRowObjs)
+        const { rowObjs, messages } = await undebatesFromTemplateAndRows(viewerRecorder, [
+            { office: 'Moderator', ...electionObj.moderator },
+        ])
         if (!rowObjs) {
             if (cb) cb()
             return
         }
+        // to do: rowObjs has the mofrtsyot ingo plud yhr viewer and recorder links, plus an indicator if they'v changed
+        // do we add that info to electionObj.moderator ???
         if (cb) cb({ rowObjs, messages })
     } catch (err) {
         logger.error('err', err)

@@ -3,6 +3,7 @@ import { serverEvents, Iota } from 'civil-server'
 import { merge } from 'lodash'
 import { subscribeEventName } from '../components/lib/socket-api-subscribe'
 import { getElectionDocById, intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs } from './get-election-docs'
+import { diff } from 'deep-object-diff'
 
 // there could be multiple subscribers to changes on the same id.  When a change is made to an id, be careful to only update the electionIota once, and then send the update to all the subscribers.
 // currently, updates are the entire iota, in the ideal, only what's changed will be send in the update.
@@ -42,7 +43,11 @@ export default function subscribeElectionInfo(id, cb) {
             // The parent of the ParticipantCreate Iota is the viewer
             // we need to find if there is an electionIota with this viewer, and update that electionIota
             const electionIotaSubscriber = Object.values(electionIotaSubscribers).find(
-                ({ electionIota }) => !!electionIota?.webComponent?.moderator?.viewers?.[iota.parentId]
+                ({ electionIota }) =>
+                    !!(
+                        electionIota?.webComponent?.moderator?.viewers?.[iota.parentId] ||
+                        electionIota.webComponent?.candidates?.[iota?.bp_info?.uniqueId]
+                    )
             )
             if (!electionIotaSubscriber?.electionIota) {
                 logger.warn('subscribeElectionInfo ParticipantCreate event, no parent found for', iota)
@@ -58,19 +63,29 @@ export default function subscribeElectionInfo(id, cb) {
         return
     }
     const socket = this
-    if (electionIotaSubscribers[id]) finishSubscribe(socket, id, cb)
-    else {
-        getElectionDocById.call(this, id, electionIota => {
-            if (!electionIota) {
-                cb & cb()
-                return
+    getElectionDocById.call(this, id, electionIota => {
+        if (!electionIota) {
+            logger.error('subscribeElectionInfo: id not found:', id)
+            cb & cb()
+            return
+        }
+        if (!electionIotaSubscribers[id])
+            // checking in callback because things could have changed
+            electionIotaSubscribers[id] = { electionIota, sockets: [] }
+        else {
+            if (!electionIotaSubscribers[id].sockets.length) {
+                electionIotaSubscribers[id].electionIota = electionIota
+            } else {
+                const updatedIota = diff(electionIotaSubscribers[id].electionIota, electionIota)
+                if (updatedIota.webComponent) {
+                    // there has been changes in the db that hasn't been sent to the subscribes yet - example undebates-from-templates-and-rows makes changes without sending notifications
+                    // to do - .watch() the iota collection for updates
+                    updateSubscribers.call(this, id, updatedIota)
+                }
             }
-            if (!electionIotaSubscribers[id])
-                // checking in callback because things could have changed
-                electionIotaSubscribers[id] = { electionIota, sockets: [] }
-            finishSubscribe(socket, id, cb)
-        })
-    }
+        }
+        finishSubscribe(socket, id, cb)
+    })
 }
 
 export function updateElectionInfo(rootId, parentId, iotas) {
@@ -109,7 +124,7 @@ export function updateSubscribers(rootId, update) {
     }
     const { electionIota, sockets } = electionIotaSubscribers[rootId]
     if (sockets.length === 0) {
-        logger.warn('updateSubscribers expected subscibers of', drootI, 'to have . deleting the object')
+        logger.warn('updateSubscribers expected subscibers of', rootId, 'to have . deleting the object')
         delete electionIotaSubscribers[rootId]
         return
     }

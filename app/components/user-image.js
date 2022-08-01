@@ -15,13 +15,13 @@ function UserImage(props) {
     )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     userImage: {
         height: '70%',
         width: '70%',
     },
     background: {
-        background: 'white',
+        background: theme.backgroundColorApp,
         borderRadius: '2rem',
         display: 'flex',
         justifyContent: 'center',
@@ -29,6 +29,6 @@ const useStyles = createUseStyles({
         height: '3.25rem',
         width: '3.25rem',
     },
-})
+}))
 
 export default UserImage

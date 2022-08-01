@@ -200,7 +200,7 @@ function doesArrayAtObjPathContainDocWithId(obj, path, id) {
 const mergeOps = {
     // iotas and usedIndexes are props in case the op needs to run recursively
     moderatorRecorders(dst, root, child, iotas, usedIndexes) {
-        if (!(child?.component?.component === 'undebateCreator' && child?.bp_info?.office === 'Moderator')) return false
+        if (!(child?.component?.component === 'UndebateCreator' && child?.bp_info?.office === 'Moderator')) return false
         intoObjOfDocsAtObjPathMergeDoc(dst, 'webComponent.moderator.recorders', child)
         return true
     },
@@ -247,7 +247,7 @@ const mergeOps = {
         return true
     },
     candidatesRecorders(dst, root, child, iotas, usedIndexes) {
-        if (!(child?.component?.component === 'undebateCreator' && child?.bp_info?.office !== 'Moderator')) return false
+        if (!(child?.component?.component === 'UndebateCreator' && child?.bp_info?.office !== 'Moderator')) return false
         intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${child.bp_info.unique_id}.recorders`, child)
         return true
     },

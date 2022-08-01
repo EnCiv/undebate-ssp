@@ -7,7 +7,7 @@ import IsEmail from 'isemail'
 
 function ElectionTextInput(props) {
     const classes = useStyles()
-    const { className, style, name = '', defaultValue = '', checkIsEmail = false, onDone = () => {} } = props
+    const { className, style, name = '', defaultValue = '', type = 'text', onDone = () => {} } = props
 
     const inputRef = useRef(null)
 
@@ -44,7 +44,7 @@ function ElectionTextInput(props) {
         // ex: user@example.com
         // this can be removed to accept a one part domain name if needed
         // ex: user@example
-        if (checkIsEmail) return !!txt && checkEmail(txt)
+        if (type === 'email') return !!txt && checkEmail(txt)
         else return !!txt
     }
 
@@ -55,7 +55,7 @@ function ElectionTextInput(props) {
             </label>
             <input
                 key={`${name}input`}
-                type={checkIsEmail ? 'email' : 'text'}
+                type={type}
                 className={classes.input}
                 defaultValue={defaultValue}
                 name={name}
@@ -63,7 +63,7 @@ function ElectionTextInput(props) {
                 onKeyPress={handleKeyPress}
                 ref={inputRef}
             />
-            {checkIsEmail && inputRef.current && !checkEmail(inputRef.current.value) && (
+            {type === 'email' && inputRef.current && !checkEmail(inputRef.current.value) && (
                 <span className={classes.validity}>name@example.com format expected</span>
             )}
         </div>
@@ -77,7 +77,7 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
-        gap: '0.75rem',
+        gap: '0.625rem',
     },
     label: {
         margin: '0 0.625rem',
@@ -90,6 +90,8 @@ const useStyles = createUseStyles(theme => ({
         border: 'none',
         fontSize: theme.inputFieldFontSize,
         width: '100%',
+        boxSizing: 'border-box',
+        lineHeight: '1.5rem',
     },
     validity: {
         margin: '0',

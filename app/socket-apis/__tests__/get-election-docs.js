@@ -66,7 +66,7 @@ const iotas = [
             office: 'Moderator',
         },
         component: {
-            component: 'undebateCreator',
+            component: 'UndebateCreator',
         },
         parentId: '628c73daf2014b3f4c5da4ee',
     },
@@ -100,6 +100,9 @@ const iotas = [
                     'https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm',
             },
         },
+        bp_info: {
+            office: 'Moderator',
+        },
     },
     {
         _id: Iota.ObjectID('62b8e859582e3b95dc83e78b'),
@@ -110,7 +113,7 @@ const iotas = [
             unique_id: '61e76bbefeaa4a25840d85d0',
         },
         component: {
-            component: 'undebateCreator',
+            component: 'UndebateCreator',
         },
         parentId: '628c73daf2014b3f4c5da4ee',
     },
@@ -123,7 +126,7 @@ const iotas = [
             unique_id: '61e76bfc8a82733d08f0cf12',
         },
         component: {
-            component: 'undebateCreator',
+            component: 'UndebateCreator',
         },
         parentId: '628c73daf2014b3f4c5da4ee',
     },
@@ -248,7 +251,7 @@ test('get election docs should get them', done => {
                               "unique_id": "61e76bbefeaa4a25840d85d0",
                             },
                             "component": Object {
-                              "component": "undebateCreator",
+                              "component": "UndebateCreator",
                             },
                             "description": "Candidate Recorder 1 for #4",
                             "parentId": "628c73daf2014b3f4c5da4ee",
@@ -295,7 +298,7 @@ test('get election docs should get them', done => {
                               "unique_id": "61e76bfc8a82733d08f0cf12",
                             },
                             "component": Object {
-                              "component": "undebateCreator",
+                              "component": "UndebateCreator",
                             },
                             "description": "Candidate Recorder 2 for #4",
                             "parentId": "628c73daf2014b3f4c5da4ee",
@@ -315,7 +318,7 @@ test('get election docs should get them', done => {
                             "office": "Moderator",
                           },
                           "component": Object {
-                            "component": "undebateCreator",
+                            "component": "UndebateCreator",
                           },
                           "description": "Moderator Recorder for #4",
                           "parentId": "628c73daf2014b3f4c5da4ee",
@@ -326,6 +329,9 @@ test('get election docs should get them', done => {
                       "submissions": Object {
                         "628d2d25c945f836b8be0901": Object {
                           "_id": "628d2d25c945f836b8be0901",
+                          "bp_info": Object {
+                            "office": "Moderator",
+                          },
                           "component": Object {
                             "component": "MergeParticipants",
                             "participant": Object {
@@ -413,7 +419,7 @@ test('get election doc by id should get one', done => {
                           "unique_id": "61e76bbefeaa4a25840d85d0",
                         },
                         "component": Object {
-                          "component": "undebateCreator",
+                          "component": "UndebateCreator",
                         },
                         "description": "Candidate Recorder 1 for #4",
                         "parentId": "628c73daf2014b3f4c5da4ee",
@@ -460,7 +466,7 @@ test('get election doc by id should get one', done => {
                           "unique_id": "61e76bfc8a82733d08f0cf12",
                         },
                         "component": Object {
-                          "component": "undebateCreator",
+                          "component": "UndebateCreator",
                         },
                         "description": "Candidate Recorder 2 for #4",
                         "parentId": "628c73daf2014b3f4c5da4ee",
@@ -480,7 +486,7 @@ test('get election doc by id should get one', done => {
                         "office": "Moderator",
                       },
                       "component": Object {
-                        "component": "undebateCreator",
+                        "component": "UndebateCreator",
                       },
                       "description": "Moderator Recorder for #4",
                       "parentId": "628c73daf2014b3f4c5da4ee",
@@ -491,6 +497,9 @@ test('get election doc by id should get one', done => {
                   "submissions": Object {
                     "628d2d25c945f836b8be0901": Object {
                       "_id": "628d2d25c945f836b8be0901",
+                      "bp_info": Object {
+                        "office": "Moderator",
+                      },
                       "component": Object {
                         "component": "MergeParticipants",
                         "participant": Object {
@@ -573,7 +582,7 @@ test('intoObjOfDocsAtObjPathMergeDoc', () => {
                     "office": "Moderator",
                   },
                   "component": Object {
-                    "component": "undebateCreator",
+                    "component": "UndebateCreator",
                   },
                   "description": "Moderator Recorder for #4",
                   "parentId": "628c73daf2014b3f4c5da4ee",

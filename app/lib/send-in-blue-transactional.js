@@ -2,7 +2,7 @@
 const SibApiV3Sdk = require('sib-api-v3-sdk')
 const path = require('path')
 const fs = require('fs') // require so it runs as is without having to bable it
-const repoName = require('git-repo-name')
+const packageJSON = require('../../package.json')
 
 var SibSMTPApi
 export default SibSMTPApi
@@ -77,7 +77,7 @@ export async function SibGetTemplateId(templateName) {
         const htmlFile = path.resolve(__dirname, `../../assets/email-templates/${templateName}.html`)
         const htmlContent = fs.readFileSync(htmlFile, 'utf8')
         if (!htmlContent) return undefined
-        const name = repoName.sync() + '/' + templateName
+        const name = packageJSON.name + '/' + templateName
         const template = await SibGetTemplate(name, htmlContent)
         if (template) return template.id
         const newId = await SibCreateTemplate(name, templateName, htmlContent)

@@ -229,7 +229,7 @@ maybe('Test the send candidate invites API', () => {
                     params: {
                         candidate: {
                             submissionDeadline: expect.any(String),
-                            recorder_url: `localhost:3011/country:us/organization:cfa/office:president-of-the-u-s/2021-03-21-recorder-${SARAHID}`,
+                            recorder_url: `http://localhost:3011/country:us/organization:cfa/office:president-of-the-u-s/2021-03-21-recorder-${SARAHID}`,
                             uniqueId: SARAHID,
                         },
                     },
@@ -250,7 +250,7 @@ maybe('Test the send candidate invites API', () => {
                       "email": "ddfridley@yahoo.com",
                       "name": "Sarah Jones",
                       "office": "President of the U.S.",
-                      "recorder_url": "localhost:3011/country:us/organization:cfa/office:president-of-the-u-s/2021-03-21-recorder-61e76bbefeaa4a25840d85d0",
+                      "recorder_url": "http://localhost:3011/country:us/organization:cfa/office:president-of-the-u-s/2021-03-21-recorder-61e76bbefeaa4a25840d85d0",
                       "submissionDeadline": Any<String>,
                       "uniqueId": "61e76bbefeaa4a25840d85d0",
                     },
