@@ -158,7 +158,6 @@ function getElectionStatusMethods(dispatch, state) {
         )
 
     const countSubmissionReminderSet = () => {
-        // todo is this supposed to be candidateDeadlineReminderEmails?
         let count = 0
         const reminder = state?.timeline?.moderatorDeadlineReminderEmails
         for (const key in reminder) {
@@ -170,7 +169,6 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const countSubmissionDeadlineMissed = () => {
-        // todo is this supposed to be candidateSubmissionDeadline?
         let count = 0
         const submission = state?.timeline?.moderatorSubmissionDeadline
         for (const key in submission) {

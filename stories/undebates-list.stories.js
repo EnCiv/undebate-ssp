@@ -57,14 +57,14 @@ const defaultElectionObject = {
         name: 'Bill Smith',
         email: 'billsmith@gmail.com',
         message: 'Please be a moderator',
-        invitations: [
-            {
-                _id: '1',
+        invitations: {
+            '62e7553fcf76d11cc0ac241b': {
+                _id: '62e7553fcf76d11cc0ac241b',
                 sentDate: '2022-01-07T22:09:32.952Z',
                 responseDate: '2022-01-07T22:09:32.952Z',
                 status: 'Accepted',
             },
-        ],
+        },
         submissions: [{ _id: '', url: '', date: '' }],
     },
     candidates: {
@@ -74,15 +74,15 @@ const defaultElectionObject = {
             email: 'sarahjones@mail.com',
             office: 'President of the U.S.',
             region: 'United States',
-            invitations: [
-                {
-                    _id: '',
+            invitations: {
+                '62e754f1c26e860980b49fd4': {
+                    _id: '62e754f1c26e860980b49fd4',
                     sentDate: '2022-01-07T22:09:32.952Z',
                     responseDate: '2022-01-07T22:09:32.952Z',
                     status: 'Declined',
                     parentId: '',
                 },
-            ],
+            },
         },
     },
     timeline: {
@@ -142,7 +142,7 @@ let moderatorElectionObject2 = cloneDeep(defaultElectionObject)
 moderatorElectionObject2.id = '627ecafe4c12b659a8b954de'
 moderatorElectionObject2.organizationName = 'San Diego Government Elections'
 moderatorElectionObject2.electionName = 'SD City Council'
-moderatorElectionObject2.moderator.invitations[0].status = 'Declined'
+moderatorElectionObject2.moderator.invitations['62e7553fcf76d11cc0ac241b'].status = 'Declined'
 
 let moderatorElectionObject3 = cloneDeep(defaultElectionObject)
 moderatorElectionObject3.id = '62cb350e480f6535c1ec9b5e'
@@ -154,7 +154,7 @@ let moderatorElectionObject4 = cloneDeep(defaultElectionObject)
 moderatorElectionObject4.id = '62cb35fddc380a594cff7126'
 moderatorElectionObject4.organizationName = 'Los Angeles Government Elections'
 moderatorElectionObject4.electionName = 'LA Mayor'
-delete moderatorElectionObject4.moderator.invitations[0].status
+delete moderatorElectionObject4.moderator.invitations['62e7553fcf76d11cc0ac241b'].status
 
 let moderatorElectionObject5 = cloneDeep(defaultElectionObject)
 moderatorElectionObject5.id = '62cb365f384f59688794ae9c'
@@ -215,7 +215,7 @@ let candidatesElectionObject3 = cloneDeep(defaultElectionObject)
 candidatesElectionObject3.id = '62cb350e480f6535c1ec9b5e'
 candidatesElectionObject3.organizationName = 'San Diego Government Elections'
 candidatesElectionObject3.electionName = 'SD Mayor'
-candidatesElectionObject3.moderator.invitations[0].sentDate = ''
+candidatesElectionObject3.moderator.invitations['62e7553fcf76d11cc0ac241b'].sentDate = ''
 
 let candidatesElectionObject4 = cloneDeep(defaultElectionObject)
 candidatesElectionObject4.id = '62cb35fddc380a594cff7126'
