@@ -71,6 +71,7 @@ const useStyles = createUseStyles(theme => ({
     undebateHomePage: {
         minHeight: '75vh',
         backgroundColor: theme.backgroundColorApp,
+        paddingBottom: '2rem',
     },
     header: {},
 }))
