@@ -145,6 +145,7 @@ function getElectionStatusMethods(dispatch, state) {
         return submissionDate < deadline
     }
 
+    // Start Moderator Count Methods
     const countSubmissionAccepted = () =>
         Object.values(state?.moderator?.invitations || {}).reduce(
             (count, invitation) => (invitation.status === 'Accepted' ? count + 1 : count),
@@ -178,6 +179,51 @@ function getElectionStatusMethods(dispatch, state) {
         }
         return count
     }
+    // End Moderator Count Methods
+
+    // Start Candidates Count Methods
+    const countCandidatesSubmissionsAccepted = () => {
+        let totalCount = 0
+        Object.values(state?.candidates || {}).forEach(candidate => {
+            totalCount = Object.values(candidate?.invitations || {}).reduce((count, invitation) => {
+                return invitation.status === 'Accepted' ? count + 1 : count
+            }, totalCount)
+        })
+        return totalCount
+    }
+
+    const countCandidatesSubmissionsDeclined = () => {
+        let totalCount = 0
+        Object.values(state?.candidates || {}).forEach(candidate => {
+            totalCount = Object.values(candidate?.invitations || {}).reduce((count, invitation) => {
+                return invitation.status === 'Declined' ? count + 1 : count
+            }, totalCount)
+        })
+        return totalCount
+    }
+
+    const countCandidatesSubmissionsReminderSent = () => {
+        let count = 0
+        const reminder = state?.timeline?.candidateDeadlineReminderEmails
+        for (const key in reminder) {
+            if (reminder[key]?.sent) {
+                count += 1
+            }
+        }
+        return count
+    }
+
+    const countCandidatesSubmissionsDeadlineMissed = () => {
+        let count = 0
+        const submission = state?.timeline?.candidateSubmissionDeadline
+        for (const key in submission) {
+            if (!submission[key]?.sent) {
+                count += 1
+            }
+        }
+        return count
+    }
+    // End Candidates Count Methods
 
     const checkReminderSent = () =>
         Object.values(state?.timeline?.moderatorDeadlineReminderEmails || {}).some(r => r.sent)
@@ -244,10 +290,10 @@ function getElectionStatusMethods(dispatch, state) {
     const getSubmissionsStatus = () => {
         if (recentInvitationStatus()?.sentDate)
             return {
-                accepted: countSubmissionAccepted(),
-                declined: countSubmissionDeclined(),
-                reminderSent: countSubmissionReminderSet(),
-                deadlineMissed: countSubmissionDeadlineMissed(),
+                accepted: countCandidatesSubmissionsAccepted(),
+                declined: countCandidatesSubmissionsDeclined(),
+                reminderSent: countCandidatesSubmissionsReminderSent(),
+                deadlineMissed: countCandidatesSubmissionsDeadlineMissed(),
             }
         return 'default'
     }
@@ -389,6 +435,10 @@ function getElectionStatusMethods(dispatch, state) {
         countSubmissionDeclined,
         countSubmissionReminderSet,
         countSubmissionDeadlineMissed,
+        countCandidatesSubmissionsAccepted,
+        countCandidatesSubmissionsDeclined,
+        countCandidatesSubmissionsReminderSent,
+        countCandidatesSubmissionsDeadlineMissed,
         getSubmissionStatus,
         getElectionTableStatus,
         getSubmissionsStatus,

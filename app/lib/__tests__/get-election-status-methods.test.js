@@ -461,6 +461,162 @@ describe('election status methods', () => {
         })
     })
 
+    describe('count candidates submissions accepted', () => {
+        it('should be 2 accepted', () => {
+            const state = {
+                candidates: {
+                    '62e757299283218b0f61dfc4': {
+                        _id: '62e757299283218b0f61dfc4',
+                        invitations: {
+                            '62e602be60ee8944086c42b7': {
+                                _id: '62e602be60ee8944086c42b7',
+                                responseDate: new Date(Date.now() - 2000),
+                                status: 'Accepted',
+                            },
+                        },
+                    },
+                    '62e75729d3ac2a8b2356add1': {
+                        _id: '62e75729d3ac2a8b2356add1',
+                        invitations: {
+                            '62e602f73d79581224b85edf': {
+                                _id: '62e602f73d79581224b85edf',
+                                responseDate: new Date(Date.now() - 2000),
+                                status: 'Accepted',
+                            },
+                        },
+                    },
+                },
+            }
+            const { countCandidatesSubmissionsAccepted } = getElectionStatusMethods(null, state)
+            expect(countCandidatesSubmissionsAccepted()).toBe(2)
+        })
+        it('should be 0 accepted', () => {
+            const state = {
+                candidates: {
+                    '62e757299283218b0f61dfc4': {
+                        _id: '62e757299283218b0f61dfc4',
+                        invitations: {
+                            '62e602be60ee8944086c42b7': {
+                                _id: '62e602be60ee8944086c42b7',
+                                responseDate: new Date(Date.now() - 2000),
+                                status: 'Declined',
+                            },
+                        },
+                    },
+                    '62e75729d3ac2a8b2356add1': {
+                        _id: '62e75729d3ac2a8b2356add1',
+                        invitations: {
+                            '62e602f73d79581224b85edf': {
+                                _id: '62e602f73d79581224b85edf',
+                                responseDate: new Date(Date.now() - 2000),
+                                status: 'Declined',
+                            },
+                        },
+                    },
+                },
+            }
+            const { countCandidatesSubmissionsAccepted } = getElectionStatusMethods(null, state)
+            expect(countCandidatesSubmissionsAccepted()).toBe(0)
+        })
+    })
+
+    describe('count candidates submissions declined', () => {
+        it('should be 2 declined', () => {
+            const state = {
+                candidates: {
+                    '62e757299283218b0f61dfc4': {
+                        _id: '62e757299283218b0f61dfc4',
+                        invitations: {
+                            '62e602be60ee8944086c42b7': {
+                                _id: '62e602be60ee8944086c42b7',
+                                responseDate: new Date(Date.now() - 2000),
+                                status: 'Declined',
+                            },
+                        },
+                    },
+                    '62e75729d3ac2a8b2356add1': {
+                        _id: '62e75729d3ac2a8b2356add1',
+                        invitations: {
+                            '62e602f73d79581224b85edf': {
+                                _id: '62e602f73d79581224b85edf',
+                                responseDate: new Date(Date.now() - 2000),
+                                status: 'Declined',
+                            },
+                        },
+                    },
+                },
+            }
+            const { countCandidatesSubmissionsDeclined } = getElectionStatusMethods(null, state)
+            expect(countCandidatesSubmissionsDeclined()).toBe(2)
+        })
+        it('should be 0 declined', () => {
+            const state = {
+                candidates: {
+                    '62e757299283218b0f61dfc4': {
+                        _id: '62e757299283218b0f61dfc4',
+                        invitations: {
+                            '62e602be60ee8944086c42b7': {
+                                _id: '62e602be60ee8944086c42b7',
+                                responseDate: new Date(Date.now() - 2000),
+                                status: 'Accepted',
+                            },
+                        },
+                    },
+                    '62e75729d3ac2a8b2356add1': {
+                        _id: '62e75729d3ac2a8b2356add1',
+                        invitations: {
+                            '62e602f73d79581224b85edf': {
+                                _id: '62e602f73d79581224b85edf',
+                                responseDate: new Date(Date.now() - 2000),
+                                status: 'Accepted',
+                            },
+                        },
+                    },
+                },
+            }
+            const { countCandidatesSubmissionsDeclined } = getElectionStatusMethods(null, state)
+            expect(countCandidatesSubmissionsDeclined()).toBe(0)
+        })
+    })
+
+    describe('count candidates submissions reminder set', () => {
+        it('should be 2 sent reminders', () => {
+            const state = {
+                timeline: {
+                    candidateDeadlineReminderEmails: {
+                        0: {
+                            date: '2022-01-07T22:09:32.952Z',
+                            sent: true,
+                        },
+                        1: {
+                            date: '2022-01-07T22:09:32.952Z',
+                            sent: true,
+                        },
+                    },
+                },
+            }
+            const { countCandidatesSubmissionsReminderSent } = getElectionStatusMethods(null, state)
+            expect(countCandidatesSubmissionsReminderSent()).toBe(2)
+        })
+    })
+
+    describe('count candidates submissions deadline missed', () => {
+        it('should be missed 1 deadline', () => {
+            const state = {
+                timeline: {
+                    candidateSubmissionDeadline: {
+                        0: {
+                            date: '2022-01-07T22:09:32.952Z',
+                            sent: false,
+                        },
+                    },
+                },
+            }
+            const { countCandidatesSubmissionsDeadlineMissed } = getElectionStatusMethods(null, state)
+            expect(countCandidatesSubmissionsDeadlineMissed()).toBe(1)
+        })
+    })
+
     describe('get questions status', () => {
         it('should retrieve 1 day left', () => {
             const state = {
@@ -1160,6 +1316,38 @@ describe('election status methods', () => {
                         },
                     },
                 },
+                candidates: {
+                    '62e757299283218b0f61dfc4': {
+                        _id: '62e757299283218b0f61dfc4',
+                        invitations: {
+                            '62e602be60ee8944086c42b7': {
+                                _id: '62e602be60ee8944086c42b7',
+                                responseDate: new Date(Date.now() - 2000),
+                                status: 'Accepted',
+                            },
+                        },
+                    },
+                    '62e75729d3ac2a8b2356add1': {
+                        _id: '62e75729d3ac2a8b2356add1',
+                        invitations: {
+                            '62e602f73d79581224b85edf': {
+                                _id: '62e602f73d79581224b85edf',
+                                responseDate: new Date(Date.now() - 2000),
+                                status: 'Accepted',
+                            },
+                        },
+                    },
+                    '62e75bc2aeefba9f6a4b2fe8': {
+                        _id: '62e75bc2aeefba9f6a4b2fe8',
+                        invitations: {
+                            '62e602f73d79581224b85edg': {
+                                _id: '62e602f73d79581224b85edg',
+                                responseDate: new Date(Date.now() - 2000),
+                                status: 'Declined',
+                            },
+                        },
+                    },
+                },
                 timeline: {
                     moderatorDeadlineReminderEmails: {
                         0: {
@@ -1190,7 +1378,7 @@ describe('election status methods', () => {
                     candidateSubmissionDeadline: {
                         0: {
                             date: '2022-01-07T22:09:32.952Z',
-                            sent: true,
+                            sent: false,
                         },
                     },
                 },
