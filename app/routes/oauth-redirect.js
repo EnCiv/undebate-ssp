@@ -1,4 +1,5 @@
 export const oauth2callbacks = []
+import scheme from '../lib/scheme'
 
 async function oauthRedirect(req, res, next) {
     // this is what gets called after the user has consented to the app reading their spreadsheets
@@ -19,9 +20,8 @@ export default function route() {
 }
 
 const redirectRoute = '/oauthRedirect'
-export const redirectUrl = process.env.HOSTNAME
-    ? (process.env.HOSTNAME === 'localhost:3011' ? 'http' : 'https') + '://' + process.env.HOSTNAME + redirectRoute
-    : 'http://localhost:3011' + redirectRoute
+
+export const redirectUrl = scheme() + process.env.HOSTNAME + redirectRoute
 
 if (!process.env.HOSTNAME) {
     logger.error('HOSTNAME not set in env. Using default auth redirect url of', redirectUrl)

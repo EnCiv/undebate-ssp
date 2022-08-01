@@ -9,6 +9,8 @@ import WebComponents from '../web-components'
 import Footer from './footer'
 import FontFaces from './font-faces'
 
+const NoFooterWebComponents = ['CandidateConversation', 'Undebate', 'CcWrapper']
+
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends React.Component {
     render() {
@@ -23,7 +25,9 @@ class App extends React.Component {
                         <ThemeProvider theme={theme}>
                             <div style={{ position: 'relative' }}>
                                 <WebComponents key='web-component' webComponent={iota.webComponent} {...newProps} />
-                                <Footer key='footer' />
+                                {!NoFooterWebComponents.includes(iota?.webComponent?.webComponent) && (
+                                    <Footer key='footer' />
+                                )}
                             </div>
                         </ThemeProvider>
                     </FontFaces>

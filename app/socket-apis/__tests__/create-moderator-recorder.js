@@ -69,10 +69,10 @@ test('it should create a viewer', done => {
                   "_id": Any<ObjectID>,
                   "bp_info": Object {
                     "electionList": Array [
-                      "/country:us/organization:cfa/office:moderator/2021-03-21",
+                      "/country:us/org:usfg/office:moderator/2022-11-07",
                     ],
-                    "election_date": "03/21/2021",
-                    "election_source": "CodeForAmerica.NAC",
+                    "election_date": "11/07/2022",
+                    "election_source": "United States Federal Government",
                     "office": "Moderator",
                   },
                   "component": Object {
@@ -80,7 +80,7 @@ test('it should create a viewer', done => {
                   },
                   "description": "A Candidate Conversation for: Moderator",
                   "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-                  "path": "/country:us/organization:cfa/office:moderator/2021-03-21",
+                  "path": "/country:us/org:usfg/office:moderator/2022-11-07",
                   "subject": "Moderator",
                   "webComponent": Object {
                     "closing": Object {
@@ -153,7 +153,7 @@ test('it should create a recorder', async () => {
 
             parentId: expect.stringMatching(objectIdPattern),
             path: expect.stringMatching(
-                /\/country:us\/organization:cfa\/office:moderator\/2021-03-21-recorder-[0-9a-fA-F]{24}$/
+                /\/country:us\/org:usfg\/office:moderator\/2022-11-07-recorder-[0-9a-fA-F]{24}$/
             ),
         },
         `
@@ -164,8 +164,8 @@ test('it should create a recorder', async () => {
               "billsmith@gmail.com",
             ],
             "candidate_name": "Bill Smith",
-            "election_date": "03/21/2021",
-            "election_source": "CodeForAmerica.NAC",
+            "election_date": "11/07/2022",
+            "election_source": "United States Federal Government",
             "last_name": "Smith",
             "office": "Moderator",
             "party": "",
@@ -225,7 +225,7 @@ test('it should create a recorder', async () => {
           },
           "description": "A Candidate Recorder for the undebate: Moderator",
           "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-          "path": StringMatching /\\\\/country:us\\\\/organization:cfa\\\\/office:moderator\\\\/2021-03-21-recorder-\\[0-9a-fA-F\\]\\{24\\}\\$/,
+          "path": StringMatching /\\\\/country:us\\\\/org:usfg\\\\/office:moderator\\\\/2022-11-07-recorder-\\[0-9a-fA-F\\]\\{24\\}\\$/,
           "subject": "Moderator-Candidate Recorder",
           "webComponent": Object {
             "closing": Object {

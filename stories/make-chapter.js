@@ -6,6 +6,9 @@ export default function makeChapter(Component) {
         const test = (args, context) => {
             // logger is used on the browser by civil-client apis - dummy it out
             if (typeof global.logger === 'undefined') global.logger = console
+            if (typeof global.process === 'undefined') global.process = {}
+            if (typeof process.env === 'undefined') process.env = {}
+            process.env.HOSTNAME = 'https://undebate-ssp.herokuapp.com'
 
             // simulate socket for useAuth
             useEffect(() => {

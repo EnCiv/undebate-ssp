@@ -2,8 +2,16 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import TextareaAutosize from 'react-textarea-autosize'
+import cx from 'classnames'
 
-export default function CountLimitedTextInput({ name = '', maxCount = 0, defaultValue = '', onDone = () => {} }) {
+export default function CountLimitedTextInput({
+    name = '',
+    maxCount = 0,
+    defaultValue = '',
+    onDone = () => {},
+    className,
+    style,
+}) {
     const classes = useStyles()
     const [length, setLength] = useState(defaultValue.length)
 
@@ -29,7 +37,7 @@ export default function CountLimitedTextInput({ name = '', maxCount = 0, default
     }
 
     return (
-        <div className={classes.container}>
+        <div className={cx(className, classes.container)} style={style}>
             <div className={classes.scriptInfo} key='header'>
                 <div className={classes.question}>{name}</div>
                 <div className={classes.quantity}>
@@ -62,7 +70,8 @@ const useStyles = createUseStyles(theme => ({
     scriptInfo: {
         display: 'flex',
         justifyContent: 'space-between',
-        padding: '.625rem',
+        padding: theme.defaultBorderRadius,
+        paddingTop: 0,
     },
     question: {
         display: 'flex',
@@ -83,6 +92,5 @@ const useStyles = createUseStyles(theme => ({
         border: 'none',
         borderRadius: theme.defaultBorderRadius,
         fontSize: '1rem',
-        margin: '0.375rem 0rem',
     },
 }))

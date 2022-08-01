@@ -1,11 +1,11 @@
 // https://github.com/EnCiv/undebate-ssp/issues/56
 
-import UnitUnderTest from '../app/components/submissions'
+import component from '../app/components/submissions'
 import makeChapter from './make-chapter'
-const mC = makeChapter(UnitUnderTest)
+const mC = makeChapter(component)
 export default {
     title: 'Submissions',
-    component: UnitUnderTest,
+    component,
     argTypes: {},
 }
 
@@ -20,20 +20,17 @@ export const Default = mC({
                 email: 'sarahjones@mail.com',
                 office: 'President of the U.S.',
                 region: 'United States',
-                invitations: [
+                invitations: {
                     // derived data - list may be empty or not present
-                    {
-                        _id: '',
+                    '62e4c1fba25ed33a7006c072': {
+                        _id: '62e4c1fba25ed33a7006c072',
                         sentDate: today,
-                        responseDate: today,
-                        status: 'Declined',
-                        parentId: '',
                     },
-                ],
-                submissions: [
+                },
+                submissions: {
                     // derived data - list may be empty or not present
-                    { _id: '', url: '', date: '', parentId: '' },
-                ],
+                    '62e4c236d6654d501cae3bd1': { _id: '62e4c236d6654d501cae3bd1' },
+                },
             },
             '61e76bfc8a82733d08f0cf12': {
                 uniqueId: '61e76bfc8a82733d08f0cf12',
@@ -41,113 +38,113 @@ export const Default = mC({
                 email: 'mikejeff@mail.com',
                 office: 'President of the U.S.',
                 region: 'United States',
-                invitations: [
-                    {
-                        text: 'Hi Mike, please send answers',
+                invitations: {
+                    '62e4c28d672b781a8c464852': {
+                        _id: '62e4c28d672b781a8c464852',
                         sentDate: today,
-                        responseDate: today,
-                        status: 'Accepted',
                     },
-                ],
-                submissions: [],
+                },
             },
-            fddsfsd: {
-                uniqueId: '61e76bfc8a82733d08f0cf12',
+            '62e4c3965610d86b80a47e39': {
+                uniqueId: '62e4c3965610d86b80a47e39',
                 name: 'Michael Jefferson',
                 email: 'mikejeff@mail.com',
                 office: 'President of the U.S.',
                 region: 'United States',
-                invitations: [
-                    {
-                        text: 'Hi Mike, please send answers',
+                invitations: {
+                    '62e4c3b84584224ae4d795a3': {
+                        _id: '62e4c3b84584224ae4d795a3',
                         sentDate: today,
-                        responseDate: today,
                     },
-                ],
-                submissions: [
-                    {
-                        url: '',
-                        date: '',
+                },
+                submissions: {
+                    '62e4c3e9729f1d153096adc2': {
+                        _id: '62e4c3e9729f1d153096adc2',
                     },
-                ],
+                },
             },
-            tessfd: {
-                uniqueId: '61e76bfc8a82733d08f0cf12',
+            '62e5832d50f99b2b3c8bdc35': {
+                uniqueId: '62e5832d50f99b2b3c8bdc35',
                 name: 'Michael Jefferson',
                 email: 'mikejeff@mail.com',
                 office: 'President of the U.S.',
                 region: 'United States',
-                invitations: [
-                    {
+                invitations: {
+                    '62e5834f86c6f92f307d502b': {
+                        _id: '62e5834f86c6f92f307d502b',
                         text: 'Hi Mike, please send answers',
                         sentDate: today,
                         responseDate: today,
                         status: 'sent',
                     },
-                ],
-                submissions: [],
+                },
+                submissions: {},
             },
-            fdsfds: {
-                uniqueId: '61e76bfc8a82733d08f0cf12',
+            '62e5837ba14bf1283c354f57': {
+                uniqueId: '62e5837ba14bf1283c354f57',
                 name: 'Michael Jefferson',
                 email: 'mikejeff@mail.com',
                 office: 'President of the U.S.',
                 region: 'United States',
-                invitations: [
-                    {
+                invitations: {
+                    '62e5838fc301133aec036741': {
+                        _id: '62e5838fc301133aec036741',
                         text: 'Hi Mike, please send answers',
                         sentDate: today,
                         responseDate: today,
                         status: 'Accepted',
                     },
-                ],
+                },
             },
-            abc: {
-                uniqueId: '61e76bfc8a82733d08f0cf12',
+            '62e583d25fc5031c246211a9': {
+                uniqueId: '62e583d25fc5031c246211a9',
                 name: 'Michael Jefferson',
                 email: 'mikejeff@mail.com',
                 office: 'President of the U.S.',
                 region: 'United States',
-                invitations: [
-                    {
+                invitations: {
+                    '62e583f2b160d1409435fae3': {
+                        _id: '62e583f2b160d1409435fae3',
                         text: 'Hi Mike, please send answers',
                         sentDate: today,
                         responseDate: today,
                         status: 'Text Status',
                     },
-                ],
-                submissions: [],
+                },
+                submissions: {},
             },
-            fdsgfdsgfdg: {
-                uniqueId: '61e76bfc8a82733d08f0cf12',
+            '62e5841a1203202a78def128': {
+                uniqueId: '62e5841a1203202a78def128',
                 name: 'Michael Jefferson',
                 email: 'mikejeff@mail.com',
                 office: 'Senator',
                 region: 'United States',
-                invitations: [
-                    {
+                invitations: {
+                    '62e5842d551e684924df9c27': {
+                        _id: '62e5842d551e684924df9c27',
                         text: 'Hi Mike, please send answers',
                         sentDate: today,
                         responseDate: today,
                         status: 'Declined',
                     },
-                ],
+                },
                 submissions: [],
             },
-            test: {
-                uniqueId: '61e76bfc8a82733d08f0cf12',
+            '62e5845622b9fa2598018779': {
+                uniqueId: '62e5845622b9fa2598018779',
                 name: 'Michael Jefferson',
                 email: 'mikejeff@mail.com',
                 office: 'Senator',
                 region: 'United States',
-                invitations: [
-                    {
+                invitations: {
+                    '62e5846908d99d3f8407a5eb': {
+                        _id: '62e5846908d99d3f8407a5eb',
                         text: 'Hi Mike, please send answers',
                         sentDate: today,
                         responseDate: today,
                         status: 'declined',
                     },
-                ],
+                },
                 submissions: [],
             },
         },

@@ -59,6 +59,8 @@ const electionSchema = Joi.object({
         message: Joi.string().max(SANE),
         invitations: invitations(),
         submissions: submissions(),
+        recorders: Joi.object(),
+        viewers: Joi.object(),
     }),
     candidates: Joi.object().pattern(
         Joi.string().pattern(ObjectID),
@@ -70,6 +72,7 @@ const electionSchema = Joi.object({
             region: Joi.string().max(SANE),
             invitations: invitations(),
             submissions: submissions(),
+            recorders: Joi.object(),
         })
     ),
     timeline: {

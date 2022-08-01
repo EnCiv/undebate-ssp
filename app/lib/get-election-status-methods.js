@@ -100,26 +100,11 @@ export const getLatestIota = iotas => {
     return latest
 }
 export const checkCandidateVideoSubmitted = candidate => {
-    let result = false
-    candidate?.submissions?.forEach(submission => {
-        if (submission.url && submission.url !== '') {
-            result = true
-        }
-    })
-    return result
+    return !!Object.values(candidate?.submissions || {}).length
 }
 
 function getElectionStatusMethods(dispatch, state) {
-    const recentInvitationStatus = () => {
-        if (!state?.moderator?.invitations || !state?.moderator?.invitations[0]) return {}
-        let recent = state?.moderator?.invitations[0]
-        state?.moderator?.invitations.forEach(invitation => {
-            if (new Date(invitation?.responseDate).getTime() > new Date(recent?.responseDate).getTime()) {
-                recent = invitation
-            }
-        })
-        return recent
-    }
+    const recentInvitationStatus = () => getLatestIota(state?.moderator?.invitations)
     const checkTimelineCompleted = () => {
         return (
             checkDateCompleted(state?.timeline?.moderatorDeadlineReminderEmails) &&
@@ -160,24 +145,17 @@ function getElectionStatusMethods(dispatch, state) {
         return submissionDate < deadline
     }
 
-    const countSubmissionAccepted = () => {
-        let count = 0
-        state?.moderator?.invitations?.forEach(invitation => {
-            if (invitation?.status === 'Accepted') {
-                count += 1
-            }
-        })
-        return count
-    }
-    const countSubmissionDeclined = () => {
-        let count = 0
-        state?.moderator?.invitations?.forEach(invitation => {
-            if (invitation?.status === 'Declined') {
-                count += 1
-            }
-        })
-        return count
-    }
+    const countSubmissionAccepted = () =>
+        Object.values(state?.moderator?.invitations || {}).reduce(
+            (count, invitation) => (invitation.status === 'Accepted' ? count + 1 : count),
+            0
+        )
+
+    const countSubmissionDeclined = () =>
+        Object.values(state?.moderator?.invitations || {}).reduce(
+            (count, invitation) => (invitation.status === 'Declined' ? count + 1 : count),
+            0
+        )
 
     const countSubmissionReminderSet = () => {
         // todo is this supposed to be candidateDeadlineReminderEmails?
@@ -203,20 +181,12 @@ function getElectionStatusMethods(dispatch, state) {
         return count
     }
 
-    const checkReminderSent = () => {
-        const reminders = state?.timeline?.moderatorDeadlineReminderEmails
-        if (!reminders) return false
-        return Object.values(reminders).some(r => r.sent)
-    }
+    const checkReminderSent = () =>
+        Object.values(state?.timeline?.moderatorDeadlineReminderEmails || {}).some(r => r.sent)
 
     const areQuestionsLocked = () => {
-        const invites = state?.moderator?.invitations
-        if (invites) {
-            for (const inv of invites) {
-                if (inv.sentDate) return true
-            }
-        }
-        return false
+        const invite = getLatestIota(state?.moderator?.invitations)
+        return !!invite?.sentDate
     }
 
     const getQuestionsStatus = () => {
@@ -245,10 +215,10 @@ function getElectionStatusMethods(dispatch, state) {
     }
     const getSubmissionStatus = () => {
         if (checkVideoSubmitted()) return 'submitted'
-        if (state?.timeline?.moderatorSubmissionDeadline && !checkSubmissionBeforeDeadline()) {
-            if (state?.timeline?.moderatorDeadlineReminderEmails && checkReminderSent()) return 'sent'
-            else return 'missed'
-        }
+        if (!state?.timeline?.moderatorSubmissionDeadline) return 'default'
+        if (getLatestObjByDate(state.timeline.moderatorSubmissionDeadline)?.date < new Date().toISOString())
+            return 'missed'
+        if (checkReminderSent()) return 'sent'
         return 'default'
     }
     const countCandidates = () => {
