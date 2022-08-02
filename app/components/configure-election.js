@@ -18,20 +18,23 @@ const components = {
     Election: ElectionComponent,
     Timeline: Timeline,
     Questions: Questions,
+    Contact: Invitation,
     Script: Script,
     Recorder: ModeratorRecorder,
-    Invitation: Invitation,
     Submission: Submission,
     'Election Table': ElectionTable,
     Submissions: Submissions,
     Undebate: Undebate,
 }
 
+const keys = Object.keys(components)
+
 export default function ConfigureElection(props) {
     const { className, style, electionOM } = props
     const classes = useStyles(props)
     const [component, setComponent] = useState('Election')
     const Component = components[component] || ElectionComponent
+    const next = keys[Math.min(keys.indexOf(component) + 1, keys.length - 1)]
 
     return (
         <div className={cx(className, classes.wrapper)} style={style}>
@@ -43,9 +46,15 @@ export default function ConfigureElection(props) {
                         if (components[value]) setComponent(value)
                         else console.error('ConfigureElection got', value, 'expected a valid component name')
                     }}
+                    component={component}
                 />
                 <div className={classes.comp}>
-                    <Component className={classes.inner} electionOM={electionOM} key={component} />
+                    <Component
+                        className={classes.inner}
+                        electionOM={electionOM}
+                        key={component}
+                        onDone={({ valid, value }) => setComponent(next)}
+                    />
                 </div>
             </div>
         </div>

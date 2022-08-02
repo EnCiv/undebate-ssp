@@ -10,7 +10,7 @@ import ElectionTextArea from './election-text-area'
 
 export function Invitation(props) {
     const classes = useStyles()
-    const { className, style, electionOM } = props
+    const { className, style, electionOM, onDone } = props
     const [electionObj, electionMethods] = electionOM
     //const {email, name, invitations, submissions}=moderator
     const { moderator = {} } = electionObj
@@ -36,18 +36,7 @@ export function Invitation(props) {
         while (sideEffects.length) sideEffects.shift()()
     })
     return (
-        <div className={cx(className, classes.container)} style={style}>
-            <div className={classes.send}>
-                <span>An invitation will be emailed to the moderator along with the script and a recording link</span>
-                <Submit
-                    name='Send Invitation'
-                    disabled={inputsInvalid}
-                    disableOnClick
-                    onDone={({ valid, value }) => {
-                        if (valid) electionMethods.sendModeratorInvitation(value)
-                    }}
-                />
-            </div>
+        <div className={cx(className, classes.invitation)} style={style}>
             <div className={classes.form}>
                 <div className={classes.inputs}>
                     <ElectionTextInput
@@ -84,18 +73,28 @@ export function Invitation(props) {
                     />
                 </div>
             </div>
-            <SvgSpeaker className={classes.speaker} />
+            <div className={classes.send}>
+                <Submit
+                    name='Done'
+                    disabled={inputsInvalid}
+                    disableOnClick
+                    onDone={({ valid, value }) => {
+                        onDone && onDone({ valid, value })
+                    }}
+                />
+                <SvgSpeaker className={classes.speaker} />
+            </div>
         </div>
     )
 }
 
 const useStyles = createUseStyles({
-    container: {
+    invitation: {
         position: 'relative',
-    },
-    send: {
         display: 'flex',
         justifyContent: 'space-between',
+    },
+    send: {
         marginBottom: '1rem',
     },
     form: {
