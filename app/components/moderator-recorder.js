@@ -14,7 +14,7 @@ import Submit from './submit'
 import scheme from '../lib/scheme'
 
 export default function ModeratorRecorder(props) {
-    const { className, style, electionOM } = props
+    const { className, style, electionOM, onDone = () => {} } = props
     const [electionObj, electionMethods] = electionOM
     const classes = useStyles(props)
     const { moderator = {} } = electionObj
@@ -65,11 +65,11 @@ export default function ModeratorRecorder(props) {
     const src = scheme() + process.env.HOSTNAME + viewer?.path
     const icon = <div className={classes.icon}>{prevIcon}</div>
     return (
-        <div className={cx(className, classes.container)} style={style}>
+        <div className={cx(className, classes.moderatorRecorder)} style={style}>
             <div className={classes.innerLeft}>
                 <h2>
-                    This is what the moderatory will see, along with the scrip when recording. Review it before sending
-                    the invitation to record.
+                    This is what the moderator will see when recording. Review it before sending the invitation to
+                    record.
                 </h2>
                 <div className={cx(classes.card, { [classes.backgroundRed]: missed })}>
                     <div className={classes.preview}>
@@ -88,23 +88,46 @@ export default function ModeratorRecorder(props) {
                 </div>
                 <div className={classes.cornerPic}>{cornerPic}</div>
             </div>
-            <Submit
-                name='Generate Recorder'
-                disabled={submitted || viewer}
-                onDone={() => {
-                    setSubmitted(true)
-                    electionMethods.createModeratorRecorder()
-                }}
-                className={classes.submitButton}
-            />
+            <div className={classes.buttonPanel}>
+                <div className={classes.buttonRow}>
+                    <Submit
+                        name='Generate Recorder'
+                        disabled={submitted || !electionMethods.isModeratorReadyForCreateRecorder()}
+                        onDone={() => {
+                            setSubmitted(true) // disable the button
+                            electionMethods.createModeratorRecorder(result => {
+                                // to do show error messages if failure
+                            })
+                        }}
+                        className={classes.submitButton}
+                    />
+                </div>
+                <div className={classes.buttonRow}>
+                    <div className={classes.buttonRowText}>
+                        An invitation will be emailed to the moderator along with the script and a recording link
+                    </div>
+                    <Submit
+                        name='Send Invitation'
+                        disabled={!electionMethods.isModeratorReadyToInvite()}
+                        onDone={({ valid, value }) => {
+                            electionMethods.sendModeratorInvitation(result => {
+                                //to do show error message if failure
+                                onDone({ valid: true })
+                            })
+                        }}
+                        className={classes.submitButton}
+                    />
+                </div>
+            </div>
         </div>
     )
 }
 
 const useStyles = createUseStyles(theme => ({
-    container: {
-        padding: '2rem',
+    moderatorRecorder: {
         backgroundColor: theme.backgroundColorApp,
+        width: 'auto',
+        display: 'flex',
     },
     innerLeft: {
         maxWidth: '60rem',
@@ -115,6 +138,7 @@ const useStyles = createUseStyles(theme => ({
         backgroundColor: theme.colorLightGray,
         padding: '.5rem',
         borderRadius: '0.625rem',
+        boxSizing: 'border-box',
     },
     preview: {
         backgroundColor: 'white',
@@ -160,5 +184,18 @@ const useStyles = createUseStyles(theme => ({
     colorLightRed: {
         color: theme.colorLightRed,
     },
-    submitButton: { float: 'right' },
+    buttonPanel: {
+        display: 'flex',
+        flexDirection: 'column',
+        paddingLeft: '1rem',
+    },
+    buttonRow: {},
+    buttonRowText: {
+        marginTop: '2rem',
+        marginBottom: '1rem',
+        textAlign: 'right',
+    },
+    submitButton: {
+        float: 'right',
+    },
 }))

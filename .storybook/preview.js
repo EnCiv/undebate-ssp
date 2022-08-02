@@ -26,27 +26,55 @@ export const decorators = [
                 upsert(obj) {
                     dispatch(merge({}, state, obj, { _count: state._count + 1 }))
                 },
-                createModeratorRecorder() {
+                createModeratorRecorder(cb) {
                     dispatch(
                         merge(
                             {},
                             state,
+                            {
+                                moderator: {
+                                    recorders: {
+                                        '62d5fc793d4af57ff9a9f4af': {
+                                            _id: '62d5fc793d4af57ff9a9f4af',
+                                            path: '/country:us/org:usfg/office:moderator/2022-11-08-62d5fc793d4af57ff9a9f4af',
+                                        },
+                                    },
+                                    viewers: {
+                                        '62d5fc793d4af57ff9a9f4ac': {
+                                            _id: '62d5fc793d4af57ff9a9f4ac',
+                                            path: '/country:us/org:usfg/office:moderator/2022-11-08',
+                                        },
+                                    },
+                                },
+                            },
                             { _createModeratorRecorder: (state._createModeratorRecorder || 0) + 1 },
                             { _count: state._count + 1 }
                         )
                     )
+                    if (cb) setTimeout(cb, 1000)
                 },
-                sendModeratorInvitation() {
+                sendModeratorInvitation(cb) {
                     dispatch(
                         merge(
                             {},
                             state,
+                            {
+                                moderator: {
+                                    invitations: {
+                                        '62e85b5b7d67bd62c48a2d61': {
+                                            _id: '62e85b5b7d67bd62c48a2d61',
+                                            sentDate: new Date().toISOString(),
+                                        },
+                                    },
+                                },
+                            },
                             { _sendModeratorInvitation: (state._sendModeratorInvitation || 0) + 1 },
                             { _count: state._count + 1 }
                         )
                     )
+                    if (cb) setTimeout(cb, 1000)
                 },
-                sendCandidateInvitations() {
+                sendCandidateInvitations(cb) {
                     dispatch(
                         merge(
                             {},
@@ -55,6 +83,7 @@ export const decorators = [
                             { _count: state._count + 1 }
                         )
                     )
+                    if (cb) setTimeout(cb, 1000)
                 },
             }),
             { _count: 0 }

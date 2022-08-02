@@ -58,6 +58,7 @@ export default function InviteMeter({ electionOM, className, style }) {
         <div className={className} style={style}>
             <div className={classes.meter} />
             <div className={classes.info}>
+                {/* Declined / Accepted not implemented yet
                 <span>
                     <StatusIcon value={statusCounts.declined} themeColorName='colorDeclined' />
                     <span className={classes.statusText}>Invite Declined</span>
@@ -66,6 +67,7 @@ export default function InviteMeter({ electionOM, className, style }) {
                     <StatusIcon value={statusCounts.accepted} themeColorName='colorAccepted' />
                     <span className={classes.statusText}>Invite Accepted</span>
                 </span>
+                */}
                 <span>
                     <StatusIcon value={statusCounts.deadlineMissed} themeColorName='colorDeadlineMissed' />
                     <span className={classes.statusText}>Deadline Missed</span>

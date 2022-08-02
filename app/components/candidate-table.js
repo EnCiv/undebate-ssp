@@ -11,7 +11,7 @@ import { isEqual } from 'lodash'
 
 export default function CandidateTable(props) {
     const classes = useStyles()
-    const { className, style, electionOM } = props
+    const { className, style, electionOM, onDone = () => {} } = props
     const [electionObj, electionMethods] = electionOM
     const { candidates = {} } = electionObj
     const candidatesArray = Object.values(candidates)
@@ -78,7 +78,11 @@ export default function CandidateTable(props) {
                         disabled={inputsInvalid}
                         disableOnClick
                         onDone={({ valid, value }) => {
-                            if (valid) electionMethods.sendCandidateInvitations(value)
+                            if (valid)
+                                electionMethods.sendCandidateInvitations(result => {
+                                    onDone({ valid: true, value: 'sent' })
+                                    //to do - if error show error messages
+                                })
                         }}
                     />
                 </div>

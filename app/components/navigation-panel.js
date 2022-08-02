@@ -8,10 +8,9 @@ import cx from 'classnames'
 import ElectionCategory from './election-category'
 import { SvgRightArrow } from './lib/svg'
 
-export default function NavigationPanel({ className, style, electionOM, onDone }) {
+export default function NavigationPanel({ className, style, electionOM, onDone, component }) {
     const classes = useStyles()
     const [electionObj, electionMethods] = electionOM
-    const [current, setCurrent] = useState('Election')
 
     const convertStringDate = date => {
         const d = new Date(date)
@@ -19,7 +18,6 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
     }
 
     const handleClick = (e, valid, value) => {
-        setCurrent(e.target.parentNode.innerText)
         onDone({ valid, value })
     }
 
@@ -36,7 +34,7 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                 }}
                 onMouseEnter={onMouseEnterHandler}
             >
-                <ElectionCategory categoryName={name} statusObjs={statusObjs} selected={current === name} />
+                <ElectionCategory categoryName={name} statusObjs={statusObjs} selected={component === name} />
             </div>
         )
     }
@@ -79,7 +77,7 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                     }
                 />
                 {/* <div onClick={handleClick} onMouseEnter={onMouseEnterHandler}>
-                    <ElectionCategory categoryName='Danger Zone' selected={current?.includes('Danger Zone')} />
+                    <ElectionCategory categoryName='Danger Zone' selected={component?.includes('Danger Zone')} />
                 </div> */}
             </div>
             <div className={classes.top}>
@@ -87,6 +85,12 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                 <div className={classes.line} />
             </div>
             <div className={classes.bottom}>
+                <RenderBar
+                    key='Contact'
+                    name='Contact'
+                    valid={electionMethods.getModeratorContactStatus === 'completed'}
+                    statusObjs={electionMethods.getModeratorContactStatus() === 'completed' ? 'completed' : {}}
+                />
                 <RenderBar
                     name='Script'
                     valid={electionMethods.getScriptStatus() === 'completed'}
@@ -103,27 +107,11 @@ export default function NavigationPanel({ className, style, electionOM, onDone }
                     name='Recorder'
                     valid={true}
                     statusObjs={
-                        electionMethods.getScriptStatus() === 'completed'
+                        electionMethods.getRecorderStatus() === 'completed'
                             ? 'completed'
-                            : electionMethods.getScriptStatus() === 'default'
+                            : electionMethods.getRecorderStatus() === 'default'
                             ? {}
-                            : { daysLeft: electionMethods.getScriptStatus() }
-                    }
-                />
-                <RenderBar
-                    key='Invitation'
-                    name='Invitation'
-                    valid={electionMethods.getInvitationStatus() === 'completed'}
-                    statusObjs={
-                        electionMethods.getInvitationStatus() === 'default'
-                            ? {}
-                            : electionMethods.getInvitationStatus() === 'sent'
-                            ? { sent: true }
-                            : electionMethods.getInvitationStatus() === 'accepted'
-                            ? { accepted: true }
-                            : electionMethods.getInvitationStatus() === 'declined'
-                            ? { declined: true }
-                            : { daysLeft: electionMethods.getInvitationStatus() }
+                            : { daysLeft: electionMethods.countDayLeft() }
                     }
                 />
                 <RenderBar
