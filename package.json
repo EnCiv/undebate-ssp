@@ -105,6 +105,7 @@
         "color": "^4.2.3",
         "deep-object-diff": "^1.1.7",
         "googleapis": "^100.0.0",
+        "is-url": "^1.2.4",
         "isemail": "^3.2.0",
         "isomorphic-mongo-objectid": "^1.0.9",
         "joi": "^17.5.0",

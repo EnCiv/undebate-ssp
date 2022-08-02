@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import IsEmail from 'isemail'
+import isUrl from 'is-url'
 
 function ElectionTextInput(props) {
     const classes = useStyles()
@@ -44,6 +45,7 @@ function ElectionTextInput(props) {
         // ex: user@example.com
         // this can be removed to accept a one part domain name if needed
         // ex: user@example
+        if (type === 'url') return !!txt && isUrl(txt)
         if (type === 'email') return !!txt && checkEmail(txt)
         else return !!txt
     }
@@ -63,8 +65,11 @@ function ElectionTextInput(props) {
                 onKeyPress={handleKeyPress}
                 ref={inputRef}
             />
-            {type === 'email' && inputRef.current && !checkEmail(inputRef.current.value) && (
+            {type === 'email' && inputRef?.current?.value && !checkEmail(inputRef.current.value) && (
                 <span className={classes.validity}>name@example.com format expected</span>
+            )}
+            {type === 'url' && inputRef?.current?.value && !isUrl(inputRef.current.value) && (
+                <span className={classes.validity}>https://domain.com/path format expected</span>
             )}
         </div>
     )
