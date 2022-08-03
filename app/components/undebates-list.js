@@ -166,12 +166,19 @@ function Table({ columns, data, preFilters, globalFilter, onRowClicked, classes 
     )
 }
 
-function ElectionNameCell({ electionName, state }) {
+function ElectionNameCell({ electionName, state, officeCount }) {
     const classes = useStyles()
     return (
         <div className={classes.electionNameCell}>
             <div className={cx(classes.electionStateIndicator, classes['state' + state])} />
-            <div className={classes.electionName}>{electionName}</div>
+            <div className={classes.electionName}>
+                <div className={classes.electionNameText}>{electionName}</div>
+                {officeCount && officeCount > 1 ? (
+                    <div className={classes.secondaryText}>{officeCount} Offices</div>
+                ) : (
+                    ''
+                )}
+            </div>
         </div>
     )
 }
@@ -387,7 +394,6 @@ function DropdownFilter({ values, selectedValues, onItemClick, includeIcon = fal
         }
     }, [dropdownRef])
 
-    // todo add red text for some
     // todo Select All option for multiselect?
     return (
         <>
@@ -570,7 +576,6 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
             state = 'Live'
         }
         if (electionMethods.isElectionUrgent()) {
-            // todo create story for all candidates missed deadline
             state = 'Urgent'
         }
         return state
@@ -580,8 +585,9 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
         // todo get office count here
         const [obj, electionMethods] = electionOMs[value.row.index]
         const state = getElectionState(electionMethods)
+        const electionOfficeCount = electionMethods.getElectionOfficeCount()
 
-        return <ElectionNameCell electionName={value.value} state={state} />
+        return <ElectionNameCell electionName={value.value} state={state} officeCount={electionOfficeCount} />
     }
 
     const getStateValue = (electionObj, rowIndex) => {
@@ -928,10 +934,15 @@ const useStyles = createUseStyles(theme => ({
     },
     electionName: {
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'center',
         height: '100%',
-        fontWeight: '500',
         paddingLeft: '2rem',
+    },
+    electionNameText: {
+        display: 'flex',
+        alignItems: 'center',
+        fontWeight: '500',
     },
     electionStateIndicator: {
         width: '0.625rem',

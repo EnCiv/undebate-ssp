@@ -333,7 +333,6 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const getModeratorStatus = () => {
-        // todo validate this logic
         if (!checkTimelineCompleted()) {
             return '-'
         }
@@ -361,7 +360,6 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const getElectionListStatus = () => {
-        // todo validate this logic
         const undebateStatus = getUndebateStatus()
         const moderatorStatus = getModeratorStatus()
         if (undebateStatus === 'archived') {
@@ -376,8 +374,6 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const getCandidatesStatus = () => {
-        // todo validate this logic
-        // Election Table Pending..., Invite Pending..., All Submitted, All Missed Deadline, x/y
         if (!checkTimelineCompleted()) {
             return '-'
         }
@@ -386,6 +382,7 @@ function getElectionStatusMethods(dispatch, state) {
         }
         // todo fix this - any candidate doesn't have invitations list?
         if (areCandidatesReadyToInvite() && getSubmissionsStatus() === 'default') {
+            // todo moderator might not have submitted yet - separate status
             return 'Invite Pending...'
         }
         const candidateCount = countCandidates()
@@ -403,6 +400,10 @@ function getElectionStatusMethods(dispatch, state) {
             return completeCandidatesCount + '/' + totalCandidatesCount
         }
         return 'unknown'
+    }
+
+    const getElectionOfficeCount = () => {
+        return Object.keys(state?.offices || {}).length
     }
 
     const isElectionLive = () => {
@@ -459,6 +460,7 @@ function getElectionStatusMethods(dispatch, state) {
         getElectionListStatus,
         getCandidatesStatus,
         areCandidatesReadyForInvites,
+        getElectionOfficeCount,
         isElectionLive,
         isElectionUrgent,
         getModeratorContactStatus,

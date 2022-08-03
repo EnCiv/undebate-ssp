@@ -85,6 +85,9 @@ const defaultElectionObject = {
             },
         },
     },
+    offices: {
+        President_of_the_U_S_: {},
+    },
     timeline: {
         moderatorDeadlineReminderEmails: {
             0: {
@@ -161,6 +164,7 @@ moderatorElectionObject5.id = '62cb365f384f59688794ae9c'
 moderatorElectionObject5.organizationName = 'Los Angeles Government Elections'
 moderatorElectionObject5.electionName = 'LA City Council'
 moderatorElectionObject5.timeline.moderatorSubmissionDeadline[0].sent = false
+moderatorElectionObject5.offices['LA City Council Admin'] = {}
 
 let moderatorElectionObject6 = cloneDeep(defaultElectionObject)
 moderatorElectionObject6.id = '62cb365f86a78c68bbaacc52'
@@ -182,6 +186,7 @@ moderatorElectionObject8.organizationName = 'Sacramento Government Elections'
 moderatorElectionObject8.electionName = 'Sacramento Mayor'
 moderatorElectionObject8.moderator.submissions[0].url = 'not null'
 moderatorElectionObject8.undebateDate = '2023-01-09T23:59:59.999Z'
+moderatorElectionObject8.offices['President_of_the_World'] = {}
 
 export const AllModeratorOptions = Template.bind({})
 AllModeratorOptions.args = {
