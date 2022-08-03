@@ -623,7 +623,7 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
 
     const renderCandidatesCell = value => {
         const [obj, electionMethods] = electionOMs[value.row.index]
-        let daysRemaining = electionMethods.countDayLeft()
+        let daysRemaining = electionMethods.getCandidateStatusDaysRemaining()
         const candidateStatuses = electionMethods.getSubmissionsStatus()
         return (
             <CandidateCell
@@ -700,7 +700,7 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
 
     const renderStatusCell = value => {
         const [obj, electionMethods] = electionOMs[value.row.index]
-        let daysRemaining = electionMethods.countDayLeft()
+        let daysRemaining = electionMethods.getElectionStatusDaysRemaining()
         return <StatusCell className={classes.statusCell} statusText={value.value} daysRemaining={daysRemaining} />
     }
 

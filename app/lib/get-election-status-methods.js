@@ -418,12 +418,51 @@ function getElectionStatusMethods(dispatch, state) {
         } else if (
             ['Invite Declined', 'Invite Accepted', 'Reminder Sent', 'Deadline Missed'].includes(moderatorStatus)
         ) {
-            const deadline = getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)?.date
-            secondDate = deadline
-        } else if (['Video Submitted'].includes(moderatorStatus)) {
-            const submissionDate = getDateOfLatestIota(state?.moderator?.submissions)
-            secondDate = submissionDate
+            secondDate = getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)?.date
+        } else if ('Video Submitted' === moderatorStatus) {
+            secondDate = getDateOfLatestIota(state?.moderator?.submissions)
         }
+
+        if (secondDate) {
+            secondDate = new Date(secondDate)
+            return daysBetweenDates(new Date(), secondDate)
+        } else {
+            return undefined
+        }
+    }
+
+    const getCandidateStatusDaysRemaining = () => {
+        const candidatesStatus = getCandidatesStatus()
+        let secondDate
+        if (['-', 'unknown'].includes(candidatesStatus)) {
+            return undefined
+        } else if (['Election Table Pending...', 'Invite Pending...'].includes(candidatesStatus)) {
+            secondDate = getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)?.date
+        } else if (candidatesStatus.includes('Missed Deadline')) {
+            secondDate = getLatestObjByDate(state?.timeline?.candidateSubmissionDeadline)?.date
+        } else {
+            return countDayLeft()
+        }
+
+        if (secondDate) {
+            secondDate = new Date(secondDate)
+            return daysBetweenDates(new Date(), secondDate)
+        } else {
+            return undefined
+        }
+    }
+
+    const getElectionStatusDaysRemaining = () => {
+        const electionListStatus = getElectionListStatus()
+        let secondDate
+        if (electionListStatus === 'Configuring') {
+            secondDate = getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)?.date
+        } else if (electionListStatus === 'In Progress') {
+            secondDate = getLatestObjByDate(state?.timeline?.candidateSubmissionDeadline)?.date
+        } else if (electionListStatus === 'Live') {
+            return countDayLeft()
+        }
+
         if (secondDate) {
             secondDate = new Date(secondDate)
             return daysBetweenDates(new Date(), secondDate)
@@ -450,7 +489,7 @@ function getElectionStatusMethods(dispatch, state) {
         } else if (countSubmissionDeadlineMissed() > 10) {
             isUrgent = true
         }
-        // todo handle dates for Script Pending?
+        // todo handle days remaining for Script Pending?
         return isUrgent
     }
 
@@ -495,6 +534,8 @@ function getElectionStatusMethods(dispatch, state) {
         isElectionUrgent,
         getModeratorContactStatus,
         getModeratorStatusDaysRemaining,
+        getCandidateStatusDaysRemaining,
+        getElectionStatusDaysRemaining,
     }
 }
 
