@@ -16,6 +16,7 @@ export default function Timeline(props) {
     _this.renderCount++ // VerticalTimline needs to update when this component updates
 
     const pointsData = [
+        /* REMINDERS not implemented yet
         {
             title: 'Moderator Deadline Reminder Emails',
             description:
@@ -23,12 +24,14 @@ export default function Timeline(props) {
             timelineKey: 'moderatorDeadlineReminderEmails',
             addOne: true,
         },
+    */
         {
             title: 'Moderator Submission Deadline',
             description:
                 'Moderator will receive two emails as a reminder on this date, usually 2 days and 7 days before the deadline.',
             timelineKey: 'moderatorSubmissionDeadline',
         },
+        /* REMINDERS not implemented yet
         {
             title: 'Candidate Deadline Reminder Emails',
             description:
@@ -36,6 +39,7 @@ export default function Timeline(props) {
             timelineKey: 'candidateDeadlineReminderEmails',
             addOne: true,
         },
+    */
         {
             title: 'Candidate Submission Deadline',
             description: "Candidates won't be able to record after this time.",
@@ -55,12 +59,7 @@ export default function Timeline(props) {
     ]
 
     const [validInputs, setValidInputs] = useReducer((state, action) => ({ ...state, ...action }), {})
-    const [isValid, setIsValid] = useState(false)
-    const allValid = () => Object.values(validInputs).every(v => !!v)
-
-    useEffect(() => {
-        setIsValid(allValid())
-    }, [isValid, validInputs])
+    const allValid = Object.values(validInputs).every(v => !!v)
 
     return (
         <div className={cx(className, classes.timeline)} style={style}>
@@ -68,7 +67,7 @@ export default function Timeline(props) {
             <div className={classes.content}>
                 <header className={classes.heading} key='header'>
                     <span>Fill the date and times for following events to automate the undebate.</span>
-                    <Submit onDone={onDone} disabled={!isValid} />
+                    <Submit onDone={onDone} disabled={!allValid} />
                 </header>
                 <ElectionCreated
                     key='created'
@@ -84,7 +83,7 @@ export default function Timeline(props) {
                         {...pointData}
                         electionOM={electionOM}
                         onDone={({ valid, value }) => {
-                            setValidInputs({ [pointData.timelineKey]: valid })
+                            setValidInputs({ [pointData.timelineKey || pointData.electionObjKey]: valid })
                         }}
                         ref={el => {
                             timelinePointRefs[i + 1] = el

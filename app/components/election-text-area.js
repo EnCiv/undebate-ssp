@@ -28,7 +28,7 @@ export default function ElectionTextArea(props) {
     }, [defaultValue]) // initiall report if default value is valid or not
     return (
         <label className={classes.label}>
-            {name}
+            <div className={classes.name}>{name}</div>
             <div className={classes.instruction}>
                 <span className={classes.desc}>{description}</span>
             </div>
@@ -50,8 +50,11 @@ export default function ElectionTextArea(props) {
 
 const useStyles = createUseStyles(theme => ({
     label: {
-        margin: '0 0.625rem',
         fontWeight: '600',
+    },
+    name: {
+        marginLeft: theme.defaultBorderRadius,
+        marginBottom: '1rem',
     },
     instruction: {
         marginBottom: '2rem',

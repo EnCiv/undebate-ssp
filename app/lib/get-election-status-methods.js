@@ -107,9 +107,11 @@ function getElectionStatusMethods(dispatch, state) {
     const recentInvitationStatus = () => getLatestIota(state?.moderator?.invitations)
     const checkTimelineCompleted = () => {
         return (
+            /* REMINDERS not implemented yet
             checkDateCompleted(state?.timeline?.moderatorDeadlineReminderEmails) &&
-            checkDateCompleted(state?.timeline?.moderatorSubmissionDeadline) &&
             checkDateCompleted(state?.timeline?.candidateDeadlineReminderEmails) &&
+        */
+            checkDateCompleted(state?.timeline?.moderatorSubmissionDeadline) &&
             checkDateCompleted(state?.timeline?.candidateSubmissionDeadline)
         )
     }
@@ -125,6 +127,7 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const countDayLeft = () => {
+        if (!state?.electionDate) return undefined
         return ((new Date(state?.electionDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24)).toFixed()
     }
 
@@ -234,28 +237,28 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const getQuestionsStatus = () => {
-        if (getTimelineStatus() === 'completed' && !checkObjCompleted(state?.questions)) return countDayLeft()
-        if (getTimelineStatus() === 'completed' && checkObjCompleted(state?.questions)) return 'completed'
+        if (checkObjCompleted(state?.questions)) return 'completed'
+        if (state?.timeline?.moderatorSubmissionDeadline) return countDayLeft() || 'default'
         return 'default'
     }
     const getScriptStatus = () => {
-        if (getQuestionsStatus() === 'completed' && !checkObjCompleted(state?.script)) return countDayLeft()
+        if (getQuestionsStatus() === 'completed' && !checkObjCompleted(state?.script))
+            return countDayLeft() || 'default'
         if (getQuestionsStatus() === 'completed' && checkObjCompleted(state?.script)) return 'completed'
         return 'default'
     }
     const getRecorderStatus = () => {
-        if (getScriptStatus() === 'completed') {
+        if (isModeratorReadyForCreateRecorder()) {
             if (Object.keys(state?.moderator?.recorders || {}).length) return 'completed'
             else return 'ready'
-        }
-        return 'default'
+        } else return 'default'
     }
     const getInvitationStatus = () => {
         if (getScriptStatus() !== 'completed') return 'default'
         if (recentInvitationStatus()?.status === 'Accepted') return 'accepted'
         if (recentInvitationStatus()?.status === 'Declined') return 'declined'
         if (recentInvitationStatus()?.sentDate) return 'sent'
-        return countDayLeft()
+        return countDayLeft() || 'default'
     }
     const getSubmissionStatus = () => {
         if (checkVideoSubmitted()) return 'submitted'
@@ -273,7 +276,7 @@ function getElectionStatusMethods(dispatch, state) {
     }
     const getElectionTableStatus = () => {
         if (state?.candidates && Object.keys(state?.candidates)?.length >= 1) return 'filled'
-        if (recentInvitationStatus()?.sentDate) return countDayLeft()
+        if (recentInvitationStatus()?.sentDate) return countDayLeft() || 'default'
         return 'default'
     }
     const areCandidatesReadyForInvites = () =>
@@ -304,8 +307,10 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const isModeratorReadyForCreateRecorder = () => {
-        if (!state?.moderator?.name) return false
-        if (!state?.moderator?.email) return false
+        if (!state?.organizationName) return false
+        if (!state?.electionName) return false
+        if (!state?.electionDate) return false
+        if (getModeratorContactStatus() !== 'completed') return false
         if (getQuestionsStatus() !== 'completed') return false
         if (getScriptStatus() !== 'completed') return false
         return true
@@ -313,7 +318,6 @@ function getElectionStatusMethods(dispatch, state) {
 
     const isModeratorReadyToInvite = () => {
         if (!isModeratorReadyForCreateRecorder()) return false
-        if (!getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)) return false
         if (!getLatestIota(state?.moderator?.recorders)) return false
         return true
     }
@@ -321,6 +325,11 @@ function getElectionStatusMethods(dispatch, state) {
     const areCandidatesReadyToInvite = () => {
         // todo
         return false
+    }
+
+    const getModeratorContactStatus = () => {
+        if (state?.moderator?.name && state?.moderator?.email) return 'completed'
+        return 'default'
     }
 
     const getModeratorStatus = () => {
@@ -452,6 +461,7 @@ function getElectionStatusMethods(dispatch, state) {
         areCandidatesReadyForInvites,
         isElectionLive,
         isElectionUrgent,
+        getModeratorContactStatus,
     }
 }
 
