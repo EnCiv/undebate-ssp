@@ -75,7 +75,7 @@ describe('election status methods', () => {
                 },
                 moderatorSubmissionDeadline: {
                     0: {
-                        date: '2022-01-07T22:09:32.952Z',
+                        date: '',
                         sent: true,
                     },
                 },
@@ -197,7 +197,7 @@ describe('election status methods', () => {
                     },
                     moderatorSubmissionDeadline: {
                         0: {
-                            date: '2022-01-07T22:09:32.952Z',
+                            date: '',
                             sent: true,
                         },
                     },
