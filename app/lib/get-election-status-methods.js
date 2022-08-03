@@ -187,7 +187,8 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const getQuestionsStatus = () => {
-        if (checkObjCompleted(state?.questions)) return 'completed'
+        const questionsObjs = Object.values(state?.questions || {})
+        if (questionsObjs.length && Object.values(questionsObjs).every(q => q.text && q.time)) return 'completed'
         if (state?.timeline?.moderatorSubmissionDeadline) return countDayLeft() || 'default'
         return 'default'
     }
