@@ -28,11 +28,6 @@ import ChevronDown from '../svgr/chevron-down'
 import CheckMark from '../svgr/check-mark'
 import { useTable, useFilters, useGlobalFilter, useSortBy } from 'react-table'
 
-function daysBetweenDates(date1, date2) {
-    const diffInTime = date2.getTime() - date1.getTime()
-    return Math.floor(diffInTime / (1000 * 3600 * 24))
-}
-
 const DAYS_LEFT_DANGER = 3
 function DefaultColumnFilterComponent() {
     return ''
@@ -582,7 +577,6 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
     }
 
     const renderElectionNameCell = value => {
-        // todo get office count here
         const [obj, electionMethods] = electionOMs[value.row.index]
         const state = getElectionState(electionMethods)
         const electionOfficeCount = electionMethods.getElectionOfficeCount()
@@ -618,7 +612,7 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
 
     const renderModeratorCell = value => {
         const [obj, electionMethods] = electionOMs[value.row.index]
-        let daysRemaining = electionMethods.countDayLeft()
+        const daysRemaining = electionMethods.getModeratorStatusDaysRemaining()
         return <ModeratorCell moderatorStatus={value.value} daysRemaining={daysRemaining} />
     }
 
@@ -647,7 +641,6 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
         const addMonths = (date, numMonths) => {
             return new Date(date.setMonth(date.getMonth() + numMonths))
         }
-        // todo add story to storybook to display multiple election dates
         let filterStartDate = new Date()
         let filterEndDate = new Date()
         switch (filterValue) {

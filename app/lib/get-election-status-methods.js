@@ -103,6 +103,14 @@ export const checkCandidateVideoSubmitted = candidate => {
     return !!Object.values(candidate?.submissions || {}).length
 }
 
+export const daysBetweenDates = (date1, date2) => {
+    if (!date1 || !date2) {
+        return undefined
+    }
+    const diffInTime = date2.getTime() - date1.getTime()
+    return Math.floor(diffInTime / (1000 * 3600 * 24))
+}
+
 function getElectionStatusMethods(dispatch, state) {
     const recentInvitationStatus = () => getLatestIota(state?.moderator?.invitations)
     const checkTimelineCompleted = () => {
@@ -128,7 +136,7 @@ function getElectionStatusMethods(dispatch, state) {
 
     const countDayLeft = () => {
         if (!state?.electionDate) return undefined
-        return ((new Date(state?.electionDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24)).toFixed()
+        return daysBetweenDates(new Date(state?.electionDate), new Date())
     }
 
     const checkVideoSubmitted = () => {
@@ -402,6 +410,28 @@ function getElectionStatusMethods(dispatch, state) {
         return 'unknown'
     }
 
+    const getModeratorStatusDaysRemaining = () => {
+        const moderatorStatus = getModeratorStatus()
+        let secondDate
+        if (['Script Pending...', 'Script Sent'].includes(moderatorStatus)) {
+            return undefined
+        } else if (
+            ['Invite Declined', 'Invite Accepted', 'Reminder Sent', 'Deadline Missed'].includes(moderatorStatus)
+        ) {
+            const deadline = getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)?.date
+            secondDate = deadline
+        } else if (['Video Submitted'].includes(moderatorStatus)) {
+            const submissionDate = getDateOfLatestIota(state?.moderator?.submissions)
+            secondDate = submissionDate
+        }
+        if (secondDate) {
+            secondDate = new Date(secondDate)
+            return daysBetweenDates(new Date(), secondDate)
+        } else {
+            return undefined
+        }
+    }
+
     const getElectionOfficeCount = () => {
         return Object.keys(state?.offices || {}).length
     }
@@ -464,6 +494,7 @@ function getElectionStatusMethods(dispatch, state) {
         isElectionLive,
         isElectionUrgent,
         getModeratorContactStatus,
+        getModeratorStatusDaysRemaining,
     }
 }
 

@@ -140,6 +140,8 @@ moderatorElectionObject1.id = '627e9dbd9ec85b0e440b6a3d'
 moderatorElectionObject1.organizationName = 'San Diego Government Elections'
 moderatorElectionObject1.electionName = 'SD County Supervisor'
 moderatorElectionObject1.timeline.moderatorDeadlineReminderEmails[0].sent = false
+moderatorElectionObject1.moderator.submissions[0]._id = '62e9f2fa13f6d812c4eeb2aa'
+moderatorElectionObject1.moderator.submissions[0].date = '2022-07-08T12:01:02.000Z'
 
 let moderatorElectionObject2 = cloneDeep(defaultElectionObject)
 moderatorElectionObject2.id = '627ecafe4c12b659a8b954de'
@@ -260,9 +262,9 @@ const cand4 = {
 }
 candidatesElectionObject5.candidates[cand4.uniqueId] = cand4
 // todo update to candidate if the count methods are supposed to be candidates
-candidatesElectionObject5.timeline.moderatorSubmissionDeadline[0].sent = false
-candidatesElectionObject5.timeline.moderatorSubmissionDeadline[1] = cloneDeep(
-    candidatesElectionObject5.timeline.moderatorSubmissionDeadline[0]
+candidatesElectionObject5.timeline.candidateSubmissionDeadline[0].sent = false
+candidatesElectionObject5.timeline.candidateSubmissionDeadline[1] = cloneDeep(
+    candidatesElectionObject5.timeline.candidateSubmissionDeadline[0]
 )
 export const AllCandidatesOptions = Template.bind({})
 AllCandidatesOptions.args = {
