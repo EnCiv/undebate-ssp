@@ -6,6 +6,11 @@ import CountLimitedTextInput from './count-limited-text-input'
 import Submit from './submit'
 import ElectionTextInput from './election-text-input'
 
+Array.prototype.test = function (f) {
+    if (f(this)) return this
+    return undefined
+}
+
 export default function Questions({ className, style, electionOM, onDone }) {
     const classes = useStyles()
     const [electionObj, electionMethods] = electionOM
@@ -77,8 +82,9 @@ export default function Questions({ className, style, electionOM, onDone }) {
                 <Submit
                     disabled={
                         electionMethods.areQuestionsLocked() ||
-                        Object.keys(questions).length === 0 ||
-                        !electionMethods.checkObjCompleted(questions)
+                        !Object.values(questions)
+                            .test(a => a.length > 0)
+                            ?.every(q => q.text && q.time)
                     }
                     onDone={() => {
                         onDone({
@@ -93,6 +99,7 @@ export default function Questions({ className, style, electionOM, onDone }) {
                     <div className={classes.questionTime}>
                         <CountLimitedTextInput
                             className={classes.questionInput}
+                            warn={!questions[qIndex].text && questions[qIndex].time}
                             key={key}
                             name={`Question ${qIndex + 1}`}
                             maxCount={250}
@@ -111,6 +118,7 @@ export default function Questions({ className, style, electionOM, onDone }) {
                         />
                         <ElectionTextInput
                             className={classes.timeInput}
+                            warn={questions[qIndex].text && !questions[qIndex].time}
                             key={key + 'time'}
                             name='Seconds'
                             type='number'
@@ -180,5 +188,8 @@ const useStyles = createUseStyles(theme => ({
     },
     err: {
         color: 'red',
+    },
+    warn: {
+        backgroundColor: theme.backgroundColorWarning,
     },
 }))

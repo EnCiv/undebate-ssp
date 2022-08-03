@@ -11,6 +11,7 @@ export default function CountLimitedTextInput({
     onDone = () => {},
     className,
     style,
+    warn,
 }) {
     const classes = useStyles()
     const [length, setLength] = useState(defaultValue.length)
@@ -46,7 +47,7 @@ export default function CountLimitedTextInput({
             </div>
             <TextareaAutosize
                 key='area'
-                className={classes.input}
+                className={cx(classes.input, warn && classes.warn)}
                 defaultValue={defaultValue}
                 maxLength={maxCount}
                 onBlur={onBlur}
@@ -92,5 +93,8 @@ const useStyles = createUseStyles(theme => ({
         border: 'none',
         borderRadius: theme.defaultBorderRadius,
         fontSize: '1rem',
+    },
+    warn: {
+        backgroundColor: theme.backgroundColorWarning,
     },
 }))

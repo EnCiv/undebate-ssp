@@ -8,7 +8,7 @@ import isUrl from 'is-url'
 
 function ElectionTextInput(props) {
     const classes = useStyles()
-    const { className, style, name = '', defaultValue = '', type = 'text', onDone = () => {} } = props
+    const { className, style, name = '', defaultValue = '', type = 'text', onDone = () => {}, warn } = props
 
     const inputRef = useRef(null)
 
@@ -58,7 +58,7 @@ function ElectionTextInput(props) {
             <input
                 key={`${name}input`}
                 type={type}
-                className={classes.input}
+                className={cx(classes.input, warn && classes.warn)}
                 defaultValue={defaultValue}
                 name={name}
                 onBlur={handleDone}
@@ -97,11 +97,17 @@ const useStyles = createUseStyles(theme => ({
         width: '100%',
         boxSizing: 'border-box',
         lineHeight: '1.5rem',
+        '&$input:focus': {
+            background: theme.backgroundColorComponent,
+        },
     },
     validity: {
         margin: '0',
         padding: '0',
         color: 'red',
         fontSize: '.85rem',
+    },
+    warn: {
+        backgroundColor: theme.backgroundColorWarning,
     },
 }))
