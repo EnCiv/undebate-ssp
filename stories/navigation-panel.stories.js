@@ -1,5 +1,5 @@
 // https://github.com/EnCiv/undebate-ssp/issues/16
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import NavigationPanel from '../app/components/navigation-panel'
 
 export default {
@@ -13,13 +13,11 @@ const Template = (args, context) => {
     const { defaultElectionObj, ...otherArgs } = args
     const [electionObj, electionMethods] = electionOM
     useEffect(() => electionMethods.upsert(defaultElectionObj), [defaultElectionObj])
+    // when user clicks on an item it the panel, it should become the current component
+    const [component, setComponent] = useState('')
+    const localOnDone = ({ valid, value }) => (setComponent(value), onDone({ valid, value }))
 
-    return (
-        <div>
-            {/* {console.log('NavigationPanel')} */}
-            <NavigationPanel electionOM={electionOM} onDone={onDone} {...otherArgs} />
-        </div>
-    )
+    return <NavigationPanel electionOM={electionOM} onDone={localOnDone} component={component} {...otherArgs} />
 }
 
 const defaultElectionObject = {
