@@ -58,8 +58,8 @@ export default function CandidateTable(props) {
             <div className={classes.intro}>
                 <div className={classes.description}>
                     <p>
-                        Once filled in, invitations can be emaild to the candidates automatically with the the recording
-                        link.
+                        Once filled in, invitations can be emailed to the candidates automatically with the the
+                        recording link.
                     </p>
                     <p>Choose one of these formats to porivide the Candidate Table:</p>
                     <div className={classes.actionButtons}>

@@ -166,7 +166,7 @@ export default function NavigationPanel({ className, style, electionOM, onDone, 
                 <div
                     className={cx(
                         classes.underbateSection,
-                        electionMethods.getUndebateStatus() === 'archieved' && classes.archieved
+                        electionMethods.getUndebateStatus() === 'archived' && classes.archived
                     )}
                     onClick={e => {
                         handleClick(e, true, 'Undebate')
@@ -174,13 +174,13 @@ export default function NavigationPanel({ className, style, electionOM, onDone, 
                     onMouseEnter={onMouseEnterHandler}
                 >
                     <div className={classes.left}>
-                        <div className={classes.underbate}>
+                        <div className={classes.undebate}>
                             Underbate{' '}
                             {electionMethods.getUndebateStatus() === 'pending'
                                 ? ''
                                 : electionMethods.getUndebateStatus() === 'isLive'
                                 ? 'is Live'
-                                : 'Archieved'}
+                                : 'Archived'}
                         </div>
                         <div className={classes.description}>
                             {electionMethods.getUndebateStatus() === 'pending'
@@ -234,10 +234,10 @@ const useStyles = createUseStyles(theme => ({
         alignItems: 'center',
         justifyContent: 'space-between',
     },
-    archieved: {
+    archived: {
         background: theme.colorSecondary,
     },
-    underbate: {
+    undebate: {
         fontWeight: '600',
         fontSize: '1.125rem',
     },
