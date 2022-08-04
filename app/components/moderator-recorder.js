@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/51
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import SvgDeadlineMissed from '../svgr/deadline-missed'
@@ -12,6 +12,8 @@ import { getLatestIota } from '../lib/get-election-status-methods'
 import ObjectID from 'isomorphic-mongo-objectid'
 import Submit from './submit'
 import scheme from '../lib/scheme'
+import SvgExternalLink from '../svgr/external-link'
+import SvgRedo from '../svgr/redo-arrow'
 
 export default function ModeratorRecorder(props) {
     const { className, style, electionOM, onDone = () => {} } = props
@@ -20,6 +22,8 @@ export default function ModeratorRecorder(props) {
     const { moderator = {} } = electionObj
     const viewer = getLatestIota(moderator.viewers)
     const [submitted, setSubmitted] = useState(!!viewer)
+    const [iframeCount, setIframeCount] = useState(0)
+    const iframeRef = useRef()
 
     const getRecorderStatus = () => {
         if (viewer) return 'submitted'
@@ -74,7 +78,14 @@ export default function ModeratorRecorder(props) {
                 <div className={cx(classes.card, { [classes.backgroundRed]: missed })}>
                     <div className={classes.preview}>
                         {viewer?.path && getRecorderStatus() === 'submitted' ? (
-                            <iframe width={'100%'} height={'100%'} src={src} frameBorder='0'>
+                            <iframe
+                                ref={iframeRef}
+                                width={'100%'}
+                                height={'100%'}
+                                src={src}
+                                frameBorder='0'
+                                key={iframeCount}
+                            >
                                 {icon}
                             </iframe>
                         ) : (
@@ -82,8 +93,18 @@ export default function ModeratorRecorder(props) {
                         )}
                     </div>
                     <div className={classes.meta}>
-                        <p className={cx(classes.title, { [classes.colorWhite]: missed })}>{statusTitle}</p>
-                        <p className={cx(classes.desc, { [classes.colorLightRed]: missed })}>{statusDesc}</p>
+                        <div className={classes.metaText}>
+                            <p className={cx(classes.title, { [classes.colorWhite]: missed })}>{statusTitle}</p>
+                            <p className={cx(classes.desc, { [classes.colorLightRed]: missed })}>{statusDesc}</p>
+                        </div>
+                        <div className={classes.metaButtons}>
+                            <span onClick={e => (iframeRef.current.src += '')}>
+                                <SvgRedo className={classes.redo} />
+                            </span>{' '}
+                            <a href={src} target='_blank'>
+                                <SvgExternalLink className={classes.link} />
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div className={classes.cornerPic}>{cornerPic}</div>
@@ -197,5 +218,25 @@ const useStyles = createUseStyles(theme => ({
     },
     submitButton: {
         float: 'right',
+    },
+    meta: {
+        display: 'flex',
+        justifyContent: 'space-between',
+    },
+    metaText: {},
+    metaButtons: {
+        fontSize: '2.5rem',
+        marginTop: '.5rem',
+        verticalAlign: 'middle',
+    },
+    redo: {
+        fontSize: '2.2rem',
+        cursor: 'pointer',
+    },
+    link: {
+        '& path': {
+            stroke: 'black',
+            strokeWidth: 3,
+        },
     },
 }))
