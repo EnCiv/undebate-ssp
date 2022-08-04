@@ -136,7 +136,7 @@ function getElectionStatusMethods(dispatch, state) {
 
     const countDayLeft = () => {
         if (!state?.electionDate) return undefined
-        return daysBetweenDates(new Date(state?.electionDate), new Date())
+        return daysBetweenDates(new Date(), new Date(state?.electionDate)).toString()
     }
 
     const checkVideoSubmitted = () => {
