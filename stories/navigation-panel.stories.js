@@ -57,19 +57,19 @@ const defaultElectionObject = {
         name: 'Bill Smith',
         email: 'billsmith@gmail.com',
         message: 'Please be a moderator',
-        invitations: [
+        invitations: {
             // derived data, list may be empty or not present
-            {
+            123: {
                 _id: '123',
                 sentDate: '2022-01-07T22:09:32.952Z',
                 responseDate: '2022-01-07T22:09:32.952Z',
                 status: 'Accepted',
             },
-        ],
-        submissions: [
+        },
+        submissions: {
             // derived data, list may be empty or not present
-            { _id: '', url: '', date: '' },
-        ],
+            1: { _id: '1', url: '', date: '' },
+        },
     },
     candidates: {
         '61e76bbefeaa4a25840d85d0': {
@@ -78,16 +78,23 @@ const defaultElectionObject = {
             email: 'sarahjones@mail.com',
             office: 'President of the U.S.',
             region: 'United States',
-            invitations: [
+            invitations: {
                 // derived data - list may be empty or not present
-                {
-                    _id: '',
+                '62e75e03b5d24f21ae523733': {
+                    _id: '62e75e03b5d24f21ae523733',
                     sentDate: '2022-01-07T22:09:32.952Z',
                     responseDate: '2022-01-07T22:09:32.952Z',
                     status: 'Declined',
                     parentId: '',
                 },
-            ],
+                '62e75e17b22ea02235d683a6': {
+                    _id: '62e75e17b22ea02235d683a6',
+                    sentDate: '2022-01-07T22:09:32.952Z',
+                    responseDate: '2022-01-07T22:09:32.952Z',
+                    status: 'Accepted',
+                    parentId: '',
+                },
+            },
         },
     },
     timeline: {
@@ -203,22 +210,22 @@ InvitationAfterInviteIsSent.args = {
         ...defaultElectionObject,
         moderator: {
             ...defaultElectionObject.moderator,
-            invitations: [
+            invitations: {
                 // derived data, list may be empty or not present
-                {
+                123: {
                     _id: '123',
                     sentDate: '2020-11-07T23:59:59.999Z',
                     responseDate: '',
                     status: '',
                 },
                 // derived data, list may be empty or not present
-                {
+                124: {
                     _id: '124',
                     sentDate: '2020-12-07T23:59:59.999Z',
                     responseDate: '',
                     status: '',
                 },
-            ],
+            },
         },
     },
 }
@@ -229,22 +236,22 @@ InvitationIsAccepted.args = {
         ...defaultElectionObject,
         moderator: {
             ...defaultElectionObject.moderator,
-            invitations: [
+            invitations: {
                 // derived data, list may be empty or not present
-                {
+                123: {
                     _id: '123',
                     sentDate: '2020-12-07T23:59:59.999Z',
                     responseDate: '2021-2-07T23:59:59.999Z',
                     status: 'Accepted',
                 },
                 // derived data, list may be empty or not present
-                {
+                124: {
                     _id: '124',
                     sentDate: '2020-11-07T23:59:59.999Z',
                     responseDate: '',
                     status: '',
                 },
-            ],
+            },
         },
     },
 }
@@ -255,22 +262,22 @@ InvitationIsDeclined.args = {
         ...defaultElectionObject,
         moderator: {
             ...defaultElectionObject.moderator,
-            invitations: [
+            invitations: {
                 // derived data, list may be empty or not present
-                {
+                123: {
                     _id: '123',
                     sentDate: '2020-12-07T23:59:59.999Z',
                     responseDate: '2021-2-07T23:59:59.999Z',
                     status: 'Declined',
                 },
                 // derived data, list may be empty or not present
-                {
+                124: {
                     _id: '124',
                     sentDate: '2020-11-07T23:59:59.999Z',
                     responseDate: '',
                     status: '',
                 },
-            ],
+            },
         },
     },
 }
@@ -301,10 +308,11 @@ SubmissionWhenVideoIsSubmitted.args = {
         ...defaultElectionObject,
         moderator: {
             ...defaultElectionObject.moderator,
-            submissions: [
-                // derived data, list may be empty or not present
-                { _id: '1', url: 'www.youtube.com/123', date: '2022-01-07T22:09:32.952Z' },
-            ],
+            submissions: {
+                1:
+                    // derived data, list may be empty or not present
+                    { _id: '1', url: 'www.youtube.com/123', date: '2022-01-07T22:09:32.952Z' },
+            },
         },
     },
 }

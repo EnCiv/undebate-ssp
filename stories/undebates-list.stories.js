@@ -57,14 +57,14 @@ const defaultElectionObject = {
         name: 'Bill Smith',
         email: 'billsmith@gmail.com',
         message: 'Please be a moderator',
-        invitations: [
-            {
-                _id: '1',
+        invitations: {
+            '62e7553fcf76d11cc0ac241b': {
+                _id: '62e7553fcf76d11cc0ac241b',
                 sentDate: '2022-01-07T22:09:32.952Z',
                 responseDate: '2022-01-07T22:09:32.952Z',
                 status: 'Accepted',
             },
-        ],
+        },
         submissions: [{ _id: '', url: '', date: '' }],
     },
     candidates: {
@@ -74,16 +74,19 @@ const defaultElectionObject = {
             email: 'sarahjones@mail.com',
             office: 'President of the U.S.',
             region: 'United States',
-            invitations: [
-                {
-                    _id: '',
+            invitations: {
+                '62e754f1c26e860980b49fd4': {
+                    _id: '62e754f1c26e860980b49fd4',
                     sentDate: '2022-01-07T22:09:32.952Z',
                     responseDate: '2022-01-07T22:09:32.952Z',
                     status: 'Declined',
                     parentId: '',
                 },
-            ],
+            },
         },
+    },
+    offices: {
+        President_of_the_U_S_: {},
     },
     timeline: {
         moderatorDeadlineReminderEmails: {
@@ -137,12 +140,14 @@ moderatorElectionObject1.id = '627e9dbd9ec85b0e440b6a3d'
 moderatorElectionObject1.organizationName = 'San Diego Government Elections'
 moderatorElectionObject1.electionName = 'SD County Supervisor'
 moderatorElectionObject1.timeline.moderatorDeadlineReminderEmails[0].sent = false
+moderatorElectionObject1.moderator.submissions[0]._id = '62e9f2fa13f6d812c4eeb2aa'
+moderatorElectionObject1.moderator.submissions[0].date = '2022-07-08T12:01:02.000Z'
 
 let moderatorElectionObject2 = cloneDeep(defaultElectionObject)
 moderatorElectionObject2.id = '627ecafe4c12b659a8b954de'
 moderatorElectionObject2.organizationName = 'San Diego Government Elections'
 moderatorElectionObject2.electionName = 'SD City Council'
-moderatorElectionObject2.moderator.invitations[0].status = 'Declined'
+moderatorElectionObject2.moderator.invitations['62e7553fcf76d11cc0ac241b'].status = 'Declined'
 
 let moderatorElectionObject3 = cloneDeep(defaultElectionObject)
 moderatorElectionObject3.id = '62cb350e480f6535c1ec9b5e'
@@ -154,13 +159,14 @@ let moderatorElectionObject4 = cloneDeep(defaultElectionObject)
 moderatorElectionObject4.id = '62cb35fddc380a594cff7126'
 moderatorElectionObject4.organizationName = 'Los Angeles Government Elections'
 moderatorElectionObject4.electionName = 'LA Mayor'
-delete moderatorElectionObject4.moderator.invitations[0].status
+delete moderatorElectionObject4.moderator.invitations['62e7553fcf76d11cc0ac241b'].status
 
 let moderatorElectionObject5 = cloneDeep(defaultElectionObject)
 moderatorElectionObject5.id = '62cb365f384f59688794ae9c'
 moderatorElectionObject5.organizationName = 'Los Angeles Government Elections'
 moderatorElectionObject5.electionName = 'LA City Council'
 moderatorElectionObject5.timeline.moderatorSubmissionDeadline[0].sent = false
+moderatorElectionObject5.offices['LA City Council Admin'] = {}
 
 let moderatorElectionObject6 = cloneDeep(defaultElectionObject)
 moderatorElectionObject6.id = '62cb365f86a78c68bbaacc52'
@@ -182,6 +188,7 @@ moderatorElectionObject8.organizationName = 'Sacramento Government Elections'
 moderatorElectionObject8.electionName = 'Sacramento Mayor'
 moderatorElectionObject8.moderator.submissions[0].url = 'not null'
 moderatorElectionObject8.undebateDate = '2023-01-09T23:59:59.999Z'
+moderatorElectionObject8.offices['President_of_the_World'] = {}
 
 export const AllModeratorOptions = Template.bind({})
 AllModeratorOptions.args = {
@@ -215,7 +222,7 @@ let candidatesElectionObject3 = cloneDeep(defaultElectionObject)
 candidatesElectionObject3.id = '62cb350e480f6535c1ec9b5e'
 candidatesElectionObject3.organizationName = 'San Diego Government Elections'
 candidatesElectionObject3.electionName = 'SD Mayor'
-candidatesElectionObject3.moderator.invitations[0].sentDate = ''
+candidatesElectionObject3.moderator.invitations['62e7553fcf76d11cc0ac241b'].sentDate = ''
 
 let candidatesElectionObject4 = cloneDeep(defaultElectionObject)
 candidatesElectionObject4.id = '62cb35fddc380a594cff7126'
@@ -255,9 +262,9 @@ const cand4 = {
 }
 candidatesElectionObject5.candidates[cand4.uniqueId] = cand4
 // todo update to candidate if the count methods are supposed to be candidates
-candidatesElectionObject5.timeline.moderatorSubmissionDeadline[0].sent = false
-candidatesElectionObject5.timeline.moderatorSubmissionDeadline[1] = cloneDeep(
-    candidatesElectionObject5.timeline.moderatorSubmissionDeadline[0]
+candidatesElectionObject5.timeline.candidateSubmissionDeadline[0].sent = false
+candidatesElectionObject5.timeline.candidateSubmissionDeadline[1] = cloneDeep(
+    candidatesElectionObject5.timeline.candidateSubmissionDeadline[0]
 )
 export const AllCandidatesOptions = Template.bind({})
 AllCandidatesOptions.args = {
