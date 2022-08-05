@@ -5,6 +5,12 @@ export default function FontFaces(props) {
 }
 
 const useStyles = createUseStyles({
+    '@global': {
+        html: {
+            fontFamily: 'Poppins',
+            fontWeight: 400,
+        },
+    },
     '@font-face': [
         {
             fontFamily: 'Poppins',

@@ -4,10 +4,11 @@ import React, { useRef, useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import IsEmail from 'isemail'
+import isUrl from 'is-url'
 
 function ElectionTextInput(props) {
     const classes = useStyles()
-    const { className, style, name = '', defaultValue = '', type = 'text', onDone = () => {} } = props
+    const { className, style, name = '', defaultValue = '', type = 'text', onDone = () => {}, warn } = props
 
     const inputRef = useRef(null)
 
@@ -44,6 +45,7 @@ function ElectionTextInput(props) {
         // ex: user@example.com
         // this can be removed to accept a one part domain name if needed
         // ex: user@example
+        if (type === 'url') return !!txt && isUrl(txt)
         if (type === 'email') return !!txt && checkEmail(txt)
         else return !!txt
     }
@@ -56,15 +58,18 @@ function ElectionTextInput(props) {
             <input
                 key={`${name}input`}
                 type={type}
-                className={classes.input}
+                className={cx(classes.input, warn && classes.warn)}
                 defaultValue={defaultValue}
                 name={name}
                 onBlur={handleDone}
                 onKeyPress={handleKeyPress}
                 ref={inputRef}
             />
-            {type === 'email' && inputRef.current && !checkEmail(inputRef.current.value) && (
+            {type === 'email' && inputRef?.current?.value && !checkEmail(inputRef.current.value) && (
                 <span className={classes.validity}>name@example.com format expected</span>
+            )}
+            {type === 'url' && inputRef?.current?.value && !isUrl(inputRef.current.value) && (
+                <span className={classes.validity}>https://domain.com/path format expected</span>
             )}
         </div>
     )
@@ -92,11 +97,17 @@ const useStyles = createUseStyles(theme => ({
         width: '100%',
         boxSizing: 'border-box',
         lineHeight: '1.5rem',
+        '&$input:focus': {
+            background: theme.backgroundColorComponent,
+        },
     },
     validity: {
         margin: '0',
         padding: '0',
         color: 'red',
         fontSize: '.85rem',
+    },
+    warn: {
+        backgroundColor: theme.backgroundColorWarning,
     },
 }))

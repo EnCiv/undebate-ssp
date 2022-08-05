@@ -40,7 +40,7 @@ export function Invitation(props) {
             <div className={classes.form}>
                 <div className={classes.inputs}>
                     <ElectionTextInput
-                        name='Moderation Name'
+                        name='Moderaor Name'
                         defaultValue={name}
                         onDone={({ valid, value }) => {
                             if ((validInputs.name !== null || valid) && name !== value)
