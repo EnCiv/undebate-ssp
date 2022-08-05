@@ -10,6 +10,7 @@ const theme = {
     colorLightGray: '#d4d5d6',
     askQuestionColor: '#FFFFFF',
     colorText: '#262D33',
+    colorSecondaryText: 'rgba(38, 45, 51, 0.5)',
     thinBorderColor: '#D8D9DA', // was #262D33 rgb(38,45,51) opacity 0.1 but flattened on the backgroundColorApp #ECECEC
 
     // Can be combined with UI colors to create a 'disabled' version
