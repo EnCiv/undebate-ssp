@@ -20,7 +20,13 @@ function UploadCSVPopup({ electionOM, closePopup, visible, className, style = {}
     const [fileError, setFileError] = useState(null)
 
     const extractCsvData = fileContents => {
-        const rows = fileContents.split('\n').map(row => row.split(','))
+        // file might come from a PC that users \r\n to terminate lines, there might be a \r\n at the end - don't generate an empty row
+        // trim whitespace before/after values
+        const rows = fileContents
+            .trim()
+            .replaceAll('\r', '')
+            .split('\n')
+            .map(row => row.split(',').map(val => val?.trim() || ''))
         const headers = rows.shift().map(val => _.camelCase(val))
         let data
         if (validateHeaders(headers)) {
