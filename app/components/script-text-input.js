@@ -14,6 +14,7 @@ export default function ScriptTextInput({
     wordsPerMinute = 120,
     defaultValue,
     onDone,
+    disabled,
 }) {
     const classes = useStyles()
     const inputRef = useRef(null)
@@ -87,6 +88,7 @@ export default function ScriptTextInput({
                     })
                 }}
                 defaultValue={defaultValue}
+                disabled={disabled}
                 ref={inputRef}
             />
         </div>

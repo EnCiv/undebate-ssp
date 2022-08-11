@@ -8,7 +8,7 @@ import isUrl from 'is-url'
 
 function ElectionTextInput(props) {
     const classes = useStyles()
-    const { className, style, name = '', defaultValue = '', type = 'text', onDone = () => {}, warn } = props
+    const { className, style, name = '', defaultValue = '', type = 'text', onDone = () => {}, warn, disabled } = props
 
     const inputRef = useRef(null)
 
@@ -64,6 +64,7 @@ function ElectionTextInput(props) {
                 onBlur={handleDone}
                 onKeyPress={handleKeyPress}
                 ref={inputRef}
+                disabled={disabled}
             />
             {type === 'email' && inputRef?.current?.value && !checkEmail(inputRef.current.value) && (
                 <span className={classes.validity}>name@example.com format expected</span>

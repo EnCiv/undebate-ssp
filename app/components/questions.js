@@ -3,14 +3,17 @@ import React, { useState, useEffect, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import CountLimitedTextInput from './count-limited-text-input'
-import Submit from './submit'
 import ElectionTextInput from './election-text-input'
+import DoneLockedButton from './done-locked-button'
 
-Array.prototype.test = function (f) {
-    if (f(this)) return this
-    return undefined
-}
+// if you just do Array.prototype.test=... it becomes iterable as in for(const i in array)
+Object.defineProperty(Array.prototype, 'test', {
+    value: function (f) {
+        return f(this) ? this : undefined
+    },
+})
 
+const panelName = 'Questions'
 export default function Questions({ className, style, electionOM, onDone }) {
     const classes = useStyles()
     const [electionObj, electionMethods] = electionOM
@@ -19,6 +22,7 @@ export default function Questions({ className, style, electionOM, onDone }) {
     const [isValid, setIsValid] = useState(false)
 
     const { questions = {} } = electionObj
+    const disabled = electionObj?.doneLocked?.[panelName]?.done || electionMethods.getSubmissionStatus() === 'submitted'
 
     const [validInputs, setValidInputs] = useReducer((state, action) => ({ ...state, ...action }), {
         0: { text: null, time: null },
@@ -40,18 +44,20 @@ export default function Questions({ className, style, electionOM, onDone }) {
         return true
     }
 
-    const validSubmit = () => {
+    const validSubmit = (() => {
+        if (!Object.values(questions).every(({ time, text }) => (!time && !text) || (time && text))) return false
         // check valid when all of the empty questions in the bottom
-        const arr = Object.entries(questions).map((key, question) => questions[question])
+        const arr = Object.values(questions).map(({ text, time }) => text)
+        if (!arr.length || !arr[0]) return false
         const firstEmptyIndex = arr.findIndex(q => q.text === '')
         const lastNotEmptyIndex = arr.length - 1 - arr.reverse().findIndex(q => q.text !== '')
 
         if (firstEmptyIndex !== -1 && firstEmptyIndex < lastNotEmptyIndex) {
-            setError('All of the empty questions must be below filled questions')
+            //setError('All of the empty questions must be below filled questions')
             return false
         }
         return true
-    }
+    })()
 
     useEffect(() => {
         setIsValid(checkValid())
@@ -79,19 +85,13 @@ export default function Questions({ className, style, electionOM, onDone }) {
         <div className={cx(className, classes.container)} style={style}>
             <div className={classes.send}>
                 <span>What questions would you like to ask the candidates?</span>
-                <Submit
-                    disabled={
-                        electionMethods.areQuestionsLocked() ||
-                        !Object.values(questions)
-                            .test(a => a.length > 0)
-                            ?.every(q => q.text && q.time)
-                    }
-                    onDone={() => {
-                        onDone({
-                            value: questions,
-                            valid: isValid && validSubmit(),
-                        })
-                    }}
+                <DoneLockedButton
+                    className={classes.submitButton}
+                    electionOM={electionOM}
+                    panelName={panelName}
+                    isValid={validSubmit}
+                    isLocked={electionMethods.getSubmissionStatus() === 'submitted'}
+                    onDone={({ valid, value }) => valid && onDone({ valid: validSubmit })}
                 />
             </div>
             <div className={classes.questionBox}>
@@ -99,6 +99,7 @@ export default function Questions({ className, style, electionOM, onDone }) {
                     <div className={classes.questionTime}>
                         <CountLimitedTextInput
                             className={classes.questionInput}
+                            disabled={disabled}
                             warn={!questions[qIndex].text && questions[qIndex].time}
                             key={key}
                             name={`Question ${qIndex + 1}`}
@@ -119,6 +120,7 @@ export default function Questions({ className, style, electionOM, onDone }) {
                         <ElectionTextInput
                             className={classes.timeInput}
                             warn={questions[qIndex].text && !questions[qIndex].time}
+                            disabled={disabled}
                             key={key + 'time'}
                             name='Seconds'
                             type='number'
@@ -138,7 +140,12 @@ export default function Questions({ className, style, electionOM, onDone }) {
                     </div>
                 ))}
             </div>
-            <button className={classes.addQuestionBtn} disabled={!isValid} onClick={addQuestion} type='button'>
+            <button
+                className={classes.addQuestionBtn}
+                disabled={!isValid || disabled}
+                onClick={addQuestion}
+                type='button'
+            >
                 Add question
             </button>
             {error && <p className={classes.err}>{error}</p>}

@@ -10,7 +10,6 @@ import Script from './script'
 import Invitation from './invitation'
 import ElectionTable from './candidate-table'
 import Submissions from './submissions'
-import Submission from './submission'
 import Undebate from './undebate'
 import ModeratorRecorder from './moderator-recorder'
 
@@ -21,7 +20,6 @@ const components = {
     Contact: Invitation,
     Script: Script,
     Recorder: ModeratorRecorder,
-    Submission: Submission,
     'Election Table': ElectionTable,
     Submissions: Submissions,
     Undebate: Undebate,

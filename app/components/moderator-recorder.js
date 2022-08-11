@@ -15,55 +15,84 @@ import scheme from '../lib/scheme'
 import SvgExternalLink from '../svgr/external-link'
 import SvgRedo from '../svgr/redo-arrow'
 
+export function getRecorderStatus(electionObj) {
+    const moderator = electionObj?.moderator
+    const recorderDate = electionObj?.doneLocked?.Recorder?.done
+    const invitationDate = getLatestIota(moderator?.invitations)?.sentDate
+    const submission = getLatestIota(moderator?.submissions)
+    const submissionDate = submission?._id && ObjectID(submission._id).getDate().toISOString()
+
+    if (submissionDate) return 'completed'
+    let allDoneDate
+    const dd = Object.entries(electionObj?.doneLocked || {}).reduce((dd, [key, obj]) => ((dd[key] = obj.done), dd), {}) // dd for done dates
+    if (
+        dd.Election &&
+        dd.Timeline &&
+        dd.Questions &&
+        dd.Contact &&
+        dd.Script &&
+        dd.Script > dd.Questions &&
+        dd.Script > dd.Contact
+    )
+        allDoneDate = ['Election', 'Timeline', 'Questions', 'Contact', 'Script'].reduce(
+            (largest, k) => (dd[k] > largest ? dd[k] : largest),
+            ''
+        )
+    if (allDoneDate > recorderDate) return 'recreate'
+    if (invitationDate > recorderDate) return 'sent'
+    if (recorderDate) return 'created'
+    if (allDoneDate) return 'ready'
+    return 'waiting'
+}
+
 export default function ModeratorRecorder(props) {
     const { className, style, electionOM, onDone = () => {} } = props
     const [electionObj, electionMethods] = electionOM
     const classes = useStyles(props)
     const { moderator = {} } = electionObj
     const viewer = getLatestIota(moderator.viewers)
-    const [submitted, setSubmitted] = useState(!!viewer)
-    const [iframeCount, setIframeCount] = useState(0)
+    const submission = getLatestIota(moderator.submissions)
+
+    const [submitted, setSubmitted] = useState(false)
     const iframeRef = useRef()
 
-    const getRecorderStatus = () => {
-        if (viewer) return 'submitted'
-        const date = electionObj?.timeline?.moderatorSubmissionDeadline?.[0]?.date
-        if (date < new Date().toISOString()) return 'missed'
-        return 'default'
-    }
+    const deadline = electionObj?.timeline?.moderatorSubmissionDeadline?.[0]?.date
 
-    const getSubmissionDaysLeft = () => {
-        const dueDate = Date.parse(electionObj?.timeline?.moderatorSubmissionDeadline?.[0]?.date)
-        const currDate = new Date()
-        return Math.round((dueDate - currDate) / 86400000)
-    }
+    const recorderStatus = getRecorderStatus(electionObj)
+
+    const submissionDaysLeft = deadline ? Math.round((new Date(deadline) - new Date()) / 86400000) : 'unknown'
+    const missed = deadline && submissionDaysLeft < 0
 
     const getSubmissionDaysAgo = () => {
-        const sentDate = ObjectID(viewer._id).getDate()
+        const sentDate = ObjectID(submission?._id).getDate()
         const currDate = Date.now()
         return Math.round((currDate - sentDate) / 86400000)
     }
 
     let statusTitle
-    let statusDesc
+    let statusDesc = submissionDaysLeft + ' days left for moderator to submit recording.'
     let prevIcon = <SvgSolidClock />
     let cornerPic
-    let missed = false
-    switch (getRecorderStatus()) {
-        case 'missed':
-            statusTitle = 'Deadline Missed!'
-            prevIcon = <SvgDeadlineMissed />
-            cornerPic = <SvgFeelingBlue />
-            missed = true
+    switch (recorderStatus) {
+        case 'sent':
+            statusTitle = 'Invitation Sent'
             break
-        case 'submitted':
+        case 'recreate':
+            statusTitle = 'Needs Regeneration'
+            break
+        case 'created':
             statusTitle = 'Recorder Created!'
+            break
+        case 'completed':
+            statusTitle = "The moderator's recording has been complete!"
             statusDesc = getSubmissionDaysAgo() + ' days ago'
             prevIcon = <SvgCheck />
             break
-        case 'default':
-            statusDesc = getSubmissionDaysLeft() + ' days left'
-            statusTitle = 'No Submission Yet'
+        case 'ready':
+            statusTitle = 'Ready to Generate Recorder'
+            break
+        case 'waiting':
+            statusTitle = 'Need to complete previous panels'
             break
     }
     const src = scheme() + process.env.HOSTNAME + viewer?.path
@@ -77,15 +106,8 @@ export default function ModeratorRecorder(props) {
                 </h2>
                 <div className={cx(classes.card, { [classes.backgroundRed]: missed })}>
                     <div className={classes.preview}>
-                        {viewer?.path && getRecorderStatus() === 'submitted' ? (
-                            <iframe
-                                ref={iframeRef}
-                                width={'100%'}
-                                height={'100%'}
-                                src={src}
-                                frameBorder='0'
-                                key={iframeCount}
-                            >
+                        {viewer?.path ? (
+                            <iframe ref={iframeRef} width={'100%'} height={'100%'} src={src} frameBorder='0'>
                                 {icon}
                             </iframe>
                         ) : (
@@ -112,11 +134,16 @@ export default function ModeratorRecorder(props) {
             <div className={classes.buttonPanel}>
                 <div className={classes.buttonRow}>
                     <Submit
-                        name='Generate Recorder'
-                        disabled={submitted || !electionMethods.isModeratorReadyForCreateRecorder()}
+                        name={recorderStatus === 'recreate' ? 'Regenerate Recorder' : 'Generate Recorder'}
+                        disabled={submitted || !(recorderStatus === 'ready' || recorderStatus === 'recreate')}
                         onDone={() => {
                             setSubmitted(true) // disable the button
                             electionMethods.createModeratorRecorder(result => {
+                                setSubmitted(false)
+                                if (result)
+                                    electionMethods.upsert({
+                                        doneLocked: { Recorder: { done: new Date().toISOString() } },
+                                    })
                                 // to do show error messages if failure
                             })
                         }}
@@ -128,8 +155,8 @@ export default function ModeratorRecorder(props) {
                         An invitation will be emailed to the moderator along with the script and a recording link
                     </div>
                     <Submit
-                        name='Send Invitation'
-                        disabled={!electionMethods.isModeratorReadyToInvite()}
+                        name={recorderStatus === 'sent' ? ' Resend Invitation' : 'Send Invitation'}
+                        disabled={!(recorderStatus === 'created' || recorderStatus === 'sent')}
                         onDone={({ valid, value }) => {
                             electionMethods.sendModeratorInvitation(result => {
                                 //to do show error message if failure

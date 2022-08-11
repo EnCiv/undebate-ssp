@@ -1,11 +1,12 @@
 // https://github.com/EnCiv/undebate-ssp/issues/74
 import { SibGetTemplateId, SibSendTransacEmail } from '../lib/send-in-blue-transactional'
-import getElectionStatusMethods from '../lib/get-election-status-methods'
 import { getElectionDocById } from './get-election-docs'
 import { Iota } from 'civil-server'
 import { updateElectionInfo } from './subscribe-election-info'
+import { getLatestIota, getLatestObjByDate } from '../lib/get-election-status-methods'
 
 var templateId
+import { getRecorderStatus } from '../components/moderator-recorder'
 
 export default async function sendModeratorInvite(id, cb) {
     const userId = this.synuser && this.synuser.id
@@ -28,13 +29,13 @@ export default async function sendModeratorInvite(id, cb) {
             return
         }
         const electionObj = iota.webComponent
-        const electionMethods = getElectionStatusMethods(undefined, electionObj)
-        if (!electionMethods.isModeratorReadyToInvite()) {
-            logger.error('sendModeratorInvite moderator is not ready to invite', electionObj.moderator)
+        const recorderStatus = getRecorderStatus(electionObj)
+        if (!['created', 'sent'].some(s => s === recorderStatus)) {
+            logger.error('sendModeratorInvite moderator is not ready to invite', recorderStatus)
             cb && cb()
             return
         }
-        const submissionDeadline = electionMethods.getLatestObj(electionObj.timeline.moderatorSubmissionDeadline).date
+        const submissionDeadline = getLatestObjByDate(electionObj.timeline.moderatorSubmissionDeadline).date
         const params = {
             name: electionObj.name,
             email: electionObj.email,
@@ -43,8 +44,7 @@ export default async function sendModeratorInvite(id, cb) {
             moderator: {
                 name: electionObj.moderator.name,
                 email: electionObj.moderator.email,
-                recorder_url:
-                    process.env.HOSTNAME + electionMethods.getLatestIota(electionObj.moderator.recorders).path,
+                recorder_url: process.env.HOSTNAME + getLatestIota(electionObj.moderator.recorders).path,
                 submissionDeadline: new Date(submissionDeadline).toLocaleString(),
             },
         }

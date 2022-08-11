@@ -5,7 +5,8 @@ import React, { useState, useEffect, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import ElectionTextInput from './election-text-input'
-import Submit from './submit'
+import DoneLockedButton from './done-locked-button'
+
 const items = [
     { name: 'Organization Name', key: 'organizationName', type: 'text' },
     { name: 'Organization URL', key: 'organizationUrl', type: 'url' },
@@ -13,6 +14,7 @@ const items = [
     { name: 'Election Name', key: 'electionName', type: 'text' },
     { name: 'Election Contact Email', key: 'email', type: 'email' },
 ]
+const panelName = 'Election'
 
 export default function ElectionComponent(props) {
     const { className, style, electionOM, onDone } = props
@@ -21,13 +23,15 @@ export default function ElectionComponent(props) {
     const allValid =
         Object.values(validInputs).length > 0 &&
         items.every(i => (i.optional && electionObj[i.key] === '') || validInputs[i.key])
-    const classes = useStyles({ allValid })
+    const classes = useStyles()
 
     // side effects to do after the component rerenders from a state change
     const [sideEffects] = useState([]) // never set sideEffects
     useEffect(() => {
         while (sideEffects.length) sideEffects.shift()()
     })
+
+    const disabled = electionObj?.doneLocked?.[panelName]?.done || electionMethods.getSubmissionStatus() === 'submitted'
 
     return (
         <div className={cx(className, classes.page)} style={style}>
@@ -37,6 +41,7 @@ export default function ElectionComponent(props) {
                         key={key}
                         name={name}
                         type={type}
+                        disabled={disabled}
                         className={classes.input}
                         defaultValue={electionObj[key] || ''}
                         onDone={({ valid, value }) => {
@@ -49,11 +54,13 @@ export default function ElectionComponent(props) {
                 ))}
             </div>
             <span className={classes.submitContainer}>
-                <Submit
+                <DoneLockedButton
                     className={classes.submitButton}
-                    name='Submit'
-                    disabled={!allValid}
-                    onDone={() => onDone({ valid: allValid })}
+                    electionOM={electionOM}
+                    panelName={panelName}
+                    isValid={allValid}
+                    isLocked={electionMethods.getSubmissionStatus() === 'submitted'}
+                    onDone={({ valid, value }) => valid && onDone({ valid: allValid })}
                 />
             </span>
         </div>

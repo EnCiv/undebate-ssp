@@ -4,6 +4,7 @@ import { Iota } from 'civil-server'
 import { undebatesFromTemplateAndRows } from 'undebate'
 
 import sspViewerRecorder from '../lib/ssp-viewer-recorder'
+import { updateElectionInfo } from './subscribe-election-info'
 
 const introAndPlaceHolder =
     'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893716/5d5b74751e3b194174cd9b94-1-speaking20210304T213504684Z.mp4'
@@ -102,11 +103,25 @@ export default async function createModeratorRecorder(id, cb) {
             if (cb) cb()
             return
         }
-        // to do: rowObjs has the mofrtsyot ingo plud yhr viewer and recorder links, plus an indicator if they'v changed
+        // to do: rowObjs has the viewer and recorder links, plus an indicator if they'v changed
         // do we add that info to electionObj.moderator ???
+
+        // undebatesFromTemplateAndRows doesn't return the new iotas, and doesn't generate events for the new iotas
+        // here is a kludge for now, to get the new Iotas and update and browsers subscribed to election info
+        // likely the user who just called create-moderator-recorders
+        const paths = []
+        if (rowObjs[0].viewer_url) paths.push(rowObjs[0].viewer_url.replace(process.env.HOSTNAME + '/', ''))
+        if (rowObjs[0].recorder_url) paths.push(rowObjs[0].recorder_url.replace(process.env.HOSTNAME + '/', ''))
+        try {
+            const iotas = await Iota.find({ path: { $in: paths } })
+            if (iotas?.length) updateElectionInfo.call(this, id, id, iotas)
+        } catch (err) {
+            if (cb) cb()
+            console.error('createModeratorRecorder could not updateElectionInfo', id, err)
+        }
         if (cb) cb({ rowObjs, messages })
     } catch (err) {
-        logger.error('err', err)
+        logger.error('createModeratorRecorder caught err', err)
         if (cb) cb()
     }
 }

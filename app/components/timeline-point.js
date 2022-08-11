@@ -16,6 +16,7 @@ const TimelinePoint = forwardRef((props, ref) => {
         timelineKey,
         addOne,
         electionObjKey,
+        disabled,
     } = props
     const [electionObj, electionMethods] = electionOM
     const classes = useStyles()
@@ -52,6 +53,7 @@ const TimelinePoint = forwardRef((props, ref) => {
                         <DateTimeInput
                             className={classes.dateTimeInput}
                             defaultValue={dateTime}
+                            disabled={disabled}
                             onDone={({ valid, value }) => {
                                 validValues[i] = { valid, value }
                                 const isValid = areAllPairsValid()

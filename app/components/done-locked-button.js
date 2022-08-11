@@ -10,8 +10,8 @@ export default function DoneLockedButton({
     onDone,
     electionOM,
     panelName,
-    isDone = () => false,
-    isLocked = () => false,
+    isValid,
+    isLocked,
     dependents = [],
     style,
     className,
@@ -20,14 +20,14 @@ export default function DoneLockedButton({
     const [electionObj = {}, electionMethods] = electionOM
     const doneDate = electionObj?.doneLocked?.[panelName]?.done
     const needsReview = doneDate && dependents.some(key => electionObj?.doneLocked?.[key]?.done > doneDate)
-    const name = isLocked() ? 'Locked' : needsReview ? 'Needs Review' : doneDate ? 'Edit' : 'Done'
+    const name = isLocked ? 'Locked' : needsReview ? 'Needs Review' : doneDate ? 'Edit' : 'Done'
 
     return (
         <Submit
             className={cx(className, classes[kebabCase(name)])}
             style={style}
             name={name}
-            disabled={name === 'Locked' || (name === 'Done' && !isDone())}
+            disabled={name === 'Locked' || (name === 'Done' && !isValid)}
             onDone={() => {
                 if (name === 'Done')
                     electionMethods.upsert({ doneLocked: { [panelName]: { done: new Date().toISOString() } } })

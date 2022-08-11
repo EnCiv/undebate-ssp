@@ -4,15 +4,17 @@ import React, { useEffect, useRef, useReducer, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import ElectionCreated from './election-created'
-import Submit from './submit'
 import TimeLinePoint from './timeline-point'
 import VerticalTimeline from './vertical-timeline'
+import DoneLockedButton from './done-locked-button'
 
+const panelName = 'Timeline'
 export default function Timeline(props) {
     const { className, style, onDone, electionOM } = props
     const classes = useStyles(props)
     const [timelinePointRefs] = useState([])
     const [_this] = useState({ renderCount: 0 })
+    const [electionObj, electionMethods] = electionOM
     _this.renderCount++ // VerticalTimline needs to update when this component updates
 
     const pointsData = [
@@ -60,6 +62,7 @@ export default function Timeline(props) {
 
     const [validInputs, setValidInputs] = useReducer((state, action) => ({ ...state, ...action }), {})
     const allValid = Object.values(validInputs).every(v => !!v)
+    const disabled = electionObj?.doneLocked?.[panelName]?.done || electionMethods.getSubmissionStatus() === 'submitted'
 
     return (
         <div className={cx(className, classes.timeline)} style={style}>
@@ -67,7 +70,14 @@ export default function Timeline(props) {
             <div className={classes.content}>
                 <header className={classes.heading} key='header'>
                     <span>Fill the date and times for following events to automate the undebate.</span>
-                    <Submit onDone={onDone} disabled={!allValid} />
+                    <DoneLockedButton
+                        className={classes.submitButton}
+                        electionOM={electionOM}
+                        panelName={panelName}
+                        isValid={allValid}
+                        isLocked={electionMethods.getSubmissionStatus() === 'submitted'}
+                        onDone={({ valid, value }) => valid && onDone({ valid: allValid })}
+                    />
                 </header>
                 <ElectionCreated
                     key='created'
@@ -88,6 +98,7 @@ export default function Timeline(props) {
                         ref={el => {
                             timelinePointRefs[i + 1] = el
                         }}
+                        disabled={disabled}
                     />
                 ))}
             </div>
