@@ -37,7 +37,7 @@ function StatusText({ value }) {
             {statusInfoEnum[value]?.icon} {statusInfoEnum[value]?.text}
         </span>
     ) : (
-        value
+        value || ''
     )
 }
 

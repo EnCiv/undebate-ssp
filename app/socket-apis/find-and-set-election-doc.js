@@ -39,7 +39,10 @@ const electionSchema = Joi.object({
     webComponent: 'ElectionDoc',
     electionName: Joi.string().max(SANE),
     organizationName: Joi.string().max(SANE),
+    organizationUrl: Joi.string().uri(),
+    organizationLogo: Joi.string().uri(),
     electionDate: Joi.string().isoDate(),
+    email: Joi.string().email(),
     questions: Joi.object().pattern(
         Joi.string().pattern(Integer),
         Joi.object({
@@ -113,6 +116,7 @@ const electionSchema = Joi.object({
         ),
     },
     undebateDate: Joi.string().isoDate(),
+    doneLocked: Joi.object(),
 })
 
 function lp(path) {

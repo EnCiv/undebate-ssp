@@ -5,6 +5,8 @@ import { createUseStyles } from 'react-jss'
 import Submit from './submit'
 import ElectionCategory from './election-category'
 import ScriptTextInput from './script-text-input'
+import DoneLockedButton from './done-locked-button'
+const panelName = 'Script'
 
 const defaults = {
     description: `Below is an auto-generated script that will be emailed to the moderator. The moderator will record a
@@ -37,10 +39,9 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
     const { questions = {}, script = {} } = electionObj
     const [validInputs, setValidInputs] = useReducer((state, action) => ({ ...state, ...action }), {})
     const errorCount = Object.values(validInputs).reduce((count, valid) => (valid === false ? count + 1 : count), 0)
-    const valid = Object.values(validInputs).length > 0 && !Object.values(validInputs).some(v => !v)
-    const [submitted, setSubmitted] = useState(electionObj?.script?.length > 0)
-    const classes = useStyles({ electionOM, valid })
-
+    const isValid = Object.values(validInputs).length > 0 && !Object.values(validInputs).some(v => !v)
+    const classes = useStyles({ isValid })
+    const disabled = electionObj?.doneLocked?.[panelName]?.done || electionMethods.getSubmissionStatus() === 'submitted'
     const substitutions = {
         moderator: electionObj?.moderator?.name || '',
         question: questions[0]?.text || '',
@@ -57,40 +58,28 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
     return (
         <div className={`${className} ${classes.page}`} style={style}>
             <span className={classes.submitContainer}>
-                {electionMethods.areQuestionsLocked() ? (
-                    <ElectionCategory
-                        className={classes.lockedCard}
-                        statusObjs={{ locked: true }}
-                        categoryName={
-                            <>
-                                <h2 className={classes.cardHeader}>Locked</h2>
-                                <p>{defaults.lockedScript}</p>
-                            </>
-                        }
-                    />
-                ) : (
+                <div>
                     <div>
-                        <div>
-                            <Submit
-                                name={submitted ? 'Edit' : 'Submit'}
-                                onDone={() => {
-                                    setSubmitted(true)
-                                    electionMethods.upsert({ script })
-                                    onDone({ valid, script })
-                                }}
-                                className={classes.submitButton}
-                            />
-                        </div>
-                        <div className={classes.errorArea}>
-                            <p className={classes.errorText}>
-                                {processTemplate(questionsLength ? defaults.errorText : defaults.noQuestions, {
+                        <DoneLockedButton
+                            className={classes.submitButton}
+                            electionOM={electionOM}
+                            panelName={panelName}
+                            isValid={isValid}
+                            dependents={['Contact', 'Questions']}
+                            isLocked={electionMethods.getSubmissionStatus() === 'submitted'}
+                            onDone={({ valid, value }) => valid && onDone({ valid: isValid })}
+                        />
+                    </div>
+                    <div className={classes.errorArea}>
+                        <p className={classes.errorText}>
+                            {electionObj.donLocked?.['Questions']?.done &&
+                                processTemplate(questionsLength ? defaults.errorText : defaults.noQuestions, {
                                     ...substitutions,
                                     errorCount,
                                 })}{' '}
-                            </p>
-                        </div>
+                        </p>
                     </div>
-                )}
+                </div>
             </span>
             <div className={classes.scripts}>
                 <p>{questionsLength ? defaults.description : defaults.noQuestions}</p>
@@ -110,6 +99,7 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
                                       defaultValue={
                                           script[i]?.text || processTemplate(defaults[`${sourceOf}Answer`], subs)
                                       }
+                                      disabled={disabled}
                                       onDone={({ valid, value }) => {
                                           if (
                                               ((typeof validInputs[i] === 'undefined' && valid) ||
@@ -144,11 +134,11 @@ const useStyles = createUseStyles({
     submitContainer: { display: 'absolute', float: 'right', width: '35%', padding: 0 },
     scriptTextInput: { margin: '0.5rem 0rem' },
     lockedCard: { width: '85%', background: '#262D33', color: '#838789', float: 'right' },
-    submitButton: ({ valid }) => ({ float: 'right', border: valid ? 'unset' : '.15rem solid red' }),
+    submitButton: ({ isValid }) => ({ float: 'right', border: isValid ? 'unset' : '.15rem solid red' }),
     cardHeader: { color: 'white', fontSize: '1.1rem', lineHeight: '.5rem' },
     errorArea: { clear: 'both', padding: '2rem', paddingRight: 0, color: 'red' },
-    errorText: ({ valid }) => ({
-        display: valid ? 'none' : 'unset',
+    errorText: ({ isValid }) => ({
+        display: isValid ? 'none' : 'unset',
     }),
     page: {},
 })

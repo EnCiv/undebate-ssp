@@ -12,7 +12,7 @@ import {
 import { ProgressBar } from '../components/election-category'
 import ObjectID from 'isomorphic-mongo-objectid'
 
-const checkDateCompleted = obj => {
+export const checkDateCompleted = obj => {
     for (const key in obj) {
         if (obj[key].date !== '') {
             return true
@@ -21,7 +21,7 @@ const checkDateCompleted = obj => {
     return false
 }
 
-const checkObjCompleted = obj => {
+export const checkObjCompleted = obj => {
     let count = 0
     for (const key in obj) {
         count++
@@ -32,7 +32,7 @@ const checkObjCompleted = obj => {
     return !!count // if no keys then false
 }
 
-const getLatestObjByDate = oList => {
+export const getLatestObjByDate = oList => {
     if (!oList) return undefined
     const latest = Object.values(oList).reduce(
         (latest, obj) => (latest.date.localeCompare(obj?.date || '') < 0 ? obj : latest),
@@ -120,18 +120,33 @@ function getElectionStatusMethods(dispatch, state) {
             checkDateCompleted(state?.timeline?.candidateDeadlineReminderEmails) &&
         */
             checkDateCompleted(state?.timeline?.moderatorSubmissionDeadline) &&
-            checkDateCompleted(state?.timeline?.candidateSubmissionDeadline)
+            checkDateCompleted(state?.timeline?.candidateSubmissionDeadline) &&
+            state.undebateDate &&
+            state.electionDate
         )
     }
     const getElectionStatus = () => {
-        if (state?.electionName && state?.organizationName) return 'completed'
+        if (
+            state?.doneLocked?.['Election']?.done &&
+            state?.electionName &&
+            state?.organizationName &&
+            state?.organizationUrl &&
+            state?.email
+        )
+            return 'completed'
         return 'default'
     }
 
     const getTimelineStatus = () => {
-        if (getElectionStatus() === 'default') return 'default'
-        if (getElectionStatus() === 'completed' && !checkTimelineCompleted()) return 'pending'
-        return 'completed'
+        if (checkTimelineCompleted() && state?.doneLocked?.['Timeline']?.done) return 'completed'
+        if (
+            checkDateCompleted(state?.timeline?.moderatorSubmissionDeadline) ||
+            checkDateCompleted(state?.timeline?.candidateSubmissionDeadline) ||
+            state.undebateDate ||
+            state.electionDate
+        )
+            return 'pending'
+        return 'default'
     }
 
     const countDayLeft = () => {
@@ -246,14 +261,24 @@ function getElectionStatusMethods(dispatch, state) {
 
     const getQuestionsStatus = () => {
         const questionsObjs = Object.values(state?.questions || {})
-        if (questionsObjs.length && Object.values(questionsObjs).every(q => q.text && q.time)) return 'completed'
+        if (
+            state?.doneLocked?.['Questions']?.done &&
+            questionsObjs.length &&
+            Object.values(questionsObjs).every(q => q.text && q.time)
+        )
+            return 'completed'
         if (state?.timeline?.moderatorSubmissionDeadline) return countDayLeft() || 'default'
         return 'default'
     }
     const getScriptStatus = () => {
         if (getQuestionsStatus() === 'completed' && !checkObjCompleted(state?.script))
             return countDayLeft() || 'default'
-        if (getQuestionsStatus() === 'completed' && checkObjCompleted(state?.script)) return 'completed'
+        if (
+            state?.doneLocked?.['Script']?.done &&
+            getQuestionsStatus() === 'completed' &&
+            checkObjCompleted(state?.script)
+        )
+            return 'completed'
         return 'default'
     }
     const getRecorderStatus = () => {
@@ -337,7 +362,8 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const getModeratorContactStatus = () => {
-        if (state?.moderator?.name && state?.moderator?.email) return 'completed'
+        if (state?.doneLocked?.['Contact']?.done && state?.moderator?.name && state?.moderator?.email)
+            return 'completed'
         return 'default'
     }
 

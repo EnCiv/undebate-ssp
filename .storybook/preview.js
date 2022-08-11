@@ -5,6 +5,7 @@ import theme from '../app/theme'
 import { merge } from 'lodash'
 import useMethods from 'use-methods'
 import getElectionStatusMethods from '../app/lib/get-election-status-methods'
+import ObjectID from 'isomorphic-mongo-objectid/src/isomorphic-mongo-objectid'
 
 export const parameters = {
     actions: { argTypesRegex: '^on[A-Z].*' },
@@ -27,6 +28,7 @@ export const decorators = [
                     dispatch(merge({}, state, obj, { _count: state._count + 1 }))
                 },
                 createModeratorRecorder(cb) {
+                    const newId = ObjectID().toString()
                     dispatch(
                         merge(
                             {},
@@ -40,8 +42,8 @@ export const decorators = [
                                         },
                                     },
                                     viewers: {
-                                        '62d5fc793d4af57ff9a9f4ac': {
-                                            _id: '62d5fc793d4af57ff9a9f4ac',
+                                        [newId]: {
+                                            _id: newId,
                                             path: '/country:us/org:usfg/office:moderator/2022-11-08',
                                         },
                                     },
@@ -51,7 +53,7 @@ export const decorators = [
                             { _count: state._count + 1 }
                         )
                     )
-                    if (cb) setTimeout(cb, 1000)
+                    if (cb) setTimeout(() => cb({ rowObjs: {}, messages: [] }), 1000)
                 },
                 sendModeratorInvitation(cb) {
                     dispatch(

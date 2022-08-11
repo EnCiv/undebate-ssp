@@ -5,11 +5,12 @@ import { Iota, User } from 'civil-server'
 import iotas from '../../../iotas.json'
 import createModeratorRecorder from '../create-moderator-recorder'
 import { merge, cloneDeep } from 'lodash'
+import { serverEvents } from 'civil-server'
 
 const ObjectID = Iota.ObjectId
 
 // dummy out logger for tests
-global.logger = { error: jest.fn(e => e) }
+global.logger = { error: jest.fn(e => e), warn: jest.fn(e => e) }
 
 // making a clone so giving it it's own unique id so jest tests can run in parallel
 const testDoc = cloneDeep(iotas.filter(iota => iota.subject === 'Undebate SSP Test Iota')[0])
@@ -29,6 +30,7 @@ const exampleUser = {
 const apisThis = { synuser: {} }
 
 beforeAll(async () => {
+    serverEvents.eNameAdd('ParticipantCreated') // event names need to be added before socketApiUnderTest subscribes to them
     await MongoModels.connect({ uri: global.__MONGO_URI__ }, { useUnifiedTopology: true })
     // run the init functions that models require - after the connection is setup
     const { toInit = [] } = MongoModels.toInit

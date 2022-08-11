@@ -12,6 +12,7 @@ export default function CountLimitedTextInput({
     className,
     style,
     warn,
+    disabled,
 }) {
     const classes = useStyles()
     const [length, setLength] = useState(defaultValue.length)
@@ -56,6 +57,7 @@ export default function CountLimitedTextInput({
                     setLength(e.target.value.length)
                 }}
                 ref={inputRef}
+                disabled={disabled}
             />
         </div>
     )

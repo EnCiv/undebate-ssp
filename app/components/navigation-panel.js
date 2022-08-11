@@ -7,6 +7,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import ElectionCategory from './election-category'
 import { SvgRightArrow } from './lib/svg'
+import { getRecorderStatus } from './moderator-recorder'
 
 export default function NavigationPanel({ className, style, electionOM, onDone, component }) {
     const classes = useStyles()
@@ -105,27 +106,15 @@ export default function NavigationPanel({ className, style, electionOM, onDone, 
                 <RenderBar
                     key='Recorder'
                     name='Recorder'
-                    valid={true}
+                    valid={getRecorderStatus(electionObj) === 'completed'}
                     statusObjs={
-                        electionMethods.getRecorderStatus() === 'completed'
+                        getRecorderStatus(electionObj) === 'completed'
                             ? 'completed'
-                            : electionMethods.getRecorderStatus() === 'default'
+                            : getRecorderStatus(electionObj) === 'waiting'
                             ? {}
-                            : { daysLeft: electionMethods.countDayLeft() }
-                    }
-                />
-                <RenderBar
-                    key='Submission'
-                    name='Submission'
-                    valid={electionMethods.getSubmissionStatus() === 'completed'}
-                    statusObjs={
-                        electionMethods.getSubmissionStatus() === 'missed'
-                            ? { deadlineMissed: true }
-                            : electionMethods.getSubmissionStatus() === 'submitted'
-                            ? 'videoSubmitted'
-                            : electionMethods.getSubmissionStatus() === 'sent'
+                            : getRecorderStatus(electionObj) === 'sent'
                             ? { reminderSent: true }
-                            : {}
+                            : getRecorderStatus(electionObj)
                     }
                 />
             </div>
@@ -175,7 +164,7 @@ export default function NavigationPanel({ className, style, electionOM, onDone, 
                 >
                     <div className={classes.left}>
                         <div className={classes.undebate}>
-                            Underbate{' '}
+                            Undebate{' '}
                             {electionMethods.getUndebateStatus() === 'pending'
                                 ? ''
                                 : electionMethods.getUndebateStatus() === 'isLive'

@@ -7,7 +7,9 @@ import ElectionTextInput from './election-text-input'
 import Submit from './submit'
 import SvgSpeaker from '../svgr/speaker'
 import ElectionTextArea from './election-text-area'
+import DoneLockedButton from './done-locked-button'
 
+const panelName = 'Contact'
 export function Invitation(props) {
     const classes = useStyles()
     const { className, style, electionOM, onDone } = props
@@ -28,8 +30,8 @@ export function Invitation(props) {
     }) // null->[false||true] to prevent a loop of the initial values above that will get rendered first, and then the electionObj data which may get updated right after the initial render
     // a reducer becasue if useState  setValidInputs({...validInputs,email}) would overwrite the value of name with what might not be the current value if setValidInputs({...validInputs,name}) were both called in event handlers before the next rerender that updates ...validInputs
     // not using the usual action {type: "SET_EMAIL", value: true} format because it's too long and wordy for this simple case of updating values of an object
-
-    const inputsInvalid = Object.values(validInputs).some(i => !i)
+    const disabled = electionObj?.doneLocked?.[panelName]?.done || electionMethods.getSubmissionStatus() === 'submitted'
+    const inputsInvalid = Object.values(validInputs).every(i => i)
     // side effects to do after the component rerenders from a state change
     const [sideEffects] = useState([]) // never set sideEffects
     useEffect(() => {
@@ -47,6 +49,7 @@ export function Invitation(props) {
                                 sideEffects.push(() => electionMethods.upsert({ moderator: { name: value } })) // side effect because we don't want the upsert to cause a rerender before setValidInputs does
                             setValidInputs({ name: valid })
                         }}
+                        disabled={disabled}
                     />
                     <ElectionTextInput
                         name='Email Address'
@@ -57,6 +60,7 @@ export function Invitation(props) {
                                 sideEffects.push(() => electionMethods.upsert({ moderator: { email: value } }))
                             setValidInputs({ email: valid })
                         }}
+                        disabled={disabled}
                     />
                 </div>
                 <div className={classes.message}>
@@ -70,17 +74,18 @@ export function Invitation(props) {
                                 sideEffects.push(() => electionMethods.upsert({ moderator: { message: value } }))
                             setValidInputs({ message: valid })
                         }}
+                        disabled={disabled}
                     />
                 </div>
             </div>
             <div className={classes.send}>
-                <Submit
-                    name='Done'
-                    disabled={inputsInvalid}
-                    disableOnClick
-                    onDone={({ valid, value }) => {
-                        onDone && onDone({ valid, value })
-                    }}
+                <DoneLockedButton
+                    className={classes.submitButton}
+                    electionOM={electionOM}
+                    panelName={panelName}
+                    isValid={inputsInvalid}
+                    isLocked={electionMethods.getSubmissionStatus() === 'submitted'}
+                    onDone={({ valid, value }) => valid && onDone({ valid: inputsInvalid })}
                 />
                 <SvgSpeaker className={classes.speaker} />
             </div>
