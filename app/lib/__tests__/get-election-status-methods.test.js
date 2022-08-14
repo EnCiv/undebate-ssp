@@ -439,8 +439,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { countSubmissionReminderSet } = getElectionStatusMethods(null, state)
-            expect(countSubmissionReminderSet()).toBe(2)
+            const { countSubmissionReminderSent } = getElectionStatusMethods(null, state)
+            expect(countSubmissionReminderSent()).toBe(2)
         })
     })
 

@@ -184,7 +184,7 @@ function getElectionStatusMethods(dispatch, state) {
             0
         )
 
-    const countSubmissionReminderSet = () => {
+    const countSubmissionReminderSent = () => {
         let count = 0
         const reminder = state?.timeline?.moderatorDeadlineReminderEmails
         for (const key in reminder) {
@@ -539,7 +539,7 @@ function getElectionStatusMethods(dispatch, state) {
         checkSubmissionBeforeDeadline,
         countSubmissionAccepted,
         countSubmissionDeclined,
-        countSubmissionReminderSet,
+        countSubmissionReminderSent,
         countSubmissionDeadlineMissed,
         countCandidatesSubmissionsAccepted,
         countCandidatesSubmissionsDeclined,
