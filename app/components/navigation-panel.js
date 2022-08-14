@@ -154,7 +154,7 @@ export default function NavigationPanel({ className, style, electionOM, onDone, 
             {electionObj?.electionDate && electionObj?.undebateDate && (
                 <div
                     className={cx(
-                        classes.underbateSection,
+                        classes.undebateSection,
                         electionMethods.getUndebateStatus() === 'archived' && classes.archived
                     )}
                     onClick={e => {
@@ -213,7 +213,7 @@ const useStyles = createUseStyles(theme => ({
     bottom: {
         padding: '1.5625rem',
     },
-    underbateSection: {
+    undebateSection: {
         margin: '0 1.5625rem',
         background: theme.colorPrimary,
         borderRadius: theme.defaultBorderRadius,
