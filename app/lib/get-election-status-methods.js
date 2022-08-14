@@ -114,15 +114,15 @@ export const daysBetweenDates = (date1, date2) => {
 function getElectionStatusMethods(dispatch, state) {
     const recentInvitationStatus = () => getLatestIota(state?.moderator?.invitations)
     const checkTimelineCompleted = () => {
-        return (
-            /* REMINDERS not implemented yet
-            checkDateCompleted(state?.timeline?.moderatorDeadlineReminderEmails) &&
-            checkDateCompleted(state?.timeline?.candidateDeadlineReminderEmails) &&
+        /* REMINDERS not implemented yet
+        checkDateCompleted(state?.timeline?.moderatorDeadlineReminderEmails) &&
+        checkDateCompleted(state?.timeline?.candidateDeadlineReminderEmails) &&
         */
+        return (
             checkDateCompleted(state?.timeline?.moderatorSubmissionDeadline) &&
             checkDateCompleted(state?.timeline?.candidateSubmissionDeadline) &&
-            state.undebateDate &&
-            state.electionDate
+            !!state.undebateDate &&
+            !!state.electionDate
         )
     }
     const getElectionStatus = () => {

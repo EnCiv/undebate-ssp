@@ -62,7 +62,11 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { checkTimelineCompleted } = getElectionStatusMethods(null, { timeline })
+            const { checkTimelineCompleted } = getElectionStatusMethods(null, {
+                timeline,
+                undebateDate: '2022-01-06T22:09:32.952Z',
+                electionDate: '2022-01-08T22:09:32.952Z',
+            })
             expect(checkTimelineCompleted()).toBe(true)
         })
         it('should not be completed', () => {
@@ -131,6 +135,9 @@ describe('election status methods', () => {
             const election = {
                 electionName: 'some name',
                 organizationName: 'some name',
+                organizationUrl: 'some url',
+                email: 'someEmail',
+                doneLocked: { Election: { done: true } },
             }
             const { getElectionStatus } = getElectionStatusMethods(null, election)
             expect(getElectionStatus()).toBe('completed')
@@ -146,6 +153,8 @@ describe('election status methods', () => {
             const state = {
                 electionName: 'some name',
                 organizationName: 'some name',
+                undebateDate: '2022-01-06T22:09:32.952Z',
+                electionDate: '2022-01-08T22:09:32.952Z',
                 timeline: {
                     moderatorDeadlineReminderEmails: {
                         0: {
@@ -180,6 +189,7 @@ describe('election status methods', () => {
                         },
                     },
                 },
+                doneLocked: { Timeline: { done: true } },
             }
             const { getTimelineStatus } = getElectionStatusMethods(null, state)
             expect(getTimelineStatus()).toBe('completed')
@@ -707,6 +717,7 @@ describe('election status methods', () => {
                         },
                     },
                 },
+                doneLocked: { Questions: { done: true } },
             }
             const { getQuestionsStatus } = getElectionStatusMethods(null, state)
             expect(getQuestionsStatus()).toBe('completed')
@@ -770,6 +781,7 @@ describe('election status methods', () => {
                         },
                     },
                 },
+                doneLocked: { Questions: { done: true } },
             }
             const { getScriptStatus } = getElectionStatusMethods(null, state)
             expect(getScriptStatus()).toBe('1')
@@ -823,6 +835,10 @@ describe('election status methods', () => {
                             sent: true,
                         },
                     },
+                },
+                doneLocked: {
+                    Script: { done: true },
+                    Questions: { done: true },
                 },
             }
             const { getScriptStatus } = getElectionStatusMethods(null, state)
@@ -927,6 +943,10 @@ describe('election status methods', () => {
                         },
                     },
                 },
+                doneLocked: {
+                    Questions: { done: true },
+                    Script: { done: true },
+                },
             }
             const { getInvitationStatus } = getElectionStatusMethods(null, state)
             expect(getInvitationStatus()).toBe('accepted')
@@ -992,6 +1012,10 @@ describe('election status methods', () => {
                         },
                     },
                 },
+                doneLocked: {
+                    Questions: { done: true },
+                    Script: { done: true },
+                },
             }
             const { getInvitationStatus } = getElectionStatusMethods(null, state)
             expect(getInvitationStatus()).toBe('declined')
@@ -1055,6 +1079,10 @@ describe('election status methods', () => {
                         },
                     },
                 },
+                doneLocked: {
+                    Questions: { done: true },
+                    Script: { done: true },
+                },
             }
             const { getInvitationStatus } = getElectionStatusMethods(null, state)
             expect(getInvitationStatus()).toBe('sent')
@@ -1109,6 +1137,10 @@ describe('election status methods', () => {
                             sent: true,
                         },
                     },
+                },
+                doneLocked: {
+                    Script: { done: true },
+                    Questions: { done: true },
                 },
             }
             const { getInvitationStatus } = getElectionStatusMethods(null, state)
