@@ -3,12 +3,13 @@ import { undebatesFromTemplateAndRows } from 'undebate'
 import sspViewerRecorder from '../lib/ssp-viewer-recorder'
 import { getElectionDocById } from './get-election-docs'
 import { getLatestIota } from '../lib/get-election-status-methods'
+import { filters } from './send-candidate-invites'
 
 // todo eventually replace this video
 const introVideo =
     'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893716/5d5b74751e3b194174cd9b94-1-speaking20210304T213504684Z.mp4'
 
-export default async function createCandidateRecorder(id, cb) {
+export default async function createCandidateRecorder(id, filter = 'ALL', cb) {
     if (!this.synuser) {
         logger.error('createCandidateRecorder called, but no user ', this.synuser)
         if (cb) cb() // no user
@@ -27,7 +28,7 @@ export default async function createCandidateRecorder(id, cb) {
                 return
             }
             const electionObj = iota.webComponent
-            const { rowObjs, messages } = await createCandidateRecordersFromIdAndElectionObj(id, electionObj)
+            const { rowObjs, messages } = await createCandidateRecordersFromIdAndElectionObj(id, filter, electionObj)
             if (!rowObjs) {
                 if (cb) cb()
                 return
@@ -42,10 +43,15 @@ export default async function createCandidateRecorder(id, cb) {
     }
 }
 
-export async function createCandidateRecordersFromIdAndElectionObj(id, electionObj) {
+export async function createCandidateRecordersFromIdAndElectionObj(id, filter, electionObj) {
     let msgs
     if ((msgs = reasonsNotReadyForCandidateRecorder(electionObj)).length) {
-        logger.error('not ready for candidate recorder:', msgs)
+        logger.error('createCandidateRecordersFromIdAndElectionObj not ready for candidate recorder:', msgs)
+        return {}
+    }
+    const filterOp = filters[filter]
+    if (!filterOp) {
+        logger.error('createCandidateRecordersFromIdAndElectionObj for election id', id, 'filter not found', filter)
         return {}
     }
     const sortedQuestionPairs = Object.entries(electionObj.questions).sort(([aKey, aObj], [bKey, bObj]) => aKey - bKey)
@@ -83,7 +89,7 @@ export async function createCandidateRecordersFromIdAndElectionObj(id, electionO
 
     const { rowObjs, messages } = await undebatesFromTemplateAndRows(
         viewerRecorder,
-        Object.values(electionObj.candidates)
+        Object.values(electionObj.candidates).filter(filterOp)
     )
     return { rowObjs, messages }
 }

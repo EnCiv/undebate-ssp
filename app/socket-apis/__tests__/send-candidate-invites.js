@@ -154,6 +154,7 @@ maybeNot('Is Sendinblue environment setup for testing?', () => {
     })
 })
 maybe('Test the send candidate invites API', () => {
+    jest.setTimeout(30000) // sometimes send in blue is just slow
     let requestedDoc
     let updatedDoc
     beforeAll(async () => {
@@ -198,7 +199,7 @@ maybe('Test the send candidate invites API', () => {
                 done(error)
             }
         }
-        sendCandidateInvites.call({}, ELECTIONOBJID, callback)
+        sendCandidateInvites.call({}, ELECTIONOBJID, 'ALL', callback)
     })
     test('should send an email', done => {
         function callback(messageIds) {
@@ -209,7 +210,7 @@ maybe('Test the send candidate invites API', () => {
                 done(error)
             }
         }
-        sendCandidateInvites.call(apisThis, ELECTIONOBJID, callback)
+        sendCandidateInvites.call(apisThis, ELECTIONOBJID, 'ALL', callback)
     })
     test('subscribeElectionInfo update should receive update', done => {
         // this asynchronous update from the socket api may have already happend, or we may need to wait for it.
@@ -302,5 +303,27 @@ maybe('Test the send candidate invites API', () => {
             // i've only see it go this way
             updatedDoc = updated
         }
+    })
+    test("filter with NOT_YET_INVITED shouldn't send any", done => {
+        function callback(messageIds) {
+            try {
+                expect(messageIds.length).toEqual(0)
+                done()
+            } catch (error) {
+                done(error)
+            }
+        }
+        sendCandidateInvites.call(apisThis, ELECTIONOBJID, 'NOT_YET_INVITED', callback)
+    })
+    test('filter with NOT_YET_SUBMITTED should send them again', done => {
+        function callback(messageIds) {
+            try {
+                expect(messageIds.length).toEqual(2)
+                done()
+            } catch (error) {
+                done(error)
+            }
+        }
+        sendCandidateInvites.call(apisThis, ELECTIONOBJID, 'NOT_YET_SUBMITTED', callback)
     })
 })

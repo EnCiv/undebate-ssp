@@ -79,7 +79,7 @@ export default function CandidateTable(props) {
                         disableOnClick
                         onDone={({ valid, value }) => {
                             if (valid)
-                                electionMethods.sendCandidateInvitations(result => {
+                                electionMethods.sendCandidateInvitations('ALL', result => {
                                     onDone({ valid: true, value: 'sent' })
                                     //to do - if error show error messages
                                 })
