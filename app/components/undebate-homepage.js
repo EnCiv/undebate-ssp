@@ -7,22 +7,24 @@ import ElectionHeader from './election-header'
 import SubscribeElectionInfo from './subscribe-election-info'
 import UndebatesHeaderBar from './undebates-header-bar'
 import UndebatesLandingPage from './undebates-landing-page'
+import { useSearchParams } from 'react-router-dom'
 
 export default function UndebateHomepage(props) {
     const { className, style, user } = props
     const [electionObjs, setElectionObjs] = useState([])
     const classes = useStyles(props)
-    const [selectedId, setSelectedId] = useState('')
     const [searchValue, setSearchValue] = useState('')
-    const index = selectedId ? electionObjs.findIndex(eObj => eObj.id === selectedId) : -1
     const electionNames = useMemo(() => electionObjs.map(obj => obj.electionName), [electionObjs])
+    const [searchParams, setSearchParams] = useSearchParams()
+    const selectedId = searchParams.get('id')
+    const index = selectedId ? electionObjs.findIndex(eObj => eObj.id === selectedId) : -1
     useEffect(() => {
         window.socket.emit('get-election-docs', objs => objs && setElectionObjs(objs))
     }, [])
     const createNew = () => {
         window.socket.emit('create-election-doc', id => {
             if (!id) return
-            setSelectedId(id)
+            setSearchParams((searchParams.set('id', id), searchParams))
         })
     }
     return (
@@ -33,10 +35,17 @@ export default function UndebateHomepage(props) {
                     <ElectionHeader
                         elections={selectedId ? electionNames : ['Select One']}
                         defaultValue={index}
+                        key={index /*so we rerender when it is changed from above*/}
                         className={classes.header}
                         user={user}
                         onDone={({ valid, value }) =>
-                            setSelectedId(electionObjs.find(obj => obj.electionName === electionNames[value]).id)
+                            setSearchParams(
+                                (searchParams.set(
+                                    'id',
+                                    electionObjs.find(obj => obj.electionName === electionNames[value]).id
+                                ),
+                                searchParams)
+                            )
                         }
                     />
                     <SubscribeElectionInfo id={selectedId} key={selectedId} />
@@ -53,7 +62,9 @@ export default function UndebateHomepage(props) {
                             />
                             <UndebatesList
                                 electionObjs={electionObjs}
-                                onDone={({ value, valid }) => setSelectedId(value)}
+                                onDone={({ value, valid }) =>
+                                    setSearchParams((searchParams.set('id', value), searchParams))
+                                }
                                 globalFilter={searchValue}
                                 key='list'
                             />
