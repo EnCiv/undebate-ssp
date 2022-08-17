@@ -164,7 +164,7 @@ function getElectionStatusMethods(dispatch, state) {
         return ObjectID(_id).getDate().toISOString()
     }
 
-    const checkSubmissionBeforeDeadline = () => {
+    const checkModeratorSubmissionBeforeDeadline = () => {
         const submissionDate = getDateOfLatestIota(state?.moderator?.submissions)
         if (!submissionDate) return false
         const deadline = getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)?.date
@@ -324,7 +324,7 @@ function getElectionStatusMethods(dispatch, state) {
                 Object.keys(candidate.recorders).length > 0
             )
         })
-    const getSubmissionsStatus = () => {
+    const getCandidatesSubmissionsStatus = () => {
         if (recentModeratorInvitationStatus()?.sentDate)
             return {
                 accepted: countCandidatesSubmissionsAccepted(),
@@ -416,7 +416,7 @@ function getElectionStatusMethods(dispatch, state) {
             return 'Election Table Pending...'
         }
         // todo fix this - any candidate doesn't have invitations list?
-        if (areCandidatesReadyToInvite() && getSubmissionsStatus() === 'default') {
+        if (areCandidatesReadyToInvite() && getCandidatesSubmissionsStatus() === 'default') {
             // todo moderator might not have submitted yet - separate status
             return 'Invite Pending...'
         }
@@ -424,7 +424,7 @@ function getElectionStatusMethods(dispatch, state) {
         if (countModeratorInvitationDeadlineMissed() === candidateCount) {
             return `All ${candidateCount} Candidates Missed Deadline`
         }
-        if (getSubmissionsStatus() !== 'default') {
+        if (getCandidatesSubmissionsStatus() !== 'default') {
             const totalCandidatesCount = Object.values(state?.candidates).length
             let completeCandidatesCount = 0
             Object.values(state?.candidates)?.forEach(candidate => {
@@ -536,7 +536,7 @@ function getElectionStatusMethods(dispatch, state) {
         getModeratorRecorderStatus,
         getModeratorInvitationStatus,
         checkModeratorVideoSubmitted,
-        checkSubmissionBeforeDeadline,
+        checkModeratorSubmissionBeforeDeadline,
         countModeratorInvitationAccepted,
         countModeratorInvitationDeclined,
         countModeratorInvitationReminderSent,
@@ -547,7 +547,7 @@ function getElectionStatusMethods(dispatch, state) {
         countCandidatesSubmissionsDeadlineMissed,
         getModeratorSubmissionStatus,
         getElectionTableStatus,
-        getSubmissionsStatus,
+        getCandidatesSubmissionsStatus,
         checkModeratorReminderSent,
         areQuestionsLocked,
         isModeratorReadyForCreateRecorder,

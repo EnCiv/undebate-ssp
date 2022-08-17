@@ -316,7 +316,7 @@ describe('election status methods', () => {
         })
     })
 
-    describe('check submission before deadline', () => {
+    describe('check moderator submission before deadline', () => {
         it('should be submitted on time', () => {
             const state = {
                 timeline: {
@@ -328,8 +328,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { checkSubmissionBeforeDeadline } = getElectionStatusMethods(null, state)
-            expect(checkSubmissionBeforeDeadline())
+            const { checkModeratorSubmissionBeforeDeadline } = getElectionStatusMethods(null, state)
+            expect(checkModeratorSubmissionBeforeDeadline())
         })
         it('should not be submitted on time', () => {
             const state = {
@@ -342,8 +342,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { checkSubmissionBeforeDeadline } = getElectionStatusMethods(null, state)
-            expect(checkSubmissionBeforeDeadline()).toBe(false)
+            const { checkModeratorSubmissionBeforeDeadline } = getElectionStatusMethods(null, state)
+            expect(checkModeratorSubmissionBeforeDeadline()).toBe(false)
         })
     })
 
@@ -1304,7 +1304,7 @@ describe('election status methods', () => {
         })
     })
 
-    describe('get submissions status', () => {
+    describe('get candidates submissions status', () => {
         it('fetches counts when sentDate exists', () => {
             const state = {
                 electionName: 'name',
@@ -1415,8 +1415,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { getSubmissionsStatus } = getElectionStatusMethods(null, state)
-            expect(getSubmissionsStatus()).toEqual({
+            const { getCandidatesSubmissionsStatus } = getElectionStatusMethods(null, state)
+            expect(getCandidatesSubmissionsStatus()).toEqual({
                 accepted: 2,
                 declined: 1,
                 reminderSent: 2,
@@ -1488,8 +1488,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { getSubmissionsStatus } = getElectionStatusMethods(null, state)
-            expect(getSubmissionsStatus()).toBe('default')
+            const { getCandidatesSubmissionsStatus } = getElectionStatusMethods(null, state)
+            expect(getCandidatesSubmissionsStatus()).toBe('default')
         })
     })
     describe('are questions locked', () => {
