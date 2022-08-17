@@ -41,7 +41,7 @@ export default function Submission(props) {
     let cornerPic
     let missed = false
 
-    const submissionStatus = electionMethods.getSubmissionStatus()
+    const submissionStatus = electionMethods.getModeratorSubmissionStatus()
     switch (submissionStatus) {
         case 'missed':
             statusTitle = 'Deadline Missed!'

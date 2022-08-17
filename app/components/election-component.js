@@ -31,7 +31,8 @@ export default function ElectionComponent(props) {
         while (sideEffects.length) sideEffects.shift()()
     })
 
-    const disabled = electionObj?.doneLocked?.[panelName]?.done || electionMethods.getSubmissionStatus() === 'submitted'
+    const disabled =
+        electionObj?.doneLocked?.[panelName]?.done || electionMethods.getModeratorSubmissionStatus() === 'submitted'
 
     return (
         <div className={cx(className, classes.page)} style={style}>
@@ -59,7 +60,7 @@ export default function ElectionComponent(props) {
                     electionOM={electionOM}
                     panelName={panelName}
                     isValid={allValid}
-                    isLocked={electionMethods.getSubmissionStatus() === 'submitted'}
+                    isLocked={electionMethods.getModeratorSubmissionStatus() === 'submitted'}
                     onDone={({ valid, value }) => valid && onDone({ valid: allValid })}
                 />
             </span>

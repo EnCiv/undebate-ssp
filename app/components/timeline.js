@@ -62,7 +62,8 @@ export default function Timeline(props) {
 
     const [validInputs, setValidInputs] = useReducer((state, action) => ({ ...state, ...action }), {})
     const allValid = Object.values(validInputs).every(v => !!v)
-    const disabled = electionObj?.doneLocked?.[panelName]?.done || electionMethods.getSubmissionStatus() === 'submitted'
+    const disabled =
+        electionObj?.doneLocked?.[panelName]?.done || electionMethods.getModeratorSubmissionStatus() === 'submitted'
 
     return (
         <div className={cx(className, classes.timeline)} style={style}>
@@ -75,7 +76,7 @@ export default function Timeline(props) {
                         electionOM={electionOM}
                         panelName={panelName}
                         isValid={allValid}
-                        isLocked={electionMethods.getSubmissionStatus() === 'submitted'}
+                        isLocked={electionMethods.getModeratorSubmissionStatus() === 'submitted'}
                         onDone={({ valid, value }) => valid && onDone({ valid: allValid })}
                     />
                 </header>
