@@ -1,15 +1,13 @@
 // https://github.com/EnCiv/undebate-ssp/issues/20
 import React, { useState, useEffect } from 'react'
-import UndebateHomepage from '../app/components/undebate-homepage'
+import UndebateHomepage from '../app/web-components/undebates-homepage'
 import { cloneDeep } from 'lodash'
 import iotas from '../iotas.json'
-import ReactRouterDecorator from './react-router-decorator'
 
 export default {
-    title: 'Undebate Homepage',
+    title: 'Undebates Web Component',
     component: UndebateHomepage,
     argTypes: {},
-    decorators: [ReactRouterDecorator],
 }
 if (typeof logger === 'undefined') window.logger = console
 
@@ -197,13 +195,17 @@ export const WithData = Template.bind({})
 WithData.args = {
     electionObjs: [defaultElectionObject, defaultElectionObject1, defaultElectionObject2],
     user: { id: '6274ae8bee422b0f9c607b75', email: 'someone@email.com' },
+    path: '/iframe.html',
 }
 export const Empty = Template.bind({})
+Empty.args = { path: '/' }
 export const NewUser = Template.bind({})
 NewUser.args = {
     electionObjs: [],
     user: { id: '6274ae8bee422b0f9c607b75', email: 'someone@email.com' },
+    path: '/iframe.html',
 }
 export const NoUser = Template.bind({})
 const iota = iotas.find(doc => doc.path === '/undebates')
 NoUser.args = iota.webComponent
+NoUser.args.path = '/iframe.html'

@@ -9,6 +9,8 @@ import UndebatesHeaderBar from './undebates-header-bar'
 import UndebatesLandingPage from './undebates-landing-page'
 import { useSearchParams } from 'react-router-dom'
 
+// using 'eid' as the search param becuase id is taken by storybook and it's easier just to get a long
+
 export default function UndebateHomepage(props) {
     const { className, style, user } = props
     const [electionObjs, setElectionObjs] = useState([])
@@ -16,7 +18,7 @@ export default function UndebateHomepage(props) {
     const [searchValue, setSearchValue] = useState('')
     const electionNames = useMemo(() => electionObjs.map(obj => obj.electionName), [electionObjs])
     const [searchParams, setSearchParams] = useSearchParams()
-    const selectedId = searchParams.get('id')
+    const selectedId = searchParams.get('eid')
     const index = selectedId ? electionObjs.findIndex(eObj => eObj.id === selectedId) : -1
     useEffect(() => {
         window.socket.emit('get-election-docs', objs => objs && setElectionObjs(objs))
@@ -24,7 +26,7 @@ export default function UndebateHomepage(props) {
     const createNew = () => {
         window.socket.emit('create-election-doc', id => {
             if (!id) return
-            setSearchParams((searchParams.set('id', id), searchParams))
+            setSearchParams((searchParams.set('eid', id), searchParams))
         })
     }
     return (
@@ -41,7 +43,7 @@ export default function UndebateHomepage(props) {
                         onDone={({ valid, value }) =>
                             setSearchParams(
                                 (searchParams.set(
-                                    'id',
+                                    'eid',
                                     electionObjs.find(obj => obj.electionName === electionNames[value]).id
                                 ),
                                 searchParams)
@@ -63,7 +65,7 @@ export default function UndebateHomepage(props) {
                             <UndebatesList
                                 electionObjs={electionObjs}
                                 onDone={({ value, valid }) =>
-                                    setSearchParams((searchParams.set('id', value), searchParams))
+                                    setSearchParams((searchParams.set('eid', value), searchParams))
                                 }
                                 globalFilter={searchValue}
                                 key='list'
