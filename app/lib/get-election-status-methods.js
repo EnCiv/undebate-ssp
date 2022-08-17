@@ -172,19 +172,19 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     // Start Moderator Count Methods
-    const countSubmissionAccepted = () =>
+    const countModeratorInvitationAccepted = () =>
         Object.values(state?.moderator?.invitations || {}).reduce(
             (count, invitation) => (invitation.status === 'Accepted' ? count + 1 : count),
             0
         )
 
-    const countSubmissionDeclined = () =>
+    const countModeratorInvitationDeclined = () =>
         Object.values(state?.moderator?.invitations || {}).reduce(
             (count, invitation) => (invitation.status === 'Declined' ? count + 1 : count),
             0
         )
 
-    const countSubmissionReminderSent = () => {
+    const countModeratorInvitationReminderSent = () => {
         let count = 0
         const reminder = state?.timeline?.moderatorDeadlineReminderEmails
         for (const key in reminder) {
@@ -195,7 +195,7 @@ function getElectionStatusMethods(dispatch, state) {
         return count
     }
 
-    const countSubmissionDeadlineMissed = () => {
+    const countModeratorInvitationDeadlineMissed = () => {
         let count = 0
         const submission = state?.timeline?.moderatorSubmissionDeadline
         for (const key in submission) {
@@ -421,7 +421,7 @@ function getElectionStatusMethods(dispatch, state) {
             return 'Invite Pending...'
         }
         const candidateCount = countCandidates()
-        if (countSubmissionDeadlineMissed() === candidateCount) {
+        if (countModeratorInvitationDeadlineMissed() === candidateCount) {
             return `All ${candidateCount} Candidates Missed Deadline`
         }
         if (getSubmissionsStatus() !== 'default') {
@@ -513,7 +513,7 @@ function getElectionStatusMethods(dispatch, state) {
         } else if (getCandidatesStatus().includes('Candidates Missed Deadline')) {
             // candidate string is "All X Candidates Missed Deadline"
             isUrgent = true
-        } else if (countSubmissionDeadlineMissed() > 10) {
+        } else if (countModeratorInvitationDeadlineMissed() > 10) {
             isUrgent = true
         }
         // todo handle days remaining for Script Pending?
@@ -537,10 +537,10 @@ function getElectionStatusMethods(dispatch, state) {
         getInvitationStatus,
         checkVideoSubmitted,
         checkSubmissionBeforeDeadline,
-        countSubmissionAccepted,
-        countSubmissionDeclined,
-        countSubmissionReminderSent,
-        countSubmissionDeadlineMissed,
+        countModeratorInvitationAccepted,
+        countModeratorInvitationDeclined,
+        countModeratorInvitationReminderSent,
+        countModeratorInvitationDeadlineMissed,
         countCandidatesSubmissionsAccepted,
         countCandidatesSubmissionsDeclined,
         countCandidatesSubmissionsReminderSent,

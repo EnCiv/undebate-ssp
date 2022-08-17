@@ -365,8 +365,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { countSubmissionAccepted } = getElectionStatusMethods(null, state)
-            expect(countSubmissionAccepted()).toBe(2)
+            const { countModeratorInvitationAccepted } = getElectionStatusMethods(null, state)
+            expect(countModeratorInvitationAccepted()).toBe(2)
         })
         it('should be 0 accepted', () => {
             const state = {
@@ -385,8 +385,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { countSubmissionAccepted } = getElectionStatusMethods(null, state)
-            expect(countSubmissionAccepted()).toBe(0)
+            const { countModeratorInvitationAccepted } = getElectionStatusMethods(null, state)
+            expect(countModeratorInvitationAccepted()).toBe(0)
         })
     })
 
@@ -408,8 +408,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { countSubmissionDeclined } = getElectionStatusMethods(null, state)
-            expect(countSubmissionDeclined()).toBe(2)
+            const { countModeratorInvitationDeclined } = getElectionStatusMethods(null, state)
+            expect(countModeratorInvitationDeclined()).toBe(2)
         })
         it('should be 0 declined', () => {
             const state = {
@@ -428,8 +428,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { countSubmissionDeclined } = getElectionStatusMethods(null, state)
-            expect(countSubmissionDeclined()).toBe(0)
+            const { countModeratorInvitationDeclined } = getElectionStatusMethods(null, state)
+            expect(countModeratorInvitationDeclined()).toBe(0)
         })
     })
 
@@ -449,8 +449,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { countSubmissionReminderSent } = getElectionStatusMethods(null, state)
-            expect(countSubmissionReminderSent()).toBe(2)
+            const { countModeratorInvitationReminderSent } = getElectionStatusMethods(null, state)
+            expect(countModeratorInvitationReminderSent()).toBe(2)
         })
     })
 
@@ -466,8 +466,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { countSubmissionDeadlineMissed } = getElectionStatusMethods(null, state)
-            expect(countSubmissionDeadlineMissed()).toBe(1)
+            const { countModeratorInvitationDeadlineMissed } = getElectionStatusMethods(null, state)
+            expect(countModeratorInvitationDeadlineMissed()).toBe(1)
         })
     })
 
