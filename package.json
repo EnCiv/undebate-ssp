@@ -126,7 +126,6 @@
         "react-textarea-autosize": "^8.3.3",
         "react-use": "^17.3.2",
         "sib-api-v3-sdk": "^8.3.0",
-        "storybook-addon-react-router-v6": "^0.1.13",
         "use-methods": "github:EnCiv/use-methods",
         "util": "^0.12.4"
     },
