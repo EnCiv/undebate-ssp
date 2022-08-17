@@ -2,12 +2,12 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 
-import React, { useState } from 'react'
+import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import ElectionCategory from './election-category'
 import { SvgRightArrow } from './lib/svg'
-import { getRecorderStatus } from './moderator-recorder'
+import { getModeratorRecorderStatus } from './moderator-recorder'
 
 export default function NavigationPanel({ className, style, electionOM, onDone, component }) {
     const classes = useStyles()
@@ -106,15 +106,15 @@ export default function NavigationPanel({ className, style, electionOM, onDone, 
                 <RenderBar
                     key='Recorder'
                     name='Recorder'
-                    valid={getRecorderStatus(electionObj) === 'completed'}
+                    valid={getModeratorRecorderStatus(electionObj) === 'completed'}
                     statusObjs={
-                        getRecorderStatus(electionObj) === 'completed'
+                        getModeratorRecorderStatus(electionObj) === 'completed'
                             ? 'completed'
-                            : getRecorderStatus(electionObj) === 'waiting'
+                            : getModeratorRecorderStatus(electionObj) === 'waiting'
                             ? {}
-                            : getRecorderStatus(electionObj) === 'sent'
+                            : getModeratorRecorderStatus(electionObj) === 'sent'
                             ? { reminderSent: true }
-                            : getRecorderStatus(electionObj)
+                            : getModeratorRecorderStatus(electionObj)
                     }
                 />
             </div>
@@ -138,15 +138,15 @@ export default function NavigationPanel({ className, style, electionOM, onDone, 
                 <RenderBar
                     key='Submissions'
                     name='Submissions'
-                    valid={electionMethods.getSubmissionsStatus() !== 'default'}
+                    valid={electionMethods.getCandidatesSubmissionsStatus() !== 'default'}
                     statusObjs={
-                        electionMethods.getSubmissionsStatus() === 'default'
+                        electionMethods.getCandidatesSubmissionsStatus() === 'default'
                             ? {}
                             : [
-                                  { accepted: electionMethods.getSubmissionsStatus().accepted },
-                                  { declined: electionMethods.getSubmissionsStatus().declined },
-                                  { reminderSent: electionMethods.getSubmissionsStatus().reminderSent },
-                                  { deadlineMissed: electionMethods.getSubmissionsStatus().deadlineMissed },
+                                  { accepted: electionMethods.getCandidatesSubmissionsStatus().accepted },
+                                  { declined: electionMethods.getCandidatesSubmissionsStatus().declined },
+                                  { reminderSent: electionMethods.getCandidatesSubmissionsStatus().reminderSent },
+                                  { deadlineMissed: electionMethods.getCandidatesSubmissionsStatus().deadlineMissed },
                               ]
                     }
                 />
@@ -154,7 +154,7 @@ export default function NavigationPanel({ className, style, electionOM, onDone, 
             {electionObj?.electionDate && electionObj?.undebateDate && (
                 <div
                     className={cx(
-                        classes.underbateSection,
+                        classes.undebateSection,
                         electionMethods.getUndebateStatus() === 'archived' && classes.archived
                     )}
                     onClick={e => {
@@ -213,7 +213,7 @@ const useStyles = createUseStyles(theme => ({
     bottom: {
         padding: '1.5625rem',
     },
-    underbateSection: {
+    undebateSection: {
         margin: '0 1.5625rem',
         background: theme.colorPrimary,
         borderRadius: theme.defaultBorderRadius,

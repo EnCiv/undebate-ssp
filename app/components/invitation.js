@@ -30,7 +30,8 @@ export function Invitation(props) {
     }) // null->[false||true] to prevent a loop of the initial values above that will get rendered first, and then the electionObj data which may get updated right after the initial render
     // a reducer becasue if useState  setValidInputs({...validInputs,email}) would overwrite the value of name with what might not be the current value if setValidInputs({...validInputs,name}) were both called in event handlers before the next rerender that updates ...validInputs
     // not using the usual action {type: "SET_EMAIL", value: true} format because it's too long and wordy for this simple case of updating values of an object
-    const disabled = electionObj?.doneLocked?.[panelName]?.done || electionMethods.getSubmissionStatus() === 'submitted'
+    const disabled =
+        electionObj?.doneLocked?.[panelName]?.done || electionMethods.getModeratorSubmissionStatus() === 'submitted'
     const inputsInvalid = Object.values(validInputs).every(i => i)
     // side effects to do after the component rerenders from a state change
     const [sideEffects] = useState([]) // never set sideEffects
@@ -84,7 +85,7 @@ export function Invitation(props) {
                     electionOM={electionOM}
                     panelName={panelName}
                     isValid={inputsInvalid}
-                    isLocked={electionMethods.getSubmissionStatus() === 'submitted'}
+                    isLocked={electionMethods.getModeratorSubmissionStatus() === 'submitted'}
                     onDone={({ valid, value }) => valid && onDone({ valid: inputsInvalid })}
                 />
                 <SvgSpeaker className={classes.speaker} />

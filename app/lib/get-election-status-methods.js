@@ -108,21 +108,21 @@ export const daysBetweenDates = (date1, date2) => {
         return undefined
     }
     const diffInTime = date2.getTime() - date1.getTime()
-    return Math.floor(diffInTime / (1000 * 3600 * 24))
+    return (diffInTime / (1000 * 3600 * 24)).toFixed()
 }
 
 function getElectionStatusMethods(dispatch, state) {
-    const recentInvitationStatus = () => getLatestIota(state?.moderator?.invitations)
+    const recentModeratorInvitationStatus = () => getLatestIota(state?.moderator?.invitations)
     const checkTimelineCompleted = () => {
-        return (
-            /* REMINDERS not implemented yet
-            checkDateCompleted(state?.timeline?.moderatorDeadlineReminderEmails) &&
-            checkDateCompleted(state?.timeline?.candidateDeadlineReminderEmails) &&
+        /* REMINDERS not implemented yet
+        checkDateCompleted(state?.timeline?.moderatorDeadlineReminderEmails) &&
+        checkDateCompleted(state?.timeline?.candidateDeadlineReminderEmails) &&
         */
+        return (
             checkDateCompleted(state?.timeline?.moderatorSubmissionDeadline) &&
             checkDateCompleted(state?.timeline?.candidateSubmissionDeadline) &&
-            state.undebateDate &&
-            state.electionDate
+            !!state.undebateDate &&
+            !!state.electionDate
         )
     }
     const getElectionStatus = () => {
@@ -154,7 +154,7 @@ function getElectionStatusMethods(dispatch, state) {
         return daysBetweenDates(new Date(), new Date(state?.electionDate)).toString()
     }
 
-    const checkVideoSubmitted = () => {
+    const checkModeratorVideoSubmitted = () => {
         return !!Object.keys(state?.moderator?.submissions || {}).length
     }
 
@@ -164,7 +164,7 @@ function getElectionStatusMethods(dispatch, state) {
         return ObjectID(_id).getDate().toISOString()
     }
 
-    const checkSubmissionBeforeDeadline = () => {
+    const checkModeratorSubmissionBeforeDeadline = () => {
         const submissionDate = getDateOfLatestIota(state?.moderator?.submissions)
         if (!submissionDate) return false
         const deadline = getLatestObjByDate(state?.timeline?.moderatorSubmissionDeadline)?.date
@@ -172,19 +172,19 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     // Start Moderator Count Methods
-    const countSubmissionAccepted = () =>
+    const countModeratorInvitationAccepted = () =>
         Object.values(state?.moderator?.invitations || {}).reduce(
             (count, invitation) => (invitation.status === 'Accepted' ? count + 1 : count),
             0
         )
 
-    const countSubmissionDeclined = () =>
+    const countModeratorInvitationDeclined = () =>
         Object.values(state?.moderator?.invitations || {}).reduce(
             (count, invitation) => (invitation.status === 'Declined' ? count + 1 : count),
             0
         )
 
-    const countSubmissionReminderSet = () => {
+    const countModeratorInvitationReminderSent = () => {
         let count = 0
         const reminder = state?.timeline?.moderatorDeadlineReminderEmails
         for (const key in reminder) {
@@ -195,7 +195,7 @@ function getElectionStatusMethods(dispatch, state) {
         return count
     }
 
-    const countSubmissionDeadlineMissed = () => {
+    const countModeratorInvitationDeadlineMissed = () => {
         let count = 0
         const submission = state?.timeline?.moderatorSubmissionDeadline
         for (const key in submission) {
@@ -251,7 +251,7 @@ function getElectionStatusMethods(dispatch, state) {
     }
     // End Candidates Count Methods
 
-    const checkReminderSent = () =>
+    const checkModeratorReminderSent = () =>
         Object.values(state?.timeline?.moderatorDeadlineReminderEmails || {}).some(r => r.sent)
 
     const areQuestionsLocked = () => {
@@ -281,25 +281,25 @@ function getElectionStatusMethods(dispatch, state) {
             return 'completed'
         return 'default'
     }
-    const getRecorderStatus = () => {
+    const getModeratorRecorderStatus = () => {
         if (isModeratorReadyForCreateRecorder()) {
             if (Object.keys(state?.moderator?.recorders || {}).length) return 'completed'
             else return 'ready'
         } else return 'default'
     }
-    const getInvitationStatus = () => {
+    const getModeratorInvitationStatus = () => {
         if (getScriptStatus() !== 'completed') return 'default'
-        if (recentInvitationStatus()?.status === 'Accepted') return 'accepted'
-        if (recentInvitationStatus()?.status === 'Declined') return 'declined'
-        if (recentInvitationStatus()?.sentDate) return 'sent'
+        if (recentModeratorInvitationStatus()?.status === 'Accepted') return 'accepted'
+        if (recentModeratorInvitationStatus()?.status === 'Declined') return 'declined'
+        if (recentModeratorInvitationStatus()?.sentDate) return 'sent'
         return countDayLeft() || 'default'
     }
-    const getSubmissionStatus = () => {
-        if (checkVideoSubmitted()) return 'submitted'
+    const getModeratorSubmissionStatus = () => {
+        if (checkModeratorVideoSubmitted()) return 'submitted'
         if (!state?.timeline?.moderatorSubmissionDeadline) return 'default'
         if (getLatestObjByDate(state.timeline.moderatorSubmissionDeadline)?.date < new Date().toISOString())
             return 'missed'
-        if (checkReminderSent()) return 'sent'
+        if (checkModeratorReminderSent()) return 'sent'
         return 'default'
     }
     const countCandidates = () => {
@@ -310,7 +310,7 @@ function getElectionStatusMethods(dispatch, state) {
     }
     const getElectionTableStatus = () => {
         if (state?.candidates && Object.keys(state?.candidates)?.length >= 1) return 'filled'
-        if (recentInvitationStatus()?.sentDate) return countDayLeft() || 'default'
+        if (recentModeratorInvitationStatus()?.sentDate) return countDayLeft() || 'default'
         return 'default'
     }
     const areCandidatesReadyForInvites = () =>
@@ -324,8 +324,8 @@ function getElectionStatusMethods(dispatch, state) {
                 Object.keys(candidate.recorders).length > 0
             )
         })
-    const getSubmissionsStatus = () => {
-        if (recentInvitationStatus()?.sentDate)
+    const getCandidatesSubmissionsStatus = () => {
+        if (recentModeratorInvitationStatus()?.sentDate)
             return {
                 accepted: countCandidatesSubmissionsAccepted(),
                 declined: countCandidatesSubmissionsDeclined(),
@@ -372,8 +372,8 @@ function getElectionStatusMethods(dispatch, state) {
             return '-'
         }
         const scriptStatus = getScriptStatus()
-        const inviteStatus = getInvitationStatus()
-        const submissionStatus = getSubmissionStatus()
+        const inviteStatus = getModeratorInvitationStatus()
+        const submissionStatus = getModeratorSubmissionStatus()
         if (scriptStatus !== 'completed') {
             return 'Script Pending...'
         } else if (scriptStatus === 'completed' && inviteStatus === 'sent') {
@@ -416,15 +416,15 @@ function getElectionStatusMethods(dispatch, state) {
             return 'Election Table Pending...'
         }
         // todo fix this - any candidate doesn't have invitations list?
-        if (areCandidatesReadyToInvite() && getSubmissionsStatus() === 'default') {
+        if (areCandidatesReadyToInvite() && getCandidatesSubmissionsStatus() === 'default') {
             // todo moderator might not have submitted yet - separate status
             return 'Invite Pending...'
         }
         const candidateCount = countCandidates()
-        if (countSubmissionDeadlineMissed() === candidateCount) {
+        if (countModeratorInvitationDeadlineMissed() === candidateCount) {
             return `All ${candidateCount} Candidates Missed Deadline`
         }
-        if (getSubmissionsStatus() !== 'default') {
+        if (getCandidatesSubmissionsStatus() !== 'default') {
             const totalCandidatesCount = Object.values(state?.candidates).length
             let completeCandidatesCount = 0
             Object.values(state?.candidates)?.forEach(candidate => {
@@ -513,7 +513,7 @@ function getElectionStatusMethods(dispatch, state) {
         } else if (getCandidatesStatus().includes('Candidates Missed Deadline')) {
             // candidate string is "All X Candidates Missed Deadline"
             isUrgent = true
-        } else if (countSubmissionDeadlineMissed() > 10) {
+        } else if (countModeratorInvitationDeadlineMissed() > 10) {
             isUrgent = true
         }
         // todo handle days remaining for Script Pending?
@@ -530,25 +530,25 @@ function getElectionStatusMethods(dispatch, state) {
         countDayLeft,
         checkObjCompleted,
         getUndebateStatus,
-        recentInvitationStatus,
+        recentModeratorInvitationStatus,
         getQuestionsStatus,
         getScriptStatus,
-        getRecorderStatus,
-        getInvitationStatus,
-        checkVideoSubmitted,
-        checkSubmissionBeforeDeadline,
-        countSubmissionAccepted,
-        countSubmissionDeclined,
-        countSubmissionReminderSet,
-        countSubmissionDeadlineMissed,
+        getModeratorRecorderStatus,
+        getModeratorInvitationStatus,
+        checkModeratorVideoSubmitted,
+        checkModeratorSubmissionBeforeDeadline,
+        countModeratorInvitationAccepted,
+        countModeratorInvitationDeclined,
+        countModeratorInvitationReminderSent,
+        countModeratorInvitationDeadlineMissed,
         countCandidatesSubmissionsAccepted,
         countCandidatesSubmissionsDeclined,
         countCandidatesSubmissionsReminderSent,
         countCandidatesSubmissionsDeadlineMissed,
-        getSubmissionStatus,
+        getModeratorSubmissionStatus,
         getElectionTableStatus,
-        getSubmissionsStatus,
-        checkReminderSent,
+        getCandidatesSubmissionsStatus,
+        checkModeratorReminderSent,
         areQuestionsLocked,
         isModeratorReadyForCreateRecorder,
         isModeratorReadyToInvite,
