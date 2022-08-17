@@ -22,7 +22,8 @@ export default function Questions({ className, style, electionOM, onDone }) {
     const [isValid, setIsValid] = useState(false)
 
     const { questions = {} } = electionObj
-    const disabled = electionObj?.doneLocked?.[panelName]?.done || electionMethods.getSubmissionStatus() === 'submitted'
+    const disabled =
+        electionObj?.doneLocked?.[panelName]?.done || electionMethods.getModeratorSubmissionStatus() === 'submitted'
 
     const [validInputs, setValidInputs] = useReducer((state, action) => ({ ...state, ...action }), {
         0: { text: null, time: null },
@@ -90,7 +91,7 @@ export default function Questions({ className, style, electionOM, onDone }) {
                     electionOM={electionOM}
                     panelName={panelName}
                     isValid={validSubmit}
-                    isLocked={electionMethods.getSubmissionStatus() === 'submitted'}
+                    isLocked={electionMethods.getModeratorSubmissionStatus() === 'submitted'}
                     onDone={({ valid, value }) => valid && onDone({ valid: validSubmit })}
                 />
             </div>

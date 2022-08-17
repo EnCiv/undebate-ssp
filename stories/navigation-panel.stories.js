@@ -340,16 +340,16 @@ ElectionTableIsFilled.args = {
     },
 }
 
-export const UnderbateIsLive = Template.bind({})
-UnderbateIsLive.args = {
+export const UndebateIsLive = Template.bind({})
+UndebateIsLive.args = {
     defaultElectionObj: {
         ...defaultElectionObject,
         undebateDate: new Date().toISOString,
     },
 }
 
-export const UnderbateArchieved = Template.bind({})
-UnderbateArchieved.args = {
+export const UndebateArchived = Template.bind({})
+UndebateArchived.args = {
     defaultElectionObj: {
         ...defaultElectionObject,
         electionDate: '2020-11-07T23:59:59.999Z',

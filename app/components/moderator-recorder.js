@@ -3,11 +3,8 @@
 import React, { useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import SvgDeadlineMissed from '../svgr/deadline-missed'
 import SvgCheck from '../svgr/check'
-import SvgReminder from '../svgr/reminder-sent'
 import SvgSolidClock from '../svgr/clock-solid'
-import SvgFeelingBlue from '../svgr/feeling-blue'
 import { getLatestIota } from '../lib/get-election-status-methods'
 import ObjectID from 'isomorphic-mongo-objectid'
 import Submit from './submit'
@@ -15,7 +12,7 @@ import scheme from '../lib/scheme'
 import SvgExternalLink from '../svgr/external-link'
 import SvgRedo from '../svgr/redo-arrow'
 
-export function getRecorderStatus(electionObj) {
+export function getModeratorRecorderStatus(electionObj) {
     const moderator = electionObj?.moderator
     const recorderDate = electionObj?.doneLocked?.Recorder?.done
     const invitationDate = getLatestIota(moderator?.invitations)?.sentDate
@@ -58,7 +55,7 @@ export default function ModeratorRecorder(props) {
 
     const deadline = electionObj?.timeline?.moderatorSubmissionDeadline?.[0]?.date
 
-    const recorderStatus = getRecorderStatus(electionObj)
+    const recorderStatus = getModeratorRecorderStatus(electionObj)
 
     const submissionDaysLeft = deadline ? Math.round((new Date(deadline) - new Date()) / 86400000) : 'unknown'
     const missed = deadline && submissionDaysLeft < 0

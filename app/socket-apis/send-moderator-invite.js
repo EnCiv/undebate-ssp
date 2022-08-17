@@ -6,7 +6,7 @@ import { updateElectionInfo } from './subscribe-election-info'
 import { getLatestIota, getLatestObjByDate } from '../lib/get-election-status-methods'
 
 var templateId
-import { getRecorderStatus } from '../components/moderator-recorder'
+import { getModeratorRecorderStatus } from '../components/moderator-recorder'
 
 export default async function sendModeratorInvite(id, cb) {
     const userId = this.synuser && this.synuser.id
@@ -29,7 +29,7 @@ export default async function sendModeratorInvite(id, cb) {
             return
         }
         const electionObj = iota.webComponent
-        const recorderStatus = getRecorderStatus(electionObj)
+        const recorderStatus = getModeratorRecorderStatus(electionObj)
         if (!['created', 'sent'].some(s => s === recorderStatus)) {
             logger.error('sendModeratorInvite moderator is not ready to invite', recorderStatus)
             cb && cb()

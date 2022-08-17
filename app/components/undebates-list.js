@@ -624,7 +624,7 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
     const renderCandidatesCell = value => {
         const [obj, electionMethods] = electionOMs[value.row.index]
         let daysRemaining = electionMethods.getCandidateStatusDaysRemaining()
-        const candidateStatuses = electionMethods.getSubmissionsStatus()
+        const candidateStatuses = electionMethods.getCandidatesSubmissionsStatus()
         return (
             <CandidateCell
                 candidatesStatusText={value.value}
