@@ -7,7 +7,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import ElectionCategory from './election-category'
 import { SvgRightArrow } from './lib/svg'
-import { getRecorderStatus } from './moderator-recorder'
+import { getModeratorRecorderStatus } from './moderator-recorder'
 
 export default function NavigationPanel({ className, style, electionOM, onDone, component }) {
     const classes = useStyles()
@@ -106,15 +106,15 @@ export default function NavigationPanel({ className, style, electionOM, onDone, 
                 <RenderBar
                     key='Recorder'
                     name='Recorder'
-                    valid={getRecorderStatus(electionObj) === 'completed'}
+                    valid={getModeratorRecorderStatus(electionObj) === 'completed'}
                     statusObjs={
-                        getRecorderStatus(electionObj) === 'completed'
+                        getModeratorRecorderStatus(electionObj) === 'completed'
                             ? 'completed'
-                            : getRecorderStatus(electionObj) === 'waiting'
+                            : getModeratorRecorderStatus(electionObj) === 'waiting'
                             ? {}
-                            : getRecorderStatus(electionObj) === 'sent'
+                            : getModeratorRecorderStatus(electionObj) === 'sent'
                             ? { reminderSent: true }
-                            : getRecorderStatus(electionObj)
+                            : getModeratorRecorderStatus(electionObj)
                     }
                 />
             </div>

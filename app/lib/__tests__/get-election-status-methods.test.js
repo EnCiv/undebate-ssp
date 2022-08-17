@@ -271,7 +271,7 @@ describe('election status methods', () => {
             expect(countDayLeft()).toBe('-3')
         })
     })
-    describe('recent invitation status', () => {
+    describe('recent moderator invitation status', () => {
         it('should get the latest invitation which is declined', () => {
             const expected = {
                 _id: '62e5ffa31a471334904bae62',
@@ -290,12 +290,12 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { recentInvitationStatus } = getElectionStatusMethods(null, state)
-            expect(recentInvitationStatus()).toStrictEqual(expected)
+            const { recentModeratorInvitationStatus } = getElectionStatusMethods(null, state)
+            expect(recentModeratorInvitationStatus()).toStrictEqual(expected)
         })
     })
 
-    describe('check video submitted', () => {
+    describe('check moderator video submitted', () => {
         it('should return true', () => {
             const state = {
                 moderator: {
@@ -304,15 +304,15 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { checkVideoSubmitted } = getElectionStatusMethods(null, state)
-            expect(checkVideoSubmitted())
+            const { checkModeratorVideoSubmitted } = getElectionStatusMethods(null, state)
+            expect(checkModeratorVideoSubmitted())
         })
         it('should return false', () => {
             const state = {
                 moderator: {},
             }
-            const { checkVideoSubmitted } = getElectionStatusMethods(null, state)
-            expect(checkVideoSubmitted()).toBe(false)
+            const { checkModeratorVideoSubmitted } = getElectionStatusMethods(null, state)
+            expect(checkModeratorVideoSubmitted()).toBe(false)
         })
     })
 
@@ -347,7 +347,7 @@ describe('election status methods', () => {
         })
     })
 
-    describe('count submission accepted', () => {
+    describe('count moderator invitation accepted', () => {
         it('should be 2 accepted', () => {
             const state = {
                 moderator: {
@@ -390,7 +390,7 @@ describe('election status methods', () => {
         })
     })
 
-    describe('count submission declined', () => {
+    describe('count moderator invitation declined', () => {
         it('should be 2 declined', () => {
             const state = {
                 moderator: {
@@ -433,7 +433,7 @@ describe('election status methods', () => {
         })
     })
 
-    describe('count submission reminder set', () => {
+    describe('count moderator invitation reminder set', () => {
         it('should be 2 sent reminders', () => {
             const state = {
                 timeline: {
@@ -454,7 +454,7 @@ describe('election status methods', () => {
         })
     })
 
-    describe('count submission deadline set', () => {
+    describe('count moderator invitation deadline set', () => {
         it('should be missed 1 deadline', () => {
             const state = {
                 timeline: {
@@ -858,7 +858,7 @@ describe('election status methods', () => {
         })
     })
 
-    describe('get invitation status', () => {
+    describe('get moderator invitation status', () => {
         it('returns default when script is not complete', () => {
             const state = {
                 electionName: 'name',
@@ -879,8 +879,8 @@ describe('election status methods', () => {
                 },
                 timeline: {},
             }
-            const { getInvitationStatus } = getElectionStatusMethods(null, state)
-            expect(getInvitationStatus()).toBe('default')
+            const { getModeratorInvitationStatus } = getElectionStatusMethods(null, state)
+            expect(getModeratorInvitationStatus()).toBe('default')
         })
         it('returns accepted', () => {
             const state = {
@@ -948,8 +948,8 @@ describe('election status methods', () => {
                     Script: { done: true },
                 },
             }
-            const { getInvitationStatus } = getElectionStatusMethods(null, state)
-            expect(getInvitationStatus()).toBe('accepted')
+            const { getModeratorInvitationStatus } = getElectionStatusMethods(null, state)
+            expect(getModeratorInvitationStatus()).toBe('accepted')
         })
         it('returns declined', () => {
             const state = {
@@ -1017,8 +1017,8 @@ describe('election status methods', () => {
                     Script: { done: true },
                 },
             }
-            const { getInvitationStatus } = getElectionStatusMethods(null, state)
-            expect(getInvitationStatus()).toBe('declined')
+            const { getModeratorInvitationStatus } = getElectionStatusMethods(null, state)
+            expect(getModeratorInvitationStatus()).toBe('declined')
         })
         it('returns sent when no response date', () => {
             const state = {
@@ -1084,8 +1084,8 @@ describe('election status methods', () => {
                     Script: { done: true },
                 },
             }
-            const { getInvitationStatus } = getElectionStatusMethods(null, state)
-            expect(getInvitationStatus()).toBe('sent')
+            const { getModeratorInvitationStatus } = getElectionStatusMethods(null, state)
+            expect(getModeratorInvitationStatus()).toBe('sent')
         })
 
         it('returns days left when until script is only complete', () => {
@@ -1143,12 +1143,12 @@ describe('election status methods', () => {
                     Questions: { done: true },
                 },
             }
-            const { getInvitationStatus } = getElectionStatusMethods(null, state)
-            expect(getInvitationStatus()).toBe('1')
+            const { getModeratorInvitationStatus } = getElectionStatusMethods(null, state)
+            expect(getModeratorInvitationStatus()).toBe('1')
         })
     })
 
-    describe('check reminder sent', () => {
+    describe('check moderator reminder sent', () => {
         it('sent the reminder', () => {
             const state = {
                 timeline: {
@@ -1160,8 +1160,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { checkReminderSent } = getElectionStatusMethods(null, state)
-            expect(checkReminderSent())
+            const { checkModeratorReminderSent } = getElectionStatusMethods(null, state)
+            expect(checkModeratorReminderSent())
         })
         it("hasn't sent the reminder yet", () => {
             const state = {
@@ -1174,12 +1174,12 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { checkReminderSent } = getElectionStatusMethods(null, state)
-            expect(checkReminderSent()).toBe(false)
+            const { checkModeratorReminderSent } = getElectionStatusMethods(null, state)
+            expect(checkModeratorReminderSent()).toBe(false)
         })
     })
 
-    describe('get submission status', () => {
+    describe('get moderator submission status', () => {
         it('is empty', () => {
             const state = {}
             const { getModeratorSubmissionStatus } = getElectionStatusMethods(null, state)
