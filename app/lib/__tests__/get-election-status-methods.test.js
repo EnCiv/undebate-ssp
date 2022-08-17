@@ -1182,15 +1182,15 @@ describe('election status methods', () => {
     describe('get submission status', () => {
         it('is empty', () => {
             const state = {}
-            const { getSubmissionStatus } = getElectionStatusMethods(null, state)
-            expect(getSubmissionStatus()).toBe('default')
+            const { getModeratorSubmissionStatus } = getElectionStatusMethods(null, state)
+            expect(getModeratorSubmissionStatus()).toBe('default')
         })
         it('has no deadling', () => {
             const state = {
                 timeline: {},
             }
-            const { getSubmissionStatus } = getElectionStatusMethods(null, state)
-            expect(getSubmissionStatus()).toBe('default')
+            const { getModeratorSubmissionStatus } = getElectionStatusMethods(null, state)
+            expect(getModeratorSubmissionStatus()).toBe('default')
         })
         it('has an empty deadline', () => {
             const state = {
@@ -1198,8 +1198,8 @@ describe('election status methods', () => {
                     moderatorSubmissionDeadline: {},
                 },
             }
-            const { getSubmissionStatus } = getElectionStatusMethods(null, state)
-            expect(getSubmissionStatus()).toBe('default')
+            const { getModeratorSubmissionStatus } = getElectionStatusMethods(null, state)
+            expect(getModeratorSubmissionStatus()).toBe('default')
         })
         it('missed a deadline', () => {
             const state = {
@@ -1212,8 +1212,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { getSubmissionStatus } = getElectionStatusMethods(null, state)
-            expect(getSubmissionStatus()).toBe('missed')
+            const { getModeratorSubmissionStatus } = getElectionStatusMethods(null, state)
+            expect(getModeratorSubmissionStatus()).toBe('missed')
         })
         it('returns submitted', () => {
             const state = {
@@ -1231,8 +1231,8 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { getSubmissionStatus } = getElectionStatusMethods(null, state)
-            expect(getSubmissionStatus()).toBe('submitted')
+            const { getModeratorSubmissionStatus } = getElectionStatusMethods(null, state)
+            expect(getModeratorSubmissionStatus()).toBe('submitted')
         })
         it('returns reminder is sent', () => {
             const state = {
@@ -1251,15 +1251,15 @@ describe('election status methods', () => {
                     },
                 },
             }
-            const { getSubmissionStatus } = getElectionStatusMethods(null, state)
-            expect(getSubmissionStatus()).toBe('sent')
+            const { getModeratorSubmissionStatus } = getElectionStatusMethods(null, state)
+            expect(getModeratorSubmissionStatus()).toBe('sent')
         })
         it('returns default', () => {
             const state = {
                 timeline: {},
             }
-            const { getSubmissionStatus } = getElectionStatusMethods(null, state)
-            expect(getSubmissionStatus()).toBe('default')
+            const { getModeratorSubmissionStatus } = getElectionStatusMethods(null, state)
+            expect(getModeratorSubmissionStatus()).toBe('default')
         })
     })
 
@@ -1276,7 +1276,7 @@ describe('election status methods', () => {
         })
         it('gets days left', () => {
             const state = {
-                electionDate: new Date(Date.now() + 3600 * 1000 * 24 + 100),
+                electionDate: new Date(Date.now() + 3600 * 1000 * 24),
                 candidates: {},
                 moderator: {
                     invitations: {

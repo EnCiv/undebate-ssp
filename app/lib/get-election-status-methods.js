@@ -108,7 +108,7 @@ export const daysBetweenDates = (date1, date2) => {
         return undefined
     }
     const diffInTime = date2.getTime() - date1.getTime()
-    return Math.floor(diffInTime / (1000 * 3600 * 24))
+    return (diffInTime / (1000 * 3600 * 24)).toFixed()
 }
 
 function getElectionStatusMethods(dispatch, state) {
@@ -294,7 +294,7 @@ function getElectionStatusMethods(dispatch, state) {
         if (recentInvitationStatus()?.sentDate) return 'sent'
         return countDayLeft() || 'default'
     }
-    const getSubmissionStatus = () => {
+    const getModeratorSubmissionStatus = () => {
         if (checkVideoSubmitted()) return 'submitted'
         if (!state?.timeline?.moderatorSubmissionDeadline) return 'default'
         if (getLatestObjByDate(state.timeline.moderatorSubmissionDeadline)?.date < new Date().toISOString())
@@ -373,7 +373,7 @@ function getElectionStatusMethods(dispatch, state) {
         }
         const scriptStatus = getScriptStatus()
         const inviteStatus = getInvitationStatus()
-        const submissionStatus = getSubmissionStatus()
+        const submissionStatus = getModeratorSubmissionStatus()
         if (scriptStatus !== 'completed') {
             return 'Script Pending...'
         } else if (scriptStatus === 'completed' && inviteStatus === 'sent') {
@@ -545,7 +545,7 @@ function getElectionStatusMethods(dispatch, state) {
         countCandidatesSubmissionsDeclined,
         countCandidatesSubmissionsReminderSent,
         countCandidatesSubmissionsDeadlineMissed,
-        getSubmissionStatus,
+        getModeratorSubmissionStatus,
         getElectionTableStatus,
         getSubmissionsStatus,
         checkReminderSent,

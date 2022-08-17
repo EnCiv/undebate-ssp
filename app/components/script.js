@@ -41,7 +41,8 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
     const errorCount = Object.values(validInputs).reduce((count, valid) => (valid === false ? count + 1 : count), 0)
     const isValid = Object.values(validInputs).length > 0 && !Object.values(validInputs).some(v => !v)
     const classes = useStyles({ isValid })
-    const disabled = electionObj?.doneLocked?.[panelName]?.done || electionMethods.getSubmissionStatus() === 'submitted'
+    const disabled =
+        electionObj?.doneLocked?.[panelName]?.done || electionMethods.getModeratorSubmissionStatus() === 'submitted'
     const substitutions = {
         moderator: electionObj?.moderator?.name || '',
         question: questions[0]?.text || '',
@@ -66,7 +67,7 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
                             panelName={panelName}
                             isValid={isValid}
                             dependents={['Contact', 'Questions']}
-                            isLocked={electionMethods.getSubmissionStatus() === 'submitted'}
+                            isLocked={electionMethods.getModeratorSubmissionStatus() === 'submitted'}
                             onDone={({ valid, value }) => valid && onDone({ valid: isValid })}
                         />
                     </div>
