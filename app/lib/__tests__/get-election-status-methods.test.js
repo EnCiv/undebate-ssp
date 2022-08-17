@@ -1276,7 +1276,7 @@ describe('election status methods', () => {
         })
         it('gets days left', () => {
             const state = {
-                electionDate: new Date(Date.now() + 3600 * 1000 * 24),
+                electionDate: new Date(Date.now() + 3600 * 1000 * 24 + 100),
                 candidates: {},
                 moderator: {
                     invitations: {
