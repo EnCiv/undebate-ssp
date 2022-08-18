@@ -38,7 +38,8 @@ async function SibCreateTemplate(name, templateName, htmlContent) {
 
 async function SibGetTemplate(name, htmlContent) {
     const { templates, count } = await SibSMTPApi.getSmtpTemplates()
-    const template = templates.find(t => t.name === name)
+    // if new account with no templates yet, templates might be undefined
+    const template = templates?.find(t => t.name === name)
     if (!template) {
         return undefined
     } else {
