@@ -40,22 +40,30 @@ const iotas = [
             organizationLogo: 'https://www.bringfido.com/assets/images/bfi-logo-new.jpg',
             undebateDate: new Date().addDays(5).toISOString(),
             electionDate: new Date().addDays(5).toISOString(),
+            doneLocked: {
+                Election: { done: new Date().toISOString() },
+                Timeline: { done: new Date().toISOString() },
+                Questions: { done: new Date().toISOString() },
+                Contact: { done: new Date().toISOString() },
+                Script: { done: new Date().addDays(1).toISOString() },
+                Recorder: { done: new Date().addDays(2).toISOString() },
+            },
             moderator: {
                 name: 'bob',
                 email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
             },
             timeline: {
                 moderatorDeadlineReminderEmails: {
-                    0: { date: new Date().addDays(1).toISOString() },
-                },
-                moderatorSubmissionDeadline: {
                     0: { date: new Date().addDays(2).toISOString() },
                 },
-                candidateDeadlineReminderEmails: {
+                moderatorSubmissionDeadline: {
                     0: { date: new Date().addDays(3).toISOString() },
                 },
-                candidateSubmissionDeadline: {
+                candidateDeadlineReminderEmails: {
                     0: { date: new Date().addDays(4).toISOString() },
+                },
+                candidateSubmissionDeadline: {
+                    0: { date: new Date().addDays(5).toISOString() },
                 },
             },
             questions: {
