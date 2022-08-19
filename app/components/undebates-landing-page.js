@@ -90,7 +90,7 @@ const useStyles = createUseStyles(theme => ({
         fontSize: '1.5rem',
         fontWeight: '600',
         lineHeight: '110%',
-        color: theme.colorSecondary,
+        color: theme.colorSecondary, 
         margin: 0,
     },
     undebates: {

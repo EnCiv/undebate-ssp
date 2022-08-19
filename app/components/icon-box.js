@@ -24,8 +24,12 @@ function IconBox(props) {
                     <Icon className={classes.icon} />
                 </div>
                 <div className={classes.text}>
-                    <h2>{subject}</h2>
-                    <p>{description}</p>
+                    <div className={classes.headerBox}>
+                        <h2>{subject}</h2>
+                    </div>
+                    <div className={classes.textBox}>
+                        <p>{description}</p>
+                    </div>
                 </div>
             </div>
         </>
@@ -35,9 +39,10 @@ function IconBox(props) {
 const useStyles = createUseStyles({
     iconBox: {
         width: '100%',
+        height: '100%'
     },
     icon: {
-        height: 'auto',
+        height: '90%',
         width: '100%',
         display: 'block',
     },
@@ -46,7 +51,7 @@ const useStyles = createUseStyles({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: 'auto',
+        height: '35%',
         width: '100%',
         borderRadius: '1rem',
         padding: '1rem',
@@ -67,6 +72,7 @@ const useStyles = createUseStyles({
         paddingTop: '2rem',
         backgroundColor: 'rgba(116, 112, 255, 0.1)',
         width: '90%',
+        height: '65%',
         borderRadius: '1rem',
         position: 'relative',
         bottom: '2.5rem',
@@ -79,6 +85,13 @@ const useStyles = createUseStyles({
             color: '#808080',
         },
     },
+    headerBox:{
+        height: '30%'
+    },
+    textBox:{
+        paddingTop: '0.5rem',
+        height: '70%'
+    }
     /* Frame 875694 */
 })
 
