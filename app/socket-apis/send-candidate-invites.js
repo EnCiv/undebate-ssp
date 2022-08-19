@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/146
 import { SibGetTemplateId, SibSendTransacEmail } from '../lib/send-in-blue-transactional'
-import getElectionStatusMethods, { getLatestIota } from '../lib/get-election-status-methods'
+import getElectionStatusMethods, { getLatestIota, candidateFilters } from '../lib/get-election-status-methods'
 import { getElectionDocById } from './get-election-docs'
 import { Iota } from 'civil-server'
 import { updateElectionInfo } from './subscribe-election-info'
@@ -8,18 +8,6 @@ import { cloneDeep } from 'lodash'
 import scheme from '../lib/scheme'
 
 var templateId
-
-export const filters = {
-    ALL(candidate) {
-        return true
-    },
-    NOT_YET_SUBMITTED(candidate) {
-        return Object.keys(candidate?.submissions || {}).length === 0
-    },
-    NOT_YET_INVITED(candidate) {
-        return Object.keys(candidate?.invitations || {}).length === 0
-    },
-}
 
 export default async function sendCandidateInvites(id, filter, cb) {
     const userId = this.synuser && this.synuser.id
@@ -36,7 +24,7 @@ export default async function sendCandidateInvites(id, filter, cb) {
             return
         }
     }
-    if (!filters[filter]) {
+    if (!candidateFilters[filter]) {
         logger.error('sendCandidateInvite filter not found:', filter)
         cb && cb()
         return
@@ -65,7 +53,7 @@ export async function sendCandidateInvitesFromIdAndElectionObj(id, electionObj, 
     const docs = []
     const questions = cloneDeep(electionObj.questions)
     const messageIds = []
-    const filterOp = filters[filter]
+    const filterOp = candidateFilters[filter]
     if (!filterOp) {
         logger.error('sendCandidateInvitesFromIdAndElectionObj filter not found:', filter)
         return {}
@@ -103,10 +91,10 @@ export async function sendCandidateInvitesFromIdAndElectionObj(id, electionObj, 
         const messageProps = {
             params,
             to: [{ email: candidate.email, name: candidate.name }],
-            cc: [{ email: params.moderator.email, name: params.moderator.name }],
             templateId,
             tags: [`id:${id}`, 'role:candidate', `office:${candidate.office}`],
         }
+        if (params.email) messageProps.cc = [{ email: params.email, name: params.name }]
         const result = await SibSendTransacEmail(messageProps)
         if (!result || !result.messageId) logger.error('send candidate invite failed', id, candidate)
         else {

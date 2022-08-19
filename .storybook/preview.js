@@ -76,7 +76,7 @@ export const decorators = [
                     )
                     if (cb) setTimeout(cb, 1000)
                 },
-                sendCandidateInvitations(cb) {
+                sendCandidateInvitations(filter, cb) {
                     dispatch(
                         merge(
                             {},

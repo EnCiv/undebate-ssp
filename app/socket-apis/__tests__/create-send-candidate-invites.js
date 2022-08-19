@@ -36,7 +36,7 @@ const testDoc = {
     webComponent: {
         webComponent: 'ElectionDoc',
         name: 'admin name',
-        email: 'admin@email.com',
+        email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
         electionName: 'The Election',
         organizationName: 'The Organization',
         organizationLogo: 'https://www.bringfido.com/assets/images/bfi-logo-new.jpg',

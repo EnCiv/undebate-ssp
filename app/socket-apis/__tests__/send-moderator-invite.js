@@ -34,7 +34,7 @@ const iotas = [
         webComponent: {
             webComponent: 'ElectionDoc',
             name: 'admin name',
-            email: 'admin@email.com',
+            email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
             electionName: 'The Election',
             organizationName: 'The Organization',
             organizationLogo: 'https://www.bringfido.com/assets/images/bfi-logo-new.jpg',
@@ -227,6 +227,7 @@ maybe('Test the send moderator invite API', () => {
                     sentDate: ISODate,
                     templateId: expect.any(Number),
                     params: {
+                        email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
                         moderator: {
                             submissionDeadline: expect.any(String),
                         },
@@ -238,7 +239,7 @@ maybe('Test the send moderator invite API', () => {
                   "component": "ModeratorEmailSent",
                   "messageId": Any<String>,
                   "params": Object {
-                    "email": "admin@email.com",
+                    "email": "ddfridley@yahoo.com",
                     "moderator": Object {
                       "email": "ddfridley@yahoo.com",
                       "name": "bob",

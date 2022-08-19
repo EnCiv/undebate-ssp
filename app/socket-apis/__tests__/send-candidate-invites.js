@@ -39,7 +39,7 @@ const iotas = [
         webComponent: {
             webComponent: 'ElectionDoc',
             name: 'admin name',
-            email: 'admin@email.com',
+            email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
             electionName: 'The Election',
             organizationName: 'The Organization',
             organizationLogo: 'https://www.bringfido.com/assets/images/bfi-logo-new.jpg',
@@ -228,6 +228,11 @@ maybe('Test the send candidate invites API', () => {
                     sentDate: ISODate,
                     templateId: expect.any(Number),
                     params: {
+                        email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
+                        moderator: {
+                            email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
+                        },
+
                         candidate: {
                             submissionDeadline: expect.any(String),
                             recorder_url: `http://localhost:3011/country:us/organization:cfa/office:president-of-the-u-s/2021-03-21-recorder-${SARAHID}`,
@@ -241,7 +246,7 @@ maybe('Test the send candidate invites API', () => {
                   "cc": Array [
                     Object {
                       "email": "ddfridley@yahoo.com",
-                      "name": "bob",
+                      "name": "admin name",
                     },
                   ],
                   "component": "CandidateInviteSent",
@@ -255,7 +260,7 @@ maybe('Test the send candidate invites API', () => {
                       "submissionDeadline": Any<String>,
                       "uniqueId": "61e76bbefeaa4a25840d85d0",
                     },
-                    "email": "admin@email.com",
+                    "email": "ddfridley@yahoo.com",
                     "moderator": Object {
                       "email": "ddfridley@yahoo.com",
                       "name": "bob",

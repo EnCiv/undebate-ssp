@@ -2,8 +2,7 @@
 import { undebatesFromTemplateAndRows } from 'undebate'
 import sspViewerRecorder from '../lib/ssp-viewer-recorder'
 import { getElectionDocById } from './get-election-docs'
-import { getLatestIota } from '../lib/get-election-status-methods'
-import { filters } from './send-candidate-invites'
+import { getLatestIota, candidateFilters } from '../lib/get-election-status-methods'
 
 // todo eventually replace this video
 const introVideo =
@@ -49,7 +48,7 @@ export async function createCandidateRecordersFromIdAndElectionObj(id, filter, e
         logger.error('createCandidateRecordersFromIdAndElectionObj not ready for candidate recorder:', msgs)
         return {}
     }
-    const filterOp = filters[filter]
+    const filterOp = candidateFilters[filter]
     if (!filterOp) {
         logger.error('createCandidateRecordersFromIdAndElectionObj for election id', id, 'filter not found', filter)
         return {}

@@ -16,7 +16,7 @@ export default function createSendCandidateInvites(id, filter, cb) {
             return
         }
         const { rowObjs, messages } = result
-        sendCandidateInvites.call(this, id, 'ALL', sentMessages => {
+        sendCandidateInvites.call(this, id, filter, sentMessages => {
             if (!sentMessages) {
                 cb && cb()
                 return
