@@ -39,7 +39,7 @@ function IconBox(props) {
 const useStyles = createUseStyles({
     iconBox: {
         width: '100%',
-        height: '100%'
+        height: '70%'
     },
     icon: {
         height: '90%',
@@ -83,7 +83,8 @@ const useStyles = createUseStyles({
             fontSize: '1rem',
             lineHeight: '1.5rem',
             color: '#808080',
-        },
+        }
+
     },
     headerBox:{
         height: '30%'
