@@ -1,5 +1,5 @@
 // https://github.com/EnCiv/undebate-ssp/issue/23
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import NavigationPanel from './navigation-panel'
@@ -12,6 +12,7 @@ import ElectionTable from './candidate-table'
 import Submissions from './submissions'
 import Undebate from './undebate'
 import ModeratorRecorder from './moderator-recorder'
+import { useSearchParams } from 'react-router-dom'
 
 const components = {
     Election: ElectionComponent,
@@ -30,9 +31,14 @@ const keys = Object.keys(components)
 export default function ConfigureElection(props) {
     const { className, style, electionOM } = props
     const classes = useStyles(props)
-    const [component, setComponent] = useState('Election')
+    const [searchParams, setSearchParams] = useSearchParams()
+    const component = searchParams.get('tab') || keys[0]
     const Component = components[component] || ElectionComponent
     const next = keys[Math.min(keys.indexOf(component) + 1, keys.length - 1)]
+    useEffect(() => {
+        if (!searchParams.get('tab'))
+            setSearchParams((searchParams.set('tab', keys[0]), searchParams), { replace: true }) // this changes replaces history
+    }, [])
 
     return (
         <div className={cx(className, classes.wrapper)} style={style}>
@@ -41,8 +47,8 @@ export default function ConfigureElection(props) {
                     className={classes.nav}
                     electionOM={electionOM}
                     onDone={({ valid, value }) => {
-                        if (components[value]) setComponent(value)
-                        else console.error('ConfigureElection got', value, 'expected a valid component name')
+                        if (components[value]) setSearchParams((searchParams.set('tab', value), searchParams))
+                        else logger.error('ConfigureElection got', value, 'expected a valid component name')
                     }}
                     component={component}
                 />
@@ -51,7 +57,7 @@ export default function ConfigureElection(props) {
                         className={classes.inner}
                         electionOM={electionOM}
                         key={component}
-                        onDone={({ valid, value }) => setComponent(next)}
+                        onDone={({ valid, value }) => setSearchParams((searchParams.set('tab', next), searchParams))}
                     />
                 </div>
             </div>

@@ -2,12 +2,15 @@
 import iotas from '../iotas.json'
 import component from '../app/components/configure-election'
 import makeChapter from './make-chapter'
+import ReactRouterDecorator from './react-router-decorator'
+
 const mC = makeChapter(component)
 
 export default {
     title: 'Configure Election',
     component,
     argTypes: {},
+    decorators: [ReactRouterDecorator],
 }
 
 export const Default = mC({})
