@@ -255,11 +255,9 @@ const mergeOps = {
         if (child?.component?.component !== 'MergeParticipants') {
             return false
         }
-        const candidateName = child?.component?.participant?.name
-        if (!candidateName) return false
-        const candidate = Object.values(root?.webComponent?.candidates || {}).find(cand => cand.name === candidateName)
-        if (!candidate) return false
-        intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${candidate.uniqueId}.submissions`, child)
+        const unique_id = child?.bp_info?.unique_id || child?.component?.participant?.bp_info?.unique_id
+        if (!root?.webComponent?.candidates?.[unique_id]) return false
+        intoObjOfDocsAtObjPathMergeDoc(dst, `webComponent.candidates.${unique_id}.submissions`, child)
         return true
     },
     officesViewers(dst, root, child, iotas, usedIndexes) {

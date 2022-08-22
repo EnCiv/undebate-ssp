@@ -46,7 +46,8 @@ export default function subscribeElectionInfo(id, cb) {
                 ({ electionIota }) =>
                     !!(
                         electionIota?.webComponent?.moderator?.viewers?.[iota.parentId] ||
-                        electionIota.webComponent?.candidates?.[iota?.bp_info?.uniqueId]
+                        electionIota?.webComponent?.candidates?.[iota?.bp_info?.uniqueId] ||
+                        electionIota?.webComponent?.candidates?.[iota?.component?.participant?.bp_info?.unique_id]
                     )
             )
             if (!electionIotaSubscriber?.electionIota) {
