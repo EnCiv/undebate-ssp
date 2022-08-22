@@ -92,8 +92,27 @@ export default function ModeratorRecorder(props) {
             statusTitle = 'Need to complete previous panels'
             break
     }
-    const src = scheme() + process.env.HOSTNAME + viewer?.path
-    const icon = <div className={classes.icon}>{prevIcon}</div>
+    const src = viewer?.path ? scheme() + process.env.HOSTNAME + viewer?.path : ''
+
+    const CreateRecorderButton = () => (
+        <Submit
+            name={recorderStatus === 'recreate' ? 'Regenerate Recorder' : 'Generate Recorder'}
+            disabled={submitted || !(recorderStatus === 'ready' || recorderStatus === 'recreate')}
+            onDone={() => {
+                setSubmitted(true) // disable the button
+                electionMethods.createModeratorRecorder(result => {
+                    setSubmitted(false)
+                    if (result)
+                        electionMethods.upsert({
+                            doneLocked: { Recorder: { done: new Date().toISOString() } },
+                        })
+                    // to do show error messages if failure
+                })
+            }}
+            className={classes.submitButton}
+        />
+    )
+
     return (
         <div className={cx(className, classes.moderatorRecorder)} style={style}>
             <div className={classes.innerLeft}>
@@ -104,11 +123,11 @@ export default function ModeratorRecorder(props) {
                 <div className={cx(classes.card, { [classes.backgroundRed]: missed })}>
                     <div className={classes.preview}>
                         {viewer?.path ? (
-                            <iframe ref={iframeRef} width={'100%'} height={'100%'} src={src} frameBorder='0'>
-                                {icon}
-                            </iframe>
+                            <iframe ref={iframeRef} width={'100%'} height={'100%'} src={src} frameBorder='0' />
                         ) : (
-                            <div className={classes.placeholder}>{icon}</div>
+                            <div className={classes.placeholder}>
+                                <CreateRecorderButton />
+                            </div>
                         )}
                     </div>
                     <div className={classes.meta}>
@@ -117,12 +136,23 @@ export default function ModeratorRecorder(props) {
                             <p className={cx(classes.desc, { [classes.colorLightRed]: missed })}>{statusDesc}</p>
                         </div>
                         <div className={classes.metaButtons}>
-                            <span onClick={e => (iframeRef.current.src += '')}>
-                                <SvgRedo className={classes.redo} />
-                            </span>{' '}
-                            <a href={src} target='_blank'>
-                                <SvgExternalLink className={classes.link} />
-                            </a>
+                            <button
+                                className={cx(classes.redo, !src && classes.iconDisabled)}
+                                onClick={e => (iframeRef.current.src += '')}
+                                title='Restart'
+                                disabled={!src}
+                            >
+                                <SvgRedo />
+                            </button>{' '}
+                            {src ? (
+                                <a href={src} target='_blank' title='Open in new tab'>
+                                    <SvgExternalLink className={classes.link} />
+                                </a>
+                            ) : (
+                                <button className={classes.disabledlink} title='Open in new tab' disabled>
+                                    <SvgExternalLink />
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -130,22 +160,7 @@ export default function ModeratorRecorder(props) {
             </div>
             <div className={classes.buttonPanel}>
                 <div className={classes.buttonRow}>
-                    <Submit
-                        name={recorderStatus === 'recreate' ? 'Regenerate Recorder' : 'Generate Recorder'}
-                        disabled={submitted || !(recorderStatus === 'ready' || recorderStatus === 'recreate')}
-                        onDone={() => {
-                            setSubmitted(true) // disable the button
-                            electionMethods.createModeratorRecorder(result => {
-                                setSubmitted(false)
-                                if (result)
-                                    electionMethods.upsert({
-                                        doneLocked: { Recorder: { done: new Date().toISOString() } },
-                                    })
-                                // to do show error messages if failure
-                            })
-                        }}
-                        className={classes.submitButton}
-                    />
+                    <CreateRecorderButton />
                 </div>
                 <div className={classes.buttonRow}>
                     <div className={classes.buttonRowText}>
@@ -209,16 +224,12 @@ const useStyles = createUseStyles(theme => ({
         justifyContent: 'right',
         marginBottom: '0',
     },
-    icon: {
-        fontSize: '3rem',
-        display: 'flex',
-        height: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     placeholder: {
         width: '100%',
         height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     backgroundRed: {
         backgroundColor: theme.colorWarning,
@@ -256,11 +267,33 @@ const useStyles = createUseStyles(theme => ({
     redo: {
         fontSize: '2.2rem',
         cursor: 'pointer',
+        backgroundColor: 'transparent',
+        border: 'none',
     },
     link: {
         '& path': {
             stroke: 'black',
             strokeWidth: 3,
+        },
+    },
+    disabledlink: {
+        padding: 0,
+        border: 'none',
+        fontSize: '2.5rem',
+        cursor: 'pointer',
+        '& path': {
+            stroke: 'gray',
+            strokeWidth: 3,
+        },
+        backgroundColor: 'transparent',
+    },
+    iconDisabled: {
+        '& path': {
+            fill: 'gray',
+        },
+        '& g path': {
+            stroke: 'gray',
+            fill: 'none',
         },
     },
 }))

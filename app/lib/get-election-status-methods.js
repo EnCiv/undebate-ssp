@@ -12,6 +12,20 @@ import {
 import { ProgressBar } from '../components/election-category'
 import ObjectID from 'isomorphic-mongo-objectid'
 
+export const candidateFilters = {
+    ALL(candidate) {
+        return true
+    },
+    NOT_YET_SUBMITTED(candidate) {
+        return (
+            Object.keys(candidate?.invitations || {}).length && Object.keys(candidate?.submissions || {}).length === 0
+        )
+    },
+    NOT_YET_INVITED(candidate) {
+        return Object.keys(candidate?.invitations || {}).length === 0
+    },
+}
+
 export const checkDateCompleted = obj => {
     for (const key in obj) {
         if (obj[key].date !== '') {

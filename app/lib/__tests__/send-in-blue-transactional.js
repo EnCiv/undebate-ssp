@@ -1,8 +1,12 @@
 // https://github.com/EnCiv/undebate-ssp/wiki/Send-In-Blue-Transactional
 import { expect, test, beforeAll, afterAll, jest, describe } from '@jest/globals'
 
-global.logger = console
-global.logger = { error: jest.fn((...args) => args) }
+global.logger = { ...console }
+if (process.env.JEST_LOGGER_ERRORS_TO_CONSOLE)
+    // see the error messages during jest tests
+    global.logger.error = jest.fn((...args) => (console.error(args), args))
+else global.logger.error = jest.fn((...args) => args)
+global.logger.warn = jest.fn((...args) => args)
 
 // has to be require, not import, so it doesn't get hoisted and run before global.logger is set above
 const { SibGetTemplateId, SibDeleteSmtpTemplate, SibSendTransacEmail } = require('../send-in-blue-transactional')

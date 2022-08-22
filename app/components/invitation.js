@@ -16,13 +16,7 @@ export function Invitation(props) {
     const [electionObj, electionMethods] = electionOM
     //const {email, name, invitations, submissions}=moderator
     const { moderator = {} } = electionObj
-    const {
-        email = '',
-        name = '',
-        message = "Thank you for being the moderator in our election. The next step is to click on the link below, and you will be taken to the web app for recording. The page will give you a script to start with, and the questions to ask, and you will be able to review and redo as you like. We aren't able to invite are candidates to record their answers until you ask the questions, so please try to do this soon.",
-        // eslint-disable-next-line no-unused-vars
-        invitations = [],
-    } = moderator
+    const { email = '', name = '', message = '' } = moderator
     const [validInputs, setValidInputs] = useReducer((state, action) => ({ ...state, ...action }), {
         name: null,
         email: null,
@@ -76,6 +70,7 @@ export function Invitation(props) {
                             setValidInputs({ message: valid })
                         }}
                         disabled={disabled}
+                        placeholder='Thank you for being the moderator in this election.'
                     />
                 </div>
             </div>

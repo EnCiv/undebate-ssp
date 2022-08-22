@@ -1,17 +1,19 @@
 //https://github.com/EnCiv/undebate-ssp/issues/88
 // example code thanks to https://react-table.tanstack.com/docs/examples/editable-data
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import { useTable, usePagination, useFilters } from 'react-table'
 import ObjectID from 'isomorphic-mongo-objectid'
+import IsEmail from 'isemail'
 
 // Create an editable cell renderer
-function EditableCell({
-    value = '',
-    row: { index },
-    column: { id },
-    updateMyData, // This is a custom function that we supplied to our table instance
-}) {
+function EditableCell(props) {
+    const {
+        value = '',
+        row: { index, values },
+        column: { id },
+        updateMyData, // This is a custom function that we supplied to our table instance
+    } = props
     const inputRef = useRef(null)
 
     // We'll only update the external data when the input is blurred
@@ -24,9 +26,20 @@ function EditableCell({
         if (inputRef.current) inputRef.current.value = value
     }, [value])
 
+    let style
+    const warn = { backgroundColor: 'rgba(238, 96, 85, 0.25)' }
+    if (
+        id === 'email' &&
+        document.activeElement !== inputRef.current &&
+        value &&
+        !IsEmail.validate(value, { minDomainAtoms: 2 })
+    )
+        style = warn
+
     return (
         <input
             ref={inputRef}
+            style={style}
             disabled={id === 'status' || !updateMyData.editable}
             defaultValue={value}
             onBlur={onBlur}

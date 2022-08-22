@@ -2,11 +2,14 @@
 
 // do not change 'component' to any other name, just change the file being imported from
 import component from '../app/components/election-header'
+import ReactRouterDecorator from './react-router-decorator'
 import makeChapter from './make-chapter'
 const mC = makeChapter(component) // do not change
+
 export default {
     title: 'Election Header', // This is the Story title that will be displayed in the left column list of stories
     component, // do not change
+    decorators: [ReactRouterDecorator],
 }
 
 export const Normal = mC({

@@ -182,11 +182,7 @@ function DateCell({ createDate, endDate, daysRemaining, isArchived = false }) {
     const classes = useStyles()
 
     const formatDate = date => {
-        new Date().getDate()
-
-        return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1)
-            .toString()
-            .padStart(2, '0')}.${date.getFullYear().toString().slice(-2).padStart(2, '0')}`
+        return new Date(date).toLocaleDateString()
     }
 
     const formattedCreateDate = formatDate(createDate)

@@ -127,7 +127,8 @@ export const Recreate = mC({
             Timeline: { done: '2022-08-08T20:08:56.165Z' },
             Questions: { done: '2022-08-08T20:08:57.165Z' },
             Contact: { done: '2022-08-08T20:08:58.165Z' },
-            Script: { done: '2022-08-08T20:08:59.165Z' },
+            Script: { done: '2022-08-08T21:08:59.165Z' },
+            Recorder: { done: '2022-08-08T20:09:59.165Z' },
         },
         timeline: {
             moderatorSubmissionDeadline: {
@@ -153,6 +154,7 @@ export const Created = mC({
             Questions: { done: '2022-08-08T20:08:57.165Z' },
             Contact: { done: '2022-08-08T20:08:58.165Z' },
             Script: { done: '2022-08-08T20:08:59.165Z' },
+            Recorder: { done: '2022-08-08T20:09:59.165Z' },
         },
         timeline: {
             moderatorSubmissionDeadline: {
@@ -178,6 +180,7 @@ export const Sent = mC({
             Questions: { done: '2022-08-08T20:08:57.165Z' },
             Contact: { done: '2022-08-08T20:08:58.165Z' },
             Script: { done: '2022-08-08T20:08:59.165Z' },
+            Recorder: { done: '2022-08-08T20:09:59.165Z' },
         },
         timeline: {
             moderatorSubmissionDeadline: {
@@ -209,6 +212,7 @@ export const Completed = mC({
             Questions: { done: '2022-08-08T20:08:57.165Z' },
             Contact: { done: '2022-08-08T20:08:58.165Z' },
             Script: { done: '2022-08-08T20:08:59.165Z' },
+            Recorder: { done: '2022-08-08T20:09:59.165Z' },
         },
         timeline: {
             moderatorSubmissionDeadline: {

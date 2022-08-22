@@ -34,28 +34,36 @@ const iotas = [
         webComponent: {
             webComponent: 'ElectionDoc',
             name: 'admin name',
-            email: 'admin@email.com',
+            email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
             electionName: 'The Election',
             organizationName: 'The Organization',
             organizationLogo: 'https://www.bringfido.com/assets/images/bfi-logo-new.jpg',
             undebateDate: new Date().addDays(5).toISOString(),
             electionDate: new Date().addDays(5).toISOString(),
+            doneLocked: {
+                Election: { done: new Date().toISOString() },
+                Timeline: { done: new Date().toISOString() },
+                Questions: { done: new Date().toISOString() },
+                Contact: { done: new Date().toISOString() },
+                Script: { done: new Date().addDays(1).toISOString() },
+                Recorder: { done: new Date().addDays(2).toISOString() },
+            },
             moderator: {
                 name: 'bob',
                 email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
             },
             timeline: {
                 moderatorDeadlineReminderEmails: {
-                    0: { date: new Date().addDays(1).toISOString() },
-                },
-                moderatorSubmissionDeadline: {
                     0: { date: new Date().addDays(2).toISOString() },
                 },
-                candidateDeadlineReminderEmails: {
+                moderatorSubmissionDeadline: {
                     0: { date: new Date().addDays(3).toISOString() },
                 },
-                candidateSubmissionDeadline: {
+                candidateDeadlineReminderEmails: {
                     0: { date: new Date().addDays(4).toISOString() },
+                },
+                candidateSubmissionDeadline: {
+                    0: { date: new Date().addDays(5).toISOString() },
                 },
             },
             questions: {
@@ -219,6 +227,7 @@ maybe('Test the send moderator invite API', () => {
                     sentDate: ISODate,
                     templateId: expect.any(Number),
                     params: {
+                        email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
                         moderator: {
                             submissionDeadline: expect.any(String),
                         },
@@ -230,7 +239,7 @@ maybe('Test the send moderator invite API', () => {
                   "component": "ModeratorEmailSent",
                   "messageId": Any<String>,
                   "params": Object {
-                    "email": "admin@email.com",
+                    "email": "ddfridley@yahoo.com",
                     "moderator": Object {
                       "email": "ddfridley@yahoo.com",
                       "name": "bob",

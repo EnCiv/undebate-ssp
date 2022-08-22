@@ -15,6 +15,8 @@ export default function ElectionTextArea(props) {
         defaultValue,
         maxWords,
         description = 'This would be included in the invite email for the moderator. Not more than 400 words.',
+        placeholder,
+        disabled,
     } = props
     const classes = useStyles()
     const inputRef = useRef(null)
@@ -43,6 +45,8 @@ export default function ElectionTextArea(props) {
                 minRows={12}
                 defaultValue={defaultValue}
                 ref={inputRef}
+                placeholder={placeholder}
+                disabled={disabled}
             />
         </label>
     )

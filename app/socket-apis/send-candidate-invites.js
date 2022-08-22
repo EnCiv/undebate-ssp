@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/146
 import { SibGetTemplateId, SibSendTransacEmail } from '../lib/send-in-blue-transactional'
-import getElectionStatusMethods from '../lib/get-election-status-methods'
+import getElectionStatusMethods, { getLatestIota, candidateFilters } from '../lib/get-election-status-methods'
 import { getElectionDocById } from './get-election-docs'
 import { Iota } from 'civil-server'
 import { updateElectionInfo } from './subscribe-election-info'
@@ -9,20 +9,25 @@ import scheme from '../lib/scheme'
 
 var templateId
 
-export default async function sendCandidateInvites(id, cb) {
+export default async function sendCandidateInvites(id, filter, cb) {
     const userId = this.synuser && this.synuser.id
     if (!userId) {
-        logger.error('candidate-invitation user not logged in')
+        logger.error('sendCandidateInvite user not logged in')
         cb && cb()
         return
     }
     if (!templateId) {
         templateId = await SibGetTemplateId('candidate-invitation')
         if (!templateId) {
-            logger.error('candidate-invitation template not found')
+            logger.error('sendCandidateInvite template not found')
             cb && cb()
             return
         }
+    }
+    if (!candidateFilters[filter]) {
+        logger.error('sendCandidateInvite filter not found:', filter)
+        cb && cb()
+        return
     }
     getElectionDocById.call(this, id, async iota => {
         if (!iota) {
@@ -31,12 +36,12 @@ export default async function sendCandidateInvites(id, cb) {
             return
         }
         const electionObj = iota.webComponent
-        const messageIds = await sendCandidateInvitesFromIdAndElectionObj(id, electionObj)
+        const messageIds = await sendCandidateInvitesFromIdAndElectionObj(id, electionObj, filter)
         cb && cb(messageIds)
     })
 }
 
-export async function sendCandidateInvitesFromIdAndElectionObj(id, electionObj) {
+export async function sendCandidateInvitesFromIdAndElectionObj(id, electionObj, filter = 'ALL') {
     const electionMethods = getElectionStatusMethods(undefined, electionObj)
     if (!electionMethods.areCandidatesReadyForInvites()) {
         logger.error('areCandidatesReadyForInvites candidates not ready to invite', electionObj.candidates)
@@ -48,7 +53,22 @@ export async function sendCandidateInvitesFromIdAndElectionObj(id, electionObj) 
     const docs = []
     const questions = cloneDeep(electionObj.questions)
     const messageIds = []
+    const filterOp = candidateFilters[filter]
+    if (!filterOp) {
+        logger.error('sendCandidateInvitesFromIdAndElectionObj filter not found:', filter)
+        return {}
+    }
     for await (const candidate of Object.values(electionObj.candidates)) {
+        if (!filterOp(candidate)) continue
+        if (!getLatestIota(candidate?.recorders)?.path) {
+            logger.error(
+                'sendCandidateInvitesFromIdAndElectionObj in electionObj',
+                id,
+                "skipping canidate because there's no recorder",
+                candidate?.uniqueId
+            )
+            continue
+        }
         const params = {
             name: electionObj.name,
             email: electionObj.email,
@@ -71,10 +91,10 @@ export async function sendCandidateInvitesFromIdAndElectionObj(id, electionObj) 
         const messageProps = {
             params,
             to: [{ email: candidate.email, name: candidate.name }],
-            cc: [{ email: params.moderator.email, name: params.moderator.name }],
             templateId,
             tags: [`id:${id}`, 'role:candidate', `office:${candidate.office}`],
         }
+        if (params.email) messageProps.cc = [{ email: params.email, name: params.name }]
         const result = await SibSendTransacEmail(messageProps)
         if (!result || !result.messageId) logger.error('send candidate invite failed', id, candidate)
         else {

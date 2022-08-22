@@ -3,11 +3,13 @@ import React, { useState, useEffect } from 'react'
 import { expect } from '@storybook/jest'
 import { within, userEvent, waitFor } from '@storybook/testing-library'
 import SubscribeElectionInfo from '../app/components/subscribe-election-info'
+import ReactRouterDecorator from './react-router-decorator'
 
 export default {
     title: 'Subscribe Election Info',
     component: SubscribeElectionInfo,
     argTypes: {},
+    decorators: [ReactRouterDecorator],
 }
 
 const Template = (args, context) => {

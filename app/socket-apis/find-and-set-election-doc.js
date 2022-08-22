@@ -39,15 +39,15 @@ const electionSchema = Joi.object({
     webComponent: 'ElectionDoc',
     electionName: Joi.string().max(SANE),
     organizationName: Joi.string().max(SANE),
-    organizationUrl: Joi.string().uri(),
-    organizationLogo: Joi.string().uri(),
+    organizationUrl: Joi.string().allow('').uri(),
+    organizationLogo: Joi.string().allow('').uri(),
     electionDate: Joi.string().isoDate(),
-    email: Joi.string().email(),
+    email: Joi.string().allow('').email(),
     questions: Joi.object().pattern(
         Joi.string().pattern(Integer),
         Joi.object({
             text: Joi.string().max(SANE),
-            time: Joi.string().pattern(Integer),
+            time: Joi.string().allow('').pattern(Integer),
         })
     ),
     script: Joi.object().pattern(
@@ -58,7 +58,7 @@ const electionSchema = Joi.object({
     ),
     moderator: Joi.object({
         name: Joi.string().max(SANE),
-        email: Joi.string().email(),
+        email: Joi.string().allow('').email(),
         message: Joi.string().max(SANE),
         invitations: invitations(),
         submissions: submissions(),
@@ -70,7 +70,7 @@ const electionSchema = Joi.object({
         Joi.object({
             uniqueId: Joi.string().pattern(ObjectID),
             name: Joi.string().max(SANE),
-            email: Joi.string().email(),
+            email: Joi.string().allow('').email(),
             office: Joi.string().max(SANE),
             region: Joi.string().max(SANE),
             invitations: invitations(),
@@ -137,7 +137,7 @@ function docToSetUnset(doc, sets = {}, unsets = {}, path = '') {
 
 export default async function findAndSetElectionDoc(query, doc, cb) {
     if (!this.synuser) return cb && cb() // no user
-    const valid = electionSchema.validate(doc)
+    const valid = electionSchema.validate(doc, { presence: 'optional' })
     if (valid.error) {
         logger.error('ElectionDoc validation', JSON.stringify(valid, null, 2))
         return cb && cb()

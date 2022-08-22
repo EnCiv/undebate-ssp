@@ -8,6 +8,27 @@ import CandidateTableInput from './candidate-table-input'
 import UploadCSV from './upload-csv'
 import PasteGoogleSheetsLink from './paste-google-sheets-link'
 import { isEqual } from 'lodash'
+import IsEmail from 'isemail'
+import { candidateFilters } from '../lib/get-election-status-methods'
+
+function isCandidateValid(candidate) {
+    return candidate.name && IsEmail.validate(candidate?.email || '', { minDomainAtoms: 2 }) && candidate.office
+}
+
+function isCandidateReadyForInvite(candidate, filter = 'NOT_YET_INVITED') {
+    return candidateFilters[filter](candidate) && isCandidateValid(candidate)
+}
+
+function countCandidatesReadyForInvites(candidates, filter = 'NOT_YET_INVITED') {
+    return Object.values(candidates).reduce(
+        (count, candidate) => (isCandidateReadyForInvite(candidate, filter) ? count + 1 : count),
+        0
+    )
+}
+
+function blankCandidate(candidate) {
+    return candidate && !candidate.name && !candidate.email && !candidate.office && !candidate.region
+}
 
 export default function CandidateTable(props) {
     const classes = useStyles()
@@ -21,7 +42,9 @@ export default function CandidateTable(props) {
     // a reducer becasue if useState  setValidInputs({...validInputs,email}) would overwrite the value of name with what might not be the current value if setValidInputs({...validInputs,name}) were both called in event handlers before the next rerender that updates ...validInputs
     // not using the usual action {type: "SET_EMAIL", value: true} format because it's too long and wordy for this simple case of updating values of an object
 
-    const inputsInvalid = Object.values(validInputs).some(i => !i)
+    const inputsInvalid = Object.values(candidates).some(
+        candidate => !blankCandidate(candidate) && !isCandidateValid(candidate)
+    )
     // side effects to do after the component rerenders from a state change
     const [sideEffects] = useState([]) // never set sideEffects
     useEffect(() => {
@@ -72,19 +95,41 @@ export default function CandidateTable(props) {
                         />
                     </div>
                 </div>
-                <div className={classes.op}>
-                    <Submit
-                        name={`Send Invites (${candidatesArray.length})`}
-                        disabled={inputsInvalid}
-                        disableOnClick
-                        onDone={({ valid, value }) => {
-                            if (valid)
-                                electionMethods.sendCandidateInvitations(result => {
-                                    onDone({ valid: true, value: 'sent' })
-                                    //to do - if error show error messages
-                                })
-                        }}
-                    />
+                <div className={classes.ops}>
+                    <div className={classes.op}>
+                        <Submit
+                            className={classes.submit}
+                            name={`Send Invites (${countCandidatesReadyForInvites(candidates, 'NOT_YET_INVITED')})`}
+                            disabled={
+                                inputsInvalid || countCandidatesReadyForInvites(candidates, 'NOT_YET_INVITED') === 0
+                            }
+                            disableOnClick
+                            onDone={({ valid, value }) => {
+                                if (valid)
+                                    electionMethods.sendCandidateInvitations('NOT_YET_INVITED', result => {
+                                        onDone({ valid: true, value: 'sent' })
+                                        //to do - if error show error messages
+                                    })
+                            }}
+                        />
+                    </div>
+                    <div className={classes.op}>
+                        <Submit
+                            className={classes.submit}
+                            name={`Send Reminders (${countCandidatesReadyForInvites(candidates, 'NOT_YET_SUBMITTED')})`}
+                            disabled={
+                                inputsInvalid || countCandidatesReadyForInvites(candidates, 'NOT_YET_SUBMITTED') === 0
+                            }
+                            disableOnClick
+                            onDone={({ valid, value }) => {
+                                if (valid)
+                                    electionMethods.sendCandidateInvitations('NOT_YET_SUBMITTED', result => {
+                                        onDone({ valid: true, value: 'sent' })
+                                        //to do - if error show error messages
+                                    })
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
             <div className={classes.form}>
@@ -120,6 +165,10 @@ const useStyles = createUseStyles(theme => ({
         fontSize: '1.125rem',
         lineHeight: '1.5rem',
     },
+    ops: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
     op: {
         flex: 'auto',
     },
@@ -128,6 +177,9 @@ const useStyles = createUseStyles(theme => ({
         color: theme.colorSecondary,
         backgroundColor: 'transparent',
         border: `2px solid ${theme.button.borderColor}`,
+    },
+    submit: {
+        width: '100%',
     },
     form: {
         marginTop: `calc( 2 * ${theme.gap})`,

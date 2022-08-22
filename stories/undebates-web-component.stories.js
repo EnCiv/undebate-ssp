@@ -1,15 +1,13 @@
 // https://github.com/EnCiv/undebate-ssp/issues/20
 import React, { useState, useEffect } from 'react'
-import UndebateHomepage from '../app/components/undebate-homepage'
+import UndebateHomepage from '../app/web-components/undebates-homepage'
 import { cloneDeep } from 'lodash'
 import iotas from '../iotas.json'
-import ReactRouterDecorator from './react-router-decorator'
 
 export default {
-    title: 'Undebate Homepage',
+    title: 'Undebates Web Component',
     component: UndebateHomepage,
     argTypes: {},
-    decorators: [ReactRouterDecorator],
 }
 if (typeof logger === 'undefined') window.logger = console
 
@@ -193,17 +191,26 @@ defaultElectionObject3.id = '627ecafe4c12b659a8b954de'
 defaultElectionObject3.organizationName = 'San Diego Government Elections'
 defaultElectionObject3.electionName = 'SD City Council'
 
+// the path argment is used in the webComponent to set the basename for reactrouter
+// to work in storybook, it must be /iframe.html
+const path = '/iframe.html'
+
 export const WithData = Template.bind({})
 WithData.args = {
     electionObjs: [defaultElectionObject, defaultElectionObject1, defaultElectionObject2],
     user: { id: '6274ae8bee422b0f9c607b75', email: 'someone@email.com' },
+    path,
 }
 export const Empty = Template.bind({})
+Empty.args = { path }
+
 export const NewUser = Template.bind({})
 NewUser.args = {
     electionObjs: [],
     user: { id: '6274ae8bee422b0f9c607b75', email: 'someone@email.com' },
+    path,
 }
 export const NoUser = Template.bind({})
 const iota = iotas.find(doc => doc.path === '/undebates')
 NoUser.args = iota.webComponent
+NoUser.args.path = path

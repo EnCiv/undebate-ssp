@@ -30,8 +30,8 @@ export default function SubscribeElectionInfo(props) {
             sendModeratorInvitation(cb) {
                 window.socket.emit('send-moderator-invite', id, cb)
             },
-            sendCandidateInvitations(cb) {
-                window.socket.emit('create-send-candidate-invites', id, cb)
+            sendCandidateInvitations(filter, cb) {
+                window.socket.emit('create-send-candidate-invites', id, filter, cb)
             },
         }),
         {}, // empty because the data won't come until later, but react won't let us call new hooks later
