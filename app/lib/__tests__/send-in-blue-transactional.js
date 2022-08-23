@@ -50,6 +50,7 @@ maybe('Test the Sendinblue Transactional APIs', () => {
     test('Can send a test email, check your inbox', async () => {
         const result = await SibSendTransacEmail({
             to: [{ email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL, name: 'TEST EMAIL' }],
+            sender: { email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL, name: 'EnCiv Test Email' },
             templateId: newId,
             params: {
                 name: 'TEST EMAIL',

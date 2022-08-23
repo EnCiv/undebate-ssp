@@ -7,17 +7,10 @@ import jestSocketApiSetup from '../../lib/jest-socket-api-setup'
 const handle = 'subscribe-election-info'
 const socketApiUnderTest = subscribeElectionInfo
 import socketApiSubscribe from '../../components/lib/socket-api-subscribe'
-
-if (!global.logger) global.logger = console
-global.logger = { error: jest.fn((...args) => args) }
+import '../../lib/jest-setup'
 
 // has to be require so it happens after global.logger gets set above. imports would hoist
 const sendModeratorInvite = require('../send-moderator-invite').default
-
-Date.prototype.addDays = function (days) {
-    this.setDate(this.getDate() + parseInt(days))
-    return this
-}
 
 // if making a copy of this, you need new node_modules/.bin/mongo-id 's here
 // because multiple tests using the DB will run in parallel
@@ -135,9 +128,6 @@ const exampleUser = {
 // apis are called with 'this' that has synuser defined
 const apisThis = { synuser: {} }
 
-const ISODate = expect.stringMatching(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/)
-const OBJECTID = expect.stringMatching(/^[0-9a-fA-F]{24}$/)
-
 const maybe = process.env.SENDINBLUE_API_KEY && process.env.SENDINBLUE_DEFAULT_FROM_EMAIL ? describe : describe.skip
 const maybeNot = !(process.env.SENDINBLUE_API_KEY && process.env.SENDINBLUE_DEFAULT_FROM_EMAIL)
     ? describe
@@ -222,16 +212,18 @@ maybe('Test the send moderator invite API', () => {
             let invitation = invitations[0]
             expect(invitation).toMatchInlineSnapshot(
                 {
-                    _id: OBJECTID,
+                    _id: expect.toBeObjectId(),
                     messageId: expect.any(String),
-                    sentDate: ISODate,
+                    sentDate: expect.toBeIsoDate(),
                     templateId: expect.any(Number),
                     params: {
-                        email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
+                        email: expect.toBeEmail(),
                         moderator: {
                             submissionDeadline: expect.any(String),
+                            email: expect.toBeEmail(),
                         },
                     },
+                    to: [{ email: expect.toBeEmail() }],
                 },
                 `
                 Object {
@@ -239,9 +231,9 @@ maybe('Test the send moderator invite API', () => {
                   "component": "ModeratorEmailSent",
                   "messageId": Any<String>,
                   "params": Object {
-                    "email": "ddfridley@yahoo.com",
+                    "email": StringMatching /\\(\\?:\\[a-z0-9!#\\$%&'\\*\\+/=\\?\\^_\`\\{\\|\\}~-\\]\\+\\(\\?:\\\\\\.\\[a-z0-9!#\\$%&'\\*\\+/=\\?\\^_\`\\{\\|\\}~-\\]\\+\\)\\*\\|"\\(\\?:\\[\\\\x01-\\\\x08\\\\x0b\\\\x0c\\\\x0e-\\\\x1f\\\\x21\\\\x23-\\\\x5b\\\\x5d-\\\\x7f\\]\\|\\\\\\\\\\[\\\\x01-\\\\x09\\\\x0b\\\\x0c\\\\x0e-\\\\x7f\\]\\)\\*"\\)@\\(\\?:\\(\\?:\\[a-z0-9\\]\\(\\?:\\[a-z0-9-\\]\\*\\[a-z0-9\\]\\)\\?\\\\\\.\\)\\+\\[a-z0-9\\]\\(\\?:\\[a-z0-9-\\]\\*\\[a-z0-9\\]\\)\\?\\|\\\\\\[\\(\\?:\\(\\?:\\(2\\(5\\[0-5\\]\\|\\[0-4\\]\\[0-9\\]\\)\\|1\\[0-9\\]\\[0-9\\]\\|\\[1-9\\]\\?\\[0-9\\]\\)\\)\\\\\\.\\)\\{3\\}\\(\\?:\\(2\\(5\\[0-5\\]\\|\\[0-4\\]\\[0-9\\]\\)\\|1\\[0-9\\]\\[0-9\\]\\|\\[1-9\\]\\?\\[0-9\\]\\)\\|\\[a-z0-9-\\]\\*\\[a-z0-9\\]:\\(\\?:\\[\\\\x01-\\\\x08\\\\x0b\\\\x0c\\\\x0e-\\\\x1f\\\\x21-\\\\x5a\\\\x53-\\\\x7f\\]\\|\\\\\\\\\\[\\\\x01-\\\\x09\\\\x0b\\\\x0c\\\\x0e-\\\\x7f\\]\\)\\+\\)\\\\\\]\\)/,
                     "moderator": Object {
-                      "email": "ddfridley@yahoo.com",
+                      "email": StringMatching /\\(\\?:\\[a-z0-9!#\\$%&'\\*\\+/=\\?\\^_\`\\{\\|\\}~-\\]\\+\\(\\?:\\\\\\.\\[a-z0-9!#\\$%&'\\*\\+/=\\?\\^_\`\\{\\|\\}~-\\]\\+\\)\\*\\|"\\(\\?:\\[\\\\x01-\\\\x08\\\\x0b\\\\x0c\\\\x0e-\\\\x1f\\\\x21\\\\x23-\\\\x5b\\\\x5d-\\\\x7f\\]\\|\\\\\\\\\\[\\\\x01-\\\\x09\\\\x0b\\\\x0c\\\\x0e-\\\\x7f\\]\\)\\*"\\)@\\(\\?:\\(\\?:\\[a-z0-9\\]\\(\\?:\\[a-z0-9-\\]\\*\\[a-z0-9\\]\\)\\?\\\\\\.\\)\\+\\[a-z0-9\\]\\(\\?:\\[a-z0-9-\\]\\*\\[a-z0-9\\]\\)\\?\\|\\\\\\[\\(\\?:\\(\\?:\\(2\\(5\\[0-5\\]\\|\\[0-4\\]\\[0-9\\]\\)\\|1\\[0-9\\]\\[0-9\\]\\|\\[1-9\\]\\?\\[0-9\\]\\)\\)\\\\\\.\\)\\{3\\}\\(\\?:\\(2\\(5\\[0-5\\]\\|\\[0-4\\]\\[0-9\\]\\)\\|1\\[0-9\\]\\[0-9\\]\\|\\[1-9\\]\\?\\[0-9\\]\\)\\|\\[a-z0-9-\\]\\*\\[a-z0-9\\]:\\(\\?:\\[\\\\x01-\\\\x08\\\\x0b\\\\x0c\\\\x0e-\\\\x1f\\\\x21-\\\\x5a\\\\x53-\\\\x7f\\]\\|\\\\\\\\\\[\\\\x01-\\\\x09\\\\x0b\\\\x0c\\\\x0e-\\\\x7f\\]\\)\\+\\)\\\\\\]\\)/,
                       "name": "bob",
                       "recorder_url": "localhost:3011/moderator-recorder",
                       "submissionDeadline": Any<String>,
@@ -258,7 +250,7 @@ maybe('Test the send moderator invite API', () => {
                   "templateId": Any<Number>,
                   "to": Array [
                     Object {
-                      "email": "ddfridley@yahoo.com",
+                      "email": StringMatching /\\(\\?:\\[a-z0-9!#\\$%&'\\*\\+/=\\?\\^_\`\\{\\|\\}~-\\]\\+\\(\\?:\\\\\\.\\[a-z0-9!#\\$%&'\\*\\+/=\\?\\^_\`\\{\\|\\}~-\\]\\+\\)\\*\\|"\\(\\?:\\[\\\\x01-\\\\x08\\\\x0b\\\\x0c\\\\x0e-\\\\x1f\\\\x21\\\\x23-\\\\x5b\\\\x5d-\\\\x7f\\]\\|\\\\\\\\\\[\\\\x01-\\\\x09\\\\x0b\\\\x0c\\\\x0e-\\\\x7f\\]\\)\\*"\\)@\\(\\?:\\(\\?:\\[a-z0-9\\]\\(\\?:\\[a-z0-9-\\]\\*\\[a-z0-9\\]\\)\\?\\\\\\.\\)\\+\\[a-z0-9\\]\\(\\?:\\[a-z0-9-\\]\\*\\[a-z0-9\\]\\)\\?\\|\\\\\\[\\(\\?:\\(\\?:\\(2\\(5\\[0-5\\]\\|\\[0-4\\]\\[0-9\\]\\)\\|1\\[0-9\\]\\[0-9\\]\\|\\[1-9\\]\\?\\[0-9\\]\\)\\)\\\\\\.\\)\\{3\\}\\(\\?:\\(2\\(5\\[0-5\\]\\|\\[0-4\\]\\[0-9\\]\\)\\|1\\[0-9\\]\\[0-9\\]\\|\\[1-9\\]\\?\\[0-9\\]\\)\\|\\[a-z0-9-\\]\\*\\[a-z0-9\\]:\\(\\?:\\[\\\\x01-\\\\x08\\\\x0b\\\\x0c\\\\x0e-\\\\x1f\\\\x21-\\\\x5a\\\\x53-\\\\x7f\\]\\|\\\\\\\\\\[\\\\x01-\\\\x09\\\\x0b\\\\x0c\\\\x0e-\\\\x7f\\]\\)\\+\\)\\\\\\]\\)/,
                       "name": "bob",
                     },
                   ],

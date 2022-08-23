@@ -2,22 +2,11 @@ import { expect, test, beforeAll, afterAll, jest } from '@jest/globals'
 import MongoModels from 'mongo-models'
 import { Iota } from 'civil-server'
 import { merge } from 'lodash'
+import '../../lib/jest-setup'
 
 const ObjectID = Iota.ObjectId
-global.logger = { ...console }
-if (process.env.JEST_LOGGER_ERRORS_TO_CONSOLE)
-    // see the error messages during jest tests
-    global.logger.error = jest.fn((...args) => (console.error(args), args))
-else global.logger.error = jest.fn((...args) => args)
-global.logger.warn = jest.fn((...args) => args)
-
 // must be require after logger is mocked, import would hoist
 const createSendCandidateInvites = require('../create-send-candidate-invites').default
-
-Date.prototype.addDays = function (days) {
-    this.setDate(this.getDate() + parseInt(days))
-    return this
-}
 
 // if making a copy of this, you need new node_modules/.bin/mongo-id 's here
 // because multiple tests using the DB will run in parallel
@@ -132,8 +121,6 @@ const testDoc = {
 // apis are called with 'this' that has synuser defined
 const apisThis = { synuser: { id: USERID } }
 
-const objectIdPattern = /^[0-9a-fA-F]{24}$/
-
 beforeAll(async () => {
     await MongoModels.connect({ uri: global.__MONGO_URI__ }, { useUnifiedTopology: true })
     // run the init functions that models require - after the connection is setup
@@ -174,7 +161,7 @@ test('it should create a viewer', done => {
             expect(iotas[0]).toMatchInlineSnapshot(
                 {
                     _id: expect.any(ObjectID),
-                    parentId: expect.stringMatching(objectIdPattern),
+                    parentId: expect.toBeObjectId(),
                     bp_info: {
                         electionList: [
                             expect.stringMatching(
@@ -269,11 +256,12 @@ test('it should create a recorder', async () => {
         {
             _id: expect.any(ObjectID),
             bp_info: {
-                unique_id: expect.stringMatching(objectIdPattern),
+                unique_id: expect.toBeObjectId(),
                 election_date: expect.stringMatching(/\d\d\/\d\d\/\d\d\d\d/),
+                candidate_emails: [expect.toBeEmail()],
             },
 
-            parentId: expect.stringMatching(objectIdPattern),
+            parentId: expect.toBeObjectId(),
             path: expect.stringMatching(
                 /\/country:us\/org:to\/office:president-of-the-u-s\/\d\d\d\d-\d\d-\d\d-recorder-[0-9-a-fA-F]{24}$/
             ),
@@ -283,7 +271,7 @@ test('it should create a recorder', async () => {
           "_id": Any<ObjectID>,
           "bp_info": Object {
             "candidate_emails": Array [
-              "ddfridley@yahoo.com",
+              StringMatching /\\(\\?:\\[a-z0-9!#\\$%&'\\*\\+/=\\?\\^_\`\\{\\|\\}~-\\]\\+\\(\\?:\\\\\\.\\[a-z0-9!#\\$%&'\\*\\+/=\\?\\^_\`\\{\\|\\}~-\\]\\+\\)\\*\\|"\\(\\?:\\[\\\\x01-\\\\x08\\\\x0b\\\\x0c\\\\x0e-\\\\x1f\\\\x21\\\\x23-\\\\x5b\\\\x5d-\\\\x7f\\]\\|\\\\\\\\\\[\\\\x01-\\\\x09\\\\x0b\\\\x0c\\\\x0e-\\\\x7f\\]\\)\\*"\\)@\\(\\?:\\(\\?:\\[a-z0-9\\]\\(\\?:\\[a-z0-9-\\]\\*\\[a-z0-9\\]\\)\\?\\\\\\.\\)\\+\\[a-z0-9\\]\\(\\?:\\[a-z0-9-\\]\\*\\[a-z0-9\\]\\)\\?\\|\\\\\\[\\(\\?:\\(\\?:\\(2\\(5\\[0-5\\]\\|\\[0-4\\]\\[0-9\\]\\)\\|1\\[0-9\\]\\[0-9\\]\\|\\[1-9\\]\\?\\[0-9\\]\\)\\)\\\\\\.\\)\\{3\\}\\(\\?:\\(2\\(5\\[0-5\\]\\|\\[0-4\\]\\[0-9\\]\\)\\|1\\[0-9\\]\\[0-9\\]\\|\\[1-9\\]\\?\\[0-9\\]\\)\\|\\[a-z0-9-\\]\\*\\[a-z0-9\\]:\\(\\?:\\[\\\\x01-\\\\x08\\\\x0b\\\\x0c\\\\x0e-\\\\x1f\\\\x21-\\\\x5a\\\\x53-\\\\x7f\\]\\|\\\\\\\\\\[\\\\x01-\\\\x09\\\\x0b\\\\x0c\\\\x0e-\\\\x7f\\]\\)\\+\\)\\\\\\]\\)/,
             ],
             "candidate_name": "Sarah Jones",
             "election_date": StringMatching /\\\\d\\\\d\\\\/\\\\d\\\\d\\\\/\\\\d\\\\d\\\\d\\\\d/,
@@ -366,11 +354,12 @@ test('it should create a recorder', async () => {
         {
             _id: expect.any(ObjectID),
             bp_info: {
-                unique_id: expect.stringMatching(objectIdPattern),
+                unique_id: expect.toBeObjectId(),
                 election_date: expect.stringMatching(/\d\d\/\d\d\/\d\d\d\d/),
+                candidate_emails: [expect.toBeEmail()],
             },
 
-            parentId: expect.stringMatching(objectIdPattern),
+            parentId: expect.toBeObjectId(),
             path: expect.stringMatching(
                 /\/country:us\/org:to\/office:president-of-the-u-s\/\d\d\d\d-\d\d-\d\d-recorder-[0-9-a-fA-F]{24}$/
             ),
@@ -380,7 +369,7 @@ test('it should create a recorder', async () => {
           "_id": Any<ObjectID>,
           "bp_info": Object {
             "candidate_emails": Array [
-              "ddfridley@yahoo.com",
+              StringMatching /\\(\\?:\\[a-z0-9!#\\$%&'\\*\\+/=\\?\\^_\`\\{\\|\\}~-\\]\\+\\(\\?:\\\\\\.\\[a-z0-9!#\\$%&'\\*\\+/=\\?\\^_\`\\{\\|\\}~-\\]\\+\\)\\*\\|"\\(\\?:\\[\\\\x01-\\\\x08\\\\x0b\\\\x0c\\\\x0e-\\\\x1f\\\\x21\\\\x23-\\\\x5b\\\\x5d-\\\\x7f\\]\\|\\\\\\\\\\[\\\\x01-\\\\x09\\\\x0b\\\\x0c\\\\x0e-\\\\x7f\\]\\)\\*"\\)@\\(\\?:\\(\\?:\\[a-z0-9\\]\\(\\?:\\[a-z0-9-\\]\\*\\[a-z0-9\\]\\)\\?\\\\\\.\\)\\+\\[a-z0-9\\]\\(\\?:\\[a-z0-9-\\]\\*\\[a-z0-9\\]\\)\\?\\|\\\\\\[\\(\\?:\\(\\?:\\(2\\(5\\[0-5\\]\\|\\[0-4\\]\\[0-9\\]\\)\\|1\\[0-9\\]\\[0-9\\]\\|\\[1-9\\]\\?\\[0-9\\]\\)\\)\\\\\\.\\)\\{3\\}\\(\\?:\\(2\\(5\\[0-5\\]\\|\\[0-4\\]\\[0-9\\]\\)\\|1\\[0-9\\]\\[0-9\\]\\|\\[1-9\\]\\?\\[0-9\\]\\)\\|\\[a-z0-9-\\]\\*\\[a-z0-9\\]:\\(\\?:\\[\\\\x01-\\\\x08\\\\x0b\\\\x0c\\\\x0e-\\\\x1f\\\\x21-\\\\x5a\\\\x53-\\\\x7f\\]\\|\\\\\\\\\\[\\\\x01-\\\\x09\\\\x0b\\\\x0c\\\\x0e-\\\\x7f\\]\\)\\+\\)\\\\\\]\\)/,
             ],
             "candidate_name": "Michael Jefferson",
             "election_date": StringMatching /\\\\d\\\\d\\\\/\\\\d\\\\d\\\\/\\\\d\\\\d\\\\d\\\\d/,
