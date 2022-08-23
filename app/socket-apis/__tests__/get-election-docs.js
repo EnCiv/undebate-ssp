@@ -149,6 +149,7 @@ const iotas = [
         description: 'Candidate Recording for #4',
         bp_info: {
             office: 'President of the U.S.',
+            unique_id: '61e76bbefeaa4a25840d85d0',
         },
         component: {
             component: 'MergeParticipants',
@@ -265,6 +266,7 @@ test('get election docs should get them', done => {
                             "_id": "62b8e8eee48604bcfe9108fd",
                             "bp_info": Object {
                               "office": "President of the U.S.",
+                              "unique_id": "61e76bbefeaa4a25840d85d0",
                             },
                             "component": Object {
                               "component": "MergeParticipants",
@@ -433,6 +435,7 @@ test('get election doc by id should get one', done => {
                         "_id": "62b8e8eee48604bcfe9108fd",
                         "bp_info": Object {
                           "office": "President of the U.S.",
+                          "unique_id": "61e76bbefeaa4a25840d85d0",
                         },
                         "component": Object {
                           "component": "MergeParticipants",
