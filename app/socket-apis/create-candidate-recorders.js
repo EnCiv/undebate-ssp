@@ -4,9 +4,8 @@ import sspViewerRecorder from '../lib/ssp-viewer-recorder'
 import { getElectionDocById } from './get-election-docs'
 import { getLatestIota, candidateFilters } from '../lib/get-election-status-methods'
 
-// todo eventually replace this video
 const introVideo =
-    'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893716/5d5b74751e3b194174cd9b94-1-speaking20210304T213504684Z.mp4'
+    'https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378414/621e826899902756d4ba49f5-0-speaking20220824T220002681Z.mp4'
 
 export default async function createCandidateRecorder(id, filter = 'ALL', cb) {
     if (!this.synuser) {
@@ -94,7 +93,6 @@ export async function createCandidateRecordersFromIdAndElectionObj(id, filter, e
 }
 
 function reasonsNotReadyForCandidateRecorder(electionObj) {
-    // todo add moderator.submissions not ready
     const errorMsgs = []
 
     ;['electionName', 'electionDate', 'organizationName', 'questions', 'script', 'moderator'].forEach(prop => {
@@ -111,5 +109,6 @@ function reasonsNotReadyForCandidateRecorder(electionObj) {
             if (!(candidate || {})[prop]) errorMsgs.push(`candidate ${prop} required`)
         })
     })
+    if (Object.keys(electionObj?.moderator?.submissions || {}).length < 1) errorMsgs.push('No moderator submission yet')
     return errorMsgs
 }

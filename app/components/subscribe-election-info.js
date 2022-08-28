@@ -3,7 +3,6 @@ import React, { useEffect } from 'react'
 import ConfigureElection from './configure-election'
 import getElectionStatusMethods from '../lib/get-election-status-methods'
 import useMethods from 'use-methods'
-import { merge } from 'lodash'
 import socketApiSubscribe from './lib/socket-api-subscribe'
 
 export default function SubscribeElectionInfo(props) {
@@ -13,13 +12,13 @@ export default function SubscribeElectionInfo(props) {
             ...getElectionStatusMethods(dispatch, state),
             merge(obj) {
                 console.info('merge called with', obj)
-                dispatch(merge({}, state, obj, { _count: (state?._count || 0) + 1 }))
+                dispatch({ ...obj, _count: (state?._count || 0) + 1 })
             },
             upsert(obj) {
                 if (state.webComponent) {
                     console.info('upsert called with', obj)
                     window.socket.emit('find-and-set-election-doc', { _id: id }, obj)
-                    dispatch(merge({}, state, obj, { _count: (state?._count || 0) + 1 }))
+                    dispatch({ ...obj, _count: (state?._count || 0) + 1 })
                 } else {
                     logger.info('upsert: no updates until state has been populated')
                 }
