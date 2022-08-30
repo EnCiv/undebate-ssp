@@ -26,12 +26,6 @@ export default function Questions({ className, style, electionOM, onDone }) {
     const qObjs = Object.values(questions)
     const lastQuestionIncomplete = qObjs.length > 0 && (!qObjs[qObjs.length - 1].text || !qObjs[qObjs.length - 1].time)
 
-    // side effects to do after the component rerenders from a state change
-    const [sideEffects] = useState([]) // never set sideEffects
-    useEffect(() => {
-        while (sideEffects.length) sideEffects.shift()()
-    })
-
     const validSubmit = (() => {
         if (!Object.values(questions).every(({ time, text }) => (!time && !text) || (time && text))) return false
         // check valid when all of the empty questions in the bottom
@@ -47,9 +41,7 @@ export default function Questions({ className, style, electionOM, onDone }) {
     })()
 
     const addQuestion = () => {
-        sideEffects.push(() =>
-            electionMethods.upsert({ questions: { [Object.keys(questions).length]: { text: '', time: '' } } })
-        )
+        electionMethods.upsert({ questions: { [Object.keys(questions).length]: { text: '', time: '' } } })
     }
 
     const cleanEmptyQuestions = () => {
@@ -57,11 +49,11 @@ export default function Questions({ className, style, electionOM, onDone }) {
         let upsertNeeded = false
         for (const key in Object.keys(questions)) {
             if (!questions[key].text && !questions[key].time) {
-                deleteQuestions[key] = undefined
+                deleteQuestions[key] = ''
                 upsertNeeded = true
             }
         }
-        if (upsertNeeded) electionMethods.upsert({ questions: deleteQuestions })
+        if (upsertNeeded) electionMethods.unset({ questions: deleteQuestions })
         return true
     }
 
@@ -94,10 +86,6 @@ export default function Questions({ className, style, electionOM, onDone }) {
                                 if (electionObj.questions[qIndex].text !== value) {
                                     console.info('upserting', { questions: { [qIndex]: { text: value } } })
                                     electionMethods.upsert({ questions: { [qIndex]: { text: value } } })
-                                    /*
-                                    sideEffects.push(() =>
-                                        electionMethods.upsert({ questions: { [qIndex]: { text: value } } })
-                                    )*/
                                 }
                             }}
                         />
@@ -111,9 +99,7 @@ export default function Questions({ className, style, electionOM, onDone }) {
                             defaultValue={questions[qIndex].time}
                             onDone={({ valid, value }) => {
                                 if (electionObj.questions[qIndex].time !== value) {
-                                    sideEffects.push(() =>
-                                        electionMethods.upsert({ questions: { [qIndex]: { time: value } } })
-                                    )
+                                    electionMethods.upsert({ questions: { [qIndex]: { time: value } } })
                                 }
                             }}
                         />

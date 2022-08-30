@@ -5,7 +5,7 @@ import theme from '../app/theme'
 import useMethods, { setOrDelete } from 'use-methods'
 import getElectionStatusMethods from '../app/lib/get-election-status-methods'
 import ObjectID from 'isomorphic-mongo-objectid/src/isomorphic-mongo-objectid'
-
+import { applyUnsetAsUndefined } from '../app/components/subscribe-election-info'
 export const parameters = {
     actions: { argTypesRegex: '^on[A-Z].*' },
 }
@@ -27,6 +27,12 @@ export const decorators = [
                     if (typeof obj !== 'object') return // might be undefined
                     obj._count = (state._count || 0) + 1
                     dispatch(obj)
+                },
+                unset(obj) {
+                    if (typeof obj !== 'object') return
+                    const update = { _count: (state._count || 0) + 1 }
+                    applyUnsetAsUndefined(update, obj)
+                    dispatch(update)
                 },
                 createModeratorRecorder(cb) {
                     const newId = ObjectID().toString()

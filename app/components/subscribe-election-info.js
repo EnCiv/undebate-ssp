@@ -5,20 +5,49 @@ import getElectionStatusMethods from '../lib/get-election-status-methods'
 import useMethods from 'use-methods'
 import socketApiSubscribe from './lib/socket-api-subscribe'
 
+export function applyUnsetAsUndefined(obj, unset) {
+    if (typeof unset !== 'object' || !unset) return // might be undefined or null
+    Object.keys(unset).forEach(key => {
+        if (typeof unset[key] === 'object') {
+            if (typeof obj[key] !== 'object') {
+                obj[key] = {}
+            }
+            applyUnsetAsUndefined(obj[key], unset[key])
+        } else {
+            obj[key] = undefined
+        }
+    })
+}
+
 export default function SubscribeElectionInfo(props) {
     const { id } = props
     const electionOM = useMethods(
         (dispatch, state) => ({
             ...getElectionStatusMethods(dispatch, state),
-            merge(obj) {
+            merge(obj = {}, unset) {
                 console.info('merge called with', obj)
-                dispatch({ ...obj, _count: (state?._count || 0) + 1 })
+                const update = { ...obj, _count: (state?._count || 0) + 1 }
+                applyUnsetAsUndefined(update, unset)
+                dispatch(update)
             },
             upsert(obj) {
+                if (typeof obj !== 'object') return
                 if (state.webComponent) {
                     console.info('upsert called with', obj)
                     window.socket.emit('find-and-set-election-doc', { _id: id }, obj)
                     dispatch({ ...obj, _count: (state?._count || 0) + 1 })
+                } else {
+                    logger.info('upsert: no updates until state has been populated')
+                }
+            },
+            unset(obj) {
+                if (typeof obj !== 'object') return
+                if (state.webComponent) {
+                    console.info('unset called with', obj)
+                    window.socket.emit('find-and-unset-election-doc', { _id: id }, obj)
+                    const update = { _count: (state._count || 0) + 1 }
+                    applyUnsetAsUndefined(update, obj)
+                    dispatch(update)
                 } else {
                     logger.info('upsert: no updates until state has been populated')
                 }
