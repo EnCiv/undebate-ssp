@@ -35,7 +35,15 @@ const candidates = {
         email: 'felicia.reid@example.com',
         office: 'Posuere sed',
         region: 'Fermentum massa',
-        status: 'Send 12 days ago',
+        "invitations": [
+            {
+                "_id": "62196f00024e6143586ffc6c",
+                "text": "text",
+                "sentDate": "2022-02-10T00:50:16.802Z",
+                "responseDate": "2022-02-10T00:50:16.802Z",
+                "status": "Accepted"
+            }
+        ],
         uniqueId: '61e34ba4dd28d45f2c6c66be',
     },
     '61e34bb17ad05c2b9003f600': {
@@ -43,7 +51,22 @@ const candidates = {
         email: 'nevaeh.simmons@example.com',
         office: 'Eu at',
         region: 'Amet sodales',
-        status: 'Send 12 days ago',
+        "invitations": [
+            {
+                "_id": "63194dd4a02246a0f6b16e2c",
+                "text": "text",
+                "sentDate": "2022-08-10T00:50:16.802Z",
+                "responseDate": "2022-02-10T00:50:16.802Z",
+                "status": "Accepted"
+            },
+            {
+                "_id": "63194dd4a02246a0f6b16e2c",
+                "text": "text",
+                "sentDate": "2022-09-10T00:50:16.802Z",
+                "responseDate": "2022-02-10T00:50:16.802Z",
+                "status": "Accepted"
+            },
+        ],
         uniqueId: '61e34bb17ad05c2b9003f600',
     },
 }

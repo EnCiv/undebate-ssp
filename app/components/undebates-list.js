@@ -6,7 +6,7 @@ import getElectionStatusMethods, {
     allCandidatesStatusTexts,
     allDateFilterOptions,
     allElectionStatusTexts,
-    allModeratorStatusTexts,
+    allModeratorStatusTexts, getDaysText,
 } from '../lib/get-election-status-methods'
 import CandidateStatusTable from './candidate-status-table'
 import ElectionUrgentLiveFilters from './election-urgent-live-filters'
@@ -533,21 +533,6 @@ function StatusFilter({ column: { filterValue, setFilter, preFilteredRows, id } 
     }, [id, preFilteredRows])
 
     return <MultiselectFilter values={options} onSetFilter={values => setFilter(values)} />
-}
-
-function getDaysText(daysRemaining) {
-    if (daysRemaining === undefined || daysRemaining === null || daysRemaining == '') {
-        return ''
-    }
-    let daysText
-    if (daysRemaining > 0) {
-        daysText = daysRemaining + ' days left'
-    } else if (daysRemaining === 0) {
-        daysText = 'Today'
-    } else {
-        daysText = daysRemaining * -1 + ' days ago'
-    }
-    return daysText
 }
 
 export default function UndebatesList({ className, style, electionObjs, globalFilter, onDone }) {

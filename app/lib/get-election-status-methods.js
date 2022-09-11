@@ -125,6 +125,21 @@ export const daysBetweenDates = (date1, date2) => {
     return (diffInTime / (1000 * 3600 * 24)).toFixed()
 }
 
+export const getDaysText = (daysRemaining) => {
+    if (daysRemaining === undefined || daysRemaining === null || daysRemaining === '') {
+        return ''
+    }
+    let daysText
+    if (daysRemaining > 0) {
+        daysText = daysRemaining + ' days left'
+    } else if (daysRemaining === 0 || daysRemaining === -0) {
+        daysText = 'Today'
+    } else {
+        daysText = daysRemaining * -1 + ' days ago'
+    }
+    return daysText
+}
+
 function getElectionStatusMethods(dispatch, state) {
     const recentModeratorInvitationStatus = () => getLatestIota(state?.moderator?.invitations)
     const checkTimelineCompleted = () => {

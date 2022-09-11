@@ -40,7 +40,7 @@ function EditableCell(props) {
         <input
             ref={inputRef}
             style={style}
-            disabled={id === 'status' || !updateMyData.editable}
+            disabled={!updateMyData.editable}
             defaultValue={value}
             onBlur={onBlur}
         />

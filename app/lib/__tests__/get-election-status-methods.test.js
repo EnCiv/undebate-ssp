@@ -1,4 +1,4 @@
-import getElectionStatusMethods from '../get-election-status-methods'
+import getElectionStatusMethods, {getDaysText} from '../get-election-status-methods'
 Date.prototype.addDays = function (days) {
     this.setDate(this.getDate() + parseInt(days))
     return this
@@ -1525,6 +1525,26 @@ describe('election status methods', () => {
             let state = {}
             const { areQuestionsLocked } = getElectionStatusMethods(null, state)
             expect(areQuestionsLocked()).toBe(false)
+        })
+    })
+    describe('get days text', () => {
+        it('should be blank', () => {
+            expect(getDaysText()).toBe('');
+            expect(getDaysText(undefined)).toBe('');
+            expect(getDaysText(null)).toBe('');
+            expect(getDaysText('')).toBe('');
+        })
+        it('should show today', () => {
+            expect(getDaysText(0)).toBe('Today');
+            expect(getDaysText(-0)).toBe('Today');
+        })
+        it('should show days ago', () => {
+            expect(getDaysText(-1)).toBe('1 days ago');
+            expect(getDaysText(-100)).toBe('100 days ago');
+        })
+        it('should show days left', () => {
+            expect(getDaysText(1)).toBe('1 days left');
+            expect(getDaysText(100)).toBe('100 days left');
         })
     })
 })
