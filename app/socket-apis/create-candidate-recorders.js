@@ -6,6 +6,9 @@ import { getLatestIota, candidateFilters } from '../lib/get-election-status-meth
 
 const introVideo =
     'https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378414/621e826899902756d4ba49f5-0-speaking20220824T220002681Z.mp4'
+const introVideoName = 'David Fridley, EnCiv'
+const introListening =
+    'https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378417/621e826899902756d4ba49f5-0-listening20220824T220015791Z.mp4'
 
 export default async function createCandidateRecorder(id, filter = 'ALL', cb) {
     if (!this.synuser) {
@@ -72,13 +75,26 @@ export async function createCandidateRecordersFromIdAndElectionObj(id, filter, e
     const viewerRecorder = new sspViewerRecorder(electionObj)
 
     viewerRecorder.candidateRecorder.component.participants.moderator.speaking = recorderSpeaking
+    viewerRecorder.candidateRecorder.component.participants.moderator.names = [introVideoName]
+    viewerRecorder.candidateRecorder.component.participants.moderator.names.fill(
+        moderatorComponent.participant.name,
+        1,
+        recorderSpeaking.length
+    )
+    viewerRecorder.candidateRecorder.component.participants.moderator.listeningURLs = [introListening]
+    viewerRecorder.candidateRecorder.component.participants.moderator.listeningURLs.fill(
+        moderatorComponent.participant.listening,
+        1,
+        recorderSpeaking.length
+    )
+    viewerRecorder.candidateRecorder.component.participants.moderator.name = moderatorComponent.participant.name // names above will superseed
     viewerRecorder.candidateRecorder.component.participants.moderator.listening =
-        moderatorComponent.participant.listening
+        moderatorComponent.participant.listening // listeningURLs above will superseed
     viewerRecorder.candidateRecorder.component.participants.moderator.agenda = recorderAgenda
     viewerRecorder.candidateRecorder.component.participants.moderator.timeLimits = recorderTimeLimits
 
     viewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking
-    viewerRecorder.candidateViewer.webComponent.participants.moderator.name = electionObj.moderator.name
+    viewerRecorder.candidateViewer.webComponent.participants.moderator.name = moderatorComponent.participant.name
     viewerRecorder.candidateViewer.webComponent.participants.moderator.listening =
         moderatorComponent.participant.listening
     viewerRecorder.candidateViewer.parentId = id
