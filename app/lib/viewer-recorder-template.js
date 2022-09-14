@@ -1,8 +1,9 @@
 'use strict'
 const S = require('underscore.string')
 const MongoModels = require('mongo-models')
+const scheme = require('../lib/scheme')
 
-const hostName = process.env.HOST_NAME || 'https://cc.enciv.org'
+const hostName = process.env.HOSTNAME ? scheme() + process.env.HOSTNAME : 'https://cc.enciv.org'
 
 // todo export this from common package
 
