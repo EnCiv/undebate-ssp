@@ -1,8 +1,10 @@
 // https://github.com/EnCiv/undebate-ssp/issues/127
+import { Iota } from 'civil-server'
 import { undebatesFromTemplateAndRows } from 'undebate'
 import sspViewerRecorder from '../lib/ssp-viewer-recorder'
 import { getElectionDocById } from './get-election-docs'
 import { getLatestIota, candidateFilters } from '../lib/get-election-status-methods'
+import {updateElectionInfo} from "./subscribe-election-info";
 
 // todo eventually replace this video
 const introVideo =
@@ -32,12 +34,29 @@ export default async function createCandidateRecorder(id, filter = 'ALL', cb) {
                 if (cb) cb()
                 return
             }
-            // to do: rowObjs has the candidates table plus the viewer and recorder links, plus an indicator if they'v changed
-            // do we add that info to the candidates table
+
+            logger.debug('messages', messages);
+            logger.debug('rowObjs', rowObjs);
+            logger.debug('hostname', process.env.HOST_NAME);
+            for (const rowObj of rowObjs) {
+                const paths = []
+                if (rowObj.viewer_url) paths.push(rowObj.viewer_url.replace(process.env.HOST_NAME, ''))
+                if (rowObj.recorder_url) paths.push(rowObj.recorder_url.replace(process.env.HOST_NAME, ''))
+                try {
+                    logger.debug('paths', paths);
+                    const iotas = await Iota.find({ path: { $in: paths } })
+                    logger.debug('iotas', iotas)
+                    if (iotas?.length) updateElectionInfo.call(this, id, id, iotas)
+                } catch (err) {
+                    if (cb) cb()
+                    logger.error('createCandidateRecorder could not updateElectionInfo', id, err)
+                }
+            }
+
             if (cb) cb({ rowObjs, messages })
         })
     } catch (err) {
-        logger.error('err', err)
+        logger.error('createCandidateRecorder caught err', err)
         if (cb) cb()
     }
 }
@@ -58,6 +77,8 @@ export async function createCandidateRecordersFromIdAndElectionObj(id, filter, e
     agenda.push(['Thank You'])
     const timeLimits = sortedQuestionPairs.map(([key, Obj]) => Obj.time)
 
+    console.log(electionObj.moderator);
+    console.log(electionObj.moderator.submissions);
     const moderatorComponent = getLatestIota(electionObj.moderator.submissions).component
     const speaking = moderatorComponent.participant.speaking.slice()
 
