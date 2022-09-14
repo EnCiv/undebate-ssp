@@ -98,6 +98,7 @@ export default function ModeratorRecorder(props) {
         <Submit
             name={recorderStatus === 'recreate' ? 'Regenerate Recorder' : 'Generate Recorder'}
             disabled={submitted || !(recorderStatus === 'ready' || recorderStatus === 'recreate')}
+            disableOnClick
             onDone={() => {
                 setSubmitted(true) // disable the button
                 electionMethods.createModeratorRecorder(result => {
