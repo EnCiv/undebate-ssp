@@ -1,7 +1,7 @@
 'use strict'
 const S = require('underscore.string')
 const MongoModels = require('mongo-models')
-const scheme = require('../lib/scheme')
+import scheme from '../lib/scheme'
 
 const hostName = process.env.HOSTNAME ? scheme() + process.env.HOSTNAME : 'https://cc.enciv.org'
 
