@@ -110,9 +110,9 @@ export default async function createModeratorRecorder(id, cb) {
         // here is a kludge for now, to get the new Iotas and update and browsers subscribed to election info
         // likely the user who just called create-moderator-recorders
         const paths = []
-        if (rowObjs[0].viewer_url) paths.push(rowObjs[0].viewer_url.replace(process.env.HOSTNAME + '/', ''))
-        if (rowObjs[0].recorder_url) paths.push(rowObjs[0].recorder_url.replace(process.env.HOSTNAME + '/', ''))
         try {
+            if (rowObjs[0].viewer_url) paths.push(new URL(rowObjs[0].viewer_url).pathname)
+            if (rowObjs[0].recorder_url) paths.push(new URL(rowObjs[0].recorder_url).pathname)
             const iotas = await Iota.find({ path: { $in: paths } })
             if (iotas?.length) updateElectionInfo.call(this, id, id, iotas)
         } catch (err) {
