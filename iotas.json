@@ -336,11 +336,11 @@
             "statements": [
                 {
                     "subject": "What are Undebates",
-                    "description": "Reading candidate statements can be boring, uninspring, and easialy procrastinated.\nUndebates are automated online video Q&A with candidates so that can be heard, and for voters so they can quickly make a more meaningful decision."
+                    "description": "Reading candidate statements can be boring, uninspiring, and easily procrastinated.\nUndebates are automated online video Q&A with candidates so that they can be heard, and for voters so they can quickly make a more meaningful decision."
                 },
                 {
                     "subject": "How It Works",
-                    "description": "The election administrator will setup the election, enter the questions, invite a moderator, enter or import the candidate info, and invites the candidates to record. An inteactive debate viewer will be generated that can be embedded on a website, or shared or emailed as a link"
+                    "description": "The election administrator will setup the election, enter the questions, invite a moderator, enter or import the candidate info, and invite the candidates to record. An interactive debate viewer will be generated, which can be embedded on a website as well as shared or emailed as a link"
                 }
             ],
             "topIframe": {
@@ -350,7 +350,7 @@
                     "subtitle": "13 Offices"
                 },
                 "portraitStatement": {
-                    "subject": "Taylored for every device and every layout",
+                    "subject": "Tailored for every device and every layout",
                     "description": "Dolor adipiscing augue diam nulla ornare dictum tortor id ut. Eu etiam sed fermentum egestas nisl nulla porttitor non justo. Dolor commodo id justo, pretium. Magna et arcu fringilla in nisi, mauris tincidunt. Penatibus turpis eget sapien non at phasellus lacus. Pellentesque consectetur nunc mi amet curabitur cras fames amet cursus."
                 }
             },
@@ -368,7 +368,7 @@
                 {
                     "iconName": "SvgShortFormat",
                     "subject": "Short formats to decide quickly.",
-                    "description": "Time conciousness at every step that caters more towards the modern attention span."
+                    "description": "Time consciousness at every step that caters more towards the modern attention span."
                 }
             ],
             "faqs": [
