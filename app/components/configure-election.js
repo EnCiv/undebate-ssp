@@ -13,6 +13,7 @@ import Submissions from './submissions'
 import Undebate from './undebate'
 import ModeratorRecorder from './moderator-recorder'
 import { useSearchParams } from 'react-router-dom'
+import Spinner from './spinner'
 
 const components = {
     Election: ElectionComponent,
@@ -39,7 +40,10 @@ export default function ConfigureElection(props) {
         if (!searchParams.get('tab'))
             setSearchParams((searchParams.set('tab', keys[0]), searchParams), { replace: true }) // this changes replaces history
     }, [])
-
+    // undebatesList be scrolled when switching to this page
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [component])
     return (
         <div className={cx(className, classes.wrapper)} style={style}>
             <div className={classes.workArea}>
@@ -52,14 +56,20 @@ export default function ConfigureElection(props) {
                     }}
                     component={component}
                 />
-                <div className={classes.comp}>
-                    <Component
-                        className={classes.inner}
-                        electionOM={electionOM}
-                        key={component}
-                        onDone={({ valid, value }) => setSearchParams((searchParams.set('tab', next), searchParams))}
-                    />
-                </div>
+                {electionOM?.[0]?.id ? (
+                    <div className={classes.comp}>
+                        <Component
+                            className={classes.inner}
+                            electionOM={electionOM}
+                            key={component}
+                            onDone={({ valid, value }) =>
+                                setSearchParams((searchParams.set('tab', next), searchParams))
+                            }
+                        />
+                    </div>
+                ) : (
+                    <Spinner />
+                )}
             </div>
         </div>
     )
