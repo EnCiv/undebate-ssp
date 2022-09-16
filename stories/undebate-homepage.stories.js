@@ -207,3 +207,8 @@ NewUser.args = {
 export const NoUser = Template.bind({})
 const iota = iotas.find(doc => doc.path === '/undebates')
 NoUser.args = iota.webComponent
+
+export const NoDataYet = Template.bind()
+NoDataYet.args = {
+    user: { id: '6274ae8bee422b0f9c607b75', email: 'someone@email.com' },
+}
