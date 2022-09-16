@@ -71,7 +71,7 @@ test('it should create a viewer', done => {
                   "_id": Any<ObjectID>,
                   "bp_info": Object {
                     "electionList": Array [
-                      "/country:us/org:usfg/office:moderator/2022-11-07",
+                      "/country:us/org:united-states-federal-government:u-s-presidential-election/office:moderator/2022-11-07",
                     ],
                     "election_date": "11/07/2022",
                     "election_source": "United States Federal Government",
@@ -82,7 +82,7 @@ test('it should create a viewer', done => {
                   },
                   "description": "A Candidate Conversation for: Moderator",
                   "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-                  "path": "/country:us/org:usfg/office:moderator/2022-11-07",
+                  "path": "/country:us/org:united-states-federal-government:u-s-presidential-election/office:moderator/2022-11-07",
                   "subject": "Moderator",
                   "webComponent": Object {
                     "closing": Object {
@@ -155,7 +155,7 @@ test('it should create a recorder', async () => {
 
             parentId: expect.stringMatching(objectIdPattern),
             path: expect.stringMatching(
-                /\/country:us\/org:usfg\/office:moderator\/2022-11-07-recorder-[0-9a-fA-F]{24}$/
+                /\/country:us\/org:united-states-federal-government:u-s-presidential-election\/office:moderator\/2022-11-07-recorder-[0-9-a-fA-F]{24}$/
             ),
         },
         `
@@ -217,17 +217,17 @@ test('it should create a recorder', async () => {
                 ],
                 "timeLimits": Array [
                   15,
-                  60,
-                  60,
-                  60,
-                  60,
+                  300,
+                  300,
+                  300,
+                  300,
                 ],
               },
             },
           },
           "description": "A Candidate Recorder for the undebate: Moderator",
           "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-          "path": StringMatching /\\\\/country:us\\\\/org:usfg\\\\/office:moderator\\\\/2022-11-07-recorder-\\[0-9a-fA-F\\]\\{24\\}\\$/,
+          "path": StringMatching /\\\\/country:us\\\\/org:united-states-federal-government:u-s-presidential-election\\\\/office:moderator\\\\/2022-11-07-recorder-\\[0-9-a-fA-F\\]\\{24\\}\\$/,
           "subject": "Moderator-Candidate Recorder",
           "webComponent": Object {
             "closing": Object {

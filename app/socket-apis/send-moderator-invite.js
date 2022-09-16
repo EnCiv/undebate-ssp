@@ -4,6 +4,7 @@ import { getElectionDocById } from './get-election-docs'
 import { Iota } from 'civil-server'
 import { updateElectionInfo } from './subscribe-election-info'
 import { getLatestIota, getLatestObjByDate } from '../lib/get-election-status-methods'
+import scheme from '../lib/scheme'
 
 var templateId
 import { getModeratorRecorderStatus } from '../components/moderator-recorder'
@@ -44,7 +45,7 @@ export default async function sendModeratorInvite(id, cb) {
             moderator: {
                 name: electionObj.moderator.name,
                 email: electionObj.moderator.email,
-                recorder_url: process.env.HOSTNAME + getLatestIota(electionObj.moderator.recorders).path,
+                recorder_url: scheme() + process.env.HOSTNAME + getLatestIota(electionObj.moderator.recorders).path,
                 submissionDeadline: new Date(submissionDeadline).toLocaleString(),
             },
         }

@@ -3,7 +3,8 @@ import { serverEvents, Iota } from 'civil-server'
 import { merge } from 'lodash'
 import { subscribeEventName } from '../components/lib/socket-api-subscribe'
 import { getElectionDocById, intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs } from './get-election-docs'
-import { diff } from 'deep-object-diff'
+import { diff, detailedDiff } from 'deep-object-diff'
+import { applyUnsetAsUndefined } from '../components/subscribe-election-info'
 
 // there could be multiple subscribers to changes on the same id.  When a change is made to an id, be careful to only update the electionIota once, and then send the update to all the subscribers.
 // currently, updates are the entire iota, in the ideal, only what's changed will be send in the update.
@@ -77,15 +78,25 @@ export default function subscribeElectionInfo(id, cb) {
             if (!electionIotaSubscribers[id].sockets.length) {
                 electionIotaSubscribers[id].electionIota = electionIota
             } else {
-                const updatedIota = diff(electionIotaSubscribers[id].electionIota, electionIota)
-                if (updatedIota.webComponent) {
+                const { added, deleted, updated } = detailedDiff(electionIotaSubscribers[id].electionIota, electionIota)
+                merge(added, updated)
+                unundefine(deleted)
+                if (added.webComponent || deleted.webComponent) {
                     // there has been changes in the db that hasn't been sent to the subscribes yet - example undebates-from-templates-and-rows makes changes without sending notifications
                     // to do - .watch() the iota collection for updates
-                    updateSubscribers.call(this, id, updatedIota)
+                    updateSubscribers.call(this, id, added, deleted)
                 }
             }
         }
         finishSubscribe(socket, id, cb)
+    })
+}
+// for every value in the obj that is undefined set it to ''
+function unundefine(obj) {
+    if (!obj) return
+    Object.keys(obj).forEach(key => {
+        if (typeof obj[key] === 'object') unundefine(obj[key])
+        else if (typeof obj[key] === 'undefined') obj[key] = ''
     })
 }
 
@@ -114,7 +125,16 @@ export function updateElectionInfo(rootId, parentId, iotas) {
     socket.emit(eventName, electionUpdates) // broadcast above doesn't send it to the socket itself
 }
 
-export function updateSubscribers(rootId, update) {
+function applyUnset(obj, unset = {}) {
+    Object.keys(unset).forEach(key => {
+        if (typeof unset[key] === 'object') {
+            if (typeof obj[key] === 'object') applyUnset(obj[key], unset[key])
+            else return // no need to unset something that's not there
+        } else delete obj[key]
+    })
+}
+
+export function updateSubscribers(rootId, update, unset) {
     if (!rootId) {
         logger.warn('updateSubscribers - no parentId')
         return
@@ -130,7 +150,7 @@ export function updateSubscribers(rootId, update) {
         return
     }
     const eventName = subscribeEventName('subscribe-election-info', rootId)
-    merge(electionIota, update)
-    const electionUpdates = update.webComponent || {}
-    this.broadcast.to(rootId).emit(eventName, electionUpdates)
+    update && merge(electionIota, update)
+    unset && applyUnset(electionIota, unset)
+    this.broadcast.to(rootId).emit(eventName, update?.webComponent, unset?.webComponent)
 }

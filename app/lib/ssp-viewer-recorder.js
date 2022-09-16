@@ -1,14 +1,21 @@
 import viewerRecorderTemplate from './viewer-recorder-template'
+import S from 'underscore.string'
 
 export default class sspViewerRecorder extends viewerRecorderTemplate {
     constructor(electionObj) {
         super()
         const YYYY_MM_DD = electionObj.electionDate.split('T')[0].split('-')
         const electionDate = YYYY_MM_DD[1] + '/' + YYYY_MM_DD[2] + '/' + YYYY_MM_DD[0]
-        const type_id = [...electionObj.organizationName].reduce(
-            (type_id, c) => (c >= 'A' && c <= 'Z' ? type_id + c : type_id),
-            ''
-        )
+        let type_id
+        try {
+            type_id = S(new URL(electionObj.organizationUrl).hostname).slugify().value()
+        } catch (err) {
+            // new URL() could thow an error
+            type_id = S(electionObj.organizationName || '')
+                .slugify()
+                .value()
+        }
+        type_id = type_id + ':' + S(electionObj.electionName).slugify().value() // electionName so unique if admin creates 2 elections with same date
         this.gFC = {
             type_name: () => 'org', // used in url path
             type_id: row => type_id, // must be globaly unique used in url path

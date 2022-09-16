@@ -11,15 +11,19 @@ const Integer = /^[0-9]+$/
 const ObjectID = /^[0-9a-fA-F]{24}$/
 const SANE = 4096
 
+const String = () => Joi.string().allow('').max(SANE)
+const IsoDate = () => Joi.string().allow('').isoDate()
+const Email = () => Joi.string().allow('').email()
+
 function invitations() {
     return Joi.object().pattern(
         Joi.string().pattern(ObjectID),
         Joi.object({
             _id: Joi.objectId(),
-            text: Joi.string().max(SANE),
-            sentDate: Joi.string().isoDate(),
-            responseDate: Joi.string().isoDate(),
-            status: Joi.string().max(SANE),
+            text: String(),
+            sentDate: IsoDate(),
+            responseDate: IsoDate(),
+            status: String(),
         })
     )
 }
@@ -28,8 +32,8 @@ function submissions() {
         Joi.string().pattern(ObjectID),
         Joi.object({
             _id: Joi.objectId(),
-            url: Joi.string().max(SANE),
-            date: Joi.string().isoDate(),
+            url: String(),
+            date: IsoDate(),
             parentId: Joi.string().pattern(ObjectID),
         })
     )
@@ -37,29 +41,29 @@ function submissions() {
 const electionSchema = Joi.object({
     id: Joi.string().pattern(ObjectID),
     webComponent: 'ElectionDoc',
-    electionName: Joi.string().max(SANE),
-    organizationName: Joi.string().max(SANE),
+    electionName: String(),
+    organizationName: String(),
     organizationUrl: Joi.string().allow('').uri(),
     organizationLogo: Joi.string().allow('').uri(),
-    electionDate: Joi.string().isoDate(),
-    email: Joi.string().allow('').email(),
+    electionDate: IsoDate(),
+    email: Email(),
     questions: Joi.object().pattern(
         Joi.string().pattern(Integer),
         Joi.object({
-            text: Joi.string().max(SANE),
+            text: String(),
             time: Joi.string().allow('').pattern(Integer),
         })
     ),
     script: Joi.object().pattern(
         Joi.string().pattern(Integer),
         Joi.object({
-            text: Joi.string().max(SANE),
+            text: String(),
         })
     ),
     moderator: Joi.object({
-        name: Joi.string().max(SANE),
-        email: Joi.string().allow('').email(),
-        message: Joi.string().max(SANE),
+        name: String(),
+        email: Email(),
+        message: String(),
         invitations: invitations(),
         submissions: submissions(),
         recorders: Joi.object(),
@@ -69,10 +73,10 @@ const electionSchema = Joi.object({
         Joi.string().pattern(ObjectID),
         Joi.object({
             uniqueId: Joi.string().pattern(ObjectID),
-            name: Joi.string().max(SANE),
-            email: Joi.string().allow('').email(),
-            office: Joi.string().max(SANE),
-            region: Joi.string().max(SANE),
+            name: String(),
+            email: Email(),
+            office: String(),
+            region: String(),
             invitations: invitations(),
             submissions: submissions(),
             recorders: Joi.object(),
@@ -82,40 +86,40 @@ const electionSchema = Joi.object({
         moderatorDeadlineReminderEmails: Joi.object().pattern(
             Joi.string().pattern(Integer),
             Joi.object({
-                date: Joi.string().isoDate(),
+                date: IsoDate(),
                 sent: Joi.boolean(),
             })
         ),
         moderatorSubmissionDeadline: Joi.object().pattern(
             Joi.string().pattern(Integer),
             Joi.object({
-                date: Joi.string().isoDate(),
+                date: IsoDate(),
                 sent: Joi.boolean(),
             })
         ),
         moderatorInviteDeadline: Joi.object().pattern(
             Joi.string().pattern(Integer),
             Joi.object({
-                date: Joi.string().isoDate(),
+                date: IsoDate(),
                 sent: Joi.boolean(),
             })
         ),
         candidateDeadlineReminderEmails: Joi.object().pattern(
             Joi.string().pattern(Integer),
             Joi.object({
-                date: Joi.string().isoDate(),
+                date: IsoDate(),
                 sent: Joi.boolean(),
             })
         ),
         candidateSubmissionDeadline: Joi.object().pattern(
             Joi.string().pattern(Integer),
             Joi.object({
-                date: Joi.string().isoDate(),
+                date: IsoDate(),
                 sent: Joi.boolean(),
             })
         ),
     },
-    undebateDate: Joi.string().isoDate(),
+    undebateDate: IsoDate(),
     doneLocked: Joi.object(),
 })
 
