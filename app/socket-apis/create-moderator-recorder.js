@@ -125,14 +125,15 @@ recorder Iotas.  But if the admin ends up changing who the moderator is, the new
         // here is a kludge for now, to get the new Iotas and update and browsers subscribed to election info
         // likely the user who just called create-moderator-recorders
         const paths = []
-        if (rowObjs[0].viewer_url) paths.push(rowObjs[0].viewer_url.replace(process.env.HOSTNAME + '/', ''))
-        if (rowObjs[0].recorder_url) paths.push(rowObjs[0].recorder_url.replace(process.env.HOSTNAME + '/', ''))
         try {
+            if (rowObjs[0].viewer_url) paths.push(new URL(rowObjs[0].viewer_url).pathname)
+            if (rowObjs[0].recorder_url) paths.push(new URL(rowObjs[0].recorder_url).pathname)
             const iotas = await Iota.find({ path: { $in: paths } })
             if (iotas?.length) updateElectionInfo.call(this, id, id, iotas)
+            else logger.error('createModeratorRecorder cound not find what it tried to create.', id)
         } catch (err) {
             if (cb) cb()
-            console.error('createModeratorRecorder could not updateElectionInfo', id, err)
+            logger.error('createModeratorRecorder could not updateElectionInfo', id, err)
         }
         if (cb) cb({ rowObjs, messages })
     } catch (err) {

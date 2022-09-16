@@ -1,5 +1,7 @@
 // https://github.com/EnCiv/undebate-ssp/issues/127
+import { Iota } from 'civil-server'
 import { undebatesFromTemplateAndRows } from 'undebate'
+import { updateElectionInfo } from './subscribe-election-info'
 import sspViewerRecorder from '../lib/ssp-viewer-recorder'
 import { getElectionDocById } from './get-election-docs'
 import { getLatestIota, candidateFilters } from '../lib/get-election-status-methods'
@@ -105,6 +107,30 @@ export async function createCandidateRecordersFromIdAndElectionObj(id, filter, e
         viewerRecorder,
         Object.values(electionObj.candidates).filter(filterOp)
     )
+    // undebatesFromTemplateAndRows doesn't return the new iotas, and doesn't generate events for the new iotas
+    // here is a kludge for now, to get the new Iotas and update and browsers subscribed to election info
+    // likely the user who just called create-moderator-recorders
+
+    // subscribed browsers need updates on the viewers for the offices we ard doing the recorders for consistency
+    // the same viewer will appear in multiple rows - so we de-dup the array using Set
+    let paths = new Set()
+    try {
+        for (const row of rowObjs) {
+            try {
+                const v_url = new URL(row.viewer_url).pathname
+                if (v_url) paths.add(v_url)
+                const r_url = new URL(row.recorder_url).pathname
+                if (r_url) paths.add(r_url)
+            } catch (err) {
+                logger.error('create-candidate-recorders URL not valid in row', row) // URL() could Throw, just ignore it and move on
+            }
+        }
+        const iotas = await Iota.find({ path: { $in: [...paths] } })
+        if (iotas?.length) updateElectionInfo.call(this, id, id, iotas)
+        else logger.error('createModeratorRecorder cound not find what it tried to create.', id)
+    } catch (err) {
+        logger.error('createModeratorRecorder could not updateElectionInfo', id, err)
+    }
     return { rowObjs, messages }
 }
 

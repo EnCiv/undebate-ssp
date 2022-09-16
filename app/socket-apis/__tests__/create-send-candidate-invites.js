@@ -165,7 +165,7 @@ test('it should create a viewer', done => {
                     bp_info: {
                         electionList: [
                             expect.stringMatching(
-                                /\/country:us\/org:to\/office:president-of-the-u-s\/\d\d\d\d-\d\d-\d\d/
+                                /\/country:us\/org:the-organization:the-election\/office:president-of-the-u-s\/\d\d\d\d-\d\d-\d\d/
                             ),
                         ],
 
@@ -173,7 +173,7 @@ test('it should create a viewer', done => {
                     },
 
                     path: expect.stringMatching(
-                        /\/country:us\/org:to\/office:president-of-the-u-s\/\d\d\d\d-\d\d-\d\d/
+                        /\/country:us\/org:the-organization:the-election\/office:president-of-the-u-s\/\d\d\d\d-\d\d-\d\d/
                     ),
                 },
                 `
@@ -181,7 +181,7 @@ test('it should create a viewer', done => {
                   "_id": Any<ObjectID>,
                   "bp_info": Object {
                     "electionList": Array [
-                      StringMatching /\\\\/country:us\\\\/org:to\\\\/office:president-of-the-u-s\\\\/\\\\d\\\\d\\\\d\\\\d-\\\\d\\\\d-\\\\d\\\\d/,
+                      StringMatching /\\\\/country:us\\\\/org:the-organization:the-election\\\\/office:president-of-the-u-s\\\\/\\\\d\\\\d\\\\d\\\\d-\\\\d\\\\d-\\\\d\\\\d/,
                     ],
                     "election_date": StringMatching /\\\\d\\\\d\\\\/\\\\d\\\\d\\\\/\\\\d\\\\d\\\\d\\\\d/,
                     "election_source": "The Organization",
@@ -192,7 +192,7 @@ test('it should create a viewer', done => {
                   },
                   "description": "A Candidate Conversation for: President of the U.S.",
                   "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-                  "path": StringMatching /\\\\/country:us\\\\/org:to\\\\/office:president-of-the-u-s\\\\/\\\\d\\\\d\\\\d\\\\d-\\\\d\\\\d-\\\\d\\\\d/,
+                  "path": StringMatching /\\\\/country:us\\\\/org:the-organization:the-election\\\\/office:president-of-the-u-s\\\\/\\\\d\\\\d\\\\d\\\\d-\\\\d\\\\d-\\\\d\\\\d/,
                   "subject": "President of the U.S.",
                   "webComponent": Object {
                     "closing": Object {
@@ -222,7 +222,7 @@ test('it should create a viewer', done => {
                           ],
                         ],
                         "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
-                        "name": "bob",
+                        "name": "david",
                         "speaking": Array [
                           "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm",
                           "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510659/5d5b73c01e3b194174cd9b92-2-speaking.webm",
@@ -263,7 +263,7 @@ test('it should create a recorder', async () => {
 
             parentId: expect.toBeObjectId(),
             path: expect.stringMatching(
-                /\/country:us\/org:to\/office:president-of-the-u-s\/\d\d\d\d-\d\d-\d\d-recorder-[0-9-a-fA-F]{24}$/
+                /\/country:us\/org:the-organization:the-election\/office:president-of-the-u-s\/\d\d\d\d-\d\d-\d\d-recorder-[0-9-a-fA-F]{24}$/
             ),
         },
         `
@@ -310,7 +310,13 @@ test('it should create a recorder', async () => {
                   ],
                 ],
                 "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
-                "name": "",
+                "listeningURLs": Array [
+                  "https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378417/621e826899902756d4ba49f5-0-listening20220824T220015791Z.mp4",
+                ],
+                "name": "david",
+                "names": Array [
+                  "David Fridley, EnCiv",
+                ],
                 "speaking": Array [
                   "https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378414/621e826899902756d4ba49f5-0-speaking20220824T220002681Z.mp4",
                   "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm",
@@ -328,7 +334,7 @@ test('it should create a recorder', async () => {
           },
           "description": "A Candidate Recorder for the undebate: President of the U.S.",
           "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-          "path": StringMatching /\\\\/country:us\\\\/org:to\\\\/office:president-of-the-u-s\\\\/\\\\d\\\\d\\\\d\\\\d-\\\\d\\\\d-\\\\d\\\\d-recorder-\\[0-9-a-fA-F\\]\\{24\\}\\$/,
+          "path": StringMatching /\\\\/country:us\\\\/org:the-organization:the-election\\\\/office:president-of-the-u-s\\\\/\\\\d\\\\d\\\\d\\\\d-\\\\d\\\\d-\\\\d\\\\d-recorder-\\[0-9-a-fA-F\\]\\{24\\}\\$/,
           "subject": "President of the U.S.-Candidate Recorder",
           "webComponent": Object {
             "closing": Object {
@@ -361,7 +367,7 @@ test('it should create a recorder', async () => {
 
             parentId: expect.toBeObjectId(),
             path: expect.stringMatching(
-                /\/country:us\/org:to\/office:president-of-the-u-s\/\d\d\d\d-\d\d-\d\d-recorder-[0-9-a-fA-F]{24}$/
+                /\/country:us\/org:the-organization:the-election\/office:president-of-the-u-s\/\d\d\d\d-\d\d-\d\d-recorder-[0-9-a-fA-F]{24}$/
             ),
         },
         `
@@ -408,7 +414,13 @@ test('it should create a recorder', async () => {
                   ],
                 ],
                 "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
-                "name": "",
+                "listeningURLs": Array [
+                  "https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378417/621e826899902756d4ba49f5-0-listening20220824T220015791Z.mp4",
+                ],
+                "name": "david",
+                "names": Array [
+                  "David Fridley, EnCiv",
+                ],
                 "speaking": Array [
                   "https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378414/621e826899902756d4ba49f5-0-speaking20220824T220002681Z.mp4",
                   "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm",
@@ -426,7 +438,7 @@ test('it should create a recorder', async () => {
           },
           "description": "A Candidate Recorder for the undebate: President of the U.S.",
           "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-          "path": StringMatching /\\\\/country:us\\\\/org:to\\\\/office:president-of-the-u-s\\\\/\\\\d\\\\d\\\\d\\\\d-\\\\d\\\\d-\\\\d\\\\d-recorder-\\[0-9-a-fA-F\\]\\{24\\}\\$/,
+          "path": StringMatching /\\\\/country:us\\\\/org:the-organization:the-election\\\\/office:president-of-the-u-s\\\\/\\\\d\\\\d\\\\d\\\\d-\\\\d\\\\d-\\\\d\\\\d-recorder-\\[0-9-a-fA-F\\]\\{24\\}\\$/,
           "subject": "President of the U.S.-Candidate Recorder",
           "webComponent": Object {
             "closing": Object {

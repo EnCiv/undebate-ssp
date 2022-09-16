@@ -72,7 +72,7 @@ test('it should create a viewer', done => {
                   "_id": Any<ObjectID>,
                   "bp_info": Object {
                     "electionList": Array [
-                      "/country:us/org:usfg/office:president-of-the-u-s/2022-11-07",
+                      "/country:us/org:united-states-federal-government:u-s-presidential-election/office:president-of-the-u-s/2022-11-07",
                     ],
                     "election_date": "11/07/2022",
                     "election_source": "United States Federal Government",
@@ -83,7 +83,7 @@ test('it should create a viewer', done => {
                   },
                   "description": "A Candidate Conversation for: President of the U.S.",
                   "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-                  "path": "/country:us/org:usfg/office:president-of-the-u-s/2022-11-07",
+                  "path": "/country:us/org:united-states-federal-government:u-s-presidential-election/office:president-of-the-u-s/2022-11-07",
                   "subject": "President of the U.S.",
                   "webComponent": Object {
                     "closing": Object {
@@ -113,7 +113,7 @@ test('it should create a viewer', done => {
                           ],
                         ],
                         "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
-                        "name": "Bill Smith",
+                        "name": "david",
                         "speaking": Array [
                           "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm",
                           "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510659/5d5b73c01e3b194174cd9b92-2-speaking.webm",
@@ -152,7 +152,7 @@ test('it should create a recorder', async () => {
 
             parentId: expect.stringMatching(objectIdPattern),
             path: expect.stringMatching(
-                /\/country:us\/org:usfg\/office:president-of-the-u-s\/2022-11-07-recorder-[0-9-a-fA-F]{24}$/
+                /\/country:us\/org:united-states-federal-government:u-s-presidential-election\/office:president-of-the-u-s\/2022-11-07-recorder-[0-9-a-fA-F]{24}$/
             ),
         },
         `
@@ -199,7 +199,13 @@ test('it should create a recorder', async () => {
                   ],
                 ],
                 "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
-                "name": "",
+                "listeningURLs": Array [
+                  "https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378417/621e826899902756d4ba49f5-0-listening20220824T220015791Z.mp4",
+                ],
+                "name": "david",
+                "names": Array [
+                  "David Fridley, EnCiv",
+                ],
                 "speaking": Array [
                   "https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378414/621e826899902756d4ba49f5-0-speaking20220824T220002681Z.mp4",
                   "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm",
@@ -217,7 +223,7 @@ test('it should create a recorder', async () => {
           },
           "description": "A Candidate Recorder for the undebate: President of the U.S.",
           "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-          "path": StringMatching /\\\\/country:us\\\\/org:usfg\\\\/office:president-of-the-u-s\\\\/2022-11-07-recorder-\\[0-9-a-fA-F\\]\\{24\\}\\$/,
+          "path": StringMatching /\\\\/country:us\\\\/org:united-states-federal-government:u-s-presidential-election\\\\/office:president-of-the-u-s\\\\/2022-11-07-recorder-\\[0-9-a-fA-F\\]\\{24\\}\\$/,
           "subject": "President of the U.S.-Candidate Recorder",
           "webComponent": Object {
             "closing": Object {
@@ -248,7 +254,7 @@ test('it should create a recorder', async () => {
 
             parentId: expect.stringMatching(objectIdPattern),
             path: expect.stringMatching(
-                /\/country:us\/org:usfg\/office:president-of-the-u-s\/2022-11-07-recorder-[0-9-a-fA-F]{24}$/
+                /\/country:us\/org:united-states-federal-government:u-s-presidential-election\/office:president-of-the-u-s\/2022-11-07-recorder-[0-9-a-fA-F]{24}$/
             ),
         },
         `
@@ -295,7 +301,13 @@ test('it should create a recorder', async () => {
                   ],
                 ],
                 "listening": "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510649/5d5b73c01e3b194174cd9b92-0-seat2.webm",
-                "name": "",
+                "listeningURLs": Array [
+                  "https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378417/621e826899902756d4ba49f5-0-listening20220824T220015791Z.mp4",
+                ],
+                "name": "david",
+                "names": Array [
+                  "David Fridley, EnCiv",
+                ],
                 "speaking": Array [
                   "https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378414/621e826899902756d4ba49f5-0-speaking20220824T220002681Z.mp4",
                   "https://res.cloudinary.com/hf6mryjpf/video/upload/v1566510654/5d5b73c01e3b194174cd9b92-1-speaking.webm",
@@ -313,7 +325,7 @@ test('it should create a recorder', async () => {
           },
           "description": "A Candidate Recorder for the undebate: President of the U.S.",
           "parentId": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-          "path": StringMatching /\\\\/country:us\\\\/org:usfg\\\\/office:president-of-the-u-s\\\\/2022-11-07-recorder-\\[0-9-a-fA-F\\]\\{24\\}\\$/,
+          "path": StringMatching /\\\\/country:us\\\\/org:united-states-federal-government:u-s-presidential-election\\\\/office:president-of-the-u-s\\\\/2022-11-07-recorder-\\[0-9-a-fA-F\\]\\{24\\}\\$/,
           "subject": "President of the U.S.-Candidate Recorder",
           "webComponent": Object {
             "closing": Object {
