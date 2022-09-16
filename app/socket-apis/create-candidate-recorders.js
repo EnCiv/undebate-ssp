@@ -1,12 +1,16 @@
 // https://github.com/EnCiv/undebate-ssp/issues/127
+import { Iota } from 'civil-server'
 import { undebatesFromTemplateAndRows } from 'undebate'
+import { updateElectionInfo } from './subscribe-election-info'
 import sspViewerRecorder from '../lib/ssp-viewer-recorder'
 import { getElectionDocById } from './get-election-docs'
 import { getLatestIota, candidateFilters } from '../lib/get-election-status-methods'
 
-// todo eventually replace this video
 const introVideo =
-    'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893716/5d5b74751e3b194174cd9b94-1-speaking20210304T213504684Z.mp4'
+    'https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378414/621e826899902756d4ba49f5-0-speaking20220824T220002681Z.mp4'
+const introVideoName = 'David Fridley, EnCiv'
+const introListening =
+    'https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378417/621e826899902756d4ba49f5-0-listening20220824T220015791Z.mp4'
 
 export default async function createCandidateRecorder(id, filter = 'ALL', cb) {
     if (!this.synuser) {
@@ -73,13 +77,26 @@ export async function createCandidateRecordersFromIdAndElectionObj(id, filter, e
     const viewerRecorder = new sspViewerRecorder(electionObj)
 
     viewerRecorder.candidateRecorder.component.participants.moderator.speaking = recorderSpeaking
+    viewerRecorder.candidateRecorder.component.participants.moderator.names = [introVideoName]
+    viewerRecorder.candidateRecorder.component.participants.moderator.names.fill(
+        moderatorComponent.participant.name,
+        1,
+        recorderSpeaking.length
+    )
+    viewerRecorder.candidateRecorder.component.participants.moderator.listeningURLs = [introListening]
+    viewerRecorder.candidateRecorder.component.participants.moderator.listeningURLs.fill(
+        moderatorComponent.participant.listening,
+        1,
+        recorderSpeaking.length
+    )
+    viewerRecorder.candidateRecorder.component.participants.moderator.name = moderatorComponent.participant.name // names above will superseed
     viewerRecorder.candidateRecorder.component.participants.moderator.listening =
-        moderatorComponent.participant.listening
+        moderatorComponent.participant.listening // listeningURLs above will superseed
     viewerRecorder.candidateRecorder.component.participants.moderator.agenda = recorderAgenda
     viewerRecorder.candidateRecorder.component.participants.moderator.timeLimits = recorderTimeLimits
 
     viewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking
-    viewerRecorder.candidateViewer.webComponent.participants.moderator.name = electionObj.moderator.name
+    viewerRecorder.candidateViewer.webComponent.participants.moderator.name = moderatorComponent.participant.name
     viewerRecorder.candidateViewer.webComponent.participants.moderator.listening =
         moderatorComponent.participant.listening
     viewerRecorder.candidateViewer.parentId = id
@@ -90,11 +107,34 @@ export async function createCandidateRecordersFromIdAndElectionObj(id, filter, e
         viewerRecorder,
         Object.values(electionObj.candidates).filter(filterOp)
     )
+    // undebatesFromTemplateAndRows doesn't return the new iotas, and doesn't generate events for the new iotas
+    // here is a kludge for now, to get the new Iotas and update and browsers subscribed to election info
+    // likely the user who just called create-moderator-recorders
+
+    // subscribed browsers need updates on the viewers for the offices we ard doing the recorders for consistency
+    // the same viewer will appear in multiple rows - so we de-dup the array using Set
+    let paths = new Set()
+    try {
+        for (const row of rowObjs) {
+            try {
+                const v_url = new URL(row.viewer_url).pathname
+                if (v_url) paths.add(v_url)
+                const r_url = new URL(row.recorder_url).pathname
+                if (r_url) paths.add(r_url)
+            } catch (err) {
+                logger.error('create-candidate-recorders URL not valid in row', row) // URL() could Throw, just ignore it and move on
+            }
+        }
+        const iotas = await Iota.find({ path: { $in: [...paths] } })
+        if (iotas?.length) updateElectionInfo.call(this, id, id, iotas)
+        else logger.error('createModeratorRecorder cound not find what it tried to create.', id)
+    } catch (err) {
+        logger.error('createModeratorRecorder could not updateElectionInfo', id, err)
+    }
     return { rowObjs, messages }
 }
 
 function reasonsNotReadyForCandidateRecorder(electionObj) {
-    // todo add moderator.submissions not ready
     const errorMsgs = []
 
     ;['electionName', 'electionDate', 'organizationName', 'questions', 'script', 'moderator'].forEach(prop => {
@@ -111,5 +151,6 @@ function reasonsNotReadyForCandidateRecorder(electionObj) {
             if (!(candidate || {})[prop]) errorMsgs.push(`candidate ${prop} required`)
         })
     })
+    if (Object.keys(electionObj?.moderator?.submissions || {}).length < 1) errorMsgs.push('No moderator submission yet')
     return errorMsgs
 }

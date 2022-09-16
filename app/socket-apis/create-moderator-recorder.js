@@ -5,26 +5,29 @@ import { undebatesFromTemplateAndRows } from 'undebate'
 
 import sspViewerRecorder from '../lib/ssp-viewer-recorder'
 import { updateElectionInfo } from './subscribe-election-info'
+import { defaults as scriptDefaults } from '../components/script'
 
-const introAndPlaceHolder =
-    'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893716/5d5b74751e3b194174cd9b94-1-speaking20210304T213504684Z.mp4'
-const timeForIntros =
-    'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893717/5d5b74751e3b194174cd9b94-2-speaking20210304T213515529Z.mp4'
-const firstQuestion =
-    'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893717/5d5b74751e3b194174cd9b94-3-speaking20210304T213516602Z.mp4'
-const superNextQuestion =
-    'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893718/5d5b74751e3b194174cd9b94-4-speaking20210304T213517050Z.mp4'
-const awesomeNowAnother =
-    'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893718/5d5b74751e3b194174cd9b94-5-speaking20210304T213517487Z.mp4'
-const splendidLastQuestion =
-    'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893719/5d5b74751e3b194174cd9b94-6-speaking20210304T213517927Z.mp4'
-const awesomeClosing =
-    'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614894042/5d5b74751e3b194174cd9b94-1-speaking20210304T214041075Z.mp4'
-const allDone =
-    'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614894043/5d5b74751e3b194174cd9b94-2-speaking20210304T214041861Z.mp4'
-const listening =
-    'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893720/5d5b74751e3b194174cd9b94-0-listening20210304T213518628Z.mp4'
-const enCivModeratorName = 'David Fridley, EnCiv'
+export const defaults = {
+    introAndPlaceHolder:
+        'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893716/5d5b74751e3b194174cd9b94-1-speaking20210304T213504684Z.mp4',
+    timeForIntros:
+        'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893717/5d5b74751e3b194174cd9b94-2-speaking20210304T213515529Z.mp4', // not currently used
+    firstQuestion:
+        'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893717/5d5b74751e3b194174cd9b94-3-speaking20210304T213516602Z.mp4',
+    superNextQuestion:
+        'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893718/5d5b74751e3b194174cd9b94-4-speaking20210304T213517050Z.mp4',
+    awesomeNowAnother:
+        'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893718/5d5b74751e3b194174cd9b94-5-speaking20210304T213517487Z.mp4',
+    splendidLastQuestion:
+        'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893719/5d5b74751e3b194174cd9b94-6-speaking20210304T213517927Z.mp4',
+    awesomeClosing:
+        'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614894042/5d5b74751e3b194174cd9b94-1-speaking20210304T214041075Z.mp4',
+    allDone:
+        'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614894043/5d5b74751e3b194174cd9b94-2-speaking20210304T214041861Z.mp4',
+    listening:
+        'https://res.cloudinary.com/huu1x9edp/video/upload/q_auto/v1614893720/5d5b74751e3b194174cd9b94-0-listening20210304T213518628Z.mp4',
+    enCivModeratorName: 'David Fridley, EnCiv',
+}
 
 export default async function createModeratorRecorder(id, cb) {
     if (!this.synuser) {
@@ -50,49 +53,61 @@ export default async function createModeratorRecorder(id, cb) {
             if (cb) cb()
             return
         }
+        /*
+We are not giving the moderator a uniqueId.  Subsequent regenerations of the recorder will generate new 
+recorder Iotas.  But if the admin ends up changing who the moderator is, the new uniqueId will be a benefit
+
+        if(!electionObj?.moderator?.uniqueId){
+            const uniqueId=Iota.ObjectId().toString()
+            findAndSetElectionDoc.call(this,{_id: id}, {moderator: uniqueId}, result=>{
+                if(!result) logger.error('createModeratorRecorder caught error trying to set moderator.uniqueId for id:',id)
+            })
+        }
+*/
         const sortedQuestionPairs = Object.entries(electionObj.questions).sort(
             ([aKey, aObj], [bKey, bObj]) => aKey - bKey
         )
-        const agenda = sortedQuestionPairs.map(([key, Obj]) => [Obj.text])
-        const timeLimits = sortedQuestionPairs.map(([key, Obj]) => Obj.time)
+        const agenda = sortedQuestionPairs.map(([key, Obj]) => [Obj.text || '']) // don't want undefined
+        const timeLimits = sortedQuestionPairs.map(([key, Obj]) => Obj.time || '60') //
 
         // the sequence of videos of the EnCiv moderator instucting the election moderator goes like this
         // always make the intro and instruct to record a placeholder
-        const speaking = [introAndPlaceHolder]
+        const speaking = [defaults.introAndPlaceHolder]
         // then instruct to ask the first question
-        if (agenda.length >= 1) speaking.push(firstQuestion)
+        if (agenda.length >= 1) speaking.push(defaults.firstQuestion)
         // then alternate between superNextQuestion and awesomeNowAnother until, but not including the last question
         let speakingCount = 1
         for (; speakingCount < agenda.length - 1; speakingCount++)
-            speaking.push(speakingCount.length % 2 ? superNextQuestion : awesomeNowAnother)
+            speaking.push(speakingCount.length % 2 ? defaults.superNextQuestion : defaults.awesomeNowAnother)
         // then instruct to ask the last question, but not if there was only one question
-        if (speakingCount < agenda.length) speaking.push(splendidLastQuestion)
+        if (speakingCount < agenda.length) speaking.push(defaults.splendidLastQuestion)
         // then instruct to make the closing
-        speaking.push(awesomeClosing)
+        speaking.push(defaults.awesomeClosing)
         // then instruct how to finish
-        speaking.push(allDone)
+        speaking.push(defaults.allDone)
 
         const viewerRecorder = new sspViewerRecorder(electionObj)
 
         // customize the viewer recorder for this election
-        viewerRecorder.candidateRecorder.component.participants.moderator.name = enCivModeratorName
+        viewerRecorder.candidateRecorder.component.participants.moderator.name = defaults.enCivModeratorName
         viewerRecorder.candidateRecorder.component.participants.moderator.speaking = speaking
-        viewerRecorder.candidateRecorder.component.participants.moderator.listening = listening
+        viewerRecorder.candidateRecorder.component.participants.moderator.listening = defaults.listening
 
         agenda.unshift(['How this works', 'Placeholder'])
         agenda.push(['Make your closing - to the audience'])
         agenda.push(['Thank you'])
 
-        const recorderTimeLimits = [15].concat(timeLimits.map((t, i) => 60)).concat(60) // moderater gets 15 seconds for placeholder, 60 seconds to ask every question and 60 seconds for the closing
+        const maxTimeLimit = (scriptDefaults.maxWordCount / scriptDefaults.wordsPerMin) * 60
+        const recorderTimeLimits = [15].concat(timeLimits.map((t, i) => maxTimeLimit)).concat(maxTimeLimit) // moderater gets 15 seconds for placeholder, and then the script max time to ask each question, and that much time again for the closing
 
         viewerRecorder.candidateRecorder.component.participants.moderator.agenda = agenda
         viewerRecorder.candidateRecorder.component.participants.moderator.timeLimits = recorderTimeLimits
         viewerRecorder.candidateRecorder.component.participants.human.name = electionObj.moderator.name
 
-        viewerRecorder.candidateViewer.webComponent.participants.moderator.name = enCivModeratorName
-        viewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking.slice(1)
-        viewerRecorder.candidateViewer.webComponent.participants.moderator.listening = listening
-        viewerRecorder.candidateViewer.webComponent.participants.moderator.agenda = agenda.slice(1)
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.name = defaults.enCivModeratorName
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.speaking = speaking.slice(1) // viewer doesn't get the placeholder recording step
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.listening = defaults.listening
+        viewerRecorder.candidateViewer.webComponent.participants.moderator.agenda = agenda.slice(1) // viewer doesn't get the placeholder recording step
         viewerRecorder.candidateViewer.webComponent.participants.moderator.timeLimits = timeLimits
         viewerRecorder.candidateViewer.parentId = id
 
@@ -110,14 +125,15 @@ export default async function createModeratorRecorder(id, cb) {
         // here is a kludge for now, to get the new Iotas and update and browsers subscribed to election info
         // likely the user who just called create-moderator-recorders
         const paths = []
-        if (rowObjs[0].viewer_url) paths.push(rowObjs[0].viewer_url.replace(process.env.HOSTNAME + '/', ''))
-        if (rowObjs[0].recorder_url) paths.push(rowObjs[0].recorder_url.replace(process.env.HOSTNAME + '/', ''))
         try {
+            if (rowObjs[0].viewer_url) paths.push(new URL(rowObjs[0].viewer_url).pathname)
+            if (rowObjs[0].recorder_url) paths.push(new URL(rowObjs[0].recorder_url).pathname)
             const iotas = await Iota.find({ path: { $in: paths } })
             if (iotas?.length) updateElectionInfo.call(this, id, id, iotas)
+            else logger.error('createModeratorRecorder cound not find what it tried to create.', id)
         } catch (err) {
             if (cb) cb()
-            console.error('createModeratorRecorder could not updateElectionInfo', id, err)
+            logger.error('createModeratorRecorder could not updateElectionInfo', id, err)
         }
         if (cb) cb({ rowObjs, messages })
     } catch (err) {

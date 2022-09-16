@@ -2,20 +2,18 @@
 // https://github.com/EnCiv/undebate-ssp/issues/49
 import React, { useState, useEffect, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
-import Submit from './submit'
-import ElectionCategory from './election-category'
 import ScriptTextInput from './script-text-input'
 import DoneLockedButton from './done-locked-button'
 const panelName = 'Script'
 
-const defaults = {
+export const defaults = {
     description: `Below is an auto-generated script that will be emailed to the moderator. The moderator will record a
                   segment based on each section of the script. If you wish to make any changes, go ahead!`,
     noQuestions:
         'After the questions are created, you will be able to create the script for the moderator to use when recording.',
     firstAnswer: 'Our first question is "{question}", ...',
-    middleAnswer: 'Our next question is "{question}", ...',
-    lastAnswer: 'Consectetur adipiscing elit',
+    middleAnswer: 'Awesome, the next question is "{question}", ...',
+    lastAnswer: 'Thank you for your participation.',
     firstQuestion: '{moderator} welcomes the viewers and asks the candidates: "{question}"',
     middleQuestion: '{moderator} thanks the candidates and asks: "{question}" ',
     lastQuestion:

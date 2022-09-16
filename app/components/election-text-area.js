@@ -3,6 +3,7 @@ import { createUseStyles } from 'react-jss'
 import TextareaAutosize from 'react-textarea-autosize'
 
 const validText = (text, max = 400) =>
+    text &&
     text
         .trim()
         .split(' ')
