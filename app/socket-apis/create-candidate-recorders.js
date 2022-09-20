@@ -5,7 +5,6 @@ import { updateElectionInfo } from './subscribe-election-info'
 import sspViewerRecorder from '../lib/ssp-viewer-recorder'
 import { getElectionDocById } from './get-election-docs'
 import { getLatestIota, candidateFilters } from '../lib/get-election-status-methods'
-import {updateElectionInfo} from "./subscribe-election-info";
 
 const introVideo =
     'https://res.cloudinary.com/dpev0jzip/video/upload/q_auto/v1661378414/621e826899902756d4ba49f5-0-speaking20220824T220002681Z.mp4'

@@ -1,6 +1,6 @@
 //https://github.com/EnCiv/undebate-ssp/issues/88
 // example code thanks to https://react-table.tanstack.com/docs/examples/editable-data
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import { useTable, usePagination, useFilters } from 'react-table'
 import ObjectID from 'isomorphic-mongo-objectid'

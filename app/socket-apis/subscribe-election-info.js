@@ -4,7 +4,6 @@ import { merge } from 'lodash'
 import { subscribeEventName } from '../components/lib/socket-api-subscribe'
 import { getElectionDocById, intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs } from './get-election-docs'
 import { diff, detailedDiff } from 'deep-object-diff'
-import { applyUnsetAsUndefined } from '../components/subscribe-election-info'
 
 // there could be multiple subscribers to changes on the same id.  When a change is made to an id, be careful to only update the electionIota once, and then send the update to all the subscribers.
 // currently, updates are the entire iota, in the ideal, only what's changed will be send in the update.
