@@ -36,12 +36,24 @@ export default async function createCandidateRecorder(id, filter = 'ALL', cb) {
                 if (cb) cb()
                 return
             }
-            // to do: rowObjs has the candidates table plus the viewer and recorder links, plus an indicator if they'v changed
-            // do we add that info to the candidates table
+
+            for (const rowObj of rowObjs) {
+                const paths = []
+                try {
+                    if (rowObj.viewer_url) paths.push(new URL(rowObj.viewer_url).pathname)
+                    if (rowObj.recorder_url) paths.push(new URL(rowObj.recorder_url).pathname)
+                    const iotas = await Iota.find({ path: { $in: paths } })
+                    if (iotas?.length) updateElectionInfo.call(this, id, id, iotas)
+                } catch (err) {
+                    if (cb) cb()
+                    logger.error('createCandidateRecorder could not updateElectionInfo', id, err)
+                }
+            }
+
             if (cb) cb({ rowObjs, messages })
         })
     } catch (err) {
-        logger.error('err', err)
+        logger.error('createCandidateRecorder caught err', err)
         if (cb) cb()
     }
 }

@@ -10,6 +10,7 @@ import PasteGoogleSheetsLink from './paste-google-sheets-link'
 import { isEqual } from 'lodash'
 import IsEmail from 'isemail'
 import { candidateFilters } from '../lib/get-election-status-methods'
+import InviteSentComponent from './invite-sent-component'
 
 function isCandidateValid(candidate) {
     return candidate.name && IsEmail.validate(candidate?.email || '', { minDomainAtoms: 2 }) && candidate.office
@@ -50,6 +51,9 @@ export default function CandidateTable(props) {
     useEffect(() => {
         while (sideEffects.length) sideEffects.shift()()
     })
+    const getInvites = candidate => {
+        return candidate?.invitations
+    }
     const columns = [
         {
             Header: 'Candidate Name',
@@ -64,12 +68,9 @@ export default function CandidateTable(props) {
             accessor: 'office',
         },
         {
-            Header: 'Region',
-            accessor: 'region',
-        },
-        {
-            Header: 'Invite Status',
-            accessor: 'status',
+            Header: 'Invite Sent Dates',
+            accessor: getInvites,
+            Cell: data => <InviteSentComponent invites={data.value} />,
         },
         /*  {
                 Header: 'Unique Id',

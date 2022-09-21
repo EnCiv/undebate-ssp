@@ -7,6 +7,7 @@ echo 'export HOME=`pwd`' >> .bashrc
 echo "alias branches=\"git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'\"" >> .bashrc
 echo "export NODE_ENV=\"development\"" >> .bashrc
 echo "export EDITOR=\"code --wait\"" >> .bashrc
+echo "export HOSTNAME=\"localhost:3011\"" >> .bashrc
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "alias dbup=\"export MONGODB_URI=mongodb://localhost:27017/test?connectTimeoutMS=3000000 && sudo rm -rf tmp/db && mkdir -p tmp/db && sudo mongod --quiet --dbpath ./tmp/db --port 27017 &\"" >> .bashrc
 else
