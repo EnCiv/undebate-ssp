@@ -30,6 +30,7 @@ function EditableCell(props) {
     const warn = { backgroundColor: 'rgba(238, 96, 85, 0.25)' }
     if (
         id === 'email' &&
+        typeof window !== 'undefined' && // document is not valid on server side render
         document.activeElement !== inputRef.current &&
         value &&
         !IsEmail.validate(value, { minDomainAtoms: 2 })
