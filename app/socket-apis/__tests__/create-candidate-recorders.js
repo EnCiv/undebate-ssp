@@ -5,11 +5,9 @@ import { Iota, User } from 'civil-server'
 import iotas from '../../../iotas.json'
 import createCandidateRecorders from '../create-candidate-recorders'
 import { merge, cloneDeep } from 'lodash'
+import '../../lib/jest-setup'
 
 const ObjectID = Iota.ObjectId
-
-// dummy out logger for tests
-global.logger = { error: jest.fn(e => e) }
 
 // a clone with a unique _id so multiple jest tests can run in parallel
 const testDoc = cloneDeep(iotas.filter(iota => iota.subject === 'Undebate SSP Test Iota')[0])
