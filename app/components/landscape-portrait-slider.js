@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/120
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import SvgDesktop from '../svgr/desktop'
@@ -9,15 +9,22 @@ import SvgRectangle from '../svgr/rectangle'
 import SvgExternalLink from '../svgr/external-link'
 import StatementComponent from './statement-component'
 
+// need to refresh the iframe after change shape so it recalculates the size and position
+function iframeRefresh(ref) {
+    if (ref.current) setTimeout(() => (ref.current.src += ''))
+}
 export default function LandscapePortraitSlider(props) {
     const classes = useStyles()
     const [isLandscape, setIsLandscape] = useState(true)
     const { className, style, linkObj = {}, portraitStatement = {} } = props
+    const iframeRef = useRef()
     const handelInputDesktop = () => {
         setIsLandscape(true)
+        iframeRefresh(iframeRef)
     }
     const handelInputPortrait = () => {
         setIsLandscape(false)
+        iframeRefresh(iframeRef)
     }
     return (
         <div className={cx(className, classes.LandscapePortraitSlider)} style={style}>
@@ -26,6 +33,7 @@ export default function LandscapePortraitSlider(props) {
                     className={cx(isLandscape && classes.landscapeContainer, !isLandscape && classes.portraitContainer)}
                 >
                     <iframe
+                        ref={iframeRef}
                         key='iframe'
                         src={linkObj.url || ''}
                         className={cx(isLandscape && classes.landscape, !isLandscape && classes.portrait)}

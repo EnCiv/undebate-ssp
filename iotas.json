@@ -45,7 +45,9 @@
         "webComponent": "ElectionDoc"
     },
     {
-        "_id": { "$oid": "62196fd6b2eff30b70ba36e0" },
+        "_id": {
+            "$oid": "62196fd6b2eff30b70ba36e0"
+        },
         "subject": "Undebate SSP Test Iota",
         "description": "An iota describing an election to use for testing",
         "webComponent": {
@@ -261,11 +263,11 @@
             "statements": [
                 {
                     "subject": "What are Undebates",
-                    "description": "Reading candidate statements can be boring, uninspring, and easialy procrastinated.\nUndebates are automated online video Q&A with candidates so that can be heard, and for voters so they can quickly make a more meaningful decision."
+                    "description": "Reading candidate statements can be boring, uninspiring, and easily procrastinated.\nUndebates are automated online video Q&A with candidates so that can be heard, and for voters so they can quickly make a more meaningful decision."
                 },
                 {
                     "subject": "How It Works",
-                    "description": "The election administrator will setup the election, enter the questions, invite a moderator, enter or import the candidate info, and invites the candidates to record. An inteactive debate viewer will be generated that can be embedded on a website, or shared or emailed as a link"
+                    "description": "The election administrator will setup the election, enter the questions, invite a moderator, enter or import the candidate info, and invites the candidates to record. An interactive debate viewer will be generated that can be embedded on a website, or shared or emailed as a link"
                 }
             ],
             "topIframe": {
@@ -275,8 +277,8 @@
                     "subtitle": "13 Offices"
                 },
                 "portraitStatement": {
-                    "subject": "Taylored for every device and every layout",
-                    "description": "Dolor adipiscing augue diam nulla ornare dictum tortor id ut. Eu etiam sed fermentum egestas nisl nulla porttitor non justo. Dolor commodo id justo, pretium. Magna et arcu fringilla in nisi, mauris tincidunt. Penatibus turpis eget sapien non at phasellus lacus. Pellentesque consectetur nunc mi amet curabitur cras fames amet cursus."
+                    "subject": "Tailored for every device and every layout",
+                    "description": "An undebate can be embedded in a web page, or sent as a link. No matter what dimensions or resolution it is given, it will resize to fit. It works on desktops and smartphones."
                 }
             },
             "iconBoxes": [
@@ -293,19 +295,33 @@
                 {
                     "iconName": "SvgShortFormat",
                     "subject": "Short formats to decide quickly.",
-                    "description": "Time conciousness at every step that caters more towards the modern attention span."
+                    "description": "Time consciousness at every step that caters more towards the modern attention span."
                 }
             ],
             "faqs": [
-                { "question": "This is the first question?", "answer": "This is the answer to the first question." },
-                { "question": "This is the second question?", "answer": "This is the answer to the second question." },
                 {
-                    "question": "This is the third question?",
-                    "answer": "This is the answer to the third question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?"
+                    "question": "How does this help?",
+                    "answer": "Hearing and seeing the candidates, makes it easier for members to decide who to vote for - leading to more member participation. And it's quick."
                 },
                 {
-                    "question": "This is the fourth question?",
-                    "answer": "This is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?\nThis is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?\nThis is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?\nThis is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?"
+                    "question": "How long will it take?",
+                    "answer": "It usually takes less than 15 minutes to get started. After that it's a matter of getting your moderator and candidates to do their recordings - which will take them about 15 minutes."
+                },
+                {
+                    "question": "Who is this for?",
+                    "answer": "This is for organizations that have elections. Undebates makes it easier for those voting to get to know the candidates and easily decide. A few short videos from candidates can communicate a lot more to voters than written (often boring) position papers or bios. We are also open to other creative applications, perhaps 2 or more representative debating an issue or ballot measure."
+                },
+                {
+                    "question": "How does the video recording work?",
+                    "answer": "Candidates will receive an email with a customized link. They open it with their browser and it will use video to ask the questions and records the answers using the webcam. It might feel like a live interview, but there's a redo button!. And again at the end you can review the whole thing and make changes before posting."
+                },
+                {
+                    "question": "Can people upload their own videos?",
+                    "answer": "No, the video interview had to be done through the link. This is different. Each answer is recorded separately, and each answer has a time limit. Plus the redo button makes it a lot easier than most other recording apps."
+                },
+                {
+                    "question": "How is this better than a debate?",
+                    "answer": "Candidates don't get to hear what the other candidates say before answering - so there is no advantage or disadvantage to going first or last. Answer times are strictly limited - when the time is up - the recording stops. The redo button allows candidates to make sure they are saying what they mean to say. And because recording is not live in front of an audience they can be more thoughtful about their answers. For people viewing the undebate it's short and answers are too the point, and they can easily skip candidates or questions they are not interested in."
                 }
             ]
         }
@@ -351,7 +367,7 @@
                 },
                 "portraitStatement": {
                     "subject": "Tailored for every device and every layout",
-                    "description": "Dolor adipiscing augue diam nulla ornare dictum tortor id ut. Eu etiam sed fermentum egestas nisl nulla porttitor non justo. Dolor commodo id justo, pretium. Magna et arcu fringilla in nisi, mauris tincidunt. Penatibus turpis eget sapien non at phasellus lacus. Pellentesque consectetur nunc mi amet curabitur cras fames amet cursus."
+                    "description": "An undebate can be embedded in a web page, or sent as a link. No matter what dimensions or resolution it is given, it will resize to fit. It works on desktops and smartphones."
                 }
             },
             "iconBoxes": [
@@ -372,15 +388,29 @@
                 }
             ],
             "faqs": [
-                { "question": "This is the first question?", "answer": "This is the answer to the first question." },
-                { "question": "This is the second question?", "answer": "This is the answer to the second question." },
                 {
-                    "question": "This is the third question?",
-                    "answer": "This is the answer to the third question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?"
+                    "question": "How does this help?",
+                    "answer": "Hearing and seeing the candidates, makes it easier for members to decide who to vote for - leading to more member participation. And it's quick."
                 },
                 {
-                    "question": "This is the fourth question?",
-                    "answer": "This is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?\nThis is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?\nThis is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?\nThis is the answer to the fourth question. The answer to this question is very long. There was a lot to talk about. It takes up a lot of space on the page. I wonder how this will look. It will probably look pretty good by the time it is finished but lets give it a nice start. What do you say?"
+                    "question": "How long will it take?",
+                    "answer": "It usually takes less than 15 minutes to get started. After that it's a matter of getting your moderator and candidates to do their recordings - which will take them about 15 minutes."
+                },
+                {
+                    "question": "Who is this for?",
+                    "answer": "This is for organizations that have elections. Undebates makes it easier for those voting to get to know the candidates and easily decide. A few short videos from candidates can communicate a lot more to voters than written (often boring) position papers or bios. We are also open to other creative applications, perhaps 2 or more representative debating an issue or ballot measure."
+                },
+                {
+                    "question": "How does the video recording work?",
+                    "answer": "Candidates will receive an email with a customized link. They open it with their browser and it will use video to ask the questions and records the answers using the webcam. It might feel like a live interview, but there's a redo button!. And again at the end you can review the whole thing and make changes before posting."
+                },
+                {
+                    "question": "Can people upload their own videos?",
+                    "answer": "No, the video interview had to be done through the link. This is different. Each answer is recorded separately, and each answer has a time limit. Plus the redo button makes it a lot easier than most other recording apps."
+                },
+                {
+                    "question": "How is this better than a debate?",
+                    "answer": "Candidates don't get to hear what the other candidates say before answering - so there is no advantage or disadvantage to going first or last. Answer times are strictly limited - when the time is up - the recording stops. The redo button allows candidates to make sure they are saying what they mean to say. And because recording is not live in front of an audience they can be more thoughtful about their answers. For people viewing the undebate it's short and answers are too the point, and they can easily skip candidates or questions they are not interested in."
                 }
             ]
         }
