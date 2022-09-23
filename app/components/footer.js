@@ -6,55 +6,53 @@ import SvgExternalLink from '../svgr/external-link'
 export default function Footer() {
     const classes = useStyles()
     return (
-        <>
-            <div className={classes.footer}>
-                <div className={classes.linksContainer}>
+        <div className={classes.footer}>
+            <div className={classes.linksContainer}>
+                {/* for future use
                     <div className={classes.footerUnpoll}>
                         <a href='#' target='_blank' className={classes.aLink}>
                             Unpoll
                             <SvgExternalLink />
                         </a>
                         <p className={classes.pText}>Vestibulum massa id donec gravida purus in tellus aliquam arcu?</p>
-                    </div>
-                    <div className={classes.footerEnCiv}>
-                        <a href='https://enciv.org/' target='_blank' className={classes.aLink}>
-                            EnCiv
-                            <SvgExternalLink />
-                        </a>
-                        <p className={classes.pText}>Vestibulum massa id donec gravida purus in tellus aliquam arcu?</p>
-                    </div>
-                </div>
-                <div className={classes.donateContainer}>
-                    <div>
-                        <p className={classes.pDonate}>amet elementum euismod molestie facilisis varius</p>
-                        <a
-                            href='https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=H7XBVF5U2C9NJ&source=url%22%7D'
-                            target='_blank'
-                            style={{ textDecoration: 'none' }}
-                        >
-                            <button className={classes.btn}>Donate</button>
-                        </a>
-                    </div>
-                    <div className={classes.footerCopyRight}>
-                        <a
-                            href='https://enciv.org/terms'
-                            target='_blank'
-                            className={classes.aLink}
-                            style={{ fontSize: '1.25em' }}
-                        >
-                            Terms of service
-                        </a>
-                        <p className={classes.pText}>Copyright &copy; 2022 EnCiv, Inc</p>
-                    </div>
+                    </div>*/}
+                <div className={classes.footerEnCiv}>
+                    <a href='https://enciv.org/' target='_blank' className={classes.aLink}>
+                        EnCiv
+                        <SvgExternalLink />
+                    </a>
+                    <p className={classes.pText}>Undebate is an online discourse process from EnCiv, Inc.</p>
                 </div>
             </div>
-        </>
+            <div className={classes.donateContainer}>
+                <div>
+                    <p className={classes.pDonate}>For productive online democratic discourse</p>
+                    <a
+                        href='https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=H7XBVF5U2C9NJ&source=url%22%7D'
+                        target='_blank'
+                        style={{ textDecoration: 'none' }}
+                    >
+                        <button className={classes.btn}>Donate</button>
+                    </a>
+                </div>
+                <div className={classes.footerCopyRight}>
+                    <a
+                        href='https://enciv.org/terms'
+                        target='_blank'
+                        className={classes.aLink}
+                        style={{ fontSize: '1.25em' }}
+                    >
+                        Terms of service
+                    </a>
+                    <p className={classes.pText}>Copyright &copy; 2022 EnCiv, Inc a 501(c)(3) nonprofit</p>
+                </div>
+            </div>
+        </div>
     )
 }
 
 const useStyles = createUseStyles(theme => ({
     footer: {
-        ...theme.footer,
         fontFamily: theme.defaultFontFamily,
         lineHeight: '0.8em',
         overflow: 'hidden',
@@ -62,6 +60,7 @@ const useStyles = createUseStyles(theme => ({
         color: '#FFFFFF',
         padding: '2.5%',
         display: 'flex',
+        fontSize: '.75rem',
     },
     btn: {
         ...theme.button,
@@ -103,7 +102,7 @@ const useStyles = createUseStyles(theme => ({
         marginTop: '1.5em',
     },
     footerEnCiv: {
-        marginTop: '3.5em',
+        marginTop: '0',
     },
     footerCopyRight: {
         marginTop: '3.5em',
