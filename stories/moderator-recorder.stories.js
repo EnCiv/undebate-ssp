@@ -100,6 +100,27 @@ export const Ready = mC({
     },
 })
 
+export const ReadyLongDelay = mC({
+    defaultElectionObj: {
+        _serverResponseDelay: 10_000, // hack to pass delay into .storybook/preview.js
+        doneLocked: {
+            Election: { done: '2022-08-08T20:08:55.165Z' },
+            Timeline: { done: '2022-08-08T20:08:56.165Z' },
+            Questions: { done: '2022-08-08T20:08:57.165Z' },
+            Contact: { done: '2022-08-08T20:08:58.165Z' },
+            Script: { done: '2022-08-08T20:08:59.165Z' },
+        },
+        timeline: {
+            moderatorSubmissionDeadline: {
+                0: {
+                    date: new Date(Date.now() + 2 * 86400000).toISOString(),
+                    sent: true,
+                },
+            },
+        },
+    },
+})
+
 export const ReadyLate = mC({
     defaultElectionObj: {
         doneLocked: {
