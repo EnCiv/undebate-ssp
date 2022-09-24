@@ -11,6 +11,7 @@ import {
 } from '../components/lib/svg'
 import { ProgressBar } from '../components/election-category'
 import ObjectID from 'isomorphic-mongo-objectid'
+import {getStatus, validStatuses} from "../components/lib/get-candidate-invite-status";
 
 export const candidateFilters = {
     ALL(candidate) {
@@ -549,6 +550,15 @@ function getElectionStatusMethods(dispatch, state) {
         return isUrgent
     }
 
+    const getCandidatesStatusCounts = () => {
+        const deadline = state?.timeline?.candidateSubmissionDeadline?.[0].date
+        const defaultStatusCounts = Object.fromEntries(validStatuses.map(k => [k, 0]))
+        return Object.values(state.candidates).reduce(
+            (prev, v) => ({ ...prev, [getStatus(v, deadline)]: prev[getStatus(v, deadline)] + 1 }),
+            defaultStatusCounts
+        )
+    }
+
     return {
         getLatestObj: getLatestObjByDate,
         getLatestIota,
@@ -592,6 +602,7 @@ function getElectionStatusMethods(dispatch, state) {
         getModeratorStatusDaysRemaining,
         getCandidateStatusDaysRemaining,
         getElectionStatusDaysRemaining,
+        getCandidatesStatusCounts,
     }
 }
 
