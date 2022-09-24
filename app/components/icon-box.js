@@ -35,6 +35,10 @@ function IconBox(props) {
 const useStyles = createUseStyles({
     iconBox: {
         width: '100%',
+        flex: '0 1 auto',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
     },
     icon: {
         height: 'auto',
@@ -78,6 +82,8 @@ const useStyles = createUseStyles({
             lineHeight: '1.5rem',
             color: '#808080',
         },
+        flex: '0 1 auto',
+        height: '100%',
     },
     /* Frame 875694 */
 })
