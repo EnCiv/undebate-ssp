@@ -2,7 +2,7 @@
 // example code thanks to https://react-table.tanstack.com/docs/examples/editable-data
 import React, { useRef } from 'react'
 import { createUseStyles } from 'react-jss'
-import { useTable, usePagination, useFilters } from 'react-table'
+import { useTable, usePagination, useFilters, useSortBy } from 'react-table'
 import ObjectID from 'isomorphic-mongo-objectid'
 import IsEmail from 'isemail'
 
@@ -37,15 +37,7 @@ function EditableCell(props) {
     )
         style = warn
 
-    return (
-        <input
-            ref={inputRef}
-            style={style}
-            disabled={!updateMyData.editable}
-            defaultValue={value}
-            onBlur={onBlur}
-        />
-    )
+    return <input ref={inputRef} style={style} disabled={!updateMyData.editable} defaultValue={value} onBlur={onBlur} />
 }
 
 // Set our editable cell renderer as the default Cell renderer
@@ -90,6 +82,7 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
             autoResetFilters: false,
         },
         useFilters,
+        useSortBy,
         usePagination
     )
     const classes = useStyles()
@@ -101,9 +94,10 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}>
+                                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                                     {column.render('Header')}
                                     {column.canFilter && column.Filter ? column.render('Filter') : ''}
+                                    <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
                                 </th>
                             ))}
                         </tr>
