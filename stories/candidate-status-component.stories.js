@@ -1,6 +1,5 @@
 import React from 'react'
 import CandidateStatusComponent from '../app/components/candidate-status-component'
-import { SvgAccepted, SvgDeadlineMissed, SvgDeclined, SvgReminderSent } from '../app/components/lib/svg'
 
 export default {
     title: 'Candidate Status Component',
@@ -14,19 +13,6 @@ const Template = (args, context) => {
             <CandidateStatusComponent {...args} />
         </div>
     )
-}
-
-// todo consider moving to common function
-
-export const TableArray = Template.bind({})
-const tableArray = [
-    [<SvgAccepted />, 1],
-    [<SvgDeclined />, 2],
-    [<SvgReminderSent />, 3],
-    [<SvgDeadlineMissed />, 4],
-]
-TableArray.args = {
-    tableArray,
 }
 
 export const StatusObj = Template.bind({})

@@ -41,6 +41,7 @@ function ElectionCategory(props) {
     // statusArray is an array of elements to be displayed and [icon, value] arrays to be turned into a table
     const statusArray = Object.keys(cleanStatusObj)
         .filter(key => cleanStatusObj[key] !== false)
+        .filter(key => key !== 'statusObj') // filter out this one for issue #195
         .map((key, i) => {
             const param = cleanStatusObj[key]
             let content = statusInfoEnum[key]
@@ -63,8 +64,6 @@ function ElectionCategory(props) {
             )
         })
 
-    const tableArray = statusArray.filter(v => Array.isArray(v))
-
     const statusTextArray = statusArray
         .filter(v => React.isValidElement(v))
         .reduce((previous, v, index, source) => {
@@ -79,7 +78,7 @@ function ElectionCategory(props) {
         <div className={`${classes.category} ${className}`}>
             <span className={classes.categoryText}>{categoryName}</span>
             {statusTextArray}
-            <CandidateStatusComponent tableArray={tableArray} />
+            <CandidateStatusComponent statusObj={statusObjs?.statusObj}/>
         </div>
     )
 }
