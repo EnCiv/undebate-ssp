@@ -143,12 +143,6 @@ export default function NavigationPanel({ className, style, electionOM, onDone, 
                         electionMethods.getCandidatesSubmissionsStatus() === 'default'
                             ? {}
                             : {statusObj: electionMethods.getCandidatesStatusCounts()}
-                              //   [
-                              //     { accepted: electionMethods.getCandidatesSubmissionsStatus().accepted },
-                              //     { declined: electionMethods.getCandidatesSubmissionsStatus().declined },
-                              //     { reminderSent: electionMethods.getCandidatesSubmissionsStatus().reminderSent },
-                              //     { deadlineMissed: electionMethods.getCandidatesSubmissionsStatus().deadlineMissed },
-                              // ]
                     }
                 />
             </div>
