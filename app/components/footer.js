@@ -25,7 +25,7 @@ export default function Footer() {
                 </div>
             </div>
             <div className={classes.donateContainer}>
-                <div>
+                <div className={classes.donateWrapper}>
                     <p className={classes.pDonate}>For productive online democratic discourse</p>
                     <a
                         href='https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=H7XBVF5U2C9NJ&source=url%22%7D'
@@ -58,7 +58,7 @@ const useStyles = createUseStyles(theme => ({
         overflow: 'hidden',
         backgroundColor: theme.colorPrimary,
         color: '#FFFFFF',
-        padding: '2.5%',
+        padding: '2em',
         display: 'flex',
         fontSize: '.75rem',
     },
@@ -68,7 +68,6 @@ const useStyles = createUseStyles(theme => ({
         color: theme.colorText,
         display: 'block',
         margin: '0 auto',
-        width: '25%',
         textAlign: 'center',
         fontSize: '1.25em',
         '&:hover': {
@@ -97,12 +96,13 @@ const useStyles = createUseStyles(theme => ({
         fontSize: '3em',
         lineHeight: '1.25em',
         textAlign: 'center',
+        marginTop: 0,
     },
     footerUnpoll: {
         marginTop: '1.5em',
     },
     footerEnCiv: {
-        marginTop: '0',
+        marginTop: '-0.05em', // to align top of text
     },
     footerCopyRight: {
         marginTop: '3.5em',
@@ -111,28 +111,31 @@ const useStyles = createUseStyles(theme => ({
     linksContainer: {
         width: '35%',
         height: 'auto',
-        marginLeft: '4%',
     },
     donateContainer: {
         width: '65%',
-        marginTop: '-3%',
+    },
+    donateWrapper: {
+        marginTop: '-0.25em', // to align top of text
     },
     '@media (orientation: portrait)': {
+        footerCopyRight: {
+            marginTop: '3em',
+        },
         footer: {
             flexDirection: 'column',
         },
         linksContainer: {
             width: '100%',
-            marginTop: '3%',
+            marginLeft: 0,
+            textAlign: 'center',
+            marginBottom: '1em',
         },
         donateContainer: {
             width: '100%',
         },
         btn: {
             width: '40%',
-        },
-        footerCopyRight: {
-            marginBottom: '6%',
         },
         aLink: {
             fontSize: '1.5em',
