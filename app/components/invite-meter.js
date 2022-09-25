@@ -15,7 +15,6 @@ export default function InviteMeter({ electionOM, className, style }) {
     const orderedStatusCounts = validStatuses.map(k => statusCounts[k])
 
     const meterCandidateCount = sumArray(Object.values(orderedStatusCounts))
-    const candidateCount = Object.values(electionObj.candidates).length
     const statusPercentages = orderedStatusCounts
         .map(v => {
             const percent = (v * 100) / meterCandidateCount
@@ -43,7 +42,7 @@ export default function InviteMeter({ electionOM, className, style }) {
                                      themeColorName={'colorSent'}
                                      displayText={'Invite Pending'}
                                      visibleText={true}/>
-                <CandidateStatusIcon value={candidateCount}
+                <CandidateStatusIcon value={statusCounts.candidateCount}
                                      themeColorName={'colorSecondary'}
                                      numberColor={'#FFFFFF'}
                                      displayText={'Total Number of Candidates'}

@@ -551,12 +551,22 @@ function getElectionStatusMethods(dispatch, state) {
     }
 
     const getCandidatesStatusCounts = () => {
+        if (!recentModeratorInvitationStatus()?.sentDate) {
+            return 'default'
+        }
         const deadline = state?.timeline?.candidateSubmissionDeadline?.[0].date
         const defaultStatusCounts = Object.fromEntries(validStatuses.map(k => [k, 0]))
-        return Object.values(state.candidates).reduce(
+        const candidateCount = state.candidates ? Object.values(state.candidates).length : 0
+        if (candidateCount === 0) {
+            return {}
+        }
+        const statusCounts = Object.values(state.candidates).reduce(
             (prev, v) => ({ ...prev, [getStatus(v, deadline)]: prev[getStatus(v, deadline)] + 1 }),
             defaultStatusCounts
         )
+        statusCounts['candidateCount'] = candidateCount
+        return statusCounts
+        return {}
     }
 
     return {

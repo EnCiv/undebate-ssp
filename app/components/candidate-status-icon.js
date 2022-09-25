@@ -28,7 +28,7 @@ const useStyles = createUseStyles(theme => ({
     statusIcon: ({themeColorName}) => ({
         borderRadius: '3rem',
         backgroundColor: theme[themeColorName],
-        margin: '0.75rem',
+        marginLeft: '0.75rem',
         '&:hover $tooltip': {
             visibility: 'visible',
         },
@@ -39,7 +39,7 @@ const useStyles = createUseStyles(theme => ({
         fontWeight: 'bold',
     }),
     statusText: {
-        margin: '0rem',
+        margin: '0 0 0 0.75rem',
     },
     tooltip: {
         visibility: 'hidden',

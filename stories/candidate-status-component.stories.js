@@ -1,17 +1,17 @@
 import React from 'react'
-import CandidateStatusTable from '../app/components/candidate-status-table'
+import CandidateStatusComponent from '../app/components/candidate-status-component'
 import { SvgAccepted, SvgDeadlineMissed, SvgDeclined, SvgReminderSent } from '../app/components/lib/svg'
 
 export default {
-    title: 'Candidate Status Table',
-    component: CandidateStatusTable,
+    title: 'Candidate Status Component',
+    component: CandidateStatusComponent,
     argTypes: {},
 }
 
 const Template = (args, context) => {
     return (
         <div>
-            <CandidateStatusTable {...args} />
+            <CandidateStatusComponent {...args} />
         </div>
     )
 }
@@ -30,7 +30,7 @@ TableArray.args = {
 }
 
 export const StatusObj = Template.bind({})
-const statusObj = { accepted: 4, declined: 2, reminderSent: 3, deadlineMissed: 1 }
+const statusObj = { deadlineMissed: 4, videoSubmitted: 2, sent: 3, candidateCount: 10 }
 StatusObj.args = {
     statusObj,
 }

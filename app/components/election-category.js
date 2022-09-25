@@ -3,7 +3,7 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { statusInfoEnum } from '../lib/get-election-status-methods'
-import CandidateStatusTable from './candidate-status-table'
+import CandidateStatusComponent from './candidate-status-component'
 
 export function ProgressBar(props) {
     const classes = useStyles(props)
@@ -79,7 +79,7 @@ function ElectionCategory(props) {
         <div className={`${classes.category} ${className}`}>
             <span className={classes.categoryText}>{categoryName}</span>
             {statusTextArray}
-            <CandidateStatusTable tableArray={tableArray} />
+            <CandidateStatusComponent tableArray={tableArray} />
         </div>
     )
 }
