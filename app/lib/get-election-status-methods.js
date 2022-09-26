@@ -560,6 +560,7 @@ function getElectionStatusMethods(dispatch, state) {
         if (candidateCount === 0) {
             return {}
         }
+        console.log(getStatus(Object.values(state.candidates)[0], deadline));
         const statusCounts = Object.values(state.candidates).reduce(
             (prev, v) => ({ ...prev, [getStatus(v, deadline)]: prev[getStatus(v, deadline)] + 1 }),
             defaultStatusCounts

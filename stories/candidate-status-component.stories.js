@@ -16,8 +16,14 @@ const Template = (args, context) => {
 }
 
 export const StatusObj = Template.bind({})
-const statusObj = { deadlineMissed: 4, videoSubmitted: 2, sent: 3, candidateCount: 10 }
+let statusObj = { deadlineMissed: 4, videoSubmitted: 2, sent: 3, candidateCount: 10 }
 StatusObj.args = {
+    statusObj,
+}
+
+export const CandidatesCompleted = Template.bind({})
+statusObj = { deadlineMissed: 0, videoSubmitted: 10, sent: 10, candidateCount: 10 }
+CandidatesCompleted.args = {
     statusObj,
 }
 
