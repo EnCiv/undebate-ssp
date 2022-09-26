@@ -54,7 +54,7 @@ export const decorators = [
                         _createModeratorRecorder: (state._createModeratorRecorder || 0) + 1,
                         _count: (state._count || 0) + 1,
                     })
-                    if (cb) setTimeout(() => cb({ rowObjs: {}, messages: [] }), 1000)
+                    if (cb) setTimeout(() => cb({ rowObjs: {}, messages: [] }), state._serverResponseDelay || 1000)
                 },
                 sendModeratorInvitation(cb) {
                     dispatch({
@@ -70,7 +70,7 @@ export const decorators = [
                         _sendModeratorInvitation: (state._sendModeratorInvitation || 0) + 1,
                         _count: (state._count || 0) + 1,
                     })
-                    if (cb) setTimeout(cb, 1000)
+                    if (cb) setTimeout(cb, state._serverResponseDelay || 1000)
                 },
                 sendCandidateInvitations(filter, cb) {
                     dispatch({
@@ -78,7 +78,7 @@ export const decorators = [
                         _count: (state._count || 0) + 1,
                     })
 
-                    if (cb) setTimeout(cb, 1000)
+                    if (cb) setTimeout(cb, state._serverResponseDelay || 1000)
                 },
             }),
             { _count: 0 }

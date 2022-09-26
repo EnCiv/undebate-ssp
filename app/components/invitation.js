@@ -4,7 +4,6 @@ import React, { useState, useEffect, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import ElectionTextInput from './election-text-input'
-import Submit from './submit'
 import SvgSpeaker from '../svgr/speaker'
 import ElectionTextArea from './election-text-area'
 import DoneLockedButton from './done-locked-button'
@@ -22,7 +21,7 @@ export function Invitation(props) {
         email: null,
         message: null,
     }) // null->[false||true] to prevent a loop of the initial values above that will get rendered first, and then the electionObj data which may get updated right after the initial render
-    // a reducer becasue if useState  setValidInputs({...validInputs,email}) would overwrite the value of name with what might not be the current value if setValidInputs({...validInputs,name}) were both called in event handlers before the next rerender that updates ...validInputs
+    // a reducer because if useState  setValidInputs({...validInputs,email}) would overwrite the value of name with what might not be the current value if setValidInputs({...validInputs,name}) were both called in event handlers before the next rerender that updates ...validInputs
     // not using the usual action {type: "SET_EMAIL", value: true} format because it's too long and wordy for this simple case of updating values of an object
     const disabled =
         electionObj?.doneLocked?.[panelName]?.done || electionMethods.getModeratorSubmissionStatus() === 'submitted'
@@ -37,7 +36,7 @@ export function Invitation(props) {
             <div className={classes.form}>
                 <div className={classes.inputs}>
                     <ElectionTextInput
-                        name='Moderaor Name'
+                        name='Moderator Name'
                         defaultValue={name}
                         onDone={({ valid, value }) => {
                             if ((validInputs.name !== null || valid) && name !== value)

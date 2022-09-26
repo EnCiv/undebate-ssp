@@ -11,6 +11,7 @@ import Submit from './submit'
 import scheme from '../lib/scheme'
 import SvgExternalLink from '../svgr/external-link'
 import SvgRedo from '../svgr/redo-arrow'
+import Spinner from './spinner'
 
 export function getModeratorRecorderStatus(electionObj) {
     const moderator = electionObj?.moderator
@@ -171,13 +172,16 @@ export default function ModeratorRecorder(props) {
                         name={recorderStatus === 'sent' ? ' Resend Invitation' : 'Send Invitation'}
                         disabled={!(recorderStatus === 'created' || recorderStatus === 'sent')}
                         onDone={({ valid, value }) => {
+                            setSubmitted(true)
                             electionMethods.sendModeratorInvitation(result => {
+                                setSubmitted(false)
                                 //to do show error message if failure
                                 onDone({ valid: true })
                             })
                         }}
                         className={classes.submitButton}
                     />
+                    {submitted && <Spinner style={{ marginTop: '6rem' }} />}
                 </div>
             </div>
         </div>
