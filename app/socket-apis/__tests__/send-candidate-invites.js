@@ -213,6 +213,7 @@ maybe('Test the send candidate invites API', () => {
                     _id: expect.toBeObjectId(),
                     cc: [{ email: expect.toBeEmail() }],
                     to: [{ email: expect.toBeEmail() }],
+                    sender: { email: expect.any(String) },
                     messageId: expect.any(String),
                     sentDate: expect.toBeIsoDate(),
                     templateId: expect.any(Number),
@@ -272,6 +273,10 @@ maybe('Test the send candidate invites API', () => {
                         "time": "90",
                       },
                     },
+                  },
+                  "sender": Object {
+                    "email": Any<String>,
+                    "name": "admin name @ The Organization via EnCiv.org",
                   },
                   "sentDate": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
                   "tags": Array [
