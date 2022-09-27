@@ -27,15 +27,29 @@
             Hello {{ params.moderator.name }},<br /><br />
             {{ params.organizationName }} is holding an election and inviting the candidates to participate in online
             video debates using EnCiv's undebate platform. You are invited to be the moderator.
-            It's simple, all there is to do is follow this <a href={{ params.moderator.recorder_url }}>link</a> and
+            It's simple, all there is to do is follow this <a href="{{ params.moderator.recorder_url }}">link</a> and
             review
             the script and then, using your browsers, record yourself asking the questions and post it. To be ready in
             time, your posting is needed by {{ params.moderator.submissionDeadline }} but sooner is welcome.
             <br /><br />
             {{ params.moderator.message }}
             <br /><br />
-            See the script, and record your moderator role at <a href="{{ params.moderator.recorder_url }}"
+            See the script and record your moderator role at <a href="{{ params.moderator.recorder_url }}"
                 target="_blank">{{ params.moderator.recorder_url }}</a><br />
+            <br />
+            The script can also be seen below, in addition to when you are ready to make your recording at the above url.
+            <br />
+            <br />
+            <hr>
+            <br />
+            <span style="font-weight:bold;">Script:</span>
+            <br />
+            {% for scriptItem in params.script %}
+            {{ scriptItem.text }}
+            <br />
+            <br />
+            {% endfor %}
+            <hr>
             <br />
             If you have any questions, please contact {{ params.name }} at <a href={{ params.email }}>
                 {{ params.email }}</a></a><br />
