@@ -49,7 +49,9 @@ export default async function sendModeratorInvite(id, cb) {
                 email: electionObj.moderator.email,
                 recorder_url: scheme() + process.env.HOSTNAME + getLatestIota(electionObj.moderator.recorders).path,
                 submissionDeadline: new Date(submissionDeadline).toLocaleString(),
+                message: electionObj.moderator.message,
             },
+            script: Object.values(electionObj.script),
         }
         const messageProps = {
             params,

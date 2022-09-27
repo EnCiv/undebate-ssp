@@ -61,7 +61,7 @@ async function SibGetTemplate(name, htmlContent) {
                 }
             }
             if (error)
-                logger.error('sendModeratorInvite SendInBlue template does not match repo, but usirng', template?.id)
+                logger.error('sendModeratorInvite SendInBlue template does not match repo, but using', template?.id)
             const localParams = uniqueParams(htmlContent)
             const remoteParams = uniqueParams(template.htmlContent)
             for (const param of remoteParams) {
