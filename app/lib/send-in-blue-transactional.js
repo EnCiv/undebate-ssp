@@ -55,8 +55,9 @@ async function SibGetTemplate(name, htmlContent) {
                     else if (template.htmlContent[i] === '\r') i++
                     else {
                         logger.error(template.htmlContent.charCodeAt(i), '!==', htmlContent.charCodeAt(j), 'at', i)
-                        error = true
-                        break
+                        logger.error('on sendinblue:', template.htmlContent.slice(Math.max(i - 10, 0), i + 10))
+                        logger.error('local:', htmlContent.slice(Math.max(j - 10, 0), j + 10))
+                        return undefined
                     }
                 }
             }
