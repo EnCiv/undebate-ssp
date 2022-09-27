@@ -224,6 +224,7 @@ maybe('Test the send moderator invite API', () => {
                             email: expect.toBeEmail(),
                         },
                     },
+
                     to: [{ email: expect.toBeEmail() }],
                 },
                 `
@@ -242,6 +243,20 @@ maybe('Test the send moderator invite API', () => {
                     "name": "admin name",
                     "organizationLogo": "https://www.bringfido.com/assets/images/bfi-logo-new.jpg",
                     "organizationName": "The Organization",
+                    "script": Array [
+                      Object {
+                        "text": "Welcome everyone. Our first question is: What is your favorite color?",
+                      },
+                      Object {
+                        "text": "Thank you. Our next Question is: Do you have a pet?",
+                      },
+                      Object {
+                        "text": "Great. And our last question is: Should we try to fix income inequality?",
+                      },
+                      Object {
+                        "text": "Thanks everyone for watching this!",
+                      },
+                    ],
                   },
                   "sender": Object {
                     "email": Any<String>,
