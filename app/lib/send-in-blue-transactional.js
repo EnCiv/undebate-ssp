@@ -39,6 +39,8 @@ async function SibCreateTemplate(name, templateName, htmlContent) {
 async function SibGetTemplate(name, htmlContent) {
     const { templates, count } = await SibSMTPApi.getSmtpTemplates()
     // if new account with no templates yet, templates might be undefined
+    // templates are send down with the largest template first in the list
+    // older templates with the same name may appear though this seems inconsistent but the last one created will appear first becuase in the list
     const template = templates?.find(t => t.name === name)
     if (!template) {
         return undefined
