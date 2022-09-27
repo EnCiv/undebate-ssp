@@ -216,6 +216,7 @@ maybe('Test the send moderator invite API', () => {
                     messageId: expect.any(String),
                     sentDate: expect.toBeIsoDate(),
                     templateId: expect.any(Number),
+                    sender: { email: expect.any(String) },
                     params: {
                         email: expect.toBeEmail(),
                         moderator: {
@@ -241,6 +242,10 @@ maybe('Test the send moderator invite API', () => {
                     "name": "admin name",
                     "organizationLogo": "https://www.bringfido.com/assets/images/bfi-logo-new.jpg",
                     "organizationName": "The Organization",
+                  },
+                  "sender": Object {
+                    "email": Any<String>,
+                    "name": "admin name @ The Organization via EnCiv.org",
                   },
                   "sentDate": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
                   "tags": Array [
