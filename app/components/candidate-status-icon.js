@@ -9,24 +9,34 @@ export default function CandidateStatusIcon({value, themeColorName, numberColor,
             {displayText}
         </div>
     }
+    let remSize = visibleText ? 2 : 1
+    const iconStyle = {
+        width: remSize + 'rem',
+        height: remSize + 'rem',
+    }
+    const textStyle = {fontSize: (remSize * 0.75) + 'rem'}
 
     return (
-        <span>
-            <span className={classes.statusIcon}>
-                <span className={classes.text}>{value}</span>
+        <div className={classes.wrapper}>
+            <div className={classes.statusIcon} style={iconStyle}>
+                <div className={classes.text} style={textStyle}>{value}</div>
                 {visibleText ? '' : renderTooltip()}
-            </span>
+            </div>
             {visibleText ?
                 <span className={classes.statusText}>{displayText}</span>
                 : ''
             }
-        </span>
+        </div>
     )
 }
 
 const useStyles = createUseStyles(theme => ({
+    wrapper: {
+        display: 'flex',
+        alignItems: 'center',
+    },
     statusIcon: ({themeColorName}) => ({
-        borderRadius: '3rem',
+        borderRadius: '50%',
         backgroundColor: theme[themeColorName],
         marginLeft: '0.75rem',
         '&:hover $tooltip': {
@@ -35,8 +45,10 @@ const useStyles = createUseStyles(theme => ({
     }),
     text: ({numberColor}) => ({
         color: numberColor ?? theme.colorSecondary,
-        padding: '0.625rem',
         fontWeight: 'bold',
+        verticalAlign: 'middle',
+        textAlign: 'center',
+        height: '100%',
     }),
     statusText: {
         margin: '0 0 0 0.75rem',
