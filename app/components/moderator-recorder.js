@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/undebate-ssp/issues/51
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import SvgCheck from '../svgr/check'
@@ -66,6 +66,11 @@ export default function ModeratorRecorder(props) {
         const currDate = Date.now()
         return Math.round((currDate - sentDate) / 86400000)
     }
+
+    // if the recorder is updated, the url doesn't change so the iframe would never refresh - so update the iframe any time there's a change in election data
+    useEffect(() => {
+        if (iframeRef.current) iframeRef.current.src += ''
+    }, [electionOM])
 
     let statusTitle
     let statusDesc = submissionDaysLeft + ' days left for moderator to submit recording.'
