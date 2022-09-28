@@ -17,5 +17,5 @@ export default async function createElectionDoc(cb) {
         },
         userId,
     })
-    cb(Iota.ObjectID(doc._id).toString())
+    cb(doc.webComponent)
 }

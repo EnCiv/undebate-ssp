@@ -20,7 +20,7 @@ export function applyUnsetAsUndefined(obj, unset) {
 }
 
 export default function SubscribeElectionInfo(props) {
-    const { id } = props
+    const { id, defaultValue = {}, onUnmount = () => {} } = props
     const electionOM = useMethods(
         (dispatch, state) => ({
             ...getElectionStatusMethods(dispatch, state),
@@ -62,7 +62,7 @@ export default function SubscribeElectionInfo(props) {
                 window.socket.emit('create-send-candidate-invites', id, filter, cb)
             },
         }),
-        {}, // empty because the data won't come until later, but react won't let us call new hooks later
+        defaultValue,
         []
     )
     useEffect(() => {
@@ -72,7 +72,10 @@ export default function SubscribeElectionInfo(props) {
             electionOM[1].merge, // callback
             electionOM[1].merge // update handler
         )
-        return unsubscribe
+        return () => {
+            unsubscribe()
+            onUnmount(electionOM[0]) // update parent with latest electionObj
+        }
     }, [])
     return <ConfigureElection electionOM={electionOM} />
 }
