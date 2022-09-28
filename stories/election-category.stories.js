@@ -35,9 +35,16 @@ TextWithIcon.args = {
     statusObjs: 'videoSubmitted', // Equal to [{videoSubmitted: true}]
 }
 
-export const WithTable = Template.bind({})
-WithTable.args = {
-    statusObjs: [{ accepted: 29 }, { declined: 2 }, { reminderSent: 2 }, { deadlineMissed: 1 }],
+export const WithStatusObj = Template.bind({})
+WithStatusObj.args = {
+    statusObjs: {
+        statusObj: {
+            deadlineMissed: 1,
+            videoSubmitted: 2,
+            sent: 3,
+            candidateCount: 4
+        }
+    }
 }
 
 export const Pending = Template.bind({})

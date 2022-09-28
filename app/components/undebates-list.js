@@ -8,7 +8,7 @@ import getElectionStatusMethods, {
     allElectionStatusTexts,
     allModeratorStatusTexts, getDaysText,
 } from '../lib/get-election-status-methods'
-import CandidateStatusTable from './candidate-status-table'
+import CandidateStatusComponent from './candidate-status-component'
 import ElectionUrgentLiveFilters from './election-urgent-live-filters'
 import cx from 'classnames'
 import ArrowSvg from '../svgr/arrow'
@@ -327,7 +327,7 @@ function CandidateCell({ candidatesStatusText, daysRemaining, candidateStatuses 
     }
     const renderStatusTable = () => {
         if (shouldShowStatusTable && candidateStatuses !== 'default') {
-            return <CandidateStatusTable className={classes.candidateStatusTable} statusObj={candidateStatuses} />
+            return <CandidateStatusComponent className={classes.candidateStatusTable} statusObj={candidateStatuses} />
         }
     }
 
@@ -605,7 +605,7 @@ export default function UndebatesList({ className, style, electionObjs, globalFi
     const renderCandidatesCell = value => {
         const [obj, electionMethods] = electionOMs[value.row.index]
         let daysRemaining = electionMethods.getCandidateStatusDaysRemaining()
-        const candidateStatuses = electionMethods.getCandidatesSubmissionsStatus()
+        const candidateStatuses = electionMethods.getCandidatesStatusCounts()
         return (
             <CandidateCell
                 candidatesStatusText={value.value}

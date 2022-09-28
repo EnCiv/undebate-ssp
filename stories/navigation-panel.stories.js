@@ -82,15 +82,15 @@ const defaultElectionObject = {
                 // derived data - list may be empty or not present
                 '62e75e03b5d24f21ae523733': {
                     _id: '62e75e03b5d24f21ae523733',
-                    sentDate: '2022-01-07T22:09:32.952Z',
-                    responseDate: '2022-01-07T22:09:32.952Z',
+                    sentDate: '2022-01-05T22:09:32.952Z',
+                    responseDate: '2022-01-05T22:09:32.952Z',
                     status: 'Declined',
                     parentId: '',
                 },
                 '62e75e17b22ea02235d683a6': {
                     _id: '62e75e17b22ea02235d683a6',
-                    sentDate: '2022-01-07T22:09:32.952Z',
-                    responseDate: '2022-01-07T22:09:32.952Z',
+                    sentDate: '2022-01-06T22:09:32.952Z',
+                    responseDate: '2022-01-06T22:09:32.952Z',
                     status: 'Accepted',
                     parentId: '',
                 },
@@ -126,7 +126,7 @@ const defaultElectionObject = {
         },
         candidateSubmissionDeadline: {
             0: {
-                date: '2022-01-07T22:09:32.952Z',
+                date: '3022-01-07T22:09:32.952Z',
                 sent: true,
             },
         },
@@ -337,6 +337,18 @@ export const ElectionTableIsFilled = Template.bind({})
 ElectionTableIsFilled.args = {
     defaultElectionObj: {
         ...defaultElectionObject,
+        candidates: {
+            '61e76bbefeaa4a25840d85d0': {
+                submissions: {
+                    '633114122466e4490bca3959': {
+                        _id: '633114122466e4490bca3959',
+                        url: 'url',
+                        date: '2022-01-06T22:09:32.952Z',
+                        parentId: 'stuff',
+                    }
+                },
+            }
+        }
     },
 }
 
