@@ -47,6 +47,7 @@ const electionSchema = Joi.object({
     organizationLogo: Joi.string().allow('').uri(),
     electionDate: IsoDate(),
     email: Email(),
+    name: String(),
     questions: Joi.object().pattern(
         Joi.string().pattern(Integer),
         Joi.object({

@@ -39,6 +39,8 @@ async function SibCreateTemplate(name, templateName, htmlContent) {
 async function SibGetTemplate(name, htmlContent) {
     const { templates, count } = await SibSMTPApi.getSmtpTemplates()
     // if new account with no templates yet, templates might be undefined
+    // templates are send down with the largest template first in the list
+    // older templates with the same name may appear though this seems inconsistent but the last one created will appear first becuase in the list
     const template = templates?.find(t => t.name === name)
     if (!template) {
         return undefined
@@ -55,13 +57,14 @@ async function SibGetTemplate(name, htmlContent) {
                     else if (template.htmlContent[i] === '\r') i++
                     else {
                         logger.error(template.htmlContent.charCodeAt(i), '!==', htmlContent.charCodeAt(j), 'at', i)
-                        error = true
-                        break
+                        logger.error('on sendinblue:', template.htmlContent.slice(Math.max(i - 10, 0), i + 10))
+                        logger.error('local:', htmlContent.slice(Math.max(j - 10, 0), j + 10))
+                        return undefined
                     }
                 }
             }
             if (error)
-                logger.error('sendModeratorInvite SendInBlue template does not match repo, but usirng', template?.id)
+                logger.error('sendModeratorInvite SendInBlue template does not match repo, but using', template?.id)
             const localParams = uniqueParams(htmlContent)
             const remoteParams = uniqueParams(template.htmlContent)
             for (const param of remoteParams) {

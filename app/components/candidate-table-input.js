@@ -241,6 +241,7 @@ export default CandidateTableInput
 const useStyles = createUseStyles(theme => ({
     wrapper: {
         fontFamily: theme.defaultFont,
+        width: '100%',
         fontStyle: 'normal',
         fontWeight: 500,
         lineHeight: '1.5rem',
@@ -259,6 +260,7 @@ const useStyles = createUseStyles(theme => ({
                 paddingBottom: '1rem',
             },
             '& td': {
+                width: '1%',
                 margin: 0,
                 padding: '0.125rem',
                 //borderBottom: '1px solid black',
@@ -269,6 +271,9 @@ const useStyles = createUseStyles(theme => ({
                 },
 
                 '& input': {
+                    boxSizing: 'border-box',
+                    width: '100%',
+                    minWidth: '10rem',
                     fontSize: theme.inputFieldFontSize,
                     lineHeight: theme.inputFieldLineHeight,
                     color: theme.colorSecondary,

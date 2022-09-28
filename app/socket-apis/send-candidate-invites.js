@@ -73,7 +73,9 @@ export async function sendCandidateInvitesFromIdAndElectionObj(id, electionObj, 
             name: electionObj.name,
             email: electionObj.email,
             organizationName: electionObj.organizationName,
-            organizationLogo: electionObj.organizationLogo,
+            organizationLogo:
+                electionObj.organizationLogo ||
+                'https://res.cloudinary.com/hf6mryjpf/image/upload/v1664306598/assets/undebate-logo_qczkk6.png',
             moderator: {
                 name: electionObj.moderator.name,
                 email: electionObj.moderator.email,
@@ -91,6 +93,14 @@ export async function sendCandidateInvitesFromIdAndElectionObj(id, electionObj, 
         const messageProps = {
             params,
             to: [{ email: candidate.email, name: candidate.name }],
+            sender: {
+                name:
+                    (electionObj.name || 'Election Administrator') +
+                    ' @ ' +
+                    electionObj.organizationName +
+                    ' via EnCiv.org',
+                email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
+            },
             templateId,
             tags: [`id:${id}`, 'role:candidate', `office:${candidate.office}`],
         }

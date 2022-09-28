@@ -12,6 +12,7 @@ const items = [
     { name: 'Organization URL', key: 'organizationUrl', type: 'url' },
     { name: 'Organization Logo URL - Optional', key: 'organizationLogo', type: 'url', optional: true },
     { name: 'Election Name', key: 'electionName', type: 'text' },
+    { name: 'Election Contact Name', key: 'name', type: 'text' },
     { name: 'Election Contact Email', key: 'email', type: 'email' },
 ]
 const panelName = 'Election'

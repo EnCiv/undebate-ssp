@@ -216,6 +216,7 @@ maybe('Test the send moderator invite API', () => {
                     messageId: expect.any(String),
                     sentDate: expect.toBeIsoDate(),
                     templateId: expect.any(Number),
+                    sender: { email: expect.any(String) },
                     params: {
                         email: expect.toBeEmail(),
                         moderator: {
@@ -223,6 +224,7 @@ maybe('Test the send moderator invite API', () => {
                             email: expect.toBeEmail(),
                         },
                     },
+
                     to: [{ email: expect.toBeEmail() }],
                 },
                 `
@@ -241,6 +243,24 @@ maybe('Test the send moderator invite API', () => {
                     "name": "admin name",
                     "organizationLogo": "https://www.bringfido.com/assets/images/bfi-logo-new.jpg",
                     "organizationName": "The Organization",
+                    "script": Array [
+                      Object {
+                        "text": "Welcome everyone. Our first question is: What is your favorite color?",
+                      },
+                      Object {
+                        "text": "Thank you. Our next Question is: Do you have a pet?",
+                      },
+                      Object {
+                        "text": "Great. And our last question is: Should we try to fix income inequality?",
+                      },
+                      Object {
+                        "text": "Thanks everyone for watching this!",
+                      },
+                    ],
+                  },
+                  "sender": Object {
+                    "email": Any<String>,
+                    "name": "admin name @ The Organization via EnCiv.org",
                   },
                   "sentDate": StringMatching /\\\\d\\{4\\}-\\[01\\]\\\\d-\\[0-3\\]\\\\dT\\[0-2\\]\\\\d:\\[0-5\\]\\\\d:\\[0-5\\]\\\\d\\\\\\.\\\\d\\+\\(\\[\\+-\\]\\[0-2\\]\\\\d:\\[0-5\\]\\\\d\\|Z\\)/,
                   "tags": Array [
