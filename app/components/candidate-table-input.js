@@ -5,6 +5,8 @@ import { createUseStyles } from 'react-jss'
 import { useTable, usePagination, useFilters, useSortBy } from 'react-table'
 import ObjectID from 'isomorphic-mongo-objectid'
 import IsEmail from 'isemail'
+import cx from 'classnames'
+import ArrowSvg from '../svgr/arrow'
 
 // Create an editable cell renderer
 function EditableCell(props) {
@@ -95,9 +97,41 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (
                                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                    {column.render('Header')}
-                                    {column.canFilter && column.Filter ? column.render('Filter') : ''}
-                                    <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
+                                    <div className={classes.thDiv}>
+                                        <span className={classes.thContent}>
+                                            {column.isSorted ? (
+                                                column.isSortedDesc ? (
+                                                    <ArrowSvg
+                                                        className={cx(classes.basicIcon, classes.selectSortIcon)}
+                                                        style={{
+                                                            transform: 'rotate(180deg)',
+                                                            //paddingRight: '0.8rem',
+                                                            marginRight: '0.4rem',
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <ArrowSvg
+                                                        className={cx(classes.basicIcon, classes.selectSortIcon)}
+                                                        style={{ marginLeft: '0.4rem' }}
+                                                    />
+                                                )
+                                            ) : (
+                                                <>
+                                                    <ArrowSvg
+                                                        className={cx(classes.basicIcon, classes.sortIcon)}
+                                                        style={{ transform: 'rotate(180deg)', position: 'absolute' }}
+                                                    />
+                                                    <ArrowSvg
+                                                        className={cx(classes.basicIcon, classes.sortIcon)}
+                                                        style={{ position: 'relative', marginLeft: '0.4rem' }}
+                                                    />
+                                                </>
+                                            )}
+                                            <span>{column.render('Header')}</span>
+                                        </span>
+
+                                        <span>{column.canFilter && column.Filter ? column.render('Filter') : ''}</span>
+                                    </div>
                                 </th>
                             ))}
                         </tr>
@@ -233,6 +267,28 @@ function CandidateTableInput(props) {
 export default CandidateTableInput
 
 const useStyles = createUseStyles(theme => ({
+    basicIcon: {
+        height: theme.iconSize,
+        width: theme.iconSize,
+        //fill: theme.colorLightGray,
+    },
+    selectSortIcon: {
+        '& path': {
+            fill: theme.colorPrimary,
+        },
+    },
+    sortIcon: {
+        '& path': {
+            fill: theme.colorSecondaryText,
+        },
+    },
+    thDiv: {
+        display: 'flex',
+    },
+    thContent: {
+        display: 'flex',
+        alignItems: 'center',
+    },
     wrapper: {
         fontFamily: theme.defaultFont,
         fontStyle: 'normal',

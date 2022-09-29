@@ -203,7 +203,6 @@ const useStyles = createUseStyles(theme => ({
     tableCell: {
         backgroundColor: 'white',
         borderRadius: 0,
-        // width: '15rem',
     },
     cornerCell: {
         borderRadius: theme.defaultBorderRadius,
@@ -258,7 +257,7 @@ const statusTextUseStyles = createUseStyles(theme => ({
 const headerUseStyles = createUseStyles(theme => ({
     header: {
         ...theme.button,
-        width: '15rem',
+        //width: '15rem',
         border: 'none',
         padding: '.25rem',
         '&:disabled': { color: 'initial' },
