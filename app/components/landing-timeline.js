@@ -13,6 +13,7 @@ import {
     ElectionGrid as SvgElectionGrid,
     ElectionLive as SvgElectionLive,
     Container as SvgContainer,
+    Sent as SvgSent,
 } from '../svgr'
 
 import cx from 'classnames'
@@ -119,7 +120,7 @@ export default function LandingTimeline({ className, style }) {
         landingTimeline: {
             overflow: 'hidden',
             [`@media (min-width: ${portraitWidth}) and (max-width: ${smallScreenWidth})`]: {
-                height: '19rem',
+                height: '20rem',
             },
             [`@media (max-width: ${portraitWidth})`]: {
                 width: '17rem',
@@ -138,7 +139,7 @@ export default function LandingTimeline({ className, style }) {
                         percent: 0,
                     },
                     { svg: <SvgElectionPaper />, percent: 6 },
-                    { svg: <SvgAccepted />, percent: 12 },
+                    { svg: <SvgSent />, percent: 12 },
                     {
                         svg: <SvgVideoSubmitted />,
                         text: (
@@ -149,7 +150,7 @@ export default function LandingTimeline({ className, style }) {
                         ),
                         percent: 18,
                     },
-                    { svg: <SvgReminderSent />, percent: 24 },
+                    //{ svg: <SvgReminderSent />, percent: 24 },
                     {
                         svg: <SvgXCircle />,
                         text: (
@@ -160,8 +161,18 @@ export default function LandingTimeline({ className, style }) {
                         ),
                         percent: 30,
                     },
-                    { svg: <SvgVideoSubmitted />, percent: 36 },
-                    { svg: <SvgElectionGrid />, percent: 46 },
+                    { svg: <SvgSent />, percent: 35 },
+                    {
+                        svg: <SvgVideoSubmitted />,
+                        text: (
+                            <TimelineText
+                                primaryText='Candidate Answer the Questions'
+                                secondaryText='Candidates get a link to a recorder page so they can answer the moderators questions.'
+                            />
+                        ),
+                        percent: 46,
+                    },
+                    //{ svg: <SvgElectionGrid />, percent: 46 },
                     { svg: <SvgReminderSent />, percent: 53 },
                     {
                         svg: <SvgXCircle />,
@@ -177,8 +188,8 @@ export default function LandingTimeline({ className, style }) {
                         svg: <SvgElectionLive />,
                         text: (
                             <TimelineText
-                                primaryText='Candidate Submission Deadline'
-                                secondaryText='Last date for candidates to submit their video answers'
+                                primaryText='Undebate Goes Live'
+                                secondaryText='The undebate is ready for voters to watch'
                             />
                         ),
                         percent: 70,
@@ -188,8 +199,8 @@ export default function LandingTimeline({ className, style }) {
                         percent: 100,
                         text: (
                             <TimelineText
-                                primaryText='Candidate Submission Deadline'
-                                secondaryText='Last date for candidates to submit their video answers'
+                                primaryText='Election End Date'
+                                secondaryText='The election is over - but the undebate live on'
                                 align='right'
                             />
                         ),
