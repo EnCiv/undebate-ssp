@@ -2,9 +2,11 @@
 // example code thanks to https://react-table.tanstack.com/docs/examples/editable-data
 import React, { useRef } from 'react'
 import { createUseStyles } from 'react-jss'
-import { useTable, usePagination, useFilters } from 'react-table'
+import { useTable, usePagination, useFilters, useSortBy } from 'react-table'
 import ObjectID from 'isomorphic-mongo-objectid'
 import IsEmail from 'isemail'
+import cx from 'classnames'
+import ArrowSvg from '../svgr/arrow'
 
 // Create an editable cell renderer
 function EditableCell(props) {
@@ -37,15 +39,7 @@ function EditableCell(props) {
     )
         style = warn
 
-    return (
-        <input
-            ref={inputRef}
-            style={style}
-            disabled={!updateMyData.editable}
-            defaultValue={value}
-            onBlur={onBlur}
-        />
-    )
+    return <input ref={inputRef} style={style} disabled={!updateMyData.editable} defaultValue={value} onBlur={onBlur} />
 }
 
 // Set our editable cell renderer as the default Cell renderer
@@ -88,10 +82,13 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
             updateMyData,
             initialState: { pageSize: 100 },
             autoResetFilters: false,
+            autoResetSortBy: false,
         },
         useFilters,
+        useSortBy,
         usePagination
     )
+
     const classes = useStyles()
     // Render the UI for your table
     return (
@@ -101,9 +98,41 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}>
-                                    {column.render('Header')}
-                                    {column.canFilter && column.Filter ? column.render('Filter') : ''}
+                                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                    <div className={classes.thDiv}>
+                                        <span className={classes.thContent}>
+                                            {column.isSorted ? (
+                                                column.isSortedDesc ? (
+                                                    <ArrowSvg
+                                                        className={cx(classes.basicIcon, classes.selectSortIcon)}
+                                                        style={{
+                                                            transform: 'rotate(180deg)',
+                                                            marginRight: '0.4rem',
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <ArrowSvg
+                                                        className={cx(classes.basicIcon, classes.selectSortIcon)}
+                                                        style={{ marginLeft: '0.4rem' }}
+                                                    />
+                                                )
+                                            ) : (
+                                                <>
+                                                    <ArrowSvg
+                                                        className={cx(classes.basicIcon, classes.sortIcon)}
+                                                        style={{ transform: 'rotate(180deg)', position: 'absolute' }}
+                                                    />
+                                                    <ArrowSvg
+                                                        className={cx(classes.basicIcon, classes.sortIcon)}
+                                                        style={{ position: 'relative', marginLeft: '0.4rem' }}
+                                                    />
+                                                </>
+                                            )}
+                                            <span>{column.render('Header')}</span>
+                                        </span>
+
+                                        <span>{column.canFilter && column.Filter ? column.render('Filter') : ''}</span>
+                                    </div>
                                 </th>
                             ))}
                         </tr>
@@ -239,6 +268,28 @@ function CandidateTableInput(props) {
 export default CandidateTableInput
 
 const useStyles = createUseStyles(theme => ({
+    basicIcon: {
+        height: theme.iconSize,
+        width: theme.iconSize,
+        //fill: theme.colorLightGray,
+    },
+    selectSortIcon: {
+        '& path': {
+            fill: theme.colorPrimary,
+        },
+    },
+    sortIcon: {
+        '& path': {
+            fill: theme.colorSecondaryText,
+        },
+    },
+    thDiv: {
+        display: 'flex',
+    },
+    thContent: {
+        display: 'flex',
+        alignItems: 'center',
+    },
     wrapper: {
         fontFamily: theme.defaultFont,
         width: '100%',
