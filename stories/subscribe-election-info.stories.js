@@ -94,19 +94,21 @@ const electionObjs = [
             name: 'Bill Smith',
             email: 'billsmith@gmail.com',
             message: 'Please be a moderator',
-            invitations: [
-                // derived data, list may be empty or not present
-                {
-                    _id: '123',
-                    sentDate: '2022-01-07T22:09:32.952Z',
-                    responseDate: '2022-01-07T22:09:32.952Z',
-                    status: 'Accepted',
-                },
-            ],
-            submissions: [
-                // derived data, list may be empty or not present
-                { _id: '', url: '', date: '' },
-            ],
+            invitations: {
+                '6337603ae0c62042803b3be6':
+                    // derived data, list may be empty or not present
+                    {
+                        _id: '6337603ae0c62042803b3be6',
+                        sentDate: '2022-01-07T22:09:32.952Z',
+                        responseDate: '2022-01-07T22:09:32.952Z',
+                        status: 'Accepted',
+                    },
+            },
+            submissions: {
+                '63376053e3803658bc6e66f4':
+                    // derived data, list may be empty or not present
+                    { _id: '63376053e3803658bc6e66f4', url: '', date: '' },
+            },
         },
         candidates: {
             '61e76bbefeaa4a25840d85d0': {
@@ -115,16 +117,17 @@ const electionObjs = [
                 email: 'sarahjones@mail.com',
                 office: 'President of the U.S.',
                 region: 'United States',
-                invitations: [
-                    // derived data - list may be empty or not present
-                    {
-                        _id: '',
-                        sentDate: '2022-01-07T22:09:32.952Z',
-                        responseDate: '2022-01-07T22:09:32.952Z',
-                        status: 'Declined',
-                        parentId: '',
-                    },
-                ],
+                invitations: {
+                    '63376069d0713d6de83824ea':
+                        // derived data - list may be empty or not present
+                        {
+                            _id: '63376069d0713d6de83824ea',
+                            sentDate: '2022-01-07T22:09:32.952Z',
+                            responseDate: '2022-01-07T22:09:32.952Z',
+                            status: 'Declined',
+                            parentId: '',
+                        },
+                },
             },
         },
         timeline: {

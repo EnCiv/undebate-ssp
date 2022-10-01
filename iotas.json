@@ -87,15 +87,15 @@
                 "name": "Bill Smith",
                 "email": "billsmith@gmail.com",
                 "message": "Please be a moderator",
-                "invitations": [
-                    {
+                "invitations": {
+                    "62196edb0488873088d64a77": {
                         "_id": "62196edb0488873088d64a77",
                         "text": "Hi Mike, please send answers",
                         "sentDate": "2022-02-10T00:50:16.802Z",
                         "responseDate": "2022-02-10T00:50:16.802Z",
                         "status": "Accepted"
                     }
-                ],
+                },
                 "submissions": {
                     "628d2d25c945f836b8be0901": {
                         "_id": "628d2d25c945f836b8be0901",
@@ -125,23 +125,23 @@
                     "email": "sarahjones@mail.com",
                     "office": "President of the U.S.",
                     "region": "United States",
-                    "invitations": [
-                        {
+                    "invitations": {
+                        "62196f00024e6143586ffc6c": {
                             "_id": "62196f00024e6143586ffc6c",
                             "text": "text",
                             "sentDate": "2022-02-10T00:50:16.802Z",
                             "responseDate": "2022-02-10T00:50:16.802Z",
                             "status": "Accepted"
                         }
-                    ],
-                    "submissions": [
-                        {
+                    },
+                    "submissions": {
+                        "62196f1aec6b214914422c29": {
                             "_id": "62196f1aec6b214914422c29",
                             "url": "url",
                             "date": "2022-02-10T00:50:16.802Z",
                             "parentId": "6204672e8d39d45d1cbcc0a6"
                         }
-                    ]
+                    }
                 },
                 "61e76bfc8a82733d08f0cf12": {
                     "uniqueId": "61e76bfc8a82733d08f0cf12",
@@ -149,23 +149,23 @@
                     "email": "mikejeff@mail.com",
                     "office": "President of the U.S.",
                     "region": "United States",
-                    "invitations": [
-                        {
+                    "invitations": {
+                        "62196f673d73b80430c1c620": {
                             "_id": "62196f673d73b80430c1c620",
                             "text": "Hi Mike, please send answers",
                             "sentDate": "2022-02-10T00:50:16.802Z",
                             "responseDate": "2022-02-10T00:50:16.802Z",
                             "status": "Declined"
                         }
-                    ],
-                    "submissions": [
-                        {
+                    },
+                    "submissions": {
+                        "62196f75f5c0544e4c5f35d1": {
                             "_id": "62196f75f5c0544e4c5f35d1",
                             "url": "2022-02-10T00:50:16.802Z",
                             "date": "2022-02-10T00:50:16.802Z",
                             "parentId": "6204672e8d39d45d1cbcc0a6"
                         }
-                    ]
+                    }
                 }
             },
             "timeline": {

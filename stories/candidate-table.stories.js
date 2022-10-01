@@ -35,15 +35,15 @@ const candidates = {
         email: 'felicia.reid@example.com',
         office: 'Posuere sed',
         region: 'Fermentum massa',
-        "invitations": [
-            {
-                "_id": "62196f00024e6143586ffc6c",
-                "text": "text",
-                "sentDate": "2022-02-10T00:50:16.802Z",
-                "responseDate": "2022-02-10T00:50:16.802Z",
-                "status": "Accepted"
-            }
-        ],
+        invitations: {
+            '62196f00024e6143586ffc6c': {
+                _id: '62196f00024e6143586ffc6c',
+                text: 'text',
+                sentDate: '2022-02-10T00:50:16.802Z',
+                responseDate: '2022-02-10T00:50:16.802Z',
+                status: 'Accepted',
+            },
+        },
         uniqueId: '61e34ba4dd28d45f2c6c66be',
     },
     '61e34bb17ad05c2b9003f600': {
@@ -51,29 +51,29 @@ const candidates = {
         email: 'nevaeh.simmons@example.com',
         office: 'Eu at',
         region: 'Amet sodales',
-        "invitations": [
-            {
-                "_id": "63194dd4a02246a0f6b16e2c",
-                "text": "text",
-                "sentDate": "2022-08-10T00:50:16.802Z",
-                "responseDate": "2022-08-11T00:50:16.802Z",
-                "status": "Accepted"
+        invitations: {
+            '63194dd4a02246a0f6b16e2c': {
+                _id: '63194dd4a02246a0f6b16e2c',
+                text: 'text',
+                sentDate: '2022-08-10T00:50:16.802Z',
+                responseDate: '2022-08-11T00:50:16.802Z',
+                status: 'Accepted',
             },
-            {
-                "_id": "631d4f9a04fcf246555e4940",
-                "text": "text",
-                "sentDate": "2022-08-20T00:50:16.802Z",
-                "responseDate": "2022-08-21T00:50:16.802Z",
-                "status": "Accepted"
+            '631d4f9a04fcf246555e4940': {
+                _id: '631d4f9a04fcf246555e4940',
+                text: 'text',
+                sentDate: '2022-08-20T00:50:16.802Z',
+                responseDate: '2022-08-21T00:50:16.802Z',
+                status: 'Accepted',
             },
-            {
-                "_id": "631d5649be5588ca361ed914",
-                "text": "text",
-                "sentDate": "2022-09-10T00:50:16.802Z",
-                "responseDate": "2022-09-11T00:50:16.802Z",
-                "status": "Accepted"
+            '631d5649be5588ca361ed914': {
+                _id: '631d5649be5588ca361ed914',
+                text: 'text',
+                sentDate: '2022-09-10T00:50:16.802Z',
+                responseDate: '2022-09-11T00:50:16.802Z',
+                status: 'Accepted',
             },
-        ],
+        },
         uniqueId: '61e34bb17ad05c2b9003f600',
     },
 }
@@ -120,7 +120,7 @@ RemindersOne.args = {
                 invitations: {
                     '62ffd924984136547c938843': {
                         _id: '62ffd924984136547c938843',
-                        sendDate: '2022-08-19T18:41:46.501Z',
+                        sentDate: '2022-08-19T18:41:46.501Z',
                     },
                 },
             },
@@ -137,7 +137,7 @@ RemindersTwo.args = {
                 invitations: {
                     '62ffe382568c0b58ec776024': {
                         _id: '62ffe382568c0b58ec776024',
-                        sendDate: '2022-08-19T19:25:21.063Z',
+                        sentDate: '2022-08-19T19:25:21.063Z',
                     },
                 },
             },
@@ -145,7 +145,7 @@ RemindersTwo.args = {
                 invitations: {
                     '62ffd924984136547c938843': {
                         _id: '62ffd924984136547c938843',
-                        sendDate: '2022-08-19T18:41:46.501Z',
+                        sentDate: '2022-08-19T18:41:46.501Z',
                     },
                 },
             },
@@ -162,7 +162,7 @@ AllSubmitted.args = {
                 invitations: {
                     '62ffe382568c0b58ec776024': {
                         _id: '62ffe382568c0b58ec776024',
-                        sendDate: '2022-08-19T19:25:21.063Z',
+                        sentDate: '2022-08-19T19:25:21.063Z',
                     },
                 },
                 submissions: {
@@ -173,7 +173,7 @@ AllSubmitted.args = {
                 invitations: {
                     '62ffd924984136547c938843': {
                         _id: '62ffd924984136547c938843',
-                        sendDate: '2022-08-19T18:41:46.501Z',
+                        sentDate: '2022-08-19T18:41:46.501Z',
                     },
                 },
                 submissions: { '62ffe59a3b252f0fecfe67c1': { _id: '62ffe59a3b252f0fecfe67c1' } },
