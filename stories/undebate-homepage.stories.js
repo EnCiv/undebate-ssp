@@ -29,11 +29,11 @@ const Template = (args, context) => {
                     return
                 } else if (handle === 'get-election-docs') {
                     const [cb] = otherArgs
-                    cb(args.electionObjs)
+                    cb(args?.electionObjs)
                     return
                 } else if (handle === 'subscribe-election-info') {
                     const [id, cb] = otherArgs
-                    cb(args.electionObjs.find(doc => doc.id === id))
+                    cb(args?.electionObjs?.find(doc => doc.id === id))
                     // subscriptions are not handled, just the initial result is returned
                     return
                 } else if (handle === 'send-password') {
