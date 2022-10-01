@@ -44,19 +44,20 @@ const storyDefaultElectionObj = {
         name: 'Bill Smith',
         email: 'billsmith@gmail.com',
         message: 'Please be a moderator',
-        invitations: [
+        invitations: {
             // derived data, list may be empty or not present
-            {
-                _id: '123',
+            '6337542e58cdbc6368ff620b': {
+                _id: '6337542e58cdbc6368ff620b',
                 sentDate: '2022-01-07T22:09:32.952Z',
                 responseDate: '2022-01-07T22:09:32.952Z',
                 status: 'Accepted',
             },
-        ],
-        submissions: [
-            // derived data, list may be empty or not present
-            { _id: '', url: '', date: '' },
-        ],
+        },
+        submissions: {
+            '633754444641c73014d3760d':
+                // derived data, list may be empty or not present
+                { _id: '633754444641c73014d3760d', url: '', date: '' },
+        },
     },
     candidates: {
         '61e76bbefeaa4a25840d85d0': {
@@ -65,16 +66,16 @@ const storyDefaultElectionObj = {
             email: 'sarahjones@mail.com',
             office: 'President of the U.S.',
             region: 'United States',
-            invitations: [
+            invitations: {
                 // derived data - list may be empty or not present
-                {
-                    _id: '',
+                '63375479a29e5f388c43f4c8': {
+                    _id: '63375479a29e5f388c43f4c8',
                     sentDate: '2022-01-07T22:09:32.952Z',
                     responseDate: '2022-01-07T22:09:32.952Z',
                     status: 'Accepted',
                     parentId: '',
                 },
-            ],
+            },
         },
         test: {
             uniqueId: '61e76bbefeaa4a25840d85d0',
@@ -82,16 +83,17 @@ const storyDefaultElectionObj = {
             email: 'sarahjones@mail.com',
             office: 'President of the U.S.',
             region: 'United States',
-            invitations: [
-                // derived data - list may be empty or not present
-                {
-                    _id: '',
-                    sentDate: '2022-01-07T22:09:32.952Z',
-                    responseDate: '2022-01-07T22:09:32.952Z',
-                    status: 'Declined',
-                    parentId: '',
-                },
-            ],
+            invitations: {
+                '6337549a96d38d14f8aaf5b5':
+                    // derived data - list may be empty or not present
+                    {
+                        _id: '6337549a96d38d14f8aaf5b5',
+                        sentDate: '2022-01-07T22:09:32.952Z',
+                        responseDate: '2022-01-07T22:09:32.952Z',
+                        status: 'Declined',
+                        parentId: '',
+                    },
+            },
         },
         lorem: {
             uniqueId: '61e76bbefeaa4a25840d85d0',
@@ -116,17 +118,17 @@ const storyDefaultElectionObj = {
             email: 'sarahjones@mail.com',
             office: 'President of the U.S.',
             region: 'United States',
-            invitations: [
+            invitations: {
                 // derived data - list may be empty or not present
-                {
-                    _id: '',
+                '633754d799b6a62254124641': {
+                    _id: '633754d799b6a62254124641',
                     sentDate: '2022-01-07T22:09:32.952Z',
                     responseDate: '2022-01-07T22:09:32.952Z',
                     status: 'Accepted',
                     parentId: '',
                 },
-            ],
-            submissions: [{}],
+            },
+            submissions: {},
         },
         dolor: {
             uniqueId: '61e76bbefeaa4a25840d85d0',
@@ -134,16 +136,16 @@ const storyDefaultElectionObj = {
             email: 'sarahjones@mail.com',
             office: 'President of the U.S.',
             region: 'United States',
-            invitations: [
+            invitations: {
                 // derived data - list may be empty or not present
-                {
-                    _id: '',
+                '633754f59d64253b382b5d5c': {
+                    _id: '633754f59d64253b382b5d5c',
                     sentDate: '2022-01-07T22:09:32.952Z',
                     responseDate: '2022-01-07T22:09:32.952Z',
                     status: 'Sent',
                     parentId: '',
                 },
-            ],
+            },
         },
     },
     timeline: {

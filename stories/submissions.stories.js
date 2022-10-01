@@ -128,7 +128,7 @@ export const Default = mC({
                         status: 'Declined',
                     },
                 },
-                submissions: [],
+                submissions: {},
             },
             '62e5845622b9fa2598018779': {
                 uniqueId: '62e5845622b9fa2598018779',
@@ -145,7 +145,7 @@ export const Default = mC({
                         status: 'declined',
                     },
                 },
-                submissions: [],
+                submissions: {},
             },
         },
         timeline: {
