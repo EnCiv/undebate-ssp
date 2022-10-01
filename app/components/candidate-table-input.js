@@ -82,11 +82,13 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
             updateMyData,
             initialState: { pageSize: 100 },
             autoResetFilters: false,
+            autoResetSortBy: false,
         },
         useFilters,
         useSortBy,
         usePagination
     )
+
     const classes = useStyles()
     // Render the UI for your table
     return (
@@ -105,7 +107,6 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
                                                         className={cx(classes.basicIcon, classes.selectSortIcon)}
                                                         style={{
                                                             transform: 'rotate(180deg)',
-                                                            //paddingRight: '0.8rem',
                                                             marginRight: '0.4rem',
                                                         }}
                                                     />
