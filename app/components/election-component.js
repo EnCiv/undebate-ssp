@@ -18,6 +18,7 @@ const items = [
 const panelName = 'Election'
 
 export default function ElectionComponent(props) {
+    const [image, setImage] = useState()
     const { className, style, electionOM, onDone } = props
     const [electionObj, electionMethods] = electionOM
     const [validInputs, setValidInputs] = useReducer((state, action) => ({ ...state, ...action }), {})
@@ -34,7 +35,8 @@ export default function ElectionComponent(props) {
 
     const disabled =
         electionObj?.doneLocked?.[panelName]?.done || electionMethods.getModeratorSubmissionStatus() === 'submitted'
-
+    console.log(image)
+    //console.log(process.env.CLOUDINARY_URL)
     return (
         <div className={cx(className, classes.page)} style={style}>
             <div className={cx(className, classes.wrapper)} style={style}>
@@ -65,6 +67,8 @@ export default function ElectionComponent(props) {
                     onDone={({ valid, value }) => valid && onDone({ valid: allValid })}
                 />
             </span>
+            <input type='file' accepts='image/*' onChange={e => setImage(e.target.files)} />
+            <button>submit logo</button>
         </div>
     )
 }

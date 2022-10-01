@@ -102,6 +102,7 @@
     "dependencies": {
         "@babel/runtime": "^7.16.3",
         "classnames": "^2.3.1",
+        "cloudinary": "^1.32.0",
         "color": "^4.2.3",
         "deep-object-diff": "^1.1.7",
         "googleapis": "^100.0.0",
