@@ -162,13 +162,6 @@ const useStyles = createUseStyles(theme => ({
             marginTop: 0,
         },
     },
-    logo: {
-        height: '5rem',
-        width: '5rem',
-        borderRadius: '50%',
-        paddingLeft: '3rem',
-        position: 'relative',
-    },
     label: {
         margin: '0 0.625rem',
         fontWeight: '600',
@@ -186,8 +179,7 @@ const useStyles = createUseStyles(theme => ({
         marginLeft: '1rem',
         '& img': {
             height: '4.9rem',
-            width: '4.9rem',
-            borderRadius: '50%',
+            width: 'auto',
             position: 'relative',
         },
         '& button': {
