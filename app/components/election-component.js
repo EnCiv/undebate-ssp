@@ -44,8 +44,9 @@ export default function ElectionComponent(props) {
             reader.readAsDataURL(file)
             reader.onload = () => callback(reader.result)
         }
-        getBase64(files[0], image =>
-            window.socket.emit('cloudinary-upload', image, res => {
+        getBase64(files[0], image => {
+            const type = electionObj['organizationName'] + 'logo'
+            window.socket.emit('cloudinary-upload', { file: image, type: type }, res => {
                 const key = 'organizationLogo'
                 if (res.url) {
                     setLogoURL(res.url)
@@ -56,7 +57,7 @@ export default function ElectionComponent(props) {
                     setValidInputs({ [key]: isUrl(res.url) })
                 }
             })
-        )
+        })
     }
 
     const orgLogo = (name, key, type) => {
