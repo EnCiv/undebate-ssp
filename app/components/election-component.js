@@ -7,6 +7,7 @@ import cx from 'classnames'
 import ElectionTextInput from './election-text-input'
 import DoneLockedButton from './done-locked-button'
 import isUrl from 'is-url'
+import Submit from './Submit'
 
 const items = [
     { name: 'Organization Name', key: 'organizationName', type: 'text' },
@@ -69,7 +70,7 @@ export default function ElectionComponent(props) {
                         <div className={classes.imgDiv}>
                             <img src={logoURL} />
                             <button
-                                className={classes.editButton}
+                                className={cx(className, classes.button, disabled && classes.disabledButton)}
                                 disabled={disabled}
                                 onClick={() => {
                                     electionMethods.upsert({ [key]: null })
@@ -81,31 +82,51 @@ export default function ElectionComponent(props) {
                         </div>
                     </div>
                 )}
-                <ElectionTextInput
-                    key={key}
-                    name={name}
-                    type={type}
-                    disabled={disabled || logoURL}
-                    style={logoURL ? { display: 'none' } : {}}
-                    className={classes.input}
-                    defaultValue={electionObj[key] || ''}
-                    onDone={({ valid, value }) => {
-                        if (electionObj[key] !== value) {
-                            sideEffects.push(() => electionMethods.upsert({ [key]: value }))
-                        }
-                        setLogoURL(value)
-                        setValidInputs({ [key]: valid })
-                    }}
-                />
-                <div className={classes.fileInput}>
-                    <input
+                <div className={classes.orgLogoDiv}>
+                    <ElectionTextInput
+                        key={key}
+                        name={name}
+                        type={type}
                         disabled={disabled || logoURL}
-                        style={logoURL ? { display: 'none' } : {}}
-                        name='file'
-                        type='file'
-                        accepts='image/*'
-                        onChange={e => submitUploadedLogo(e.target.files)}
+                        style={
+                            logoURL
+                                ? { display: 'none', width: '75%', marginRight: '0' }
+                                : { width: '75%', marginRight: '0', padding: 'none' }
+                        }
+                        className={cx(className, classes.input, classes.inputAdd)}
+                        defaultValue={electionObj[key] || ''}
+                        onDone={({ valid, value }) => {
+                            if (electionObj[key] !== value) {
+                                sideEffects.push(() => electionMethods.upsert({ [key]: value }))
+                            }
+                            setLogoURL(value)
+                            setValidInputs({ [key]: valid })
+                        }}
                     />
+                    {!logoURL && (
+                        <div className={classes.fileInput}>
+                            <label
+                                for='file-upload'
+                                className={cx(
+                                    className,
+                                    classes.button,
+                                    classes.labelButton,
+                                    disabled && classes.disabledButton
+                                )}
+                            >
+                                Choose File to Upload
+                            </label>
+                            <input
+                                id='file-upload'
+                                disabled={disabled || logoURL}
+                                style={logoURL ? { display: 'none' } : {}}
+                                name='file'
+                                type='file'
+                                accepts='image/*'
+                                onChange={e => submitUploadedLogo(e.target.files)}
+                            />
+                        </div>
+                    )}
                 </div>
             </>
         )
@@ -162,6 +183,10 @@ const useStyles = createUseStyles(theme => ({
             marginTop: 0,
         },
     },
+    inputAdd: {
+        gap: '0.625rem',
+        paddingTop: '2rem',
+    },
     label: {
         margin: '0 0.625rem',
         fontWeight: '600',
@@ -173,12 +198,17 @@ const useStyles = createUseStyles(theme => ({
         gap: '0.625rem',
         paddingTop: '2rem',
     },
+    orgLogoDiv: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+    },
     imgDiv: {
         position: 'relative',
         textAlign: 'center',
         marginLeft: '1rem',
         '& img': {
-            height: '4.9rem',
+            height: '3.5rem',
             width: 'auto',
             position: 'relative',
         },
@@ -186,7 +216,7 @@ const useStyles = createUseStyles(theme => ({
             position: 'absolute',
             top: '50%',
             left: '50%',
-            transform: 'translate(-50%, -50%)',
+            transform: 'translate(-50%, -50%) scale(0.6)',
             opacity: '0',
         },
         '&:hover': {
@@ -196,23 +226,38 @@ const useStyles = createUseStyles(theme => ({
             },
         },
     },
-    editButton: {
-        border: 'none',
-        padding: 0,
-        background: 'none',
-        fontWeight: theme.button.fontWeight,
-        lineHeight: '2rem',
-        fontSize: theme.button.fontSize,
-    },
     fileInput: {
+        position: 'relative',
         marginLeft: '.6rem',
-        '& input[type="file"]::file-selector-button': {
-            borderRadius: theme.button.borderRadius,
-            borderColor: theme.button.borderColor,
-            fontSize: theme.button.fontSize,
-            fontWeight: 400,
-            fontFamily: theme.button.fontFamily,
-            lineHeight: '0.75rem',
+        marginBottom: '3rem',
+        '& input[type="file"]': {
+            position: 'absolute',
+            display: 'none',
+        },
+    },
+    button: {
+        ...theme.button,
+        backgroundColor: theme.colorPrimary,
+        border: 'none',
+        color: '#FFF',
+        '&:hover': {
+            cursor: 'pointer',
+        },
+    },
+    labelButton: {
+        marginTop: '3.75rem',
+        width: '6rem',
+        textAlign: 'center',
+
+        position: 'absolute',
+        transform: 'scale(.7)',
+    },
+    disabledButton: {
+        backgroundColor: theme.colorGray,
+        opacity: theme.disabledOpacity,
+        color: '#fff',
+        '&:hover': {
+            cursor: 'not-allowed',
         },
     },
     submitContainer: { position: 'absolute', width: '35%', padding: 0, top: 0, right: 0 },
