@@ -7,7 +7,6 @@ import cx from 'classnames'
 import ElectionTextInput from './election-text-input'
 import DoneLockedButton from './done-locked-button'
 import isUrl from 'is-url'
-import Submit from './Submit'
 
 const items = [
     { name: 'Organization Name', key: 'organizationName', type: 'text' },
