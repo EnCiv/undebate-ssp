@@ -44,7 +44,7 @@ export default function ElectionComponent(props) {
             reader.onload = () => callback(reader.result)
         }
         getBase64(files[0], image => {
-            const type = electionObj['organizationName'] + 'logo'
+            const type = electionObj['id'] + '-logo'
             window.socket.emit('cloudinary-upload', { file: image, type: type }, res => {
                 const key = 'organizationLogo'
                 if (res.url) {
