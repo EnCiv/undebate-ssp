@@ -105,7 +105,6 @@ const useStyles = createUseStyles(theme => ({
     description: {
         color: theme.colorSecondary,
         fontSize: theme.secondaryTextFontSize,
-        opacity: theme.secondaryTextOpacity,
         fontWeight: '500',
     },
     container: {
