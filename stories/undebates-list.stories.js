@@ -65,7 +65,9 @@ const defaultElectionObject = {
                 status: 'Accepted',
             },
         },
-        submissions: [{ _id: '', url: '', date: '' }],
+        submissions: {
+            '633765f79b837a6ea44bb856': { _id: '633765f79b837a6ea44bb856', url: '', date: '' },
+        },
     },
     candidates: {
         '61e76bbefeaa4a25840d85d0': {
@@ -140,8 +142,10 @@ moderatorElectionObject1.id = '627e9dbd9ec85b0e440b6a3d'
 moderatorElectionObject1.organizationName = 'San Diego Government Elections'
 moderatorElectionObject1.electionName = 'SD County Supervisor'
 moderatorElectionObject1.timeline.moderatorDeadlineReminderEmails[0].sent = false
-moderatorElectionObject1.moderator.submissions[0]._id = '62e9f2fa13f6d812c4eeb2aa'
-moderatorElectionObject1.moderator.submissions[0].date = '2022-07-08T12:01:02.000Z'
+moderatorElectionObject1.moderator.submissions['62e9f2fa13f6d812c4eeb2aa'] = {
+    _id: '62e9f2fa13f6d812c4eeb2aa',
+    date: '2022-07-08T12:01:02.000Z',
+}
 
 let moderatorElectionObject2 = cloneDeep(defaultElectionObject)
 moderatorElectionObject2.id = '627ecafe4c12b659a8b954de'
@@ -172,7 +176,7 @@ let moderatorElectionObject6 = cloneDeep(defaultElectionObject)
 moderatorElectionObject6.id = '62cb365f86a78c68bbaacc52'
 moderatorElectionObject6.organizationName = 'Los Angeles Government Elections'
 moderatorElectionObject6.electionName = 'LA County Supervisor'
-moderatorElectionObject6.moderator.submissions[0].url = 'not null'
+moderatorElectionObject6.moderator.submissions['633765f79b837a6ea44bb856'].url = 'not null'
 moderatorElectionObject6.electionDate = '2021-10-09T23:59:59.999Z'
 
 let moderatorElectionObject7 = cloneDeep(defaultElectionObject)
@@ -186,7 +190,7 @@ let moderatorElectionObject8 = cloneDeep(defaultElectionObject)
 moderatorElectionObject8.id = '62da0528d44c6b6443dad2b7'
 moderatorElectionObject8.organizationName = 'Sacramento Government Elections'
 moderatorElectionObject8.electionName = 'Sacramento Mayor'
-moderatorElectionObject8.moderator.submissions[0].url = 'not null'
+moderatorElectionObject8.moderator.submissions['633765f79b837a6ea44bb856'].url = 'not null'
 moderatorElectionObject8.undebateDate = '2023-01-09T23:59:59.999Z'
 moderatorElectionObject8.offices['President_of_the_World'] = {}
 
@@ -230,23 +234,23 @@ candidatesElectionObject4.organizationName = 'Los Angeles Government Elections'
 candidatesElectionObject4.electionName = 'LA Mayor'
 const cand2 = {
     uniqueId: '62cbb1cf916df6cdbcfd8244',
-    submissions: [
-        {
-            _id: '2',
+    submissions: {
+        '633767789f79254a8c2f3316': {
+            _id: '633767789f79254a8c2f3316',
             url: 'link1',
             date: '',
         },
-    ],
+    },
 }
 const cand3 = {
     uniqueId: '62cbb1d07b8265ce0ee6f2e6',
-    submissions: [
-        {
-            _id: '2',
+    submissions: {
+        '6337674ab4b2395da0780637': {
+            _id: '6337674ab4b2395da0780637',
             url: 'link2',
             date: '',
         },
-    ],
+    },
 }
 candidatesElectionObject4.candidates[cand2.uniqueId] = cand2
 candidatesElectionObject4.candidates[cand3.uniqueId] = cand3
@@ -255,10 +259,10 @@ let candidatesElectionObject5 = cloneDeep(defaultElectionObject)
 candidatesElectionObject5.id = '62cb35fddc380a594cff7126'
 candidatesElectionObject5.organizationName = 'Sacrament Government Elections'
 candidatesElectionObject5.electionName = 'Sacramento Mayor'
-candidatesElectionObject5.moderator.submissions[0].url = 'not null'
+candidatesElectionObject5.moderator.submissions['633765f79b837a6ea44bb856'].url = 'not null'
 const cand4 = {
     uniqueId: '62cbb1cf916df6cdbcfd8244',
-    submissions: [],
+    submissions: {},
 }
 candidatesElectionObject5.candidates[cand4.uniqueId] = cand4
 // todo update to candidate if the count methods are supposed to be candidates

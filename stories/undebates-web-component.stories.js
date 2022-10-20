@@ -97,19 +97,20 @@ const defaultElectionObject = {
         name: 'Bill Smith',
         email: 'billsmith@gmail.com',
         message: 'Please be a moderator',
-        invitations: [
+        invitations: {
+            '63376499fef9f76588bf1c6f':
+                // derived data, list may be empty or not present
+                {
+                    _id: '63376499fef9f76588bf1c6f',
+                    sentDate: '2022-01-07T22:09:32.952Z',
+                    responseDate: '2022-01-07T22:09:32.952Z',
+                    status: 'Accepted',
+                },
+        },
+        submissions: {
             // derived data, list may be empty or not present
-            {
-                _id: '123',
-                sentDate: '2022-01-07T22:09:32.952Z',
-                responseDate: '2022-01-07T22:09:32.952Z',
-                status: 'Accepted',
-            },
-        ],
-        submissions: [
-            // derived data, list may be empty or not present
-            { _id: '', url: '', date: '' },
-        ],
+            '633764c19479e233407d4e79': { _id: '633764c19479e233407d4e79', url: '', date: '' },
+        },
     },
     candidates: {
         '61e76bbefeaa4a25840d85d0': {
@@ -118,16 +119,16 @@ const defaultElectionObject = {
             email: 'sarahjones@mail.com',
             office: 'President of the U.S.',
             region: 'United States',
-            invitations: [
+            invitations: {
                 // derived data - list may be empty or not present
-                {
-                    _id: '',
+                '633764da019c0142c453cda0': {
+                    _id: '633764da019c0142c453cda0',
                     sentDate: '2022-01-07T22:09:32.952Z',
                     responseDate: '2022-01-07T22:09:32.952Z',
                     status: 'Declined',
                     parentId: '',
                 },
-            ],
+            },
         },
     },
     timeline: {

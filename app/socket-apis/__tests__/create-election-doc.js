@@ -33,28 +33,16 @@ afterAll(async () => {
 })
 
 test('should create one', done => {
-    async function callback(id) {
-        expect(id).toMatch(OBJECTID)
-        const iota = await Iota.findOne({ _id: Iota.ObjectID(id) })
-        expect(iota._id.toString()).toEqual(iota.webComponent.id)
-        iota._id = iota._id.toString() // so inlinesnapshot works
-        expect(iota).toMatchInlineSnapshot(
+    async function callback(doc) {
+        expect(doc.id).toMatch(OBJECTID)
+        expect(doc).toMatchInlineSnapshot(
             {
-                _id: expect.stringMatching(OBJECTID),
-                webComponent: {
-                    id: expect.stringMatching(OBJECTID),
-                },
+                id: expect.stringMatching(OBJECTID),
             },
             `
             Object {
-              "_id": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-              "description": "an election document",
-              "subject": "Election Doc",
-              "userId": "62acafc571a636160c5b1926",
-              "webComponent": Object {
-                "id": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
-                "webComponent": "ElectionDoc",
-              },
+              "id": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
+              "webComponent": "ElectionDoc",
             }
         `
         )

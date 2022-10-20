@@ -25,9 +25,10 @@ export default function UndebateHomepage(props) {
         window.socket.emit('get-election-docs', objs => objs && setElectionObjs(objs))
     }, [])
     const createNew = () => {
-        window.socket.emit('create-election-doc', id => {
-            if (!id) return
-            setSearchParams((searchParams.set('eid', id), searchParams))
+        window.socket.emit('create-election-doc', doc => {
+            if (!doc) return
+            setElectionObjs([doc, ...electionObjs])
+            setSearchParams((searchParams.set('eid', doc.id), searchParams))
         })
     }
     return (
@@ -51,7 +52,22 @@ export default function UndebateHomepage(props) {
                             )
                         }
                     />
-                    <SubscribeElectionInfo id={selectedId} key={selectedId} />
+                    <SubscribeElectionInfo
+                        id={selectedId}
+                        key={selectedId}
+                        defaultValue={(electionObjs && electionObjs.find(obj => obj.id === selectedId)) || {}}
+                        onUnmount={doc => {
+                            if (!electionObjs) return // case where specific election opened first
+                            const k = electionObjs.findIndex(obj => obj.id === doc.id)
+                            if (k >= 0) {
+                                const newObjs = [...electionObjs]
+                                newObjs[k] = doc
+                                setElectionObjs(newObjs)
+                            } else {
+                                setElectionObjs([doc, ...newObjs])
+                            }
+                        }}
+                    />
                 </>
             ) : (
                 <>

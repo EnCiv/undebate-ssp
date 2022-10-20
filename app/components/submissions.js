@@ -69,13 +69,13 @@ const createFilterList = (items, closeFilter) =>
     }
 
 const createTableCell = classes =>
-    function TableCell({ value, column, row }) {
+    function TableCell({ value, column, row, rows }) {
         if (!value) {
             return null
         }
 
-        const lastRowIndex = column.filteredRows.length - 1
-        const rowIndex = column.filteredRows.map(filterRow => filterRow.values).indexOf(row.values)
+        const lastRowIndex = rows.length - 1
+        const rowIndex = rows.map(filterRow => filterRow.values).indexOf(row.values)
 
         const normalValue = value.charAt(0).toLowerCase() + value.slice(1)
         const status = normalValue in statusInfoEnum ? normalValue : ''
@@ -203,7 +203,6 @@ const useStyles = createUseStyles(theme => ({
     tableCell: {
         backgroundColor: 'white',
         borderRadius: 0,
-        // width: '15rem',
     },
     cornerCell: {
         borderRadius: theme.defaultBorderRadius,
@@ -258,7 +257,6 @@ const statusTextUseStyles = createUseStyles(theme => ({
 const headerUseStyles = createUseStyles(theme => ({
     header: {
         ...theme.button,
-        width: '15rem',
         border: 'none',
         padding: '.25rem',
         '&:disabled': { color: 'initial' },
