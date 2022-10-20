@@ -9,7 +9,7 @@ export default {
     decorators: [
         Story => (
             <div>
-                success@email.com / 'password' will succede
+                success@email.com / 'password' will succeed
                 <br />
                 all other combinations will fail
                 <Story />
