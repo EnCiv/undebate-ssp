@@ -17,7 +17,7 @@ mkdir -p dist/web-components
 #
 # you can start with the favicon images from civil-server - but you may want to replace them with your own some day
 mkdir -p ./assets/images
-cp -rp node_modules/civil-server/assets/images ./assets/images
+cp -rp node_modules/civil-server/assets/images ./assets
 
 echo '***'
 echo Svgr
