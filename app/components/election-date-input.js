@@ -183,10 +183,6 @@ const useStyles = createUseStyles(theme => ({
         borderRadius: '.5rem',
         boxShadow: '0rem 0rem 0.6rem #b4b5b6',
         backgroundColor: '#fcfdff',
-        '@supports (backdrop-filter: blur(6rem))': {
-            backdropFilter: 'blur(6rem)',
-            background: '#fcfdff00',
-        },
     },
     datePickerTile: {
         borderRadius: '0.5rem',
