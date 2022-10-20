@@ -9,6 +9,15 @@
         "webComponent": "Home"
     },
     {
+        "_id": {
+            "$oid": "633baab31913b4a6e6855d1f"
+        },
+        "path": "/resetPassword",
+        "subject": "ResetPassword",
+        "description": "Reset Password",
+        "webComponent": "ResetPasswordUndebate"
+    },
+    {
         "_id": "61e3309613eec40628793064",
         "path": "/test-election-docs",
         "parentId": "600f2e3d7be64409f0387718",
