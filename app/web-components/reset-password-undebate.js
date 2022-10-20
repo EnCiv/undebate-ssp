@@ -21,15 +21,15 @@ export default function ResetPasswordUndebate() {
 
 const useStyles = createUseStyles({
     wrapper: {
-        width: '100vw',
-        minHeight: '100vh',
+        width: '100%',
+        height: '100vh',
         textAlign: 'center',
         verticalAlign: 'middle',
     },
     centeredWrapper: {
         top: '50%',
         left: '50%',
-        position: 'absolute',
+        position: 'relative',
         transform: 'translate(-50%, -50%)',
     },
 })
