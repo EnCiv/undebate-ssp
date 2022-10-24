@@ -20,6 +20,7 @@ async function start() {
         await server.earlyStart() // connect to the database, and such
         server.routesDirPaths.push(path.resolve(__dirname, '../node_modules/undebate/dist/routes'))
         server.routesDirPaths.push(path.resolve(__dirname, './routes'))
+        server.socketAPIsDirPaths.push(path.resolve(__dirname, '../node_modules/civil-server/dist/socket-apis'))
         server.socketAPIsDirPaths.push(path.resolve(__dirname, '../node_modules/undebate/dist/socket-apis'))
         server.socketAPIsDirPaths.push(path.resolve(__dirname, './socket-apis'))
         server.serverEventsDirPaths.push(path.resolve(__dirname, '../node_modules/undebate/dist/events'))
