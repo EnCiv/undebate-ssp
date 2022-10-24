@@ -97,6 +97,7 @@ export default function ElectionDateInput(props) {
         else setError(null)
         inputRef.current.value = value // to prevent extra iteration of onDone after defaultValue is changed from parent
         //no need for onDone({ valid, value }) here - blurDateInput will get called when the Calendar is closed
+        if (datePickerOpen) setDatePickerOpen(false)
     }
 
     const blurDateInput = value => {
@@ -182,10 +183,6 @@ const useStyles = createUseStyles(theme => ({
         borderRadius: '.5rem',
         boxShadow: '0rem 0rem 0.6rem #b4b5b6',
         backgroundColor: '#fcfdff',
-        '@supports (backdrop-filter: blur(6rem))': {
-            backdropFilter: 'blur(6rem)',
-            background: '#fcfdff00',
-        },
     },
     datePickerTile: {
         borderRadius: '0.5rem',
