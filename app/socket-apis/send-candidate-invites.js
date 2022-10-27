@@ -104,7 +104,7 @@ export async function sendCandidateInvitesFromIdAndElectionObj(id, electionObj, 
             templateId,
             tags: [`id:${id}`, 'role:candidate', `office:${candidate.office}`],
         }
-        if (params.email) messageProps.cc = [{ email: params.email, name: params.name }]
+        if (params.email) messageProps.replyTo = { email: electionObj.email, name: electionObj.name }
         const result = await SibSendTransacEmail(messageProps)
         if (!result || !result.messageId) logger.error('send candidate invite failed', id, candidate)
         else {

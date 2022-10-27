@@ -67,6 +67,7 @@ export default async function sendModeratorInvite(id, cb) {
             templateId,
             tags: [`id:${id}`, 'role:moderator'],
         }
+        if (params.email) messageProps.replyTo = { email: electionObj.email, name: electionObj.name }
         const result = await SibSendTransacEmail(messageProps)
         if (!result || !result.messageId) logger.error('sendModeratorInvite failed', id)
         else {

@@ -258,6 +258,10 @@ maybe('Test the send moderator invite API', () => {
                       },
                     ],
                   },
+                  "replyTo": Object {
+                    "email": "ddfridley@yahoo.com",
+                    "name": "admin name",
+                  },
                   "sender": Object {
                     "email": Any<String>,
                     "name": "admin name @ The Organization via EnCiv.org",
