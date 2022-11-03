@@ -4,14 +4,6 @@ import SvgExternalLink from '../svgr/external-link'
 import SvgRedo from '../svgr/redo-arrow'
 import cx from 'classnames'
 
-function reactOnResize(handler, dependents) {
-    useEffect(() => {
-        window.addEventListener('resize', handler)
-        handler()
-        return () => window.removeEventListener('resize', handler)
-    }, dependents)
-}
-
 export default function ShowUndebate(props) {
     const { src, dependents, missed, title, description } = props
     const classes = useStyles(props)
@@ -20,20 +12,25 @@ export default function ShowUndebate(props) {
     useEffect(() => {
         if (iframeRef.current) iframeRef.current.src += ''
     }, dependents)
-    function doResize() {
-        if (iframeRef.current) {
-            iframeRef.current.style.height = (iframeRef.current.offsetWidth * 1080) / 1920 + 'px'
-            iframeRef.current.src += '' // force rerender so it will calculate new fontsize
-        }
-    }
-    reactOnResize(doResize, [iframeRef.current]) // current could chagne when changing from div to iframe
     return (
         <div className={cx(classes.showUndebate, { [classes.backgroundRed]: missed })}>
-            {src ? (
-                <iframe ref={iframeRef} width={'100%'} src={src} frameBorder='0' key='iframe' />
-            ) : (
-                <div ref={iframeRef} className={classes.preview} key='empty-div' />
-            )}
+            <div className={classes.outer}>
+                <div className={classes.inner}>
+                    {src ? (
+                        <iframe
+                            style={{ position: 'absolute', top: 0 }}
+                            ref={iframeRef}
+                            width={'100%'}
+                            height={'100%'}
+                            src={src}
+                            frameBorder='0'
+                            key='iframe'
+                        />
+                    ) : (
+                        <div ref={iframeRef} className={classes.preview} key='empty-div' />
+                    )}
+                </div>
+            </div>
             <div className={classes.meta} key='meta'>
                 <div className={classes.metaText}>
                     <p className={cx(classes.title, { [classes.colorWhite]: missed })}>{title}</p>
@@ -72,6 +69,13 @@ const useStyles = createUseStyles(theme => ({
         borderRadius: '0.625rem',
         boxSizing: 'border-box',
     },
+    outer: {
+        width: '100%',
+    },
+    inner: {
+        paddingTop: (1080 * 100) / 1920 + '%',
+        position: 'relative',
+    }, // paddingTop percentage references width! thanks to: https://makandracards.com/makandra/45969-how-to-define-height-of-a-div-as-percentage-of-its-variable-width
     title: {
         paddingTop: '.5rem',
         paddingLeft: '.5rem',
@@ -138,6 +142,10 @@ const useStyles = createUseStyles(theme => ({
         },
     },
     preview: {
+        position: 'absolute',
+        top: 0,
+        width: '100%',
+        height: '100%',
         backgroundColor: 'white',
     },
 }))
