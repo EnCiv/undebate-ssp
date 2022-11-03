@@ -123,6 +123,7 @@ export default function ModeratorRecorder(props) {
                         missed={missed}
                         title={statusTitle}
                         description={statusDesc}
+                        buttons={{ redo: true, link: true }}
                     />
                     {!src ? (
                         <div className={classes.placeholder}>
