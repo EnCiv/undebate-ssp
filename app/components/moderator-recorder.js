@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import SvgCheck from '../svgr/check'
 import { getLatestIota } from '../lib/get-election-status-methods'
 import ObjectID from 'isomorphic-mongo-objectid'
 import Submit from './submit'

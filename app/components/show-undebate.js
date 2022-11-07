@@ -6,11 +6,14 @@ import SvgClipboard from '../svgr/clipboard'
 import SvgExternalLink from '../svgr/external-link'
 import SvgRedo from '../svgr/redo-arrow'
 import SvgContainer from '../svgr/container'
+import Submit from './submit'
 
-const CopyNotification = ({ classes }) => (
-    <div className={classes.notif}>
-        <p>Copied to clipboard</p>
-        <SvgClipboard className={classes.clipIcon} />
+const CopyNotification = ({ classes, notify }) => (
+    <div className={notify}>
+        <div className={classes.innerNotify}>
+            <p>Copied to clipboard</p>
+            <SvgClipboard className={classes.clipIcon} />
+        </div>
     </div>
 )
 
@@ -27,7 +30,7 @@ function CopyButton(props) {
     }
     return (
         <>
-            {copied && <CopyNotification classes={classes} key='clip' />}
+            {copied && <CopyNotification classes={classes} notify={classes.notif} key='clip' />}
             <button
                 className={cx(classes.copyButton, !src && classes.iconDisabled)}
                 onClick={copyNotify}
@@ -35,11 +38,31 @@ function CopyButton(props) {
                 disabled={!src}
                 key='copy'
             >
-                <SvgClipboard className={cx(!src && classes.iconDisabled)} />
+                <SvgClipboard className={cx(classes.clipIcon, !src && classes.iconDisabled)} />
             </button>
         </>
     )
 }
+
+export function CopySubmit(props) {
+    const { src } = props
+    const [copied, setCopied] = useState(false)
+    const classes = useStylesCopyButton()
+    const copyNotify = () => {
+        navigator.clipboard.writeText(src)
+        setCopied(true)
+        setTimeout(() => {
+            setCopied(false)
+        }, 3000)
+    }
+    return (
+        <>
+            {copied && <CopyNotification classes={classes} notify={classes.notifSubmit} key='clip' />}
+            <Submit title='Copy' disabled={!src} name='Copy Link' onDone={copyNotify} />
+        </>
+    )
+}
+
 const useStylesCopyButton = createUseStyles(theme => ({
     copyButton: {
         fontSize: '2.2rem',
@@ -60,11 +83,16 @@ const useStylesCopyButton = createUseStyles(theme => ({
         },
     },
     notif: {
-        fontSize: '1rem',
         position: 'absolute',
         bottom: '2em',
         right: '2em',
-        margin: '3rem',
+    },
+    notifSubmit: {
+        position: 'absolute',
+        transform: 'translateX(-100%)',
+    },
+    innerNotify: {
+        fontSize: '1rem',
         backgroundColor: theme.colorPrimary,
         color: '#fff',
         display: 'flex',
@@ -72,10 +100,7 @@ const useStylesCopyButton = createUseStyles(theme => ({
         alignItems: 'center',
         gap: '2rem',
         borderRadius: '.75rem',
-        paddingLeft: '1rem',
-        paddingRight: '1rem',
-        paddingTop: '.6rem',
-        paddingBottom: '.6rem',
+        padding: '1rem',
         fontWeight: '500',
     },
     clipIcon: {
@@ -93,13 +118,13 @@ const downloadCode = canvas => {
 }
 
 const ShowAndDownloadQrCode = props => {
-    const { classes, src, setDownload } = props
+    const { classes, src, setDownload, notify } = props
     const canvas = useRef()
     useLayoutEffect(() => downloadCode(canvas))
     setTimeout(() => setDownload(false), 3000)
     return (
-        <div className={classes.notif} ref={canvas} key='qrqr'>
-            <QRCode value={src} size={300} />
+        <div className={notify} ref={canvas} key='qrqr'>
+            <QRCode className={classes.innerNotify} value={src} size={300} />
         </div>
     )
 }
@@ -109,7 +134,15 @@ const QrButton = props => {
     const classes = useStylesCopyButton()
     return (
         <>
-            {download && <ShowAndDownloadQrCode src={src} classes={classes} key='show-qr' setDownload={setDownload} />}
+            {download && (
+                <ShowAndDownloadQrCode
+                    src={src}
+                    classes={classes}
+                    notify={classes.notif}
+                    key='show-qr'
+                    setDownload={setDownload}
+                />
+            )}
             <button
                 className={cx(classes.copyButton, !src && classes.iconDisabled)}
                 onClick={() => setDownload(true)}
@@ -119,6 +152,26 @@ const QrButton = props => {
             >
                 <SvgContainer className={cx(!src && classes.iconDisabled)} />
             </button>
+        </>
+    )
+}
+
+export function QrSubmit(props) {
+    const { src } = props
+    const [download, setDownload] = useState(false)
+    const classes = useStylesCopyButton()
+    return (
+        <>
+            {download && (
+                <ShowAndDownloadQrCode
+                    src={src}
+                    classes={classes}
+                    notify={classes.notifSubmit}
+                    key='show-qr'
+                    setDownload={setDownload}
+                />
+            )}
+            <Submit title='Download QR Code' name='Download QR Code' disabled={!src} onDone={() => setDownload(true)} />
         </>
     )
 }
