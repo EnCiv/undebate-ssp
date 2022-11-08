@@ -11,16 +11,29 @@ import ShowUndebate, { QrSubmit, CopySubmit } from './show-undebate'
 export default function Undebate(props) {
     const { className, style, electionOM } = props
     const classes = useStyles(props)
-    const [electionObj = {}] = electionOM
+    const [electionObj = {}, electionMethods] = electionOM
     const firstOffice = Object.values(electionObj?.offices || {})?.[0]
     const viewer = getLatestIota(firstOffice?.viewers)
     const src = viewer ? scheme() + process.env.HOSTNAME + viewer.path : ''
+    const title = electionObj.electionName
+    const description = src ? 'Link is ready' : 'link is not ready'
 
     return (
         <div className={cx(className, classes.undebate)} style={style}>
             <div className={classes.innerLeft}>
+                <p>
+                    This is the viewer of the undebate. It's best to wait until all the candidates have recorded, before
+                    sending out the link. You can copy the link, and/or you can download a QR Code that will direct
+                    people to the link.
+                </p>
                 <div className={classes.wrapper}>
-                    <ShowUndebate src={src} dependents={[electionOM]} key='show' />
+                    <ShowUndebate
+                        src={src}
+                        dependents={[electionOM]}
+                        key='show'
+                        title={title}
+                        description={description}
+                    />
                     {!src && <VideoUpload className={classes.upload} key='up' />}
                 </div>
             </div>
