@@ -5,8 +5,9 @@ import QRCode from 'qrcode.react'
 import SvgClipboard from '../svgr/clipboard'
 import SvgExternalLink from '../svgr/external-link'
 import SvgRedo from '../svgr/redo-arrow'
-import SvgContainer from '../svgr/container'
+import SvgQrIcon from '../svgr/qr-undebate'
 import Submit from './submit'
+import { kebabCase } from 'lodash'
 
 const CopyNotification = ({ classes, notify }) => (
     <div className={notify}>
@@ -64,6 +65,15 @@ export function CopySubmit(props) {
 }
 
 const useStylesCopyButton = createUseStyles(theme => ({
+    qrButton: {
+        fontSize: '2.2rem',
+        cursor: 'pointer',
+        backgroundColor: 'transparent',
+        border: 'none',
+        '& rect': {
+            fill: theme.colorLightGray,
+        },
+    },
     copyButton: {
         fontSize: '2.2rem',
         cursor: 'pointer',
@@ -109,18 +119,18 @@ const useStylesCopyButton = createUseStyles(theme => ({
     },
 }))
 
-const downloadCode = canvas => {
+const downloadCode = (canvas, fileName) => {
     const image = canvas.current.children[0].toDataURL('image/png')
     const downloadLink = document.createElement('a')
     downloadLink.href = image
-    downloadLink.download = 'undebate.png'
+    downloadLink.download = fileName || 'undebate.png'
     downloadLink.click()
 }
 
 const ShowAndDownloadQrCode = props => {
-    const { classes, src, setDownload, notify } = props
+    const { classes, src, setDownload, notify, fileName } = props
     const canvas = useRef()
-    useLayoutEffect(() => downloadCode(canvas))
+    useLayoutEffect(() => downloadCode(canvas, fileName))
     setTimeout(() => setDownload(false), 3000)
     return (
         <div className={notify} ref={canvas} key='qrqr'>
@@ -129,7 +139,7 @@ const ShowAndDownloadQrCode = props => {
     )
 }
 const QrButton = props => {
-    const { src } = props
+    const { src, fileName } = props
     const [download, setDownload] = useState(false)
     const classes = useStylesCopyButton()
     return (
@@ -141,16 +151,17 @@ const QrButton = props => {
                     notify={classes.notif}
                     key='show-qr'
                     setDownload={setDownload}
+                    fileName={fileName}
                 />
             )}
             <button
-                className={cx(classes.copyButton, !src && classes.iconDisabled)}
+                className={cx(classes.qrButton, !src && classes.iconDisabled)}
                 onClick={() => setDownload(true)}
                 title='Download QR Code'
                 disabled={!src}
                 key='download'
             >
-                <SvgContainer className={cx(!src && classes.iconDisabled)} />
+                <SvgQrIcon className={cx(!src && classes.iconDisabled)} />
             </button>
         </>
     )
@@ -218,12 +229,12 @@ export default function ShowUndebate(props) {
                 <div className={classes.metaButtons}>
                     {buttons.qr && (
                         <>
-                            <QrButton src={src} />{' '}
+                            <QrButton src={src} fileName={'qr-' + kebabCase(title) + '.png'} key='qr' />{' '}
                         </>
                     )}
                     {buttons.copy && (
                         <>
-                            <CopyButton src={src} />{' '}
+                            <CopyButton src={src} key='cp' />{' '}
                         </>
                     )}
                     {buttons.redo && (
@@ -233,6 +244,7 @@ export default function ShowUndebate(props) {
                                 onClick={e => (iframeRef.current.src += '')}
                                 title='Restart'
                                 disabled={!src}
+                                key='redo'
                             >
                                 <SvgRedo />
                             </button>{' '}
@@ -240,11 +252,11 @@ export default function ShowUndebate(props) {
                     )}
                     {buttons.link ? (
                         src ? (
-                            <a href={src} target='_blank' title='Open in new tab'>
+                            <a href={src} target='_blank' title='Open in new tab' key='link-a'>
                                 <SvgExternalLink className={classes.link} />
                             </a>
                         ) : (
-                            <button className={classes.disabledlink} title='Open in new tab' disabled>
+                            <button className={classes.disabledlink} title='Open in new tab' disabled key='link-b'>
                                 <SvgExternalLink />
                             </button>
                         )
