@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState, useLayoutEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import QRCode from 'qrcode.react'
-import SvgClipboard from '../svgr/clipboard'
+import SvgClipboard from '../svgr/copy'
 import SvgExternalLink from '../svgr/external-link'
 import SvgRedo from '../svgr/redo-arrow'
 import SvgQrIcon from '../svgr/qr-undebate'
@@ -79,9 +79,6 @@ const useStylesCopyButton = createUseStyles(theme => ({
         cursor: 'pointer',
         backgroundColor: 'transparent',
         border: 'none',
-        '& path': {
-            fill: 'black!important',
-        },
     },
     iconDisabled: {
         '& path': {
@@ -113,10 +110,7 @@ const useStylesCopyButton = createUseStyles(theme => ({
         padding: '1rem',
         fontWeight: '500',
     },
-    clipIcon: {
-        width: '2rem',
-        height: '2rem',
-    },
+    clipIcon: {},
 }))
 
 const downloadCode = (canvas, fileName) => {

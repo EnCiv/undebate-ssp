@@ -1,18 +1,3 @@
-<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g filter="url(#filter0_d_2_9)">
-<path d="M12.1955 12.3012C16.4046 8.09207 21.9774 5.52296 27.9117 5.05593C33.8459 4.5889 39.752 6.25462 44.5678 9.75345C49.3835 13.2523 52.7928 18.3546 54.1824 24.1427C55.572 29.9308 54.8507 36.0248 52.1483 41.3286C49.4459 46.6324 44.9397 50.7979 39.4402 53.0758C33.9408 55.3538 27.809 55.5947 22.1478 53.7552C16.4865 51.9158 11.6674 48.1167 8.55718 43.0413" stroke="black" stroke-width="10"/>
-</g>
-<path d="M0.799792 26.655L3.66189 3L23.2615 18.7037L0.799792 26.655Z" fill="black"/>
-<defs>
-<filter id="filter0_d_2_9" x="0.293977" y="-0.0211735" width="63.5792" height="68" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dy="4"/>
-<feGaussianBlur stdDeviation="2"/>
-<feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2_9"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_2_9" result="shape"/>
-</filter>
-</defs>
+<svg width="59" height="60" viewBox="0 0 59 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16.8556 14.1316C19.9948 11.7068 23.7871 10.2327 27.7788 9.91856C32.6449 9.5356 37.4879 10.9015 41.4368 13.7705C45.3857 16.6396 48.1813 20.8235 49.3208 25.5697C50.4603 30.316 49.8689 35.3131 47.6529 39.6622C45.4369 44.0113 41.7418 47.427 37.2323 49.2949C32.7227 51.1628 27.6947 51.3603 23.0524 49.852C18.4102 48.3436 14.4585 45.2284 11.9082 41.0665L4.23441 45.769C7.90446 51.758 13.591 56.2409 20.2713 58.4115C26.9515 60.582 34.1871 60.2978 40.6764 57.6098C47.1658 54.9218 52.4831 50.0065 55.6719 43.7481C58.8608 37.4896 59.7119 30.2987 58.0722 23.4687C56.4324 16.6388 52.4095 10.618 46.7269 6.48938C41.0443 2.36075 34.0751 0.395216 27.0727 0.946308C20.6048 1.45533 14.5008 4.08059 9.6926 8.39238L3.43235 3.3765L0.570251 27.0315L23.0319 19.0802L16.8556 14.1316Z" fill="black"/>
 </svg>
