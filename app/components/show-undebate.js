@@ -1,185 +1,10 @@
 import React, { useRef, useEffect, useState, useLayoutEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import QRCode from 'qrcode.react'
-import SvgClipboard from '../svgr/copy'
 import SvgExternalLink from '../svgr/external-link'
 import SvgRedo from '../svgr/redo-arrow'
-import SvgQrIcon from '../svgr/qr-undebate'
-import Submit from './submit'
 import { kebabCase } from 'lodash'
-
-const CopyNotification = ({ classes, notify }) => (
-    <div className={notify}>
-        <div className={classes.innerNotify}>
-            <p>Copied to clipboard</p>
-            <SvgClipboard className={classes.clipIcon} />
-        </div>
-    </div>
-)
-
-function CopyButton(props) {
-    const { src } = props
-    const [copied, setCopied] = useState(false)
-    const classes = useStylesCopyButton()
-    const copyNotify = () => {
-        navigator.clipboard.writeText(src)
-        setCopied(true)
-        setTimeout(() => {
-            setCopied(false)
-        }, 3000)
-    }
-    return (
-        <>
-            {copied && <CopyNotification classes={classes} notify={classes.notif} key='clip' />}
-            <button
-                className={cx(classes.copyButton, !src && classes.iconDisabled)}
-                onClick={copyNotify}
-                title='Copy'
-                disabled={!src}
-                key='copy'
-            >
-                <SvgClipboard className={cx(classes.clipIcon, !src && classes.iconDisabled)} />
-            </button>
-        </>
-    )
-}
-
-export function CopySubmit(props) {
-    const { src } = props
-    const [copied, setCopied] = useState(false)
-    const classes = useStylesCopyButton()
-    const copyNotify = () => {
-        navigator.clipboard.writeText(src)
-        setCopied(true)
-        setTimeout(() => {
-            setCopied(false)
-        }, 3000)
-    }
-    return (
-        <>
-            {copied && <CopyNotification classes={classes} notify={classes.notifSubmit} key='clip' />}
-            <Submit title='Copy' disabled={!src} name='Copy Link' onDone={copyNotify} />
-        </>
-    )
-}
-
-const useStylesCopyButton = createUseStyles(theme => ({
-    qrButton: {
-        fontSize: '2.2rem',
-        cursor: 'pointer',
-        backgroundColor: 'transparent',
-        border: 'none',
-        '& rect': {
-            fill: theme.colorLightGray,
-        },
-    },
-    copyButton: {
-        fontSize: '2.2rem',
-        cursor: 'pointer',
-        backgroundColor: 'transparent',
-        border: 'none',
-    },
-    iconDisabled: {
-        '& path': {
-            fill: 'gray!important',
-        },
-        '& g path': {
-            stroke: 'gray!important',
-            fill: 'none',
-        },
-    },
-    notif: {
-        position: 'absolute',
-        bottom: '2em',
-        right: '2em',
-    },
-    notifSubmit: {
-        position: 'absolute',
-        transform: 'translateX(-100%)',
-    },
-    innerNotify: {
-        fontSize: '1rem',
-        backgroundColor: theme.colorPrimary,
-        color: '#fff',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        gap: '2rem',
-        borderRadius: '.75rem',
-        padding: '1rem',
-        fontWeight: '500',
-    },
-    clipIcon: {},
-}))
-
-const downloadCode = (canvas, fileName) => {
-    const image = canvas.current.children[0].toDataURL('image/png')
-    const downloadLink = document.createElement('a')
-    downloadLink.href = image
-    downloadLink.download = fileName || 'undebate.png'
-    downloadLink.click()
-}
-
-const ShowAndDownloadQrCode = props => {
-    const { classes, src, setDownload, notify, fileName } = props
-    const canvas = useRef()
-    useLayoutEffect(() => downloadCode(canvas, fileName))
-    setTimeout(() => setDownload(false), 3000)
-    return (
-        <div className={notify} ref={canvas} key='qrqr'>
-            <QRCode className={classes.innerNotify} value={src} size={300} />
-        </div>
-    )
-}
-const QrButton = props => {
-    const { src, fileName } = props
-    const [download, setDownload] = useState(false)
-    const classes = useStylesCopyButton()
-    return (
-        <>
-            {download && (
-                <ShowAndDownloadQrCode
-                    src={src}
-                    classes={classes}
-                    notify={classes.notif}
-                    key='show-qr'
-                    setDownload={setDownload}
-                    fileName={fileName}
-                />
-            )}
-            <button
-                className={cx(classes.qrButton, !src && classes.iconDisabled)}
-                onClick={() => setDownload(true)}
-                title='Download QR Code'
-                disabled={!src}
-                key='download'
-            >
-                <SvgQrIcon className={cx(!src && classes.iconDisabled)} />
-            </button>
-        </>
-    )
-}
-
-export function QrSubmit(props) {
-    const { src } = props
-    const [download, setDownload] = useState(false)
-    const classes = useStylesCopyButton()
-    return (
-        <>
-            {download && (
-                <ShowAndDownloadQrCode
-                    src={src}
-                    classes={classes}
-                    notify={classes.notifSubmit}
-                    key='show-qr'
-                    setDownload={setDownload}
-                />
-            )}
-            <Submit title='Download QR Code' name='Download QR Code' disabled={!src} onDone={() => setDownload(true)} />
-        </>
-    )
-}
+import { QrButton, CopyButton } from './undebate-buttons'
 
 export default function ShowUndebate(props) {
     const {
@@ -250,7 +75,7 @@ export default function ShowUndebate(props) {
                                 <SvgExternalLink className={classes.link} />
                             </a>
                         ) : (
-                            <button className={classes.disabledlink} title='Open in new tab' disabled key='link-b'>
+                            <button className={classes.linkDisabled} title='Open in new tab' disabled key='link-b'>
                                 <SvgExternalLink />
                             </button>
                         )
@@ -316,6 +141,12 @@ const useStyles = createUseStyles(theme => ({
         cursor: 'pointer',
         backgroundColor: 'transparent',
         border: 'none',
+        '&$iconDisabled': {
+            cursor: 'not-allowed',
+            '& path': {
+                fill: 'gray',
+            },
+        },
     },
     link: {
         '& path': {
@@ -323,26 +154,18 @@ const useStyles = createUseStyles(theme => ({
             strokeWidth: 3,
         },
     },
-    disabledlink: {
+    linkDisabled: {
         padding: 0,
         border: 'none',
         fontSize: '2.5rem',
-        cursor: 'pointer',
+        cursor: 'not-allowed',
         '& path': {
             stroke: 'gray',
             strokeWidth: 3,
         },
         backgroundColor: 'transparent',
     },
-    iconDisabled: {
-        '& path': {
-            fill: 'gray',
-        },
-        '& g path': {
-            stroke: 'gray',
-            fill: 'none',
-        },
-    },
+    iconDisabled: {},
     preview: {
         position: 'absolute',
         top: 0,

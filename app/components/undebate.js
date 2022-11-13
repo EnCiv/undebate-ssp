@@ -6,7 +6,8 @@ import cx from 'classnames'
 import VideoUpload from '../svgr/video-upload'
 import scheme from '../lib/scheme'
 import { getLatestIota } from '../lib/get-election-status-methods'
-import ShowUndebate, { QrSubmit, CopySubmit } from './show-undebate'
+import ShowUndebate from './show-undebate'
+import { QrSubmit, CopySubmit } from './undebate-buttons'
 
 export default function Undebate(props) {
     const { className, style, electionOM } = props
