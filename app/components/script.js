@@ -11,17 +11,20 @@ export const defaults = {
                   segment based on each section of the script. If you wish to make any changes, go ahead!`,
     noQuestions:
         'After the questions are created, you will be able to create the script for the moderator to use when recording.',
-    firstAnswer: 'Our first question is "{question}", ...',
-    middleAnswer: 'Awesome, the next question is "{question}", ...',
-    lastAnswer: 'Thank you for your participation.',
+    firstAnswer: 'Hi, I\'m "{moderator}", welcome to our Undebate! Our first question is "{question}"',
+    middleOddAnswer: 'Awesome, the next question is "{question}"',
+    middleEvenAnswer: 'Great, the next question is "{question}"',
+    lastAnswer:
+        "I'd like to thank the candidates for answering our questions, and thank you for participating in the democratic process!",
     firstQuestion: '{moderator} welcomes the viewers and asks the candidates: "{question}"',
-    middleQuestion: '{moderator} thanks the candidates and asks: "{question}" ',
-    lastQuestion:
-        '{moderator} thanks candidates for answering the previous question and thanks the viewer for watching',
+    middleOddQuestion: '{moderator} thanks the candidates and asks: "{question}" ',
+    middleEvenQuestion: '{moderator} appreciatites the candidates and asks: "{question}" ',
+    lastQuestion: '{moderator} thanks the candidates for answering these questions and thanks the viewer for watching',
     lockedScript: 'You cannot change the script once the invitation to the moderator has been sent',
     errorText: 'Please correct {errorCount} errors in order to submit.',
     maxWordCount: 600,
     wordsPerMin: 120,
+    moderatorName: 'The moderator',
 }
 
 const processTemplate = (template, substitutions) =>
@@ -42,7 +45,7 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
     const disabled =
         electionObj?.doneLocked?.[panelName]?.done || electionMethods.getModeratorSubmissionStatus() === 'submitted'
     const substitutions = {
-        moderator: electionObj?.moderator?.name || '',
+        moderator: electionObj?.moderator?.name || defaults.moderatorName,
         question: questions[0]?.text || '',
         maxWordCount: defaults.maxWordCount,
     }
@@ -87,7 +90,14 @@ export default function Script({ className = '', style = {}, onDone = () => {}, 
                           .concat([[questionsLength, '']])
                           .map(([qId, qTxt], i) => {
                               const subs = { ...substitutions, question: qTxt.text || '' }
-                              const sourceOf = i === 0 ? 'first' : i < questionsLength ? 'middle' : 'last'
+                              const sourceOf =
+                                  i === 0
+                                      ? 'first'
+                                      : i < questionsLength
+                                      ? i & 1
+                                          ? 'middleOdd'
+                                          : 'middleEven'
+                                      : 'last'
                               return (
                                   <ScriptTextInput
                                       key={qId}
