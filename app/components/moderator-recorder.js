@@ -111,10 +111,10 @@ export default function ModeratorRecorder(props) {
     return (
         <div className={cx(className, classes.moderatorRecorder)} style={style}>
             <div className={classes.innerLeft}>
-                <h2>
+                <p>
                     This is what the moderator will see when recording. Review it before sending the invitation to
                     record.
-                </h2>
+                </p>
                 <div className={classes.preview}>
                     <ShowUndebate
                         src={src}
@@ -169,6 +169,9 @@ const useStyles = createUseStyles(theme => ({
     innerLeft: {
         maxWidth: '60rem',
         float: 'left',
+        '& p': {
+            marginBlockStart: 0,
+        },
     },
     preview: {
         position: 'relative',

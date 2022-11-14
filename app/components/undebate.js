@@ -62,6 +62,9 @@ const useStyles = createUseStyles(theme => ({
         width: '75%',
         maxWidth: '60rem',
         float: 'left',
+        '& p': {
+            marginBlockStart: 0,
+        },
     },
     buttonPanel: {
         display: 'flex',
