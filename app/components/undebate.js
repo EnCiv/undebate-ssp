@@ -8,6 +8,7 @@ import scheme from '../lib/scheme'
 import { getLatestIota } from '../lib/get-election-status-methods'
 import ShowUndebate from './show-undebate'
 import { QrSubmit, CopySubmit } from './undebate-buttons'
+import { kebabCase } from 'lodash'
 
 export default function Undebate(props) {
     const { className, style, electionOM } = props
@@ -43,7 +44,7 @@ export default function Undebate(props) {
                     <CopySubmit src={src} />
                 </div>
                 <div className={classes.buttonRow}>
-                    <QrSubmit src={src} />
+                    <QrSubmit src={src} fileName={'qr-' + kebabCase(title) + '.png'} />
                 </div>
             </div>
         </div>

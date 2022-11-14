@@ -6,7 +6,9 @@ import SvgClipboard from '../svgr/copy'
 import SvgQrIcon from '../svgr/qr-undebate'
 import Submit from './submit'
 
-function CopyNotification() {
+const NOTIFY_TIME = 3000
+
+function CopyNotification(props) {
     const { classes, notify } = props
     return (
         <div className={notify}>
@@ -17,24 +19,24 @@ function CopyNotification() {
         </div>
     )
 }
+const copyNotify = (src, setCopied) => {
+    navigator.clipboard.writeText(src)
+    setCopied(true)
+    setTimeout(() => {
+        setCopied(false)
+    }, NOTIFY_TIME)
+}
 
 export function CopyButton(props) {
     const { src } = props
     const [copied, setCopied] = useState(false)
     const classes = useStyles()
-    const copyNotify = () => {
-        navigator.clipboard.writeText(src)
-        setCopied(true)
-        setTimeout(() => {
-            setCopied(false)
-        }, 3000)
-    }
     return (
         <>
             {copied && <CopyNotification classes={classes} notify={classes.notif} key='clip' />}
             <button
                 className={cx(classes.copyButton, !src && classes.iconDisabled)}
-                onClick={copyNotify}
+                onClick={() => copyNotify(src, setCopied)}
                 title='Copy'
                 disabled={!src}
                 key='copy'
@@ -49,17 +51,10 @@ export function CopySubmit(props) {
     const { src } = props
     const [copied, setCopied] = useState(false)
     const classes = useStyles()
-    const copyNotify = () => {
-        navigator.clipboard.writeText(src)
-        setCopied(true)
-        setTimeout(() => {
-            setCopied(false)
-        }, 3000)
-    }
     return (
         <>
             {copied && <CopyNotification classes={classes} notify={classes.notifSubmit} key='clip' />}
-            <Submit title='Copy' disabled={!src} name='Copy Link' onDone={copyNotify} />
+            <Submit title='Copy' disabled={!src} name='Copy Link' onDone={() => copyNotify(src, setCopied)} />
         </>
     )
 }
@@ -113,7 +108,7 @@ export function QrButton(props) {
 }
 
 export function QrSubmit(props) {
-    const { src } = props
+    const { src, fileName } = props
     const [download, setDownload] = useState(false)
     const classes = useStyles()
     return (
@@ -125,6 +120,7 @@ export function QrSubmit(props) {
                     notify={classes.notifSubmit}
                     key='show-qr'
                     setDownload={setDownload}
+                    fileName={fileName}
                 />
             )}
             <Submit title='Download QR Code' name='Download QR Code' disabled={!src} onDone={() => setDownload(true)} />
@@ -170,7 +166,7 @@ const useStyles = createUseStyles(theme => ({
         transform: 'translateX(-100%)',
     },
     innerNotify: {
-        fontSize: '1rem',
+        fontSize: '2rem',
         backgroundColor: theme.colorPrimary,
         color: '#fff',
         display: 'flex',
@@ -180,5 +176,11 @@ const useStyles = createUseStyles(theme => ({
         borderRadius: '.75rem',
         padding: '1rem',
         fontWeight: '500',
+        '& p': {
+            margin: 0,
+        },
+        '& svg': {
+            fontSize: '200%',
+        },
     },
 }))
