@@ -9,7 +9,7 @@ import clientIo from 'socket.io-client'
 
 var SocketIoPort = 3000
 
-export default async function jestSocketApiSetup(userId, handle, socketApiUnderTest) {
+export default async function jestSocketApiSetup(userId, handleApiPairs) {
     if (typeof window === 'undefined') global.window = {}
     if (!global.window.socket) {
         global.window.socket = {}
@@ -29,7 +29,7 @@ export default async function jestSocketApiSetup(userId, handle, socketApiUnderT
         connections++
         // synuser info is used by APIs as this.synuser
         socket.synuser = { id: userId }
-        socket.on(handle, socketApiUnderTest.bind(socket)) // this is what we are testing
+        for (const [handle, socketApi] of handleApiPairs) socket.on(handle, socketApi.bind(socket)) // this is what we are testing
         socket.on('disconnect', reason => {
             if (--connections <= 0) {
                 io.close() // so test will finish

@@ -159,7 +159,7 @@ maybe('Test the send candidate invites API', () => {
             if (!doc.userId) doc.userId = apisThis.synuser.id
             await Iota.create(doc)
         }
-        await jestSocketApiSetup(apisThis.synuser.id, handle, socketApiUnderTest)
+        await jestSocketApiSetup(apisThis.synuser.id, [[handle, socketApiUnderTest]])
         function requestHandler(doc) {
             requestedDoc = doc
         }
