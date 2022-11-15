@@ -42,6 +42,28 @@ test('should create one', done => {
             `
             Object {
               "id": StringMatching /\\^\\[0-9a-fA-F\\]\\{24\\}\\$/,
+              "questions": Object {
+                "0": Object {
+                  "text": "Please say your name; city and state; one word to describe yourself; and what office you are running for.",
+                  "time": "15",
+                },
+                "1": Object {
+                  "text": "What do you love most about where you live?",
+                  "time": "30",
+                },
+                "2": Object {
+                  "text": "What inspired you to run for office?",
+                  "time": "30",
+                },
+                "3": Object {
+                  "text": "If elected, what will be your top two priorities?",
+                  "time": "30",
+                },
+                "4": Object {
+                  "text": "If elected, how will you know that you've succeeded in this position?",
+                  "time": "30",
+                },
+              },
               "webComponent": "ElectionDoc",
             }
         `

@@ -6,7 +6,7 @@ import cx from 'classnames'
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 
-function Submit({ onDone, name = 'Submit', style, className, disabled = false, disableOnClick = false }) {
+function Submit({ onDone, title, name = 'Submit', style, className, disabled = false, disableOnClick = false }) {
     const classes = useStyles()
     const [disabledAfterClick, setDisabledAfterClick] = useState(false)
 
@@ -24,6 +24,7 @@ function Submit({ onDone, name = 'Submit', style, className, disabled = false, d
             style={style}
             onClick={handleOnClick}
             disabled={disabled}
+            title={title}
         >
             {name}
         </button>

@@ -3,15 +3,12 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import SvgCheck from '../svgr/check'
-import SvgSolidClock from '../svgr/clock-solid'
 import { getLatestIota } from '../lib/get-election-status-methods'
 import ObjectID from 'isomorphic-mongo-objectid'
 import Submit from './submit'
 import scheme from '../lib/scheme'
-import SvgExternalLink from '../svgr/external-link'
-import SvgRedo from '../svgr/redo-arrow'
 import Spinner from './spinner'
+import ShowUndebate from './show-undebate'
 
 export function getModeratorRecorderStatus(electionObj) {
     const moderator = electionObj?.moderator
@@ -52,8 +49,6 @@ export default function ModeratorRecorder(props) {
     const submission = getLatestIota(moderator.submissions)
 
     const [submitted, setSubmitted] = useState(false)
-    const iframeRef = useRef()
-
     const deadline = electionObj?.timeline?.moderatorSubmissionDeadline?.[0]?.date
 
     const recorderStatus = getModeratorRecorderStatus(electionObj)
@@ -67,14 +62,8 @@ export default function ModeratorRecorder(props) {
         return Math.round((currDate - sentDate) / 86400000)
     }
 
-    // if the recorder is updated, the url doesn't change so the iframe would never refresh - so update the iframe any time there's a change in election data
-    useEffect(() => {
-        if (iframeRef.current) iframeRef.current.src += ''
-    }, [electionOM])
-
     let statusTitle
     let statusDesc = submissionDaysLeft + ' days left for moderator to submit recording.'
-    let prevIcon = <SvgSolidClock />
     let cornerPic
     switch (recorderStatus) {
         case 'sent':
@@ -89,7 +78,6 @@ export default function ModeratorRecorder(props) {
         case 'completed':
             statusTitle = "The moderator's recording has been complete!"
             statusDesc = getSubmissionDaysAgo() + ' days ago'
-            prevIcon = <SvgCheck />
             break
         case 'ready':
             statusTitle = 'Ready to Generate Recorder'
@@ -123,48 +111,27 @@ export default function ModeratorRecorder(props) {
     return (
         <div className={cx(className, classes.moderatorRecorder)} style={style}>
             <div className={classes.innerLeft}>
-                <h2>
+                <p>
                     This is what the moderator will see when recording. Review it before sending the invitation to
                     record.
-                </h2>
-                <div className={cx(classes.card, { [classes.backgroundRed]: missed })}>
-                    <div className={classes.preview}>
-                        {viewer?.path ? (
-                            <iframe ref={iframeRef} width={'100%'} height={'100%'} src={src} frameBorder='0' />
-                        ) : (
-                            <div className={classes.placeholder}>
-                                <CreateRecorderButton />
-                            </div>
-                        )}
-                    </div>
-                    <div className={classes.meta}>
-                        <div className={classes.metaText}>
-                            <p className={cx(classes.title, { [classes.colorWhite]: missed })}>{statusTitle}</p>
-                            <p className={cx(classes.desc, { [classes.colorLightRed]: missed })}>{statusDesc}</p>
+                </p>
+                <div className={classes.preview}>
+                    <ShowUndebate
+                        src={src}
+                        dependents={electionOM}
+                        missed={missed}
+                        title={statusTitle}
+                        description={statusDesc}
+                        buttons={{ redo: true, link: true }}
+                    />
+                    {!src ? (
+                        <div className={classes.placeholder}>
+                            <CreateRecorderButton />
                         </div>
-                        <div className={classes.metaButtons}>
-                            <button
-                                className={cx(classes.redo, !src && classes.iconDisabled)}
-                                onClick={e => (iframeRef.current.src += '')}
-                                title='Restart'
-                                disabled={!src}
-                            >
-                                <SvgRedo />
-                            </button>{' '}
-                            {src ? (
-                                <a href={src} target='_blank' title='Open in new tab'>
-                                    <SvgExternalLink className={classes.link} />
-                                </a>
-                            ) : (
-                                <button className={classes.disabledlink} title='Open in new tab' disabled>
-                                    <SvgExternalLink />
-                                </button>
-                            )}
-                        </div>
-                    </div>
+                    ) : null}
                 </div>
-                <div className={classes.cornerPic}>{cornerPic}</div>
             </div>
+            <div className={classes.cornerPic}>{cornerPic}</div>
             <div className={classes.buttonPanel}>
                 <div className={classes.buttonRow}>
                     <CreateRecorderButton />
@@ -202,31 +169,12 @@ const useStyles = createUseStyles(theme => ({
     innerLeft: {
         maxWidth: '60rem',
         float: 'left',
-    },
-    card: {
-        width: '100%',
-        backgroundColor: theme.colorLightGray,
-        padding: '.5rem',
-        borderRadius: '0.625rem',
-        boxSizing: 'border-box',
+        '& p': {
+            marginBlockStart: 0,
+        },
     },
     preview: {
-        backgroundColor: 'white',
-        height: '40rem',
-    },
-    title: {
-        paddingTop: '.5rem',
-        paddingLeft: '.5rem',
-        margin: '0',
-        fontWeight: '500',
-    },
-    desc: {
-        padding: '0',
-        margin: '0',
-        color: theme.colorGray,
-        fontSize: '0.875rem',
-        paddingLeft: '.5rem',
-        paddingBottom: '.5rem',
+        position: 'relative',
     },
     cornerPic: {
         display: 'flex',
@@ -240,15 +188,8 @@ const useStyles = createUseStyles(theme => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    backgroundRed: {
-        backgroundColor: theme.colorWarning,
-    },
-    colorWhite: {
-        color: 'white',
-    },
-    colorLightRed: {
-        color: theme.colorLightRed,
+        transform: 'translateY(-100%) translateY(-2rem)',
+        position: 'absolute',
     },
     buttonPanel: {
         display: 'flex',
@@ -263,47 +204,5 @@ const useStyles = createUseStyles(theme => ({
     },
     submitButton: {
         float: 'right',
-    },
-    meta: {
-        display: 'flex',
-        justifyContent: 'space-between',
-    },
-    metaText: {},
-    metaButtons: {
-        fontSize: '2.5rem',
-        marginTop: '.5rem',
-        verticalAlign: 'middle',
-    },
-    redo: {
-        fontSize: '2.2rem',
-        cursor: 'pointer',
-        backgroundColor: 'transparent',
-        border: 'none',
-    },
-    link: {
-        '& path': {
-            stroke: 'black',
-            strokeWidth: 3,
-        },
-    },
-    disabledlink: {
-        padding: 0,
-        border: 'none',
-        fontSize: '2.5rem',
-        cursor: 'pointer',
-        '& path': {
-            stroke: 'gray',
-            strokeWidth: 3,
-        },
-        backgroundColor: 'transparent',
-    },
-    iconDisabled: {
-        '& path': {
-            fill: 'gray',
-        },
-        '& g path': {
-            stroke: 'gray',
-            fill: 'none',
-        },
     },
 }))

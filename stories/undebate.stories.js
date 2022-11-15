@@ -12,6 +12,7 @@ export default {
 
 export const Default = mC({
     defaultElectionObj: {
+        electionName: 'The Presidential Election',
         offices: {
             President: {
                 viewers: {
@@ -29,12 +30,14 @@ export const Empty = mC({})
 
 export const NoOffice = mC({
     defaultElectionObj: {
+        electionName: 'The Presidential Election',
         offices: {},
     },
 })
 
 export const NoPresident = mC({
     defaultElectionObj: {
+        electionName: 'The Presidential Election',
         offices: {
             President: {},
         },
