@@ -36,7 +36,7 @@ export default async function sendCandidateInvites(id, filter, cb) {
             return
         }
         const electionObj = iota.webComponent
-        const messageIds = await sendCandidateInvitesFromIdAndElectionObj(id, electionObj, filter)
+        const messageIds = await sendCandidateInvitesFromIdAndElectionObj.call(this, id, electionObj, filter)
         cb && cb(messageIds)
     })
 }
@@ -128,6 +128,6 @@ export async function sendCandidateInvitesFromIdAndElectionObj(id, electionObj, 
         }
     }
     // send one update to the browser, not one update for each candidate in the list
-    if (docs.length) updateElectionInfo(id, id, docs)
+    if (docs.length) updateElectionInfo.call(this, id, id, docs)
     return messageIds
 }
