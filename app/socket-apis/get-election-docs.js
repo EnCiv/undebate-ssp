@@ -74,7 +74,7 @@ export async function getElectionDocById(id, cb) {
         const _id = typeof id !== 'object' ? Iota.ObjectID(id) : id
         const iotas = await Iota.aggregate([{ $match: { _id } }].concat(aggLookupChildren))
         if (!iotas) return cb && cb()
-        if (!iotas.length) return cb && cb(iotas)
+        if (!iotas.length) return cb && cb()
         const merged = mergeElectionChildren(iotas)
         const doc = merged.find(doc => doc._id.toString() === _id.toString())
         if (cb) cb(doc)
@@ -278,4 +278,34 @@ const mergeOps = {
                 usedIndexes
             )
     },
+}
+
+const mergeOpPaths = [
+    'webComponent.moderator.recorders',
+    'webComponent.moderator.viewers',
+    'webComponent.moderator.submissions',
+    'webComponent.moderator.invitations',
+    `webComponent.candidates`,
+    `webComponent.candidates._id.invitations`,
+    `webComponent.candidates._id.recorders`,
+    `webComponent.candidates._id.submissions`,
+    `webComponent.offices._id.viewers`, // this _id is the office-slugify-name
+]
+
+function idsFromObjPath(obj, path) {
+    let o = obj
+    const keys = path.split('.')
+    let key = keys.shift()
+    while (1) {
+        if (key === '_id')
+            return Object.keys(o).reduce((ids, key) => ids.concat(idsFromObjPath(o[key], keys.join('.'))), [])
+        if (!o[key]) return []
+        o = o[key]
+        if (!(key = keys.shift())) break
+    }
+    return Object.keys(o)
+}
+
+export function idsFromElectionObj(obj) {
+    return mergeOpPaths.reduce((paths, path) => paths.concat(idsFromObjPath(obj, path)), [])
 }

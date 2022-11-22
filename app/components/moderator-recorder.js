@@ -118,7 +118,7 @@ export default function ModeratorRecorder(props) {
                 <div className={classes.preview}>
                     <ShowUndebate
                         src={src}
-                        dependents={electionOM}
+                        dependents={[electionOM]}
                         missed={missed}
                         title={statusTitle}
                         description={statusDesc}

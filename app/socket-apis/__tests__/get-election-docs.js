@@ -2,7 +2,11 @@
 import { expect, test, beforeAll, afterAll } from '@jest/globals'
 import MongoModels from 'mongo-models'
 import { Iota, User } from 'civil-server'
-import getElectionDocs, { getElectionDocById, intoObjOfDocsAtObjPathMergeDoc } from '../get-election-docs'
+import getElectionDocs, {
+    getElectionDocById,
+    intoObjOfDocsAtObjPathMergeDoc,
+    idsFromElectionObj,
+} from '../get-election-docs'
 
 // dummy out logger for tests
 if (!global.logger) {
@@ -399,8 +403,11 @@ test('get election docs should get them', done => {
     getElectionDocs.call(apisThis, callback)
 })
 
+let electionDoc
+
 test('get election doc by id should get one', done => {
     function callback(doc) {
+        electionDoc = doc
         expect(doc).toMatchInlineSnapshot(`
             Object {
               "_id": "628c73daf2014b3f4c5da4ee",
@@ -597,4 +604,21 @@ test('intoObjOfDocsAtObjPathMergeDoc', () => {
           },
         }
         `)
+})
+
+test('idsFromElectionObj should get them', () => {
+    const ids = idsFromElectionObj(electionDoc)
+    expect(ids).toMatchInlineSnapshot(`
+        Array [
+          "628d076dcf19df5aa438c07a",
+          "628d0b225f7a7746488c0bff",
+          "628d2d25c945f836b8be0901",
+          "61e76bbefeaa4a25840d85d0",
+          "61e76bfc8a82733d08f0cf12",
+          "62b8e859582e3b95dc83e78b",
+          "62bf6d0f4dfc3a2b510881cd",
+          "62b8e8eee48604bcfe9108fd",
+          "62b8e8e2e1fcf3bae96a4f48",
+        ]
+    `)
 })

@@ -83,7 +83,7 @@ export default async function sendModeratorInvite(id, cb) {
                         sentDate: new Date().toISOString(),
                     },
                 })
-                updateElectionInfo(id, id, [doc])
+                updateElectionInfo.call(this, id, id, [doc])
             } catch (error) {
                 logger.error("send-moderator-invite couldn't create Iota for ModeratorEmailSent", error)
             }

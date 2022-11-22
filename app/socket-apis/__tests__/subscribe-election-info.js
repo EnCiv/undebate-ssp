@@ -98,7 +98,7 @@ beforeAll(async () => {
     await Iota.create(viewerDoc)
 
     // setup socket.io server
-    await jestSocketApiSetup(userId, handle, socketApiUnderTest)
+    await jestSocketApiSetup(userId, [[handle, socketApiUnderTest]])
 })
 
 afterAll(async () => {

@@ -2,8 +2,13 @@
 import { serverEvents, Iota } from 'civil-server'
 import { merge } from 'lodash'
 import { subscribeEventName } from '../components/lib/socket-api-subscribe'
-import { getElectionDocById, intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs } from './get-election-docs'
+import {
+    getElectionDocById,
+    intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs,
+    idsFromElectionObj,
+} from './get-election-docs'
 import { diff, detailedDiff } from 'deep-object-diff'
+import { Socket } from 'socket.io'
 
 // there could be multiple subscribers to changes on the same id.  When a change is made to an id, be careful to only update the electionIota once, and then send the update to all the subscribers.
 // currently, updates are the entire iota, in the ideal, only what's changed will be send in the update.
@@ -42,19 +47,20 @@ export default function subscribeElectionInfo(id, cb) {
         serverEvents.on(serverEvents.eNames.ParticipantCreated, iota => {
             // The parent of the ParticipantCreate Iota is the viewer
             // we need to find if there is an electionIota with this viewer, and update that electionIota
-            const electionIotaSubscriber = Object.values(electionIotaSubscribers).find(
-                ({ electionIota }) =>
-                    !!(
-                        electionIota?.webComponent?.moderator?.viewers?.[iota.parentId] ||
-                        electionIota?.webComponent?.candidates?.[iota?.bp_info?.uniqueId] ||
-                        electionIota?.webComponent?.candidates?.[iota?.component?.participant?.bp_info?.unique_id]
-                    )
-            )
+            const electionIotaSubscriber = Object.values(electionIotaSubscribers).find(({ childIds }) =>
+                childIds.find(id => iota.parentId === id)
+            ) // this could be optimized so that childIds is an object with childId as the key, and electionIotaId as the parent.
             if (!electionIotaSubscriber?.electionIota) {
                 logger.warn('subscribeElectionInfo ParticipantCreate event, no parent found for', iota)
                 return
             }
-            updateElectionInfo(Iota.ObjectID(electionIotaSubscriber.electionIota._id).toString(), iota.parentId, [iota])
+            updateElectionInfo(
+                // no this because subscrbers change over time, but this wont
+                Iota.ObjectID(electionIotaSubscriber.electionIota._id).toString(),
+                iota.parentId,
+                [iota]
+            )
+            electionIotaSubscriber.childIds = idsFromElectionObj(electionIotaSubscriber.electionIota) // this could be optimized to push iota._id if it was the 'right' type of iota
         })
         serverEventsSubscribed = true
     }
@@ -72,10 +78,11 @@ export default function subscribeElectionInfo(id, cb) {
         }
         if (!electionIotaSubscribers[id])
             // checking in callback because things could have changed
-            electionIotaSubscribers[id] = { electionIota, sockets: [] }
+            electionIotaSubscribers[id] = { electionIota, sockets: [], childIds: idsFromElectionObj(electionIota) }
         else {
             if (!electionIotaSubscribers[id].sockets.length) {
                 electionIotaSubscribers[id].electionIota = electionIota
+                electionIotaSubscribers[id].childIds = idsFromElectionObj(electionIota)
             } else {
                 const { added, deleted, updated } = detailedDiff(electionIotaSubscribers[id].electionIota, electionIota)
                 merge(added, updated)
@@ -114,11 +121,12 @@ export function updateElectionInfo(rootId, parentId, iotas) {
         delete electionIotaSubscribers[rootId]
         return
     }
-    const socket = sockets[0] // only need the first one, broadcast will send to all the rest
+    const socket = this instanceof Socket ? this : sockets[0] // if called from a socket, use that otherwise only need the first one, broadcast will send to all the rest
     const update = {}
     intoDstOfRootMergeChildrenOfParentFromIotasMarkingUsedIndexs(update, electionIota, parentId, iotas, [])
     const eventName = subscribeEventName('subscribe-election-info', rootId)
     merge(electionIota, update)
+    electionIotaSubscribers[rootId].childIds = idsFromElectionObj(electionIota) // update childIds because we don't have async events in all cases
     const electionUpdates = update.webComponent || {}
     socket.broadcast.to(rootId).emit(eventName, electionUpdates)
     socket.emit(eventName, electionUpdates) // broadcast above doesn't send it to the socket itself
