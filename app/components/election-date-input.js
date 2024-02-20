@@ -98,6 +98,7 @@ export default function ElectionDateInput(props) {
         inputRef.current.value = value // to prevent extra iteration of onDone after defaultValue is changed from parent
         //no need for onDone({ valid, value }) here - blurDateInput will get called when the Calendar is closed
         if (datePickerOpen) setDatePickerOpen(false)
+        blurDateInput(value)
     }
 
     const blurDateInput = value => {
