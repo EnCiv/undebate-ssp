@@ -120,6 +120,8 @@ const useStyles = createUseStyles(theme => ({
         top: '50%',
         transform: 'translate(-50%,-50%)',
         zIndex: 10,
+        maxHeight: '90vh',
+        overflowY: 'auto',
     },
     btnClick: {
         color: '#FFFFFF',
